@@ -246,9 +246,9 @@ node server.js</pre>
     async updateStats() {
         try {
             const { stats } = await API.getStats();
-            document.getElementById('stat-projects').textContent = stats.total_projects || '-';
-            document.getElementById('stat-jobs').textContent = stats.jobs_running || '-';
-        } catch (error) {
+            const stats = await API.getStats();
+            document.getElementById('stat-projects').textContent = stats.total_projects || '0';
+            document.getElementById('stat-jobs').textContent = stats.active_jobs || '0';
             console.error('Error updating stats:', error);
         }
     }
