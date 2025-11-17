@@ -11,6 +11,7 @@ import notify from './components/notification.js';
 import CONFIG, { logEnvironment } from './config.js';
 import themeManager from './theme.js';
 import exportModule from './export.js';
+import { showCreateProjectModal, showCreateJobModal } from './modals.js';
 
 class ClaudeCockpitApp {
     constructor() {
