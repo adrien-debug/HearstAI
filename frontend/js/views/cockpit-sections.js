@@ -28,58 +28,58 @@ export function renderCockpitSection(sectionId) {
     </div>`;
 }
 
-// Dashboard Section - Real-time operations overview (EXACT LAYOUT FROM IMAGE)
+// Dashboard Section - Real-time operations overview (EXACT LAYOUT FROM STANDALONE)
 function renderDashboardSection() {
     return `
         <div class="section-premium" style="padding: 32px; max-width: 1600px; margin: 0 auto;">
-            <!-- Top Section: 6 Key Metrics Cards -->
-            <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; margin-bottom: 24px; grid-auto-flow: row;">
+            <!-- Top Section: 6 Key Metrics Cards - PREMIUM STYLE -->
+            <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; margin-bottom: 24px;">
                 <!-- GLOBAL HASHRATE -->
-                <div style="background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 12px; padding: 20px;">
-                    <div style="font-size: 12px; color: #cccccc; margin-bottom: 8px; font-weight: 500;">GLOBAL HASHRATE</div>
-                    <div style="font-size: 24px; font-weight: 700; color: #ffffff; margin-bottom: 4px;">0 PH/s</div>
-                    <div style="font-size: 11px; color: #888888; margin-bottom: 2px;">Theoretical: 0 PH/s</div>
-                    <div style="font-size: 11px; color: #888888;">Performance: 0%</div>
+                <div class="kpi-box-premium kpi-box-green">
+                    <div class="kpi-box-label">GLOBAL HASHRATE</div>
+                    <div class="kpi-box-value">0 PH/s</div>
+                    <div class="kpi-box-detail">Theoretical: 0 PH/s</div>
+                    <div class="kpi-box-detail">Performance: 0%</div>
                 </div>
                 
                 <!-- BTC PRODUCTION (24H) -->
-                <div style="background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 12px; padding: 20px;">
-                    <div style="font-size: 12px; color: #cccccc; margin-bottom: 8px; font-weight: 500;">BTC PRODUCTION (24H)</div>
-                    <div style="font-size: 24px; font-weight: 700; color: #ffffff; margin-bottom: 4px;">0</div>
-                    <div style="font-size: 11px; color: #888888; margin-bottom: 2px;">4% $0 USD</div>
-                    <div style="font-size: 11px; color: #8afd81;">+0% vs yesterday</div>
+                <div class="kpi-box-premium kpi-box-green">
+                    <div class="kpi-box-label">BTC PRODUCTION (24H)</div>
+                    <div class="kpi-box-value">0</div>
+                    <div class="kpi-box-detail">4% $0 USD</div>
+                    <div class="kpi-box-detail kpi-box-detail-green">+0% vs yesterday</div>
                 </div>
                 
                 <!-- TOTAL MINERS -->
-                <div style="background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 12px; padding: 20px;">
-                    <div style="font-size: 12px; color: #cccccc; margin-bottom: 8px; font-weight: 500;">TOTAL MINERS</div>
-                    <div style="font-size: 24px; font-weight: 700; color: #ffffff; margin-bottom: 4px;">0</div>
-                    <div style="font-size: 11px; color: #888888; margin-bottom: 2px;">Fleet capacity: 0</div>
-                    <div style="font-size: 11px; color: #888888;">Across 0 hosting providers</div>
+                <div class="kpi-box-premium kpi-box-green">
+                    <div class="kpi-box-label">TOTAL MINERS</div>
+                    <div class="kpi-box-value">0</div>
+                    <div class="kpi-box-detail">Fleet capacity: 0</div>
+                    <div class="kpi-box-detail">Across 0 hosting providers</div>
                 </div>
                 
                 <!-- ONLINE MINERS -->
-                <div style="background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 12px; padding: 20px;">
-                    <div style="font-size: 12px; color: #cccccc; margin-bottom: 8px; font-weight: 500;">ONLINE MINERS</div>
-                    <div style="font-size: 24px; font-weight: 700; color: #8afd81; margin-bottom: 4px;">0</div>
-                    <div style="font-size: 11px; color: #888888; margin-bottom: 2px;">Main: 0% of fleet</div>
-                    <div style="font-size: 11px; color: #8afd81;">Optimal performance</div>
+                <div class="kpi-box-premium kpi-box-green">
+                    <div class="kpi-box-label">ONLINE MINERS</div>
+                    <div class="kpi-box-value kpi-box-value-green">0</div>
+                    <div class="kpi-box-detail">Main: 0% of fleet</div>
+                    <div class="kpi-box-detail kpi-box-detail-green">Optimal performance</div>
                 </div>
                 
                 <!-- DEGRADED MINERS -->
-                <div style="background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 12px; padding: 20px;">
-                    <div style="font-size: 12px; color: #cccccc; margin-bottom: 8px; font-weight: 500;">DEGRADED MINERS</div>
-                    <div style="font-size: 24px; font-weight: 700; color: #ffa500; margin-bottom: 4px;">0</div>
-                    <div style="font-size: 11px; color: #888888; margin-bottom: 2px;">Main: 0% of fleet</div>
-                    <div style="font-size: 11px; color: #ffa500;">Requires attention</div>
+                <div class="kpi-box-premium kpi-box-orange">
+                    <div class="kpi-box-label">DEGRADED MINERS</div>
+                    <div class="kpi-box-value kpi-box-value-orange">0</div>
+                    <div class="kpi-box-detail">Main: 0% of fleet</div>
+                    <div class="kpi-box-detail kpi-box-detail-orange">Requires attention</div>
                 </div>
                 
                 <!-- OFFLINE MINERS -->
-                <div style="background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 12px; padding: 20px;">
-                    <div style="font-size: 12px; color: #cccccc; margin-bottom: 8px; font-weight: 500;">OFFLINE MINERS</div>
-                    <div style="font-size: 24px; font-weight: 700; color: #ff4444; margin-bottom: 4px;">0</div>
-                    <div style="font-size: 11px; color: #888888; margin-bottom: 2px;">Main: 0% of fleet</div>
-                    <div style="font-size: 11px; color: #ff4444;">Under maintenance</div>
+                <div class="kpi-box-premium kpi-box-red">
+                    <div class="kpi-box-label">OFFLINE MINERS</div>
+                    <div class="kpi-box-value kpi-box-value-red">0</div>
+                    <div class="kpi-box-detail">Main: 0% of fleet</div>
+                    <div class="kpi-box-detail kpi-box-detail-red">Under maintenance</div>
                 </div>
             </div>
             
@@ -87,13 +87,11 @@ function renderDashboardSection() {
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
                 <!-- Left: Mining Accounts Summary -->
                 <div style="background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 12px; padding: 24px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <h3 style="font-size: 16px; font-weight: 600; color: #ffffff; margin: 0;">Mining Accounts Summary</h3>
-                    </div>
+                    <h3 style="font-size: 16px; font-weight: 600; color: #ffffff; margin: 0 0 20px 0;">Mining Accounts Summary</h3>
                     <div class="table-container" style="margin-bottom: 16px;">
-                        <table class="table-premium" style="width: 100%;">
+                        <table style="width: 100%; border-collapse: collapse;">
                             <thead>
-                                <tr>
+                                <tr style="background: #454646;">
                                     <th style="padding: 12px; text-align: left; font-size: 12px; font-weight: 600; color: #cccccc; border-bottom: 1px solid #2a2a2a;">ACCOUNT</th>
                                     <th style="padding: 12px; text-align: left; font-size: 12px; font-weight: 600; color: #cccccc; border-bottom: 1px solid #2a2a2a;">MINER TYPE</th>
                                     <th style="padding: 12px; text-align: left; font-size: 12px; font-weight: 600; color: #cccccc; border-bottom: 1px solid #2a2a2a;">REAL-TIME</th>
@@ -109,22 +107,20 @@ function renderDashboardSection() {
                             </tbody>
                         </table>
                     </div>
-                    <button class="btn btn-secondary" style="width: 100%; padding: 10px; font-size: 13px; background: transparent; border: 1px solid #2a2a2a; color: #cccccc;">See More →</button>
+                    <button class="btn btn-secondary" style="width: 100%; padding: 10px; font-size: 13px; background: transparent; border: 1px solid #2a2a2a; color: #cccccc; border-radius: 8px; cursor: pointer; transition: all 150ms ease-in-out;">See More →</button>
                 </div>
                 
                 <!-- Right: Hosting Provider Status Overview -->
                 <div style="background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 12px; padding: 24px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <h3 style="font-size: 16px; font-weight: 600; color: #ffffff; margin: 0;">Hosting Provider Status Overview</h3>
-                    </div>
+                    <h3 style="font-size: 16px; font-weight: 600; color: #ffffff; margin: 0 0 20px 0;">Hosting Provider Status Overview</h3>
                     <div class="table-container">
-                        <table class="table-premium" style="width: 100%;">
+                        <table style="width: 100%; border-collapse: collapse;">
                             <thead>
-                                <tr>
-                                    <th style="padding: 12px; text-align: left; font-size: 12px; font-weight: 600; color: #cccccc; border-bottom: 1px solid #2a2a2a;">Hosting Provider</th>
-                                    <th style="padding: 12px; text-align: left; font-size: 12px; font-weight: 600; color: #cccccc; border-bottom: 1px solid #2a2a2a;">Hashrate</th>
-                                    <th style="padding: 12px; text-align: left; font-size: 12px; font-weight: 600; color: #cccccc; border-bottom: 1px solid #2a2a2a;">Clients</th>
-                                    <th style="padding: 12px; text-align: left; font-size: 12px; font-weight: 600; color: #cccccc; border-bottom: 1px solid #2a2a2a;">Status</th>
+                                <tr style="background: #454646;">
+                                    <th style="padding: 12px; text-align: left; font-size: 12px; font-weight: 600; color: #cccccc; border-bottom: 1px solid #2a2a2a;">HOSTING PROVIDER</th>
+                                    <th style="padding: 12px; text-align: left; font-size: 12px; font-weight: 600; color: #cccccc; border-bottom: 1px solid #2a2a2a;">HASHRATE</th>
+                                    <th style="padding: 12px; text-align: left; font-size: 12px; font-weight: 600; color: #cccccc; border-bottom: 1px solid #2a2a2a;">CLIENTS</th>
+                                    <th style="padding: 12px; text-align: left; font-size: 12px; font-weight: 600; color: #cccccc; border-bottom: 1px solid #2a2a2a;">STATUS</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -170,216 +166,27 @@ function renderDashboardSection() {
                 </div>
             </div>
             
-            <!-- Bottom Section: Alerts and Graphs -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-                <!-- Left: Recent Alerts -->
-                <div style="background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 12px; padding: 24px;">
-                    <h3 style="font-size: 16px; font-weight: 600; color: #ffffff; margin-bottom: 20px;">Recent Alerts</h3>
-                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; text-align: center; margin-bottom: 20px;">
-                        <div style="width: 48px; height: 48px; background: rgba(138, 253, 129, 0.1); border: 2px solid #8afd81; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
-                            <span style="font-size: 24px; color: #8afd81;">✓</span>
-                        </div>
-                        <p style="font-size: 14px; color: #cccccc; margin: 0;">No recent alerts. All systems operating normally.</p>
+            <!-- Bottom Section: Recent Alerts (Full Width) -->
+            <div style="background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 12px; padding: 24px; margin-top: 24px;">
+                <h3 style="font-size: 16px; font-weight: 600; color: #ffffff; margin: 0 0 20px 0;">Recent Alerts</h3>
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; text-align: center; margin-bottom: 20px;">
+                    <div style="width: 48px; height: 48px; background: rgba(138, 253, 129, 0.1); border: 2px solid #8afd81; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+                        <span style="font-size: 24px; color: #8afd81;">✓</span>
                     </div>
-                    <div style="background: rgba(138, 253, 129, 0.1); border: 1px solid #8afd81; border-radius: 8px; padding: 16px; display: flex; align-items: center; justify-content: space-between;">
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <span style="font-size: 18px;">🔔</span>
-                            <div>
-                                <div style="font-size: 13px; font-weight: 600; color: #ffffff; margin-bottom: 2px;">Configure Alert Notifications</div>
-                                <div style="font-size: 11px; color: #cccccc;">Set up custom alerts for miners, hashrate, and performance.</div>
-                            </div>
-                        </div>
-                        <button class="btn btn-primary" style="padding: 8px 16px; font-size: 12px; white-space: nowrap;">Setup Alerts</button>
-                    </div>
+                    <p style="font-size: 14px; color: #cccccc; margin: 0;">No recent alerts. All systems operating normally.</p>
                 </div>
-                
-                <!-- Right: Empty space for now (will add graphs below) -->
-                <div></div>
-            </div>
-            
-            <!-- Bottom Graphs Section: Two Graphs Side by Side -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px;">
-                <!-- Left Graph: Live Up Time -->
-                <div style="background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 12px; padding: 24px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <h3 style="font-size: 16px; font-weight: 600; color: #ffffff; margin: 0;">Live Up Time</h3>
-                        <div style="display: flex; gap: 4px; background: #0a0a0a; border: 1px solid #2a2a2a; border-radius: 8px; padding: 4px;">
-                            <button class="graph-tab active" data-graph="uptime-day" style="padding: 6px 12px; font-size: 11px; background: #8afd81; color: #000000; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">Day</button>
-                            <button class="graph-tab" data-graph="uptime-week" style="padding: 6px 12px; font-size: 11px; background: transparent; color: #cccccc; border: none; border-radius: 6px; cursor: pointer;">Week</button>
-                            <button class="graph-tab" data-graph="uptime-month" style="padding: 6px 12px; font-size: 11px; background: transparent; color: #cccccc; border: none; border-radius: 6px; cursor: pointer;">Month</button>
-                            <button class="graph-tab" data-graph="uptime-year" style="padding: 6px 12px; font-size: 11px; background: transparent; color: #cccccc; border: none; border-radius: 6px; cursor: pointer;">Year</button>
+                <div style="background: rgba(138, 253, 129, 0.1); border: 1px solid #8afd81; border-radius: 8px; padding: 16px; display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span style="font-size: 18px;">🔔</span>
+                        <div>
+                            <div style="font-size: 13px; font-weight: 600; color: #ffffff; margin-bottom: 2px;">Configure Alert Notifications</div>
+                            <div style="font-size: 11px; color: #cccccc;">Set up custom alerts for miners, hashrate, and performance.</div>
                         </div>
                     </div>
-                    <div style="position: relative; height: 200px; margin-bottom: 16px;">
-                        <canvas id="uptimeChart"></canvas>
-                    </div>
-                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding-top: 16px; border-top: 1px solid #2a2a2a;">
-                        <div>
-                            <div style="font-size: 11px; color: #888888; margin-bottom: 4px;">CURRENT</div>
-                            <div style="font-size: 14px; font-weight: 600; color: #ffffff;">0.0 PH/s</div>
-                        </div>
-                        <div>
-                            <div style="font-size: 11px; color: #888888; margin-bottom: 4px;">7-DAY AVG</div>
-                            <div style="font-size: 14px; font-weight: 600; color: #ffffff;">0.0 PH/s</div>
-                        </div>
-                        <div>
-                            <div style="font-size: 11px; color: #888888; margin-bottom: 4px;">PEAK</div>
-                            <div style="font-size: 14px; font-weight: 600; color: #ffffff;">0.0 PH/s</div>
-                        </div>
-                        <div>
-                            <div style="font-size: 11px; color: #888888; margin-bottom: 4px;">EFFICIENCY</div>
-                            <div style="font-size: 14px; font-weight: 600; color: #ffffff;">0%</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Right Graph: Live Hashrate -->
-                <div style="background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 12px; padding: 24px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <h3 style="font-size: 16px; font-weight: 600; color: #ffffff; margin: 0;">Live Hashrate</h3>
-                        <div style="display: flex; gap: 4px; background: #0a0a0a; border: 1px solid #2a2a2a; border-radius: 8px; padding: 4px;">
-                            <button class="graph-tab active" data-graph="hashrate-day" style="padding: 6px 12px; font-size: 11px; background: #8afd81; color: #000000; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">Day</button>
-                            <button class="graph-tab" data-graph="hashrate-week" style="padding: 6px 12px; font-size: 11px; background: transparent; color: #cccccc; border: none; border-radius: 6px; cursor: pointer;">Week</button>
-                            <button class="graph-tab" data-graph="hashrate-month" style="padding: 6px 12px; font-size: 11px; background: transparent; color: #cccccc; border: none; border-radius: 6px; cursor: pointer;">Month</button>
-                            <button class="graph-tab" data-graph="hashrate-year" style="padding: 6px 12px; font-size: 11px; background: transparent; color: #cccccc; border: none; border-radius: 6px; cursor: pointer;">Year</button>
-                        </div>
-                    </div>
-                    <div style="position: relative; height: 200px; margin-bottom: 16px;">
-                        <canvas id="hashrateChart"></canvas>
-                    </div>
-                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding-top: 16px; border-top: 1px solid #2a2a2a;">
-                        <div>
-                            <div style="font-size: 11px; color: #888888; margin-bottom: 4px;">TODAY</div>
-                            <div style="font-size: 14px; font-weight: 600; color: #ffffff;">0.00 BTC</div>
-                        </div>
-                        <div>
-                            <div style="font-size: 11px; color: #888888; margin-bottom: 4px;">7-DAY TOTAL</div>
-                            <div style="font-size: 14px; font-weight: 600; color: #ffffff;">0.00 BTC</div>
-                        </div>
-                        <div>
-                            <div style="font-size: 11px; color: #888888; margin-bottom: 4px;">USD VALUE</div>
-                            <div style="font-size: 14px; font-weight: 600; color: #ffffff;">$0</div>
-                        </div>
-                        <div>
-                            <div style="font-size: 11px; color: #888888; margin-bottom: 4px;">VS TARGET</div>
-                            <div style="font-size: 14px; font-weight: 600; color: #ffffff;">0%</div>
-                        </div>
-                    </div>
+                    <button class="btn btn-primary" style="padding: 8px 16px; font-size: 12px; white-space: nowrap; background-color: #8afd81; color: #000000; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 150ms ease-in-out;">Setup Alerts</button>
                 </div>
             </div>
         </div>
-        <script>
-            // Initialize charts when dashboard loads
-            setTimeout(() => {
-                initDashboardCharts();
-            }, 100);
-            
-            function initDashboardCharts() {
-                // Uptime Chart
-                const uptimeCtx = document.getElementById('uptimeChart');
-                if (uptimeCtx && typeof Chart !== 'undefined') {
-                    new Chart(uptimeCtx, {
-                        type: 'line',
-                        data: {
-                            labels: ['Oct 24', 'Oct 25', 'Oct 26', 'Oct 27', 'Oct 28', 'Today'],
-                            datasets: [{
-                                label: 'Live Hashrate',
-                                data: [0, 0, 0, 0, 0, 0],
-                                borderColor: '#8afd81',
-                                backgroundColor: 'rgba(138, 253, 129, 0.1)',
-                                tension: 0.4,
-                                fill: true
-                            }, {
-                                label: 'Theoretical',
-                                data: [0, 0, 0, 0, 0, 0],
-                                borderColor: '#4da6ff',
-                                backgroundColor: 'rgba(77, 166, 255, 0.1)',
-                                tension: 0.4,
-                                fill: true
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: {
-                                    display: true,
-                                    position: 'top',
-                                    labels: {
-                                        color: '#cccccc',
-                                        font: { size: 11 },
-                                        usePointStyle: true,
-                                        padding: 12
-                                    }
-                                }
-                            },
-                            scales: {
-                                x: {
-                                    grid: { color: '#2a2a2a' },
-                                    ticks: { color: '#888888', font: { size: 10 } }
-                                },
-                                y: {
-                                    grid: { color: '#2a2a2a' },
-                                    ticks: { color: '#888888', font: { size: 10 } }
-                                }
-                            }
-                        }
-                    });
-                }
-                
-                // Hashrate Chart
-                const hashrateCtx = document.getElementById('hashrateChart');
-                if (hashrateCtx && typeof Chart !== 'undefined') {
-                    new Chart(hashrateCtx, {
-                        type: 'line',
-                        data: {
-                            labels: ['Oct 24', 'Oct 25', 'Oct 26', 'Oct 27', 'Oct 28', 'Today'],
-                            datasets: [{
-                                label: 'BTC Mined',
-                                data: [0, 0, 0, 0, 0, 0],
-                                borderColor: '#ffa500',
-                                backgroundColor: 'rgba(255, 165, 0, 0.1)',
-                                tension: 0.4,
-                                fill: true
-                            }, {
-                                label: 'Target',
-                                data: [0, 0, 0, 0, 0, 0],
-                                borderColor: '#ff4444',
-                                backgroundColor: 'rgba(255, 68, 68, 0.1)',
-                                tension: 0.4,
-                                fill: true
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: {
-                                    display: true,
-                                    position: 'top',
-                                    labels: {
-                                        color: '#cccccc',
-                                        font: { size: 11 },
-                                        usePointStyle: true,
-                                        padding: 12
-                                    }
-                                }
-                            },
-                            scales: {
-                                x: {
-                                    grid: { color: '#2a2a2a' },
-                                    ticks: { color: '#888888', font: { size: 10 } }
-                                },
-                                y: {
-                                    grid: { color: '#2a2a2a' },
-                                    ticks: { color: '#888888', font: { size: 10 } }
-                                }
-                            }
-                        }
-                    });
-                }
-            }
-        </script>
     `;
 }
 

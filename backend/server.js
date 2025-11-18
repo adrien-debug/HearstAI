@@ -4,7 +4,7 @@ const path = require('path');
 const dbManager = require('./database/db');
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 4000;
 
 // Initialize database
 try {
@@ -25,6 +25,25 @@ app.use((req, res, next) => {
 });
 
 app.use(express.static(path.join(__dirname, '../frontend')));
+
+// API root endpoint
+app.get('/api', (req, res) => {
+    res.json({ 
+        status: 'ok',
+        message: 'Claude CI/CD Cockpit API',
+        version: '1.0.0',
+        endpoints: {
+            health: '/api/health',
+            projects: '/api/projects',
+            jobs: '/api/jobs',
+            versions: '/api/versions',
+            prompts: '/api/prompts',
+            logs: '/api/logs',
+            stats: '/api/stats'
+        },
+        timestamp: new Date().toISOString()
+    });
+});
 
 // Health check
 app.get('/api/health', (req, res) => {

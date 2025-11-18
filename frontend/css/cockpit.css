@@ -464,6 +464,162 @@
     color: var(--text-primary) !important;
 }
 
+/* ====================================
+   KPI BOXES - ULTRA PREMIUM DESIGN
+   ==================================== */
+
+@keyframes kpiPulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.8;
+    }
+}
+
+@keyframes borderFlow {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.kpi-box-premium {
+    position: relative;
+    background: #1a1a1a !important;
+    border: 2px solid #2a2a2a !important;
+    border-radius: 12px !important;
+    padding: 20px !important;
+    transition: all 0.3s ease !important;
+    overflow: hidden !important;
+    box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(138, 253, 129, 0.05) !important;
+}
+
+/* Bordure verte pour les cartes normales */
+.kpi-box-premium.kpi-box-green {
+    border: 2px solid #8afd81 !important;
+    box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(138, 253, 129, 0.1),
+        0 0 20px rgba(138, 253, 129, 0.1) !important;
+}
+
+/* Bordure orange pour degraded */
+.kpi-box-premium.kpi-box-orange {
+    border: 2px solid #ffa500 !important;
+    box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(255, 165, 0, 0.1),
+        0 0 20px rgba(255, 165, 0, 0.1) !important;
+}
+
+/* Bordure rouge pour offline */
+.kpi-box-premium.kpi-box-red {
+    border: 2px solid #ff4444 !important;
+    box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(255, 68, 68, 0.1),
+        0 0 20px rgba(255, 68, 68, 0.1) !important;
+}
+
+
+.kpi-box-premium:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 
+        0 8px 20px rgba(0, 0, 0, 0.6),
+        0 0 0 1px rgba(138, 253, 129, 0.2),
+        0 0 30px rgba(138, 253, 129, 0.15) !important;
+}
+
+.kpi-box-premium.kpi-box-green:hover {
+    border-color: #8afd81 !important;
+    box-shadow: 
+        0 8px 20px rgba(0, 0, 0, 0.6),
+        0 0 0 1px rgba(138, 253, 129, 0.3),
+        0 0 30px rgba(138, 253, 129, 0.2) !important;
+}
+
+.kpi-box-premium.kpi-box-orange:hover {
+    border-color: #ffa500 !important;
+    box-shadow: 
+        0 8px 20px rgba(0, 0, 0, 0.6),
+        0 0 0 1px rgba(255, 165, 0, 0.3),
+        0 0 30px rgba(255, 165, 0, 0.2) !important;
+}
+
+.kpi-box-premium.kpi-box-red:hover {
+    border-color: #ff4444 !important;
+    box-shadow: 
+        0 8px 20px rgba(0, 0, 0, 0.6),
+        0 0 0 1px rgba(255, 68, 68, 0.3),
+        0 0 30px rgba(255, 68, 68, 0.2) !important;
+}
+
+
+.kpi-box-premium > * {
+    position: relative;
+    z-index: 1;
+}
+
+.kpi-box-label {
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    color: #cccccc !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    margin-bottom: 8px !important;
+    display: block;
+}
+
+.kpi-box-value {
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    margin-bottom: 4px !important;
+    line-height: 1.2 !important;
+    letter-spacing: -0.3px !important;
+    display: block;
+}
+
+.kpi-box-value-green {
+    color: #8afd81 !important;
+}
+
+.kpi-box-value-orange {
+    color: #ffa500 !important;
+}
+
+.kpi-box-value-red {
+    color: #ff4444 !important;
+}
+
+.kpi-box-detail {
+    font-size: 11px !important;
+    color: #888888 !important;
+    margin-bottom: 2px !important;
+    line-height: 1.4 !important;
+    display: block;
+}
+
+.kpi-box-detail-green {
+    color: #8afd81 !important;
+}
+
+.kpi-box-detail-orange {
+    color: #ffa500 !important;
+}
+
+.kpi-box-detail-red {
+    color: #ff4444 !important;
+}
+
 /* Table Headers - Typography standardisée */
 .table-premium thead th[style*="font-size: 12px"] {
     font-size: var(--text-xs) !important; /* 12px */

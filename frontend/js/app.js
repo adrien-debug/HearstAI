@@ -318,7 +318,7 @@ node server.js</pre>
             prompts: 'Prompt Profiles',
             logs: 'Activity Logs',
             cockpit: 'Cockpit',
-            settings: 'Settings'
+            settings: 'Settings',
         };
         
         this.pageTitle.textContent = titles[view] || view;
@@ -333,7 +333,7 @@ node server.js</pre>
             versions: '+ Import Version',
             prompts: '+ New Prompt',
             logs: `<span class="icon-inline">${Icons.refresh}</span> Refresh`,
-            cockpit: `<span class="icon-inline">${Icons.refresh}</span> Refresh`
+            cockpit: `<span class="icon-inline">${Icons.refresh}</span> Refresh`,
         };
         
         // Créer le bouton s'il n'existe pas
@@ -428,8 +428,13 @@ node server.js</pre>
             }
             this.setupSettingsHeaderNav();
         } else {
-            this.btnNewAction.style.display = 'flex';
-            this.btnNewAction.innerHTML = `<span>${buttons[view] || '+ New'}</span>`;
+            const buttonText = buttons[view] || '+ New';
+            if (buttonText) {
+                this.btnNewAction.style.display = 'flex';
+                this.btnNewAction.innerHTML = `<span>${buttonText}</span>`;
+            } else {
+                this.btnNewAction.style.display = 'none';
+            }
             
             // Gérer le header-right avec Admin et Export PDF
             const headerRight = document.querySelector('.header-right');
@@ -821,7 +826,7 @@ node server.js</pre>
             prompts: async () => this.renderPrompts(data),
             logs: async () => this.renderLogs(data),
             cockpit: async () => this.renderCockpit(data),
-            settings: async () => this.renderSettings(data)
+            settings: async () => this.renderSettings(data),
         };
         
         const renderer = renderers[view];

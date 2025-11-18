@@ -21,7 +21,7 @@ export const CONFIG = {
     
     // API
     API_BASE_URL: isDevelopment 
-        ? 'http://localhost:3001/api'  // Dev: backend local
+        ? 'http://localhost:4000/api'  // Dev: backend local
         : '/api',                       // Prod: routing Vercel
     
     // Timeouts
