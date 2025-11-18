@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preview - CSS Ultra Premium</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-green: #8afd81;
+            --primary-dark: #000000;
+            --primary-grey: #1a1a1a;
+            --grey-100: #2a2a2a;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+        }
+
+        body {
+            background: linear-gradient(135deg, #000000 0%, #0a0a0a 50%, #000000 100%);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            background: linear-gradient(135deg, #ffffff 0%, #8afd81 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        h2 {
+            color: var(--primary-green);
+            font-size: 1.8rem;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--primary-green);
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: var(--text-primary);
+            font-size: 1.3rem;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        .section {
+            background: rgba(26, 26, 26, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(138, 253, 129, 0.2);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .code-block::before {
+            content: 'CSS';
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            color: var(--primary-green);
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        pre {
+            color: var(--text-secondary);
+            font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        code {
+            color: var(--primary-green);
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(138, 253, 129, 0.15);
+            border: 1px solid var(--primary-green);
+            color: var(--primary-green);
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin: 5px;
+        }
+
+        .badge-success {
+            background: rgba(39, 174, 96, 0.15);
+            border-color: #27ae60;
+            color: #27ae60;
+        }
+
+        .badge-warning {
+            background: rgba(243, 156, 18, 0.15);
+            border-color: #f39c12;
+            color: #f39c12;
+        }
+
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .comparison-item {
+            background: rgba(42, 42, 42, 0.5);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .comparison-item h4 {
+            color: var(--primary-green);
+            margin-bottom: 10px;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--primary-green);
+            font-weight: bold;
+        }
+
+        .guarantees {
+            background: rgba(138, 253, 129, 0.1);
+            border: 2px solid var(--primary-green);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+
+        .guarantees h3 {
+            color: var(--primary-green);
+            margin-top: 0;
+        }
+
+        .cta {
+            text-align: center;
+            margin: 40px 0;
+            padding: 30px;
+            background: rgba(138, 253, 129, 0.1);
+            border: 2px solid var(--primary-green);
+            border-radius: 12px;
+        }
+
+        .cta h2 {
+            border: none;
+            margin-top: 0;
+        }
+
+        .emoji {
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 PREVIEW — CSS ULTRA PREMIUM À INTÉGRER</h1>
+
+        <div class="section">
+            <h2>📋 RÉSUMÉ DES MODIFICATIONS</h2>
+            
+            <h3>✅ CE QUI SERA AJOUTÉ</h3>
+            <ul>
+                <li><strong>Glassmorphism</strong> sur sidebar, header, cards</li>
+                <li><strong>Gradients sophistiqués</strong> sur body, cards, boutons, titres</li>
+                <li><strong>Glows & Shadows premium</strong> sur éléments actifs</li>
+                <li><strong>Animations fluides</strong> (fadeInUp, slideInLeft, glow)</li>
+                <li><strong>Micro-interactions</strong> (hover, scale, shine)</li>
+                <li><strong>Textures subtiles</strong> (noise overlay, gradient overlays)</li>
+                <li><strong>Tables sophistiquées</strong> (zebra stripes, hover glow)</li>
+                <li><strong>Inputs premium</strong> (backdrop-filter, focus glow)</li>
+                <li><strong>Scrollbars custom</strong> (gradient, hover effects)</li>
+                <li><strong>Stat cards premium</strong> (animated borders, accent bars)</li>
+            </ul>
+
+            <h3>❌ CE QUI NE SERA PAS MODIFIÉ</h3>
+            <ul>
+                <li>Structure HTML (aucun changement)</li>
+                <li>Contenu (tous les textes, chiffres, tableaux gardés)</li>
+                <li>JavaScript (aucune modification)</li>
+                <li>Fonctionnalités (tout reste fonctionnel)</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>1️⃣ GLASSMORPHISM</h2>
+            
+            <h3>SIDEBAR</h3>
+            <div class="code-block">
+                <pre><code>.sidebar {
+    background: rgba(0, 0, 0, 0.9) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.5) !important;
+}</code></pre>
+            </div>
+
+            <h3>HEADER</h3>
+            <div class="code-block">
+                <pre><code>.header {
+    background: rgba(26, 26, 26, 0.8) !important;
+    backdrop-filter: blur(20px) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4) !important;
+}</code></pre>
+            </div>
+
+            <h3>CARDS</h3>
+            <div class="code-block">
+                <pre><code>.card, .stat-card, .table-container {
+    background: rgba(26, 26, 26, 0.7) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        0 2px 8px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>2️⃣ GRADIENTS</h2>
+            
+            <h3>BODY BACKGROUND</h3>
+            <div class="code-block">
+                <pre><code>body {
+    background: linear-gradient(135deg, #000000 0%, #0a0a0a 50%, #000000 100%) !important;
+}</code></pre>
+            </div>
+
+            <h3>BOUTONS GRADIENT</h3>
+            <div class="code-block">
+                <pre><code>.btn-primary {
+    background: linear-gradient(135deg, #8afd81 0%, #7bed9f 100%) !important;
+}</code></pre>
+            </div>
+
+            <h3>TITRES GRADIENT TEXT</h3>
+            <div class="code-block">
+                <pre><code>.page-title, .section-title {
+    background: linear-gradient(135deg, #ffffff 0%, #cccccc 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>3️⃣ GLOWS & SHADOWS</h2>
+            
+            <h3>NAV ITEM ACTIVE</h3>
+            <div class="code-block">
+                <pre><code>.nav-item.active {
+    background: #8afd81 !important;
+    box-shadow: 
+        0 0 30px rgba(138, 253, 129, 0.5),
+        0 0 60px rgba(138, 253, 129, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+}</code></pre>
+            </div>
+
+            <h3>BOUTONS PRIMAIRES</h3>
+            <div class="code-block">
+                <pre><code>.btn-primary {
+    box-shadow: 
+        0 4px 16px rgba(138, 253, 129, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+}
+
+.btn-primary:hover {
+    box-shadow: 
+        0 6px 24px rgba(138, 253, 129, 0.6),
+        0 0 40px rgba(138, 253, 129, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>4️⃣ ANIMATIONS</h2>
+            
+            <h3>KEYFRAMES</h3>
+            <div class="code-block">
+                <pre><code>@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes glow {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(138, 253, 129, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 40px rgba(138, 253, 129, 0.6);
+    }
+}</code></pre>
+            </div>
+
+            <h3>APPLICATION</h3>
+            <div class="code-block">
+                <pre><code>.card, .stat-card {
+    animation: fadeInUp 0.5s ease-out !important;
+}
+
+.nav-item {
+    animation: slideInLeft 0.3s ease-out !important;
+}
+
+.nav-item.active {
+    animation: glow 3s ease-in-out infinite !important;
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>5️⃣ TEXTURES</h2>
+            
+            <h3>NOISE OVERLAY</h3>
+            <div class="code-block">
+                <pre><code>body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,...");
+    pointer-events: none;
+    z-index: 9999;
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>6️⃣ TABLES</h2>
+            
+            <h3>ZEBRA STRIPES & HOVER</h3>
+            <div class="code-block">
+                <pre><code>table tbody tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.02) !important;
+}
+
+table tbody tr:hover {
+    background: linear-gradient(
+        90deg,
+        rgba(138, 253, 129, 0.05) 0%,
+        rgba(138, 253, 129, 0.1) 50%,
+        rgba(138, 253, 129, 0.05) 100%
+    ) !important;
+    box-shadow: inset 2px 0 0 #8afd81 !important;
+    transform: translateX(2px) !important;
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>7️⃣ INPUTS PREMIUM</h2>
+            <div class="code-block">
+                <pre><code>input, select, textarea {
+    background: rgba(42, 42, 42, 0.6) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+}
+
+input:focus, select:focus {
+    border-color: #8afd81 !important;
+    box-shadow: 
+        0 0 0 3px rgba(138, 253, 129, 0.1),
+        inset 0 2px 4px rgba(0, 0, 0, 0.3),
+        0 0 20px rgba(138, 253, 129, 0.2) !important;
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>8️⃣ SCROLLBARS CUSTOM</h2>
+            <div class="code-block">
+                <pre><code>::-webkit-scrollbar {
+    width: 12px !important;
+    height: 12px !important;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 100%) !important;
+    border-radius: 6px !important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #8afd81 0%, #7bed9f 100%) !important;
+    box-shadow: 0 0 10px rgba(138, 253, 129, 0.5) !important;
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>9️⃣ STAT CARDS PREMIUM</h2>
+            <div class="code-block">
+                <pre><code>.stat-card::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(
+        135deg,
+        transparent 0%,
+        rgba(138, 253, 129, 0.3) 50%,
+        transparent 100%
+    );
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.stat-card:hover::before {
+    opacity: 1;
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="comparison">
+            <div class="comparison-item">
+                <h4>AVANT</h4>
+                <ul>
+                    <li>Backgrounds opaques simples</li>
+                    <li>Pas d'effets glassmorphism</li>
+                    <li>Shadows basiques</li>
+                    <li>Pas d'animations</li>
+                    <li>Scrollbars par défaut</li>
+                    <li>Tables simples</li>
+                </ul>
+            </div>
+            <div class="comparison-item">
+                <h4>APRÈS</h4>
+                <ul>
+                    <li><span class="emoji">✨</span> Glassmorphism partout</li>
+                    <li><span class="emoji">🌈</span> Gradients sophistiqués</li>
+                    <li><span class="emoji">💫</span> Animations fluides</li>
+                    <li><span class="emoji">🎨</span> Glows premium</li>
+                    <li><span class="emoji">⚡</span> Micro-interactions</li>
+                    <li><span class="emoji">🏆</span> Look ultra premium</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="guarantees">
+            <h3>⚠️ GARANTIES</h3>
+            <ul>
+                <li><strong>AUCUNE</strong> modification HTML</li>
+                <li><strong>AUCUNE</strong> modification JavaScript</li>
+                <li><strong>TOUTES</strong> les données conservées</li>
+                <li><strong>TOUTES</strong> les fonctionnalités intactes</li>
+                <li><strong>Seulement</strong> CSS ajouté dans <code>&lt;style&gt;</code></li>
+            </ul>
+        </div>
+
+        <div class="cta">
+            <h2>🚀 PRÊT À INTÉGRER ?</h2>
+            <p style="font-size: 1.2rem; margin-top: 15px;">
+                Ce CSS sera ajouté dans la balise <code>&lt;style&gt;</code> existante du fichier <code>index.html</code>, après les styles premium actuels.
+            </p>
+            <p style="font-size: 1.5rem; margin-top: 20px; color: var(--primary-green); font-weight: bold;">
+                Confirme pour intégrer ! ✨
+            </p>
+        </div>
+    </div>
+</body>
+</html>
+
