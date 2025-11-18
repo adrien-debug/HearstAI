@@ -18,6 +18,9 @@
     --primary-dark: #000000;           /* Fond principal */
     --primary-grey: #1a1a1a;          /* Fond secondaire (cards, panels) */
     
+    /* Variables supplémentaires (sans changer les couleurs existantes) */
+    /* Note: --bg-primary et --bg-secondary définis plus bas dans compatibilité */
+    
     /* Nuances de gris */
     --grey-100: #2a2a2a;              /* Bordures, séparateurs */
     --grey-200: #3a3a3a;              /* Hover backgrounds */
@@ -26,8 +29,8 @@
     --grey-500: #999999;              /* Texte tertiaire, placeholders */
     
     /* Texte */
-    --text-primary: #ffffff;           /* Texte principal */
-    --text-secondary: #cccccc;         /* Texte secondaire */
+    --text-primary: #fff;              /* Texte principal - ✅ Match demande */
+    --text-secondary: rgba(255, 255, 255, 0.7); /* ✅ Match demande */
     --text-muted: #999999;            /* Texte désactivé/tertiaire */
     
     /* États et feedback */
@@ -133,10 +136,12 @@
     /* ====================================
        COMPATIBILITÉ (aliases pour migration)
        ==================================== */
-    --bg-primary: var(--primary-dark);
-    --bg-secondary: var(--primary-grey);
+    --bg-primary: #1a1a1a; /* ✅ Match demande */
+    --bg-secondary: rgba(30, 30, 30, 0.95); /* ✅ Match demande */
+    --bg-tertiary: rgba(37, 37, 37, 0.6); /* ✅ Match demande */
     --accent-primary: var(--primary-green);
-    --border-color: var(--grey-100);
+    --accent-color: var(--primary-green); /* ✅ Garde #8afd81 (pas #8AE38A) */
+    --border-color: rgba(255, 255, 255, 0.08); /* ✅ Match demande */
     --border-hover: var(--grey-200);
     --spacing-xs: var(--space-1);
     --spacing-sm: var(--space-2);
@@ -154,19 +159,20 @@ html {
 }
 
 body {
-    font-family: var(--font-primary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif; /* ✅ Match demande */
     background: var(--primary-dark);
-    color: var(--text-primary);
-    line-height: var(--leading-normal);
+    color: #fff; /* ✅ Match demande */
+    line-height: 1.5; /* ✅ Match demande */
     overflow-x: hidden;
     overflow-y: hidden;
     font-weight: var(--font-normal);
-    font-size: var(--text-base);
+    font-size: 14px; /* ✅ Match demande */
     letter-spacing: -0.01em;
     height: 100%;
     width: 100%;
     margin: 0;
     padding: 0;
+    box-sizing: border-box; /* ✅ Match demande */
 }
 
 /* ====================================
@@ -174,7 +180,7 @@ body {
    ==================================== */
 
 .cockpit-layout {
-    display: flex;
+    display: flex; /* ✅ Garde flex pour sidebar + main-content */
     height: 100vh;
     width: 100%;
     overflow: hidden;
@@ -514,6 +520,9 @@ body {
     width: 100%;
     min-height: 0;
     position: relative;
+    display: grid; /* ✅ Match demande */
+    gap: var(--space-5); /* 20px - ✅ Match demande */
+    grid-template-columns: 1fr; /* ✅ Match demande */
 }
 
 /* ====================================
