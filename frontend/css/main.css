@@ -49,9 +49,9 @@
     --font-mono: 'Fira Code', 'Consolas', 'Monaco', monospace;
     
     /* Tailles */
-    --text-xs: 0.75rem;    /* 12px */
-    --text-sm: 0.875rem;   /* 14px */
-    --text-base: 1rem;      /* 16px */
+    --text-xs: 0.6875rem;  /* 11px */
+    --text-sm: 0.8125rem;  /* 13px */
+    --text-base: 0.875rem; /* 14px */
     --text-lg: 1.125rem;    /* 18px */
     --text-xl: 1.25rem;     /* 20px */
     --text-2xl: 1.5rem;     /* 24px */
@@ -93,6 +93,7 @@
     --radius-md: 8px;
     --radius-lg: 12px;
     --radius-xl: 16px;
+    --radius-pill: 24px;
     --radius-full: 9999px;
     
     /* Épaisseurs de bordure */
@@ -127,8 +128,8 @@
     /* ====================================
        LAYOUT
        ==================================== */
-    --sidebar-width: 200px;
-    --header-height: 70px;
+    --sidebar-width: 220px;
+    --header-height: 72px;
     
     /* ====================================
        COMPATIBILITÉ (aliases pour migration)
@@ -186,9 +187,9 @@ body {
    ==================================== */
 
 .sidebar {
-    width: 180px;
+    width: 220px !important;
     background: #000000 !important;
-    border-right: 1px solid #2a2a2a;
+    border-right: 1px solid #2a2a2a !important;
     display: flex;
     flex-direction: column;
     position: fixed;
@@ -197,7 +198,7 @@ body {
     height: 100vh;
     z-index: 100;
     color: var(--text-primary);
-    padding: 24px 16px;
+    padding: 24px 16px !important;
 }
 
 .sidebar-header {
@@ -231,29 +232,28 @@ body {
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 4px;
 }
 
 .nav-item {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: var(--space-4);
-    padding: 12px 16px;
-    color: #ffffff !important;
-    text-decoration: none;
-    transition: all var(--duration-fast) var(--ease-in-out);
-    border: none;
-    margin: 0;
-    font-size: 14px;
-    font-weight: 500;
-    letter-spacing: 0;
-    border-radius: 8px;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 12px 16px !important;
+    margin-bottom: 4px !important;
+    border-radius: 8px !important;
     background: transparent !important;
+    color: #ffffff !important;
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    text-decoration: none !important;
+    transition: all 0.2s ease !important;
+    border: none !important;
+    min-height: 48px !important;
+    width: 100%;
     position: relative;
     text-transform: none;
-    min-height: 44px;
-    width: 100%;
+    letter-spacing: 0;
 }
 
 .nav-item:hover {
@@ -264,26 +264,27 @@ body {
 .nav-item.active {
     background: #8afd81 !important;
     color: #000000 !important;
-    border: none;
-    padding: 12px 16px;
-    font-weight: 600;
+    font-weight: 600 !important;
+    border: none !important;
     letter-spacing: 0;
 }
 
 .nav-item.active:hover {
-    background: #75fc6c !important;
-    color: #000000 !important;
+    background-color: #70D467 !important;
+    box-shadow: 0 0 12px rgba(138, 253, 129, 0.55) !important;
+    transform: translateY(-1px) !important;
+    color: #000 !important;
 }
 
 .nav-icon {
-    font-size: 18px;
-    width: 20px;
-    text-align: center;
+    width: 20px !important;
+    height: 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
     opacity: 0.9;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: inherit; /* Hérite de la couleur du parent */
+    color: inherit;
 }
 
 .nav-icon svg {
@@ -300,7 +301,7 @@ body {
 
 .nav-item.active .nav-icon {
     opacity: 1;
-    color: #000000;
+    color: #000000 !important;
 }
 
 .nav-item:hover .nav-label {
@@ -308,11 +309,12 @@ body {
 }
 
 .nav-item.active .nav-label {
-    color: #000000;
+    color: #000000 !important;
 }
 
 .nav-label {
-    font-size: var(--text-sm);
+    flex: 1 !important;
+    white-space: nowrap !important;
     letter-spacing: -0.01em;
 }
 
@@ -364,13 +366,13 @@ body {
    ==================================== */
 
 .header {
-    height: var(--header-height);
-    background: var(--primary-dark);
-    border-bottom: var(--border-thin) solid var(--grey-100);
+    height: 72px !important;
+    background: #1a1a1a !important;
+    border-bottom: 1px solid #2a2a2a !important;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0;
+    padding: 0 32px !important;
     position: sticky;
     top: 0;
     z-index: 50;
@@ -385,9 +387,9 @@ body {
 }
 
 .page-title {
-    font-size: var(--text-xl);
-    font-weight: var(--font-semibold);
-    color: var(--text-primary);
+    font-size: 24px !important;
+    font-weight: 600 !important;
+    color: #ffffff !important;
     letter-spacing: -0.02em;
 }
 
@@ -461,8 +463,8 @@ body {
 }
 
 .user-avatar-circle {
-    width: 36px;
-    height: 36px;
+    width: 40px !important;
+    height: 40px !important;
     border-radius: var(--radius-full);
     background: var(--primary-green);
     display: flex;
@@ -481,12 +483,12 @@ body {
 .user-info {
     display: flex;
     align-items: center;
-    gap: var(--space-2);
+    gap: 12px !important;
 }
 
 .user-name {
-    font-size: var(--text-sm);
-    color: var(--text-primary);
+    font-size: 14px !important;
+    color: #ffffff !important;
     font-weight: var(--font-medium);
 }
 

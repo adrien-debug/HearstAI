@@ -8,12 +8,6 @@ export function renderDashboard(data) {
             <div class="dashboard-content">
                 <!-- Section Wallet -->
                 <div class="wallet-section">
-                    <div class="section-header-home">
-                        <button class="btn btn-primary btn-transaction-history" id="btn-transaction-history">
-                            Transaction history
-                        </button>
-                    </div>
-
                     <!-- BTC Wallet Card -->
                     <div class="wallet-card">
                         <div class="wallet-card-header">
@@ -37,10 +31,6 @@ export function renderDashboard(data) {
                     <div class="transactions-section">
                         <div class="section-header-home">
                             <h3 class="section-title-home">Wallet incoming transactions</h3>
-                            <div class="section-header-labels">
-                                <span class="header-label">Date</span>
-                                <span class="header-label">BTC Transaction</span>
-                            </div>
                         </div>
                         <div class="table-container">
                             <table class="table">
@@ -163,7 +153,7 @@ export function renderDashboard(data) {
 const dashboardStyles = `
 <style>
 .dashboard-view {
-    padding: var(--space-12);
+    padding: var(--space-6);
     width: 100%;
     max-width: 100%;
     margin: 0;
@@ -173,7 +163,7 @@ const dashboardStyles = `
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: var(--space-12);
+    gap: var(--space-8);
 }
 
 /* Section Headers */
@@ -181,7 +171,7 @@ const dashboardStyles = `
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: var(--space-8);
+    margin-bottom: var(--space-6);
     flex-wrap: wrap;
     gap: var(--space-4);
 }
@@ -212,19 +202,19 @@ const dashboardStyles = `
 
 /* Wallet Section */
 .wallet-section {
-    margin-bottom: var(--space-12);
+    margin-bottom: var(--space-8);
 }
 
 .wallet-section .section-header-home {
-    padding-left: var(--space-10);
+    padding-left: var(--space-6);
 }
 
 .wallet-card {
     background: var(--primary-grey);
     border: var(--border-thin) solid var(--grey-100);
     border-radius: var(--radius-lg);
-    padding: var(--space-10);
-    margin-bottom: var(--space-8);
+    padding: var(--space-6);
+    margin-bottom: var(--space-6);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(138, 253, 129, 0.05);
     transition: all var(--duration-normal) var(--ease-in-out);
 }
@@ -235,7 +225,7 @@ const dashboardStyles = `
 }
 
 .wallet-card-header {
-    margin-bottom: var(--space-8);
+    margin-bottom: var(--space-6);
 }
 
 .wallet-card-title {
@@ -248,7 +238,7 @@ const dashboardStyles = `
 .wallet-card-body {
     display: flex;
     flex-direction: column;
-    gap: var(--space-8);
+    gap: var(--space-6);
 }
 
 .wallet-balance {
@@ -325,7 +315,7 @@ const dashboardStyles = `
 
 /* Transactions Section */
 .transactions-section {
-    margin-top: var(--space-8);
+    margin-top: var(--space-6);
 }
 
 .transaction-amount {
@@ -337,60 +327,82 @@ const dashboardStyles = `
 
 /* Transaction History Section */
 .transaction-history-section {
-    margin-top: var(--space-12);
+    margin-top: var(--space-8);
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
 }
 
 .transaction-history-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: var(--space-8);
-    gap: var(--space-8);
-    flex-wrap: wrap;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-bottom: 24px !important;
+    gap: 24px !important;
+    flex-wrap: nowrap !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
 }
 
 .transaction-history-title {
-    font-size: 24px;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin: 0;
-    white-space: nowrap;
+    font-size: 24px !important;
+    font-weight: 600 !important;
+    color: #ffffff !important;
+    margin: 0 !important;
+    white-space: nowrap !important;
+    flex: 0 0 auto !important;
+    padding: 0 !important;
+    flex-shrink: 0 !important;
 }
 
 .transaction-history-controls {
-    display: flex;
-    align-items: center;
-    gap: var(--space-4);
-    flex-wrap: wrap;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 12px !important;
+    flex-wrap: nowrap !important;
+    margin-left: auto !important;
+    flex-shrink: 1 !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    justify-content: flex-end !important;
 }
 
 /* Assurer que les styles des selects sont appliqués */
 .transaction-history-controls .date-range-select,
 .transaction-history-controls .contract-select {
-    padding: 10px 14px;
-    background: var(--primary-grey);
-    border: 1px solid var(--grey-100);
-    border-radius: 8px;
-    color: var(--text-primary);
-    font-size: 14px;
-    font-family: var(--font-primary);
-    cursor: pointer;
-    transition: all var(--duration-fast) var(--ease-in-out);
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23cccccc' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 14px center;
-    padding-right: 40px;
+    min-width: 180px !important;
+    max-width: 220px !important;
+    width: auto !important;
+    padding: 12px 16px !important;
+    background: #2a2a2a !important;
+    border: 1px solid #3a3a3a !important;
+    border-radius: 8px !important;
+    color: #ffffff !important;
+    font-size: 14px !important;
+    font-family: var(--font-primary) !important;
+    cursor: pointer !important;
+    transition: all var(--duration-fast) var(--ease-in-out) !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23cccccc' d='M6 9L1 4h10z'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 14px center !important;
+    padding-right: 40px !important;
+    flex-shrink: 1 !important;
+    box-sizing: border-box !important;
 }
 
 .transaction-history-controls .date-range-select {
-    min-width: 280px;
+    min-width: 200px !important;
+    max-width: 240px !important;
 }
 
 .transaction-history-controls .contract-select {
-    min-width: 200px;
+    min-width: 160px !important;
+    max-width: 200px !important;
 }
 
 .date-range-select,
@@ -420,7 +432,8 @@ const dashboardStyles = `
 
 .date-range-select:hover,
 .contract-select:hover {
-    border-color: var(--grey-200);
+    border-color: var(--primary-green);
+    background: rgba(138, 253, 129, 0.05);
 }
 
 .date-range-select:focus,
@@ -438,15 +451,18 @@ const dashboardStyles = `
 }
 
 .btn-export-excel {
-    white-space: nowrap;
-    padding: 10px 24px;
-    font-size: 14px;
-    font-weight: 600;
-    border-radius: 8px;
-    background-color: var(--primary-green);
-    color: #000000;
-    border: none;
-    transition: all var(--duration-fast) var(--ease-in-out);
+    white-space: nowrap !important;
+    padding: 12px 20px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+    background-color: #8afd81 !important;
+    color: #000000 !important;
+    border: none !important;
+    transition: all var(--duration-fast) var(--ease-in-out) !important;
+    cursor: pointer !important;
+    flex-shrink: 0 !important;
+    box-sizing: border-box !important;
 }
 
 .btn-export-excel:hover {
@@ -466,6 +482,9 @@ const dashboardStyles = `
     border: 1px solid var(--grey-100);
     border-radius: 12px;
     overflow: hidden;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
 }
 
 .transaction-history-table {

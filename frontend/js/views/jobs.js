@@ -167,8 +167,8 @@ export const jobsStyles = `
 }
 
 .table tbody tr:hover {
-    background: var(--bg-hover);
-    box-shadow: inset 0 0 0 1px rgba(138, 253, 129, 0.1);
+    background: rgba(138, 253, 129, 0.05);
+    box-shadow: inset 0 0 0 1px rgba(138, 253, 129, 0.2);
 }
 
 .text-center {
