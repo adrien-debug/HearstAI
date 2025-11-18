@@ -141,3 +141,4 @@ Utiliser **UNIQUEMENT** les composants et styles de la charte graphique Hearst :
 
 **En résumé : Garder le layout exact, remplacer les couleurs par la charte Hearst, respecter la charte graphique. Le reste peut être modifié librement.**
 
+

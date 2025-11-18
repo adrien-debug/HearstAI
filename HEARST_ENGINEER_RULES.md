@@ -209,3 +209,4 @@ Toutes les règles ci-dessus sont stockées comme baseline de comportement perma
 *Dernière mise à jour : 2025-01-18*
 *Version : 1.0.0*
 
+

@@ -1,0 +1,135 @@
+/* ====================================
+   OVERRIDE COCKPIT - Styles spécifiques
+   Chargé en dernier pour garantir la priorité
+   ==================================== */
+
+/* Overrides spécifiques au cockpit si nécessaire */
+/* Les styles principaux sont dans cockpit.css et components.css */
+
+/* Variables de couleur spécifiques au cockpit si non définies globalement */
+:root {
+    --cockpit-blue: #4a9eff;
+    --cockpit-orange: #ffa500;
+    --cockpit-orange-dark: #cc8400;
+    --cockpit-pink: #ff6b9d;
+    --cockpit-purple: #9b59b6;
+    --cockpit-red: #e74c3c;
+}
+
+/* Assurer la cohérence des tableaux avec la Home */
+.cockpit-view .table-unified-grid {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+/* Assurer la cohérence des sections avec la Home */
+.cockpit-view .transactions-section {
+    margin-bottom: var(--space-8);
+}
+
+/* ====================================
+   SOUS-MENUS COCKPIT - CENTRÉS & VERTS
+   ==================================== */
+
+/* Navigation cockpit dans le header - Centrée */
+.cockpit-header-nav {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 1 !important;
+    margin: 0 auto !important;
+    padding: 0 var(--space-4) !important;
+    position: absolute !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 10 !important;
+}
+
+.header.has-cockpit-nav {
+    position: relative !important;
+}
+
+/* Tabs container */
+.cockpit-nav-tabs {
+    display: flex !important;
+    align-items: center !important;
+    gap: var(--space-1) !important;
+    background: rgba(26, 26, 26, 0.6) !important;
+    backdrop-filter: blur(10px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(10px) saturate(180%) !important;
+    border: 1px solid rgba(138, 253, 129, 0.1) !important;
+    border-radius: var(--radius-md) !important;
+    padding: var(--space-1) !important;
+    box-shadow: 
+        0 4px 16px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(138, 253, 129, 0.05) !important;
+}
+
+/* Tab button - Style vert HEARST */
+.cockpit-nav-tab {
+    display: flex !important;
+    align-items: center !important;
+    gap: var(--space-2) !important;
+    padding: var(--space-2) var(--space-4) !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: var(--radius-sm) !important;
+    color: var(--text-secondary) !important;
+    font-size: var(--text-sm) !important;
+    font-weight: var(--font-medium) !important;
+    cursor: pointer !important;
+    transition: all var(--duration-fast) var(--ease-in-out) !important;
+    white-space: nowrap !important;
+    font-family: var(--font-primary) !important;
+    letter-spacing: -0.01em !important;
+}
+
+.cockpit-nav-tab:hover {
+    background: rgba(138, 253, 129, 0.1) !important;
+    color: var(--primary-green) !important;
+}
+
+.cockpit-nav-tab.active {
+    background: var(--primary-green) !important;
+    color: var(--primary-dark) !important;
+    font-weight: var(--font-semibold) !important;
+    box-shadow: 
+        0 2px 8px rgba(138, 253, 129, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+}
+
+.cockpit-nav-tab.active:hover {
+    background: rgba(138, 253, 129, 0.9) !important;
+    box-shadow: 
+        0 4px 12px rgba(138, 253, 129, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+}
+
+/* Icon dans les tabs */
+.cockpit-nav-icon {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 18px !important;
+    height: 18px !important;
+    flex-shrink: 0 !important;
+}
+
+.cockpit-nav-icon svg {
+    width: 18px !important;
+    height: 18px !important;
+    stroke: currentColor !important;
+    fill: none !important;
+}
+
+.cockpit-nav-tab.active .cockpit-nav-icon svg {
+    stroke: var(--primary-dark) !important;
+}
+
+/* Label dans les tabs */
+.cockpit-nav-label {
+    font-size: var(--text-sm) !important;
+    letter-spacing: -0.01em !important;
+    line-height: 1.2 !important;
+}
