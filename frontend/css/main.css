@@ -136,9 +136,9 @@
     /* ====================================
        COMPATIBILITÉ (aliases pour migration)
        ==================================== */
-    --bg-primary: #1a1a1a; /* ✅ Match demande */
-    --bg-secondary: rgba(30, 30, 30, 0.95); /* ✅ Match demande */
-    --bg-tertiary: rgba(37, 37, 37, 0.6); /* ✅ Match demande */
+    --bg-primary: #0a0a0a; /* ✅ Standard HEARST - Background principal */
+    --bg-secondary: #1a1a1a; /* ✅ Standard HEARST - Background secondaire */
+    --bg-tertiary: #242424; /* ✅ Standard HEARST - Background tertiaire */
     --accent-primary: var(--primary-green);
     --accent-color: var(--primary-green); /* ✅ Garde #8afd81 (pas #8AE38A) */
     --border-color: rgba(255, 255, 255, 0.08); /* ✅ Match demande */
@@ -203,7 +203,7 @@ body {
    ==================================== */
 
 .sidebar {
-    width: 180px;
+    width: var(--sidebar-width); /* 200px */
     background: rgba(0, 0, 0, 0.9) !important;
     backdrop-filter: blur(20px) saturate(180%) !important;
     -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
