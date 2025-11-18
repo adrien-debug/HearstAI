@@ -70,51 +70,37 @@ export function renderDashboard(data) {
                             <h3 class="section-title-home">Wallet incoming transactions</h3>
                         </div>
                         <div class="table-container">
-                            <table class="table table-unified-grid">
+                            <table class="table">
                                 <thead>
                                     <tr>
                                         <th>Date</th>
                                         <th>BTC Transaction</th>
-                                        <th>Wallet adresse</th>
-                                        <th>Trx Id</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
                                         <td>2025-07-09</td>
                                         <td class="transaction-amount">0.005650 BTC</td>
-                                        <td>1Lzu8ieZUN7QDk6MTiPive2s2uhr2xzqqpck</td>
-                                        <td>a1b2c3d4e5f6...</td>
                                     </tr>
                                     <tr>
                                         <td>2025-07-09</td>
                                         <td class="transaction-amount">0.005650 BTC</td>
-                                        <td>1Lzu8ieZUN7QDk6MTiPive2s2uhr2xzqqpck</td>
-                                        <td>f6e5d4c3b2a1...</td>
                                     </tr>
                                     <tr>
                                         <td>2025-07-09</td>
                                         <td class="transaction-amount">0.005650 BTC</td>
-                                        <td>1Lzu8ieZUN7QDk6MTiPive2s2uhr2xzqqpck</td>
-                                        <td>9z8y7x6w5v4u...</td>
                                     </tr>
                                     <tr class="row-hidden" data-table="wallet">
                                         <td>2025-07-08</td>
                                         <td class="transaction-amount">0.004320 BTC</td>
-                                        <td>1Lzu8ieZUN7QDk6MTiPive2s2uhr2xzqqpck</td>
-                                        <td>3t4u5v6w7x8y...</td>
                                     </tr>
                                     <tr class="row-hidden" data-table="wallet">
                                         <td>2025-07-08</td>
                                         <td class="transaction-amount">0.003210 BTC</td>
-                                        <td>1Lzu8ieZUN7QDk6MTiPive2s2uhr2xzqqpck</td>
-                                        <td>7m8n9o0p1q2r...</td>
                                     </tr>
                                     <tr class="row-hidden" data-table="wallet">
                                         <td>2025-07-07</td>
                                         <td class="transaction-amount">0.002890 BTC</td>
-                                        <td>1Lzu8ieZUN7QDk6MTiPive2s2uhr2xzqqpck</td>
-                                        <td>5k6l7m8n9o0p...</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -153,11 +139,12 @@ export function renderDashboard(data) {
 
                     <!-- Transaction History Table -->
                     <div class="table-container transaction-history-table-container">
-                        <table class="table transaction-history-table table-unified-grid">
+                        <table class="table transaction-history-table">
                             <thead>
                                 <tr>
                                     <th>Date</th>
                                     <th>Account</th>
+                                    <th>Amount</th>
                                     <th>Total Reward</th>
                                     <th>Hashrate</th>
                                 </tr>
@@ -166,36 +153,42 @@ export function renderDashboard(data) {
                                 <tr>
                                     <td>2025-06-30</td>
                                     <td>AKT04</td>
+                                    <td class="transaction-amount">0.021144 BTC</td>
                                     <td class="transaction-reward">0.082848 BTC</td>
                                     <td>2041.42 TH/s</td>
                                 </tr>
                                 <tr>
                                     <td>2025-06-29</td>
                                     <td>AKT04</td>
+                                    <td class="transaction-amount">0.021144 BTC</td>
                                     <td class="transaction-reward">0.082848 BTC</td>
                                     <td>2041.42 TH/s</td>
                                 </tr>
                                 <tr>
                                     <td>2025-06-28</td>
                                     <td>AKT04</td>
+                                    <td class="transaction-amount">0.021144 BTC</td>
                                     <td class="transaction-reward">0.082848 BTC</td>
                                     <td>2041.42 TH/s</td>
                                 </tr>
                                 <tr class="row-hidden" data-table="transaction-history">
                                     <td>2025-06-27</td>
                                     <td>AKT04</td>
+                                    <td class="transaction-amount">0.021144 BTC</td>
                                     <td class="transaction-reward">0.082848 BTC</td>
                                     <td>2041.42 TH/s</td>
                                 </tr>
                                 <tr class="row-hidden" data-table="transaction-history">
                                     <td>2025-06-26</td>
                                     <td>AKT04</td>
+                                    <td class="transaction-amount">0.021144 BTC</td>
                                     <td class="transaction-reward">0.082848 BTC</td>
                                     <td>2041.42 TH/s</td>
                                 </tr>
                                 <tr class="row-hidden" data-table="transaction-history">
                                     <td>2025-06-25</td>
                                     <td>AKT04</td>
+                                    <td class="transaction-amount">0.021144 BTC</td>
                                     <td class="transaction-reward">0.082848 BTC</td>
                                     <td>2041.42 TH/s</td>
                                 </tr>
@@ -589,8 +582,8 @@ const dashboardStyles = `
 }
 
 .transactions-section .table thead th {
-    padding: var(--space-3) var(--space-4) !important;
-    text-align: left !important;
+    padding: var(--space-3) var(--space-4);
+    text-align: left;
     font-size: var(--text-xs);
     font-weight: var(--font-normal);
     color: var(--text-primary);
@@ -619,87 +612,11 @@ const dashboardStyles = `
 }
 
 .transactions-section .table tbody td {
-    padding: var(--space-4) !important;
+    padding: var(--space-4);
     font-size: var(--text-base);
     color: var(--text-secondary);
     border-bottom: var(--border-thin) solid var(--border-color);
 }
-
-/* Alignement parfait des colonnes - Grille unifiée */
-.transactions-section .table.table-unified-grid,
-.transaction-history-table.table-unified-grid {
-    table-layout: fixed !important;
-    width: 100% !important;
-}
-
-/* Colonne 1 : DATE - 20% - FORCE ALIGNMENT */
-.transactions-section .table.table-unified-grid th:nth-child(1),
-.transactions-section .table.table-unified-grid td:nth-child(1),
-.transaction-history-table.table-unified-grid th:nth-child(1),
-.transaction-history-table.table-unified-grid td:nth-child(1) {
-    width: 20% !important;
-    min-width: 20% !important;
-    max-width: 20% !important;
-    box-sizing: border-box !important;
-}
-
-/* Colonne 2 : BTC TRANSACTION / ACCOUNT - 25% - FORCE ALIGNMENT */
-.transactions-section .table.table-unified-grid th:nth-child(2),
-.transactions-section .table.table-unified-grid td:nth-child(2),
-.transaction-history-table.table-unified-grid th:nth-child(2),
-.transaction-history-table.table-unified-grid td:nth-child(2) {
-    width: 25% !important;
-    min-width: 25% !important;
-    max-width: 25% !important;
-    box-sizing: border-box !important;
-}
-
-/* Colonne 3 : WALLET ADDRESS / TOTAL REWARD - 35% - FORCE ALIGNMENT */
-.transactions-section .table.table-unified-grid th:nth-child(3),
-.transactions-section .table.table-unified-grid td:nth-child(3),
-.transaction-history-table.table-unified-grid th:nth-child(3),
-.transaction-history-table.table-unified-grid td:nth-child(3) {
-    width: 35% !important;
-    min-width: 35% !important;
-    max-width: 35% !important;
-    box-sizing: border-box !important;
-}
-
-/* Colonne 4 : TRX ID / HASHRATE - 20% - FORCE ALIGNMENT */
-.transactions-section .table.table-unified-grid th:nth-child(4),
-.transactions-section .table.table-unified-grid td:nth-child(4),
-.transaction-history-table.table-unified-grid th:nth-child(4),
-.transaction-history-table.table-unified-grid td:nth-child(4) {
-    width: 20% !important;
-    min-width: 20% !important;
-    max-width: 20% !important;
-    box-sizing: border-box !important;
-}
-
-/* Paddings harmonisés pour les headers */
-.transactions-section .table.table-unified-grid thead th,
-.transaction-history-table.table-unified-grid thead th {
-    padding: var(--space-3) var(--space-4) !important;
-}
-
-/* Paddings harmonisés pour les cellules */
-.transactions-section .table.table-unified-grid tbody td,
-.transaction-history-table.table-unified-grid tbody td {
-    padding: var(--space-4) var(--space-4) !important;
-}
-
-/* Alignement BTC Transaction : header et valeurs à droite */
-.transactions-section .table.table-unified-grid th:nth-child(2),
-.transactions-section .table.table-unified-grid td:nth-child(2).transaction-amount {
-    text-align: right !important;
-}
-
-/* Alignement Total Reward : header et valeurs à droite */
-.transaction-history-table.table-unified-grid th:nth-child(3),
-.transaction-history-table.table-unified-grid td:nth-child(3).transaction-reward {
-    text-align: right !important;
-}
-
 
 .transaction-amount {
     color: #C5FFA7;
@@ -983,7 +900,6 @@ const dashboardStyles = `
     width: 100%;
     border-collapse: collapse;
     margin: 0;
-    table-layout: fixed !important;
 }
 
 .transaction-history-table thead tr {
@@ -992,8 +908,8 @@ const dashboardStyles = `
 }
 
 .transaction-history-table thead th {
-    padding: var(--space-3) var(--space-4) !important;
-    text-align: left !important;
+    padding: var(--space-3) var(--space-4);
+    text-align: left;
     font-size: var(--text-xs);
     font-weight: var(--font-normal);
     color: var(--text-primary);
@@ -1022,7 +938,7 @@ const dashboardStyles = `
 }
 
 .transaction-history-table tbody td {
-    padding: var(--space-4) !important;
+    padding: var(--space-4);
     font-size: var(--text-base);
     color: var(--text-secondary);
     border-bottom: var(--border-thin) solid var(--border-color);

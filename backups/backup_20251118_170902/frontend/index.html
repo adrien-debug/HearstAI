@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude CI/CD Cockpit</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/cockpit.css">
+    <link rel="stylesheet" href="css/projections.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <!-- Layout principal -->
+    <div class="cockpit-layout">
+        
+        <!-- Sidebar navigation -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h1 class="logo">
+                    <img src="logo.svg" alt="HearstAI" class="logo-img" />
+                </h1>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="javascript:void(0)" class="nav-item active" data-view="dashboard">
+                    <span class="nav-icon" data-icon="home"></span>
+                    <span class="nav-label">Home</span>
+                </a>
+                <a href="javascript:void(0)" class="nav-item" data-view="cockpit">
+                    <span class="nav-icon" data-icon="dashboard"></span>
+                    <span class="nav-label">Cockpit</span>
+                </a>
+                <a href="javascript:void(0)" class="nav-item" data-view="projects">
+                    <span class="nav-icon" data-icon="projects"></span>
+                    <span class="nav-label">Projestions</span>
+                </a>
+                <a href="javascript:void(0)" class="nav-item" data-view="electricity">
+                    <span class="nav-icon" data-icon="energy"></span>
+                    <span class="nav-label">Électricité</span>
+                </a>
+                <a href="javascript:void(0)" class="nav-item" data-view="collateral">
+                    <span class="nav-icon" data-icon="document"></span>
+                    <span class="nav-label">Collateral</span>
+                </a>
+            </nav>
+            <a href="javascript:void(0)" class="nav-item nav-item-admin" data-view="admin-panel">
+                <span class="nav-icon" data-icon="dashboard"></span>
+                <span class="nav-label">Admin Panel</span>
+            </a>
+            <div class="sidebar-version">
+                HearstAI Version 1.0
+            </div>
+        </aside>
+        
+        <!-- Zone principale -->
+        <div class="main-content">
+            
+            <!-- Zone de contenu dynamique -->
+            <main class="content-area" id="content-area">
+                <!-- Le contenu sera injecté dynamiquement par les vues JS -->
+                <div class="loading-state">
+                    <div class="spinner"></div>
+                    <p>Loading...</p>
+                </div>
+            </main>
+            
+        </div>
+    </div>
+    
+    <!-- Zone pour les modals -->
+    <div id="modal-container"></div>
+    
+    <!-- Scripts -->
+    <script>
+        // Force dark theme for HEARST design
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('hearstai-theme', 'dark');
+        
+        // Debug: Log when scripts start loading
+        console.log('📄 HTML loaded, starting scripts...');
+        
+        // Error handler for unhandled errors
+        window.addEventListener('error', (event) => {
+            console.error('❌ Global error:', event.error);
+            const contentArea = document.getElementById('content-area');
+            if (contentArea && !contentArea.querySelector('.dashboard-view')) {
+                contentArea.innerHTML = `
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="text-danger">JavaScript Error</h3>
+                            <p class="text-secondary">${event.error?.message || 'Unknown error'}</p>
+                            <pre style="background: var(--primary-grey); padding: var(--space-4); border-radius: var(--radius-md); color: var(--text-secondary); font-size: var(--text-sm); overflow: auto;">${event.error?.stack || ''}</pre>
+                            <button class="btn btn-primary mt-md" onclick="location.reload()">Reload Page</button>
+                        </div>
+                    </div>
+                `;
+            }
+        });
+        
+        // Handle unhandled promise rejections
+        window.addEventListener('unhandledrejection', (event) => {
+            console.error('❌ Unhandled promise rejection:', event.reason);
+        });
+    </script>
+    <script type="module" src="js/icons.js"></script>
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>

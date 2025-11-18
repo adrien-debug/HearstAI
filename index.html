@@ -2741,7 +2741,6 @@
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             
-            // CRITICAL: Reset detail views when switching views
             const companyDetailView = document.getElementById('companyDetailView');
             if (companyDetailView) {
                 companyDetailView.style.display = 'none';
@@ -4241,7 +4240,6 @@
             const company = companyDocuments[companyId];
             if (!company) return;
 
-            // CRITICAL: First switch to documents view
             switchView('documents', null);
             
             // Small delay to ensure view is switched

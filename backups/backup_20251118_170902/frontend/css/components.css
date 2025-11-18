@@ -627,7 +627,6 @@ button.btn-transaction-history:active {
     background: var(--primary-grey);
     border-radius: var(--radius-lg);
     overflow: hidden;
-    table-layout: fixed;
 }
 
 .table thead {
@@ -651,127 +650,6 @@ button.btn-transaction-history:active {
     color: var(--text-secondary);
     font-size: var(--text-base);
 }
-
-.table th,
-.table td {
-    padding-left: var(--space-4);
-    padding-right: var(--space-4);
-}
-
-.table th:first-child,
-.table td:first-child {
-    text-align: left;
-}
-
-.table .transaction-amount,
-.table .transaction-reward {
-    text-align: right;
-}
-
-.table th:nth-child(2),
-.table td:nth-child(2) {
-    text-align: left;
-}
-
-.transactions-section .table th:nth-child(2),
-.transactions-section .table td:nth-child(2) {
-    text-align: right;
-}
-
-.transaction-history-table th:nth-child(3),
-.transaction-history-table td:nth-child(3) {
-    text-align: right;
-}
-
-/* Symétrie horizontale : alignement des colonnes entre les deux tableaux */
-.transactions-section,
-.transaction-history-section {
-    width: 100%;
-}
-
-.transactions-section .table-container,
-.transaction-history-section .table-container {
-    width: 100%;
-    padding: 0;
-    margin: 0;
-}
-
-/* Grille unifiée pour les deux tableaux - Alignement parfait */
-.transactions-section .table.table-unified-grid,
-.transaction-history-table.table-unified-grid {
-    table-layout: fixed !important;
-    width: 100% !important;
-}
-
-/* Colonne 1 : DATE - 20% - FORCE ALIGNMENT */
-.transactions-section .table.table-unified-grid th:nth-child(1),
-.transactions-section .table.table-unified-grid td:nth-child(1),
-.transaction-history-table.table-unified-grid th:nth-child(1),
-.transaction-history-table.table-unified-grid td:nth-child(1) {
-    width: 20% !important;
-    min-width: 20% !important;
-    max-width: 20% !important;
-    box-sizing: border-box !important;
-}
-
-/* Colonne 2 : BTC TRANSACTION / ACCOUNT - 25% - FORCE ALIGNMENT */
-.transactions-section .table.table-unified-grid th:nth-child(2),
-.transactions-section .table.table-unified-grid td:nth-child(2),
-.transaction-history-table.table-unified-grid th:nth-child(2),
-.transaction-history-table.table-unified-grid td:nth-child(2) {
-    width: 25% !important;
-    min-width: 25% !important;
-    max-width: 25% !important;
-    box-sizing: border-box !important;
-}
-
-/* Colonne 3 : WALLET ADDRESS / TOTAL REWARD - 35% - FORCE ALIGNMENT */
-.transactions-section .table.table-unified-grid th:nth-child(3),
-.transactions-section .table.table-unified-grid td:nth-child(3),
-.transaction-history-table.table-unified-grid th:nth-child(3),
-.transaction-history-table.table-unified-grid td:nth-child(3) {
-    width: 35% !important;
-    min-width: 35% !important;
-    max-width: 35% !important;
-    box-sizing: border-box !important;
-}
-
-/* Colonne 4 : TRX ID / HASHRATE - 20% - FORCE ALIGNMENT */
-.transactions-section .table.table-unified-grid th:nth-child(4),
-.transactions-section .table.table-unified-grid td:nth-child(4),
-.transaction-history-table.table-unified-grid th:nth-child(4),
-.transaction-history-table.table-unified-grid td:nth-child(4) {
-    width: 20% !important;
-    min-width: 20% !important;
-    max-width: 20% !important;
-    box-sizing: border-box !important;
-}
-
-/* Paddings harmonisés pour les headers */
-.transactions-section .table.table-unified-grid thead th,
-.transaction-history-table.table-unified-grid thead th {
-    padding: var(--space-3) var(--space-4) !important;
-    text-align: left !important;
-}
-
-/* Paddings harmonisés pour les cellules */
-.transactions-section .table.table-unified-grid tbody td,
-.transaction-history-table.table-unified-grid tbody td {
-    padding: var(--space-4) var(--space-4) !important;
-}
-
-/* Alignement BTC Transaction : header et valeurs à droite */
-.transactions-section .table.table-unified-grid th:nth-child(2),
-.transactions-section .table.table-unified-grid td:nth-child(2).transaction-amount {
-    text-align: right !important;
-}
-
-/* Alignement Total Reward : header et valeurs à droite */
-.transaction-history-table.table-unified-grid th:nth-child(3),
-.transaction-history-table.table-unified-grid td:nth-child(3).transaction-reward {
-    text-align: right !important;
-}
-
 
 .table tbody tr {
     transition: all var(--duration-fast) var(--ease-in-out);

@@ -383,7 +383,9 @@ node server.js</pre>
             const header = document.querySelector('.header');
             if (header) {
                 header.classList.remove('has-projections-nav', 'has-settings-nav');
+                header.classList.add('has-cockpit-nav');
             }
+            this.setupCockpitHeaderNav();
         } else if (view === 'projects') {
             // Pour projects, on cache le bouton et on affiche la navigation
             if (this.btnNewAction) this.btnNewAction.style.display = 'none';
@@ -398,6 +400,10 @@ node server.js</pre>
                 headerLeft.style.display = 'flex';
             }
             // Supprimer les autres navigations
+            const cockpitNav = document.getElementById('cockpit-header-nav');
+            if (cockpitNav) cockpitNav.remove();
+            const cockpitHeaderInfo = document.getElementById('cockpit-header-info');
+            if (cockpitHeaderInfo) cockpitHeaderInfo.remove();
             const settingsNav = document.getElementById('settings-header-nav');
             if (settingsNav) settingsNav.remove();
             const electricityNav = document.getElementById('electricity-header-nav');
@@ -408,7 +414,7 @@ node server.js</pre>
             if (collateralNav) collateralNav.remove();
             const header = document.querySelector('.header');
             if (header) {
-                header.classList.remove('has-settings-nav', 'has-electricity-nav', 'has-admin-panel-nav', 'has-collateral-nav');
+                header.classList.remove('has-cockpit-nav', 'has-settings-nav', 'has-electricity-nav', 'has-admin-panel-nav', 'has-collateral-nav');
                 header.classList.add('has-projections-nav');
             }
             this.setupProjectionsHeaderNav();
@@ -426,13 +432,17 @@ node server.js</pre>
                 headerLeft.style.display = 'flex';
             }
             // Supprimer les autres navigations
+            const cockpitNav = document.getElementById('cockpit-header-nav');
+            if (cockpitNav) cockpitNav.remove();
+            const cockpitHeaderInfo = document.getElementById('cockpit-header-info');
+            if (cockpitHeaderInfo) cockpitHeaderInfo.remove();
             const projectionsNav = document.getElementById('projections-header-nav');
             if (projectionsNav) projectionsNav.remove();
             const electricityNav = document.getElementById('electricity-header-nav');
             if (electricityNav) electricityNav.remove();
             const header = document.querySelector('.header');
             if (header) {
-                header.classList.remove('has-projections-nav', 'has-electricity-nav');
+                header.classList.remove('has-cockpit-nav', 'has-projections-nav', 'has-electricity-nav');
                 header.classList.add('has-settings-nav');
             }
             this.setupSettingsHeaderNav();
@@ -450,6 +460,10 @@ node server.js</pre>
                 headerLeft.style.display = 'flex';
             }
             // Supprimer les autres navigations
+            const cockpitNav = document.getElementById('cockpit-header-nav');
+            if (cockpitNav) cockpitNav.remove();
+            const cockpitHeaderInfo = document.getElementById('cockpit-header-info');
+            if (cockpitHeaderInfo) cockpitHeaderInfo.remove();
             const projectionsNav = document.getElementById('projections-header-nav');
             if (projectionsNav) projectionsNav.remove();
             const settingsNav = document.getElementById('settings-header-nav');
@@ -458,7 +472,7 @@ node server.js</pre>
             if (adminPanelNav) adminPanelNav.remove();
             const header = document.querySelector('.header');
             if (header) {
-                header.classList.remove('has-projections-nav', 'has-settings-nav', 'has-admin-panel-nav');
+                header.classList.remove('has-cockpit-nav', 'has-projections-nav', 'has-settings-nav', 'has-admin-panel-nav');
                 header.classList.add('has-electricity-nav');
             }
             this.setupElectricityHeaderNav();
@@ -476,6 +490,10 @@ node server.js</pre>
                 headerLeft.style.display = 'flex';
             }
             // Supprimer les autres navigations
+            const cockpitNav = document.getElementById('cockpit-header-nav');
+            if (cockpitNav) cockpitNav.remove();
+            const cockpitHeaderInfo = document.getElementById('cockpit-header-info');
+            if (cockpitHeaderInfo) cockpitHeaderInfo.remove();
             const projectionsNav = document.getElementById('projections-header-nav');
             if (projectionsNav) projectionsNav.remove();
             const settingsNav = document.getElementById('settings-header-nav');
@@ -486,7 +504,7 @@ node server.js</pre>
             if (collateralNav) collateralNav.remove();
             const header = document.querySelector('.header');
             if (header) {
-                header.classList.remove('has-projections-nav', 'has-settings-nav', 'has-electricity-nav', 'has-collateral-nav');
+                header.classList.remove('has-cockpit-nav', 'has-projections-nav', 'has-settings-nav', 'has-electricity-nav', 'has-collateral-nav');
                 header.classList.add('has-admin-panel-nav');
             }
             this.setupAdminPanelHeaderNav();
@@ -504,6 +522,10 @@ node server.js</pre>
                 headerLeft.style.display = 'flex';
             }
             // Supprimer les autres navigations
+            const cockpitNav = document.getElementById('cockpit-header-nav');
+            if (cockpitNav) cockpitNav.remove();
+            const cockpitHeaderInfo = document.getElementById('cockpit-header-info');
+            if (cockpitHeaderInfo) cockpitHeaderInfo.remove();
             const projectionsNav = document.getElementById('projections-header-nav');
             if (projectionsNav) projectionsNav.remove();
             const settingsNav = document.getElementById('settings-header-nav');
@@ -514,7 +536,7 @@ node server.js</pre>
             if (adminPanelNav) adminPanelNav.remove();
             const header = document.querySelector('.header');
             if (header) {
-                header.classList.remove('has-projections-nav', 'has-settings-nav', 'has-electricity-nav', 'has-admin-panel-nav');
+                header.classList.remove('has-cockpit-nav', 'has-projections-nav', 'has-settings-nav', 'has-electricity-nav', 'has-admin-panel-nav');
                 header.classList.add('has-collateral-nav');
             }
             this.setupCollateralHeaderNav();
@@ -560,6 +582,16 @@ node server.js</pre>
                 }
             }
             
+            // Supprimer la navigation cockpit si elle existe
+            const cockpitNav = document.getElementById('cockpit-header-nav');
+            if (cockpitNav) {
+                cockpitNav.remove();
+            }
+            // Supprimer l'horloge et le badge LIVE
+            const cockpitHeaderInfo = document.getElementById('cockpit-header-info');
+            if (cockpitHeaderInfo) {
+                cockpitHeaderInfo.remove();
+            }
             // Supprimer la navigation settings si elle existe
             const settingsNav = document.getElementById('settings-header-nav');
             if (settingsNav) {
@@ -583,11 +615,114 @@ node server.js</pre>
             // Retirer la classe du header
             const header = document.querySelector('.header');
             if (header) {
+                header.classList.remove('has-cockpit-nav');
                 header.classList.remove('has-settings-nav');
                 header.classList.remove('has-projections-nav');
                 header.classList.remove('has-electricity-nav');
                 header.classList.remove('has-admin-panel-nav');
             }
+        }
+    }
+    
+    setupCockpitHeaderNav() {
+        // Supprimer l'ancienne navigation si elle existe
+        const existingNav = document.getElementById('cockpit-header-nav');
+        if (existingNav) {
+            existingNav.remove();
+        }
+        
+        // Créer la navigation cockpit dans le header (centrée)
+        const header = document.querySelector('.header');
+        if (!header) return;
+        
+        // Ajouter une classe au header pour le positionnement
+        header.classList.add('has-cockpit-nav');
+        
+        // Créer un conteneur centré pour les onglets
+        const cockpitNav = document.createElement('div');
+        cockpitNav.id = 'cockpit-header-nav';
+        cockpitNav.className = 'cockpit-header-nav';
+        cockpitNav.innerHTML = `
+            <div class="cockpit-nav-tabs">
+                <button class="cockpit-nav-tab active" data-cockpit-section="dashboard">
+                    <span class="cockpit-nav-icon">${Icons.dashboard}</span>
+                    <span class="cockpit-nav-label">Dashboard</span>
+                </button>
+                <button class="cockpit-nav-tab" data-cockpit-section="production">
+                    <span class="cockpit-nav-icon">${Icons.production}</span>
+                    <span class="cockpit-nav-label">Production</span>
+                </button>
+                <button class="cockpit-nav-tab" data-cockpit-section="energy">
+                    <span class="cockpit-nav-icon">${Icons.energy}</span>
+                    <span class="cockpit-nav-label">Energy</span>
+                </button>
+                <button class="cockpit-nav-tab" data-cockpit-section="incidents">
+                    <span class="cockpit-nav-icon">${Icons.incidents}</span>
+                    <span class="cockpit-nav-label">Incidents</span>
+                </button>
+                <button class="cockpit-nav-tab" data-cockpit-section="clients">
+                    <span class="cockpit-nav-icon">${Icons.clients}</span>
+                    <span class="cockpit-nav-label">Clients</span>
+                </button>
+                <button class="cockpit-nav-tab" data-cockpit-section="mining-accounts">
+                    <span class="cockpit-nav-icon">${Icons.miningAccounts}</span>
+                    <span class="cockpit-nav-label">Batch</span>
+                </button>
+                <button class="cockpit-nav-tab" data-cockpit-section="workers">
+                    <span class="cockpit-nav-icon">${Icons.workers}</span>
+                    <span class="cockpit-nav-label">Activity</span>
+                </button>
+                <button class="cockpit-nav-tab" data-cockpit-section="miners">
+                    <span class="cockpit-nav-icon">${Icons.miners}</span>
+                    <span class="cockpit-nav-label">Miners</span>
+                </button>
+                <button class="cockpit-nav-tab" data-cockpit-section="reports">
+                    <span class="cockpit-nav-icon">${Icons.document}</span>
+                    <span class="cockpit-nav-label">Reports</span>
+                </button>
+                <button class="cockpit-nav-tab" data-cockpit-section="hosters">
+                    <span class="cockpit-nav-icon">${Icons.hosters}</span>
+                    <span class="cockpit-nav-label">Hosters</span>
+                </button>
+            </div>
+        `;
+        
+        // Créer un conteneur pour l'horloge et le badge LIVE à droite
+        const cockpitHeaderInfo = document.createElement('div');
+        cockpitHeaderInfo.id = 'cockpit-header-info';
+        cockpitHeaderInfo.className = 'cockpit-header-info';
+        cockpitHeaderInfo.innerHTML = `
+            <div class="header-clock" id="cockpitClock">00:00:00</div>
+            <div class="live-badge">
+                <span class="live-dot"></span>
+                <span>LIVE</span>
+            </div>
+        `;
+        
+        // Insérer la navigation au centre du header
+        header.appendChild(cockpitNav);
+        
+        // Insérer l'horloge et le badge LIVE à droite
+        header.appendChild(cockpitHeaderInfo);
+        
+        // Setup event listeners
+        const navTabs = cockpitNav.querySelectorAll('.cockpit-nav-tab');
+        navTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const sectionId = tab.getAttribute('data-cockpit-section');
+                if (sectionId && window.showCockpitSection) {
+                    window.showCockpitSection(sectionId);
+                    
+                    // Update active state
+                    navTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                }
+            });
+        });
+        
+        // Recharger les icônes après insertion
+        if (this.reloadIcons) {
+            this.reloadIcons();
         }
     }
     
@@ -1171,7 +1306,7 @@ node server.js</pre>
     }
     
     async renderCockpit(data) {
-        const template = renderCockpitView();
+        const template = await renderCockpitView();
         this.contentArea.innerHTML = cockpitStyles + template;
         
         // Initialize cockpit functionality
