@@ -6,6 +6,7 @@ import '../frontend/css/main.css';
 import '../frontend/css/components.css';
 import '../frontend/css/cockpit.css';
 import '../frontend/css/projections.css';
+import '../frontend/css/dashboard.css';
 import '../frontend/css/override-cockpit.css';
 
 function MyApp({ Component, pageProps }) {
