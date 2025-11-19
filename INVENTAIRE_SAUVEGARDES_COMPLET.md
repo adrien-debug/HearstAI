@@ -6,11 +6,12 @@
 
 ## 📊 Résumé Général
 
-- **Total de sauvegardes :** 21 entrées
-  - **Dossiers :** 14
+- **Total de sauvegardes :** 22 entrées
+  - **Dossiers :** 15
   - **Archives compressées (.tar.gz) :** 5
   - **Archives ZIP :** 1
   - **Dossiers de configuration :** 2
+  - **Sauvegardes Next.js :** 1
 
 ---
 
@@ -347,6 +348,49 @@
 
 ---
 
+### 22. ⚛️ `nextjs_backup_20251120_025918/` (20 Nov 2025 - 02:59:18) ⭐ NOUVEAU
+
+**📅 Date :** Jeudi 20 Novembre 2025 à 02:59:18  
+**💾 Taille :** 496 KB  
+**📄 Fichiers :** 74 fichiers (72 fichiers .js)
+
+**Contenu complet :**
+- ✅ `backup_info.txt`
+- ✅ `next.config.js` - Configuration Next.js
+- ✅ `package.json` - Dépendances Next.js 14.0.4 + React 18.2.0
+- ✅ `pages/` (13 pages Next.js)
+  - `_app.js` - Point d'entrée Next.js avec NotificationProvider
+  - `_document.js` - Document HTML personnalisé
+  - `index.js` - Page d'accueil (Dashboard)
+  - `cockpit.js`, `projects.js`, `electricity.js`, `collateral.js`
+  - `admin-panel.js`, `jobs.js`, `logs.js`, `prompts.js`
+  - `settings.js`, `versions.js`
+- ✅ `components/` (Structure React complète)
+  - `Layout.js` - Layout principal
+  - `layout/` (Sidebar.js, Header.js)
+  - `common/` (Modal.js, Notification.js)
+  - `hooks/` (useLoadView.js)
+  - `views/` (11 composants de vues)
+  - `sections/` (41 composants de sections)
+    - `admin-panel/` (9 sections)
+    - `cockpit/` (10 sections)
+    - `collateral/` (3 sections)
+    - `electricity/` (5 sections)
+    - `projects/` (9 sections)
+    - `settings/` (4 sections)
+
+**Type :** ⭐ **Version Next.js complète - Application React complète**
+
+**Spécificités :**
+- Migration complète vers Next.js 14.0.4
+- Tous les composants convertis en React
+- Structure Next.js Pages Router
+- 13 pages Next.js fonctionnelles
+- 41 composants de sections React
+- Configuration complète avec rewrites API
+
+---
+
 ## 📈 Statistiques Globales
 
 ### Par Type
@@ -354,6 +398,7 @@
 | Type | Quantité | Espace Total |
 |------|----------|--------------|
 | **Dossiers de sauvegarde** | 14 | ~4.5 MB |
+| **Sauvegardes Next.js** | 1 | 496 KB |
 | **Archives .tar.gz** | 5 | ~18.4 MB |
 | **Archives .zip** | 1 | 13 KB |
 | **Dossiers de config** | 2 | 92 KB |
@@ -365,6 +410,7 @@
 |------|----------------------|
 | **18 Novembre 2025** | 13 |
 | **19 Novembre 2025** | 8 |
+| **20 Novembre 2025** | 2 |
 
 ### Par Contenu
 
@@ -377,6 +423,7 @@
 | **Structure sections** | 2 |
 | **Configuration backend** | 2 |
 | **Archives compressées** | 6 |
+| **Version Next.js complète** | 1 |
 
 ---
 
@@ -385,6 +432,9 @@
 ### Pour Restauration Complète
 1. ⭐ **`backup_20251118_200231/`** - Version la plus complète (796 KB)
 2. **`backup_20251119_225416/`** - Version documentée avec changelog
+
+### Pour Version Next.js
+1. ⭐ **`nextjs_backup_20251120_025918/`** - Version Next.js complète (496 KB, 74 fichiers)
 
 ### Pour Configuration Backend
 1. **`config_files_20251119_225954.tar.gz`** - Archive compressée (5.5 KB)
@@ -435,9 +485,10 @@ du -sh backups/
 ## 📝 Notes Importantes
 
 1. **Script de sauvegarde :** `backup.sh` conserve automatiquement les 20 dernières sauvegardes
-2. **Format des noms :** `backup_YYYYMMDD_HHMMSS` ou `config_files_YYYYMMDD_HHMMSS`
+2. **Format des noms :** `backup_YYYYMMDD_HHMMSS`, `config_files_YYYYMMDD_HHMMSS`, ou `nextjs_backup_YYYYMMDD_HHMMSS`
 3. **Archives compressées :** Les .tar.gz et .zip contiennent généralement des versions complètes
 4. **Documentation :** `backup_20251119_225416/` contient un README.md avec changelog détaillé
+5. **Version Next.js :** `nextjs_backup_20251120_025918/` contient la version complète recodée en Next.js avec React
 
 ---
 
