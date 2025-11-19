@@ -51,9 +51,8 @@
 
 /* Bouton primaire */
 .btn-primary,
-.btn,
 button[type="submit"] {
-    background: linear-gradient(135deg, #8afd81 0%, #7bed9f 100%) !important;
+    background: linear-gradient(135deg, #C5FFA7 0%, #7bed9f 100%) !important;
     color: var(--primary-dark);
     padding: var(--space-3) var(--space-6);
     border-radius: var(--radius-md);
@@ -71,19 +70,41 @@ button[type="submit"] {
     position: relative;
     overflow: hidden;
     box-shadow: 
-        0 4px 16px rgba(138, 253, 129, 0.4),
+        0 4px 16px rgba(197, 255, 167, 0.4),
         inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    backface-visibility: hidden;
+    /* Removed transform: translateZ(0) to avoid canvas conflicts */
+}
+
+/* Bouton de base - styles de base seulement */
+.btn:not(.btn-primary):not(.btn-secondary):not(.btn-ghost) {
+    background: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--grey-100);
+    padding: var(--space-3) var(--space-6);
+    border-radius: var(--radius-md);
+    font-weight: var(--font-semibold);
+    font-size: var(--text-sm);
+    cursor: pointer;
+    transition: all var(--duration-normal) var(--ease-in-out);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    text-decoration: none;
+    font-family: var(--font-primary);
+    letter-spacing: -0.01em;
 }
 
 .btn-primary > *,
-.btn > *,
 button[type="submit"] > * {
     position: relative;
     z-index: 1;
 }
 
 .btn-primary::before,
-.btn::before,
 button[type="submit"]::before {
     content: '';
     position: absolute;
@@ -102,29 +123,26 @@ button[type="submit"]::before {
 }
 
 .btn-primary:hover:not(:disabled)::before,
-.btn:hover:not(:disabled)::before,
 button[type="submit"]:hover:not(:disabled)::before {
     left: 100%;
 }
 
 .btn-primary:hover:not(:disabled),
-.btn:hover:not(:disabled),
 button[type="submit"]:hover:not(:disabled) {
     background: linear-gradient(135deg, #75fc6c 0%, #6ae88f 100%) !important;
     box-shadow: 
-        0 6px 24px rgba(138, 253, 129, 0.4),
+        0 6px 24px rgba(197, 255, 167, 0.4),
         inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
     transform: translateY(-1px);
+    /* Removed translateZ(0) to avoid canvas conflicts */
 }
 
 .btn-primary:active:not(:disabled),
-.btn:active:not(:disabled),
 button[type="submit"]:active:not(:disabled) {
     transform: translateY(0);
 }
 
 .btn-primary:disabled,
-.btn:disabled,
 button[type="submit"]:disabled {
     background: var(--grey-300);
     color: var(--grey-500);
@@ -135,7 +153,7 @@ button[type="submit"]:disabled {
 /* Button Transaction History - Premium Style */
 .btn.btn-transaction-history,
 button.btn-transaction-history {
-    background-color: #8AFD81 !important;
+    background-color: #C5FFA7 !important;
     color: #000 !important;
     border-radius: 30px !important;
     font-weight: 600 !important;
@@ -149,7 +167,7 @@ button.btn-transaction-history:hover,
 .btn.btn-transaction-history:active,
 button.btn-transaction-history:active {
     background-color: #70D467 !important;
-    box-shadow: 0 0 12px rgba(138, 253, 129, 0.55) !important;
+    box-shadow: 0 0 12px rgba(197, 255, 167, 0.55) !important;
     transform: translateY(-1px) !important;
     color: #000 !important;
 }
@@ -173,7 +191,7 @@ button.btn-transaction-history:active {
 }
 
 .btn-secondary:hover:not(:disabled) {
-    background: rgba(138, 253, 129, 0.1);
+    background: rgba(197, 255, 167, 0.1);
     box-shadow: var(--glow-green);
     transform: translateY(-1px);
 }
@@ -197,7 +215,7 @@ button.btn-transaction-history:active {
 .btn-premium,
 .btn-luxe {
     position: relative;
-    background: linear-gradient(135deg, #8afd81 0%, #7bed9f 50%, #6fdc66 100%) !important;
+    background: linear-gradient(135deg, #C5FFA7 0%, #7bed9f 50%, #6fdc66 100%) !important;
     color: #000000 !important;
     padding: 16px 32px !important;
     border-radius: 12px !important;
@@ -215,8 +233,8 @@ button.btn-transaction-history:active {
     font-family: var(--font-primary) !important;
     overflow: hidden !important;
     box-shadow: 
-        0 8px 32px rgba(138, 253, 129, 0.4),
-        0 4px 16px rgba(138, 253, 129, 0.3),
+        0 8px 32px rgba(197, 255, 167, 0.4),
+        0 4px 16px rgba(197, 255, 167, 0.3),
         inset 0 1px 0 rgba(255, 255, 255, 0.4),
         inset 0 -1px 0 rgba(0, 0, 0, 0.1) !important;
     text-decoration: none !important;
@@ -248,7 +266,7 @@ button.btn-transaction-history:active {
     inset: 0;
     border-radius: 12px;
     padding: 2px;
-    background: linear-gradient(135deg, rgba(138, 253, 129, 0.6), rgba(111, 220, 102, 0.4));
+    background: linear-gradient(135deg, rgba(197, 255, 167, 0.6), rgba(111, 220, 102, 0.4));
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -266,13 +284,13 @@ button.btn-transaction-history:active {
 
 .btn-premium:hover:not(:disabled),
 .btn-luxe:hover:not(:disabled) {
-    background: linear-gradient(135deg, #9aff91 0%, #8afd81 50%, #7bed9f 100%) !important;
+    background: linear-gradient(135deg, #9aff91 0%, #C5FFA7 50%, #7bed9f 100%) !important;
     box-shadow: 
-        0 12px 48px rgba(138, 253, 129, 0.5),
-        0 6px 24px rgba(138, 253, 129, 0.4),
+        0 12px 48px rgba(197, 255, 167, 0.5),
+        0 6px 24px rgba(197, 255, 167, 0.4),
         inset 0 1px 0 rgba(255, 255, 255, 0.5),
         inset 0 -1px 0 rgba(0, 0, 0, 0.1),
-        0 0 40px rgba(138, 253, 129, 0.3) !important;
+        0 0 40px rgba(197, 255, 167, 0.3) !important;
     transform: translateY(-2px) scale(1.02) !important;
 }
 
@@ -290,7 +308,7 @@ button.btn-transaction-history:active {
 .btn-luxe:active:not(:disabled) {
     transform: translateY(0) scale(1) !important;
     box-shadow: 
-        0 4px 16px rgba(138, 253, 129, 0.4),
+        0 4px 16px rgba(197, 255, 167, 0.4),
         inset 0 2px 4px rgba(0, 0, 0, 0.2) !important;
 }
 
@@ -298,10 +316,10 @@ button.btn-transaction-history:active {
 .btn-luxe:focus:not(:disabled) {
     outline: none !important;
     box-shadow: 
-        0 8px 32px rgba(138, 253, 129, 0.4),
-        0 4px 16px rgba(138, 253, 129, 0.3),
+        0 8px 32px rgba(197, 255, 167, 0.4),
+        0 4px 16px rgba(197, 255, 167, 0.3),
         inset 0 1px 0 rgba(255, 255, 255, 0.4),
-        0 0 0 4px rgba(138, 253, 129, 0.2) !important;
+        0 0 0 4px rgba(197, 255, 167, 0.2) !important;
 }
 
 .btn-premium:disabled,
@@ -398,10 +416,12 @@ button.btn-transaction-history:active {
     from {
         opacity: 0;
         transform: translateY(20px);
+        /* Removed translateZ(0) to avoid canvas conflicts */
     }
     to {
         opacity: 1;
         transform: translateY(0);
+        /* Removed translateZ(0) to avoid canvas conflicts */
     }
 }
 
@@ -421,6 +441,10 @@ button.btn-transaction-history:active {
     position: relative;
     overflow: hidden;
     animation: fadeInUp 0.5s ease-out !important;
+    /* Removed transform: translateZ(0) to avoid canvas conflicts */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    backface-visibility: hidden;
 }
 
 .card > *,
@@ -440,7 +464,7 @@ button.btn-transaction-history:active {
     inset: 0;
     background: radial-gradient(
         circle at top right,
-        rgba(138, 253, 129, 0.05) 0%,
+        rgba(197, 255, 167, 0.05) 0%,
         transparent 50%
     );
     border-radius: inherit;
@@ -455,7 +479,7 @@ button.btn-transaction-history:active {
     box-shadow: 
         0 12px 48px rgba(0, 0, 0, 0.5),
         0 4px 16px rgba(0, 0, 0, 0.4),
-        0 0 0 1px rgba(138, 253, 129, 0.2),
+        0 0 0 1px rgba(197, 255, 167, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
     transform: translateY(-4px) !important;
 }
@@ -484,8 +508,8 @@ button.btn-transaction-history:active {
 
 .card-body {
     color: var(--text-secondary);
-    font-size: var(--text-sm);
-    line-height: var(--leading-normal);
+    font-size: var(--typography-body-size); /* 16px - Taille standard du body */
+    line-height: var(--typography-body-line-height); /* 24px */
 }
 
 .card-footer {
@@ -501,6 +525,85 @@ button.btn-transaction-history:active {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: var(--space-6);
+}
+
+/* Corriger le flou sur les boutons dans les cards */
+.card .btn-primary,
+.card button.btn-primary,
+.card .btn-secondary,
+.card button.btn-secondary,
+.filters .btn-primary,
+.filters button.btn-primary,
+.filters .btn-secondary,
+.filters button.btn-secondary,
+.card .filters .btn-primary,
+.card .filters button.btn-primary {
+    /* Anti-blur properties without creating new stacking context */
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    text-rendering: optimizeLegibility !important;
+    backface-visibility: hidden !important;
+    will-change: auto !important;
+    filter: none !important;
+    image-rendering: crisp-edges !important;
+    text-shadow: none !important;
+    animation: none !important;
+    /* Removed isolation: isolate, transform: translateZ(0) and z-index to avoid canvas conflicts */
+    z-index: auto !important;
+    position: static !important;
+}
+
+.card .btn-primary > *,
+.card button.btn-primary > *,
+.filters .btn-primary > *,
+.filters button.btn-primary > * {
+    position: static !important;
+    z-index: auto !important;
+}
+
+.card .btn-primary::before,
+.card button.btn-primary::before,
+.filters .btn-primary::before,
+.filters button.btn-primary::before {
+    display: none !important;
+}
+
+/* Chart containers - avoid stacking context conflicts with canvas */
+.chart-container,
+.wallet-chart-section,
+.chart-container canvas {
+    position: relative !important;
+    z-index: auto !important;
+    transform: none !important;
+    isolation: auto !important;
+    /* Ensure canvas can render properly without stacking context conflicts */
+}
+
+/* Ensure canvas elements inside cards don't inherit problematic z-index */
+.card .chart-container,
+.card .wallet-chart-section {
+    position: relative;
+    z-index: auto;
+}
+
+.card .chart-container > *,
+.card .wallet-chart-section > * {
+    position: static;
+    z-index: auto;
+}
+
+/* Specific fix for react-chartjs-2 containers - ensure visibility and dimensions */
+.chart-container > div[style*="position: relative"] {
+    position: relative !important;
+    width: 100% !important;
+    min-height: 200px !important;
+    overflow: visible !important;
+}
+
+.chart-container canvas {
+    display: block !important;
+    max-width: 100% !important;
+    height: auto !important;
 }
 
 /* ====================================
@@ -538,7 +641,7 @@ button.btn-transaction-history:active {
     background: linear-gradient(
         135deg,
         transparent 0%,
-        rgba(138, 253, 129, 0.3) 50%,
+        rgba(197, 255, 167, 0.3) 50%,
         transparent 100%
     );
     border-radius: inherit;
@@ -554,7 +657,7 @@ button.btn-transaction-history:active {
     left: 0;
     width: 4px;
     height: 100%;
-    background: linear-gradient(180deg, #8afd81 0%, transparent 100%);
+    background: linear-gradient(180deg, #C5FFA7 0%, transparent 100%);
     opacity: 0;
     transition: opacity 0.3s;
     z-index: 0;
@@ -565,7 +668,7 @@ button.btn-transaction-history:active {
     box-shadow: 
         0 12px 48px rgba(0, 0, 0, 0.5),
         0 4px 16px rgba(0, 0, 0, 0.4),
-        0 0 0 1px rgba(138, 253, 129, 0.2),
+        0 0 0 1px rgba(197, 255, 167, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
 }
 
@@ -612,7 +715,7 @@ button.btn-transaction-history:active {
 }
 
 .table-container:hover {
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(138, 253, 129, 0.1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(197, 255, 167, 0.1);
 }
 
 .table {
@@ -626,7 +729,7 @@ button.btn-transaction-history:active {
 
 .table thead {
     background: linear-gradient(180deg, #454646 0%, #3a3a3a 100%) !important;
-    border-bottom: 2px solid rgba(138, 253, 129, 0.3) !important;
+    border-bottom: 2px solid rgba(197, 255, 167, 0.3) !important;
 }
 
 .table th {
@@ -703,11 +806,11 @@ button.btn-transaction-history:active {
 .table tbody tr:hover {
     background: linear-gradient(
         90deg,
-        rgba(138, 253, 129, 0.05) 0%,
-        rgba(138, 253, 129, 0.1) 50%,
-        rgba(138, 253, 129, 0.05) 100%
+        rgba(197, 255, 167, 0.05) 0%,
+        rgba(197, 255, 167, 0.1) 50%,
+        rgba(197, 255, 167, 0.05) 100%
     ) !important;
-    box-shadow: inset 2px 0 0 #8afd81 !important;
+    box-shadow: inset 2px 0 0 #C5FFA7 !important;
     transform: translateX(2px) !important;
 }
 
@@ -752,11 +855,11 @@ button.btn-transaction-history:active {
 }
 
 .badge-green {
-    background: rgba(138, 253, 129, 0.15);
+    background: rgba(197, 255, 167, 0.15);
     color: var(--primary-green);
     border: var(--border-thin) solid var(--primary-green);
-    text-shadow: 0 0 8px rgba(138, 253, 129, 0.3);
-    box-shadow: 0 0 8px rgba(138, 253, 129, 0.1);
+    text-shadow: 0 0 8px rgba(197, 255, 167, 0.3);
+    box-shadow: 0 0 8px rgba(197, 255, 167, 0.1);
 }
 
 .badge-grey {
@@ -823,7 +926,7 @@ input[type="number"]:hover,
 input[type="date"]:hover,
 textarea:hover,
 select:hover {
-    border-color: rgba(138, 253, 129, 0.3);
+    border-color: rgba(197, 255, 167, 0.3);
     background: rgba(10, 10, 10, 0.8);
 }
 
@@ -840,7 +943,7 @@ textarea:focus,
 select:focus {
     outline: none;
     border-color: var(--primary-green);
-    box-shadow: 0 0 0 3px rgba(138, 253, 129, 0.1);
+    box-shadow: 0 0 0 3px rgba(197, 255, 167, 0.1);
 }
 
 .input::placeholder,
@@ -1080,7 +1183,6 @@ textarea {
    ==================================== */
 
 .btn-primary,
-.btn,
 button[type="submit"] {
     padding: var(--space-3) var(--space-6) !important;
     font-size: var(--text-sm) !important;
@@ -1088,16 +1190,15 @@ button[type="submit"] {
     border-radius: var(--radius-md) !important;
     letter-spacing: -0.01em !important;
     box-shadow: 
-        0 4px 16px rgba(138, 253, 129, 0.35),
+        0 4px 16px rgba(197, 255, 167, 0.35),
         inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
     transition: all var(--duration-normal) var(--ease-in-out) !important;
 }
 
 .btn-primary:hover:not(:disabled),
-.btn:hover:not(:disabled),
 button[type="submit"]:hover:not(:disabled) {
     box-shadow: 
-        0 6px 24px rgba(138, 253, 129, 0.45),
+        0 6px 24px rgba(197, 255, 167, 0.45),
         inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
     transform: translateY(-2px) !important;
 }
@@ -1112,10 +1213,10 @@ button[type="submit"]:hover:not(:disabled) {
 }
 
 .btn-secondary:hover:not(:disabled) {
-    background: rgba(138, 253, 129, 0.12) !important;
+    background: rgba(197, 255, 167, 0.12) !important;
     border-color: var(--primary-green) !important;
     box-shadow: 
-        0 4px 16px rgba(138, 253, 129, 0.2),
+        0 4px 16px rgba(197, 255, 167, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
     transform: translateY(-2px) !important;
 }
@@ -1160,7 +1261,7 @@ button[type="submit"]:hover:not(:disabled) {
     box-shadow: 
         0 12px 48px rgba(0, 0, 0, 0.55),
         0 4px 16px rgba(0, 0, 0, 0.45),
-        0 0 0 1px rgba(138, 253, 129, 0.25),
+        0 0 0 1px rgba(197, 255, 167, 0.25),
         inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
     transform: translateY(-4px) !important;
     border-color: rgba(255, 255, 255, 0.12) !important;
@@ -1213,7 +1314,7 @@ button[type="submit"]:hover:not(:disabled) {
     box-shadow: 
         0 12px 48px rgba(0, 0, 0, 0.55),
         0 4px 16px rgba(0, 0, 0, 0.45),
-        0 0 0 1px rgba(138, 253, 129, 0.25),
+        0 0 0 1px rgba(197, 255, 167, 0.25),
         inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
     transform: translateY(-4px) scale(1.01) !important;
 }
@@ -1255,12 +1356,12 @@ button[type="submit"]:hover:not(:disabled) {
     box-shadow: 
         0 12px 48px rgba(0, 0, 0, 0.55),
         0 4px 16px rgba(0, 0, 0, 0.45),
-        0 0 0 1px rgba(138, 253, 129, 0.15) !important;
+        0 0 0 1px rgba(197, 255, 167, 0.15) !important;
 }
 
 .table thead {
     background: linear-gradient(180deg, rgba(69, 70, 70, 0.95) 0%, rgba(58, 58, 58, 0.95) 100%) !important;
-    border-bottom: 2px solid rgba(138, 253, 129, 0.25) !important;
+    border-bottom: 2px solid rgba(197, 255, 167, 0.25) !important;
 }
 
 .table th {
@@ -1285,9 +1386,9 @@ button[type="submit"]:hover:not(:disabled) {
 .table tbody tr:hover {
     background: linear-gradient(
         90deg,
-        rgba(138, 253, 129, 0.08) 0%,
-        rgba(138, 253, 129, 0.12) 50%,
-        rgba(138, 253, 129, 0.08) 100%
+        rgba(197, 255, 167, 0.08) 0%,
+        rgba(197, 255, 167, 0.12) 50%,
+        rgba(197, 255, 167, 0.08) 100%
     ) !important;
     box-shadow: inset 3px 0 0 var(--primary-green) !important;
     transform: translateX(3px) !important;
@@ -1328,7 +1429,7 @@ input[type="number"]:hover,
 input[type="date"]:hover,
 textarea:hover,
 select:hover {
-    border-color: rgba(138, 253, 129, 0.4) !important;
+    border-color: rgba(197, 255, 167, 0.4) !important;
     background: rgba(10, 10, 10, 0.85) !important;
 }
 
@@ -1345,8 +1446,8 @@ textarea:focus,
 select:focus {
     border-color: var(--primary-green) !important;
     box-shadow: 
-        0 0 0 3px rgba(138, 253, 129, 0.15),
-        0 2px 8px rgba(138, 253, 129, 0.1) !important;
+        0 0 0 3px rgba(197, 255, 167, 0.15),
+        0 2px 8px rgba(197, 255, 167, 0.1) !important;
     background: rgba(10, 10, 10, 0.9) !important;
 }
 
@@ -1393,7 +1494,7 @@ textarea::placeholder {
 }
 
 .modal-close:hover {
-    background: rgba(138, 253, 129, 0.1) !important;
+    background: rgba(197, 255, 167, 0.1) !important;
     color: var(--primary-green) !important;
 }
 
@@ -1441,9 +1542,9 @@ textarea::placeholder {
 }
 
 .badge-green {
-    background: rgba(138, 253, 129, 0.18) !important;
+    background: rgba(197, 255, 167, 0.18) !important;
     border-color: var(--primary-green) !important;
-    box-shadow: 0 0 12px rgba(138, 253, 129, 0.15) !important;
+    box-shadow: 0 0 12px rgba(197, 255, 167, 0.15) !important;
 }
 
 /* ====================================
@@ -1526,7 +1627,7 @@ textarea::placeholder {
 }
 
 .filter-btn:hover {
-    background: rgba(138, 253, 129, 0.1);
+    background: rgba(197, 255, 167, 0.1);
     border-color: var(--primary-green);
     color: var(--primary-green);
 }
@@ -1587,8 +1688,8 @@ textarea::placeholder {
 }
 
 .badge.healthy {
-    background: rgba(138, 253, 129, 0.15) !important;
-    border: 1px solid rgba(138, 253, 129, 0.3) !important;
+    background: rgba(197, 255, 167, 0.15) !important;
+    border: 1px solid rgba(197, 255, 167, 0.3) !important;
     color: var(--primary-green) !important;
 }
 
@@ -1602,4 +1703,466 @@ textarea::placeholder {
     background: rgba(231, 76, 60, 0.15) !important;
     border: 1px solid rgba(231, 76, 60, 0.3) !important;
     color: var(--cockpit-red) !important;
+}
+
+/* ====================================
+   🎨 DESIGN PREMIUM ULTRA PROPRE - PATCH COMPONENTS
+   Date: 19 Nov 2025
+   ==================================== */
+
+/* ====================================
+   CARDS - PREMIUM ULTRA PROPRE
+   ==================================== */
+
+.card,
+.panel,
+.widget,
+.box {
+    background: rgba(14, 14, 14, 0.8) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.06) !important;
+    border-radius: var(--radius-lg) !important;
+    padding: var(--space-6) !important;
+    box-shadow: 
+        0 8px 40px rgba(0, 0, 0, 0.5),
+        0 2px 12px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.2) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.card::before,
+.panel::before,
+.widget::before,
+.box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent 0%,
+        rgba(197, 255, 167, 0.3) 50%,
+        transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1;
+}
+
+.card:hover::before,
+.panel:hover::before,
+.widget:hover::before,
+.box:hover::before {
+    opacity: 1;
+}
+
+.card:hover,
+.panel:hover,
+.widget:hover,
+.box:hover {
+    transform: translateY(-4px) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 
+        0 16px 56px rgba(0, 0, 0, 0.6),
+        0 4px 20px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(197, 255, 167, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.3) !important;
+}
+
+.card-header {
+    padding-bottom: var(--space-5) !important;
+    margin-bottom: var(--space-5) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+.card-title {
+    font-size: var(--text-base) !important;
+    font-weight: 600 !important;
+    letter-spacing: -0.01em !important;
+    line-height: 1.4 !important;
+}
+
+.card-body {
+    font-size: var(--text-sm) !important;
+    line-height: 1.6 !important;
+    letter-spacing: -0.01em !important;
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* ====================================
+   STAT CARDS - PREMIUM ULTRA PROPRE
+   ==================================== */
+
+.stat-card {
+    background: rgba(14, 14, 14, 0.8) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.06) !important;
+    padding: var(--space-6) !important;
+    box-shadow: 
+        0 8px 40px rgba(0, 0, 0, 0.5),
+        0 2px 12px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.stat-card::after {
+    opacity: 0.4 !important;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px) scale(1.01) !important;
+    box-shadow: 
+        0 16px 56px rgba(0, 0, 0, 0.6),
+        0 4px 20px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(197, 255, 167, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+.stat-label {
+    font-size: var(--text-xs) !important;
+    letter-spacing: 0.4px !important;
+    text-transform: uppercase !important;
+    font-weight: 600 !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.stat-value {
+    font-size: 32px !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.04em !important;
+    line-height: 1.2 !important;
+    text-shadow: 0 0 20px rgba(197, 255, 167, 0.1) !important;
+}
+
+.stat-value.green {
+    color: var(--primary-green) !important;
+    text-shadow: 0 0 20px rgba(197, 255, 167, 0.2) !important;
+}
+
+.stat-change {
+    font-size: var(--text-xs) !important;
+    letter-spacing: -0.01em !important;
+    font-weight: 500 !important;
+}
+
+/* ====================================
+   TABLES - PREMIUM ULTRA PROPRE
+   ==================================== */
+
+.table-container {
+    background: rgba(14, 14, 14, 0.8) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.06) !important;
+    border-radius: var(--radius-lg) !important;
+    box-shadow: 
+        0 8px 40px rgba(0, 0, 0, 0.5),
+        0 2px 12px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+    overflow: hidden !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.table-container:hover {
+    box-shadow: 
+        0 12px 48px rgba(0, 0, 0, 0.6),
+        0 4px 20px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(197, 255, 167, 0.15) !important;
+}
+
+.table thead {
+    background: linear-gradient(180deg, 
+        rgba(42, 42, 42, 0.95) 0%, 
+        rgba(26, 26, 26, 0.95) 100%) !important;
+    border-bottom: 2px solid rgba(197, 255, 167, 0.2) !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+.table th {
+    padding: var(--space-4) var(--space-5) !important;
+    font-size: var(--text-xs) !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.6px !important;
+    text-transform: uppercase !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.table td {
+    padding: var(--space-4) var(--space-5) !important;
+    font-size: var(--text-sm) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.04) !important;
+    letter-spacing: -0.01em !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.table tbody tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.015) !important;
+}
+
+.table tbody tr:hover {
+    background: linear-gradient(
+        90deg,
+        rgba(197, 255, 167, 0.06) 0%,
+        rgba(197, 255, 167, 0.1) 50%,
+        rgba(197, 255, 167, 0.06) 100%
+    ) !important;
+    box-shadow: inset 3px 0 0 var(--primary-green) !important;
+    transform: translateX(3px) !important;
+}
+
+/* ====================================
+   BOUTONS - PREMIUM ULTRA PROPRE
+   ==================================== */
+
+.btn-primary,
+button[type="submit"] {
+    padding: var(--space-3) var(--space-6) !important;
+    font-size: var(--text-sm) !important;
+    font-weight: 600 !important;
+    border-radius: var(--radius-md) !important;
+    letter-spacing: -0.01em !important;
+    box-shadow: 
+        0 4px 20px rgba(197, 255, 167, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.1) !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.btn-primary:hover:not(:disabled),
+button[type="submit"]:hover:not(:disabled) {
+    box-shadow: 
+        0 6px 28px rgba(197, 255, 167, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.15) !important;
+    transform: translateY(-2px) !important;
+}
+
+.btn-secondary {
+    padding: var(--space-3) var(--space-6) !important;
+    font-size: var(--text-sm) !important;
+    font-weight: 600 !important;
+    border-width: 1.5px !important;
+    letter-spacing: -0.01em !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    background: rgba(26, 26, 26, 0.6) !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+.btn-secondary:hover:not(:disabled) {
+    background: rgba(197, 255, 167, 0.1) !important;
+    border-color: var(--primary-green) !important;
+    box-shadow: 
+        0 4px 20px rgba(197, 255, 167, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+    transform: translateY(-2px) !important;
+}
+
+.btn-ghost {
+    padding: var(--space-3) var(--space-6) !important;
+    font-size: var(--text-sm) !important;
+    font-weight: 500 !important;
+    letter-spacing: -0.01em !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    background: rgba(26, 26, 26, 0.4) !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+.btn-ghost:hover:not(:disabled) {
+    background: rgba(42, 42, 42, 0.7) !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* ====================================
+   FORMS - PREMIUM ULTRA PROPRE
+   ==================================== */
+
+.input,
+.form-input,
+.form-select,
+.form-textarea,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+textarea,
+select {
+    background: rgba(10, 10, 10, 0.8) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: var(--radius-md) !important;
+    padding: var(--space-3) var(--space-4) !important;
+    font-size: var(--text-sm) !important;
+    letter-spacing: -0.01em !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.input:hover,
+.form-input:hover,
+.form-select:hover,
+.form-textarea:hover,
+input[type="text"]:hover,
+input[type="email"]:hover,
+input[type="password"]:hover,
+input[type="number"]:hover,
+input[type="date"]:hover,
+textarea:hover,
+select:hover {
+    border-color: rgba(197, 255, 167, 0.4) !important;
+    background: rgba(10, 10, 10, 0.9) !important;
+}
+
+.input:focus,
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus,
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--primary-green) !important;
+    box-shadow: 
+        0 0 0 3px rgba(197, 255, 167, 0.15),
+        0 2px 12px rgba(197, 255, 167, 0.1) !important;
+    background: rgba(10, 10, 10, 0.95) !important;
+    outline: none !important;
+}
+
+.input::placeholder,
+.form-input::placeholder,
+textarea::placeholder {
+    color: rgba(153, 153, 153, 0.7) !important;
+}
+
+/* ====================================
+   MODALS - PREMIUM ULTRA PROPRE
+   ==================================== */
+
+.modal-overlay {
+    background: rgba(0, 0, 0, 0.85) !important;
+    backdrop-filter: blur(8px) !important;
+}
+
+.modal {
+    background: rgba(14, 14, 14, 0.98) !important;
+    backdrop-filter: blur(30px) saturate(180%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: var(--radius-xl) !important;
+    box-shadow: 
+        0 24px 80px rgba(0, 0, 0, 0.8),
+        0 8px 40px rgba(0, 0, 0, 0.7),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.3) !important;
+}
+
+.modal-header {
+    padding: var(--space-6) var(--space-6) var(--space-5) var(--space-6) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+.modal-title {
+    font-size: 22px !important;
+    font-weight: 600 !important;
+    letter-spacing: -0.02em !important;
+    line-height: 1.3 !important;
+}
+
+.modal-close {
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: var(--radius-md) !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    background: rgba(26, 26, 26, 0.6) !important;
+    border: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+.modal-close:hover {
+    background: rgba(197, 255, 167, 0.1) !important;
+    border-color: rgba(197, 255, 167, 0.3) !important;
+    color: var(--primary-green) !important;
+    transform: rotate(90deg) !important;
+}
+
+.modal-body {
+    padding: var(--space-6) !important;
+}
+
+.modal-footer {
+    padding: var(--space-5) var(--space-6) var(--space-6) var(--space-6) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+    gap: var(--space-3) !important;
+}
+
+/* ====================================
+   BADGES - PREMIUM ULTRA PROPRE
+   ==================================== */
+
+.badge {
+    padding: var(--space-1) var(--space-3) !important;
+    font-size: var(--text-xs) !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.4px !important;
+    border-width: 1.5px !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+.badge-success,
+.badge-green {
+    background: rgba(39, 174, 96, 0.2) !important;
+    border-color: var(--success) !important;
+    box-shadow: 0 0 16px rgba(39, 174, 96, 0.2) !important;
+}
+
+.badge-warning {
+    background: rgba(243, 156, 18, 0.2) !important;
+    border-color: var(--warning) !important;
+}
+
+.badge-error {
+    background: rgba(231, 76, 60, 0.2) !important;
+    border-color: var(--error) !important;
+}
+
+.badge-info {
+    background: rgba(52, 152, 219, 0.2) !important;
+    border-color: var(--info) !important;
+}
+
+/* ====================================
+   ALERTS - PREMIUM ULTRA PROPRE
+   ==================================== */
+
+.alert {
+    padding: var(--space-4) var(--space-5) !important;
+    border-radius: var(--radius-md) !important;
+    border-width: 1.5px !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+.alert-success {
+    background: rgba(39, 174, 96, 0.15) !important;
+    border-color: var(--success) !important;
+}
+
+.alert-warning {
+    background: rgba(243, 156, 18, 0.15) !important;
+    border-color: var(--warning) !important;
+}
+
+.alert-error {
+    background: rgba(231, 76, 60, 0.15) !important;
+    border-color: var(--error) !important;
+}
+
+.alert-info {
+    background: rgba(52, 152, 219, 0.15) !important;
+    border-color: var(--info) !important;
 }

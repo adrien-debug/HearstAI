@@ -106,14 +106,14 @@ export const versionsStyles = `
 
 .filter-select:hover {
     border-color: var(--accent-primary);
-    box-shadow: 0 0 0 1px rgba(138, 253, 129, 0.2);
+    box-shadow: 0 0 0 1px rgba(197, 255, 167, 0.2);
     background: rgba(26, 26, 26, 0.95);
 }
 
 .filter-select:focus {
     outline: none;
     border-color: var(--accent-primary);
-    box-shadow: 0 0 0 3px rgba(138, 253, 129, 0.1);
+    box-shadow: 0 0 0 3px rgba(197, 255, 167, 0.1);
 }
 
 .placeholder-icon {
@@ -121,13 +121,13 @@ export const versionsStyles = `
     color: var(--accent-primary);
     margin-bottom: var(--spacing-lg);
     opacity: 0.5;
-    filter: drop-shadow(0 0 12px rgba(138, 253, 129, 0.3));
+    filter: drop-shadow(0 0 12px rgba(197, 255, 167, 0.3));
     transition: all var(--duration-normal) var(--ease-in-out);
 }
 
 .placeholder-icon:hover {
     opacity: 0.8;
-    filter: drop-shadow(0 0 20px rgba(138, 253, 129, 0.5));
+    filter: drop-shadow(0 0 20px rgba(197, 255, 167, 0.5));
 }
 
 .feature-list {

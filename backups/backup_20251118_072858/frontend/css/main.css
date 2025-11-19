@@ -14,7 +14,7 @@
        ==================================== */
     
     /* Couleurs principales */
-    --primary-green: #8afd81;          /* Accent principal (CTA, focus, highlights) */
+    --primary-green: #C5FFA7;          /* Accent principal (CTA, focus, highlights) */
     --primary-dark: #000000;           /* Fond principal */
     --primary-grey: #1a1a1a;          /* Fond secondaire (cards, panels) */
     
@@ -107,8 +107,8 @@
     --shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.6);
     
     /* Glow green (accent) */
-    --glow-green: 0 0 20px rgba(138, 253, 129, 0.3);
-    --glow-green-strong: 0 0 30px rgba(138, 253, 129, 0.5);
+    --glow-green: 0 0 20px rgba(197, 255, 167, 0.3);
+    --glow-green-strong: 0 0 30px rgba(197, 255, 167, 0.5);
     
     /* ====================================
        ANIMATIONS & TRANSITIONS
@@ -248,7 +248,7 @@ body {
 }
 
 .nav-item.active {
-    background: rgba(138, 253, 129, 0.1) !important;
+    background: rgba(197, 255, 167, 0.1) !important;
     color: var(--primary-green) !important;
     border-left: var(--border-thick) solid var(--primary-green);
     padding-left: calc(var(--space-4) - var(--border-thick));

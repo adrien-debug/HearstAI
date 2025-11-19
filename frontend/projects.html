@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects - HearstAI</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📁 Projects</h1>
+            <p>Manage your Claude AI projects</p>
+        </div>
+
+        <nav class="nav">
+            <a href="/">Dashboard</a>
+            <a href="/projects.html" class="active">Projects</a>
+            <a href="/jobs.html">Jobs</a>
+            <a href="/electricity.html">Electricity</a>
+        </nav>
+
+        <button class="btn" onclick="alert('Create project modal - Coming soon')">+ New Project</button>
+
+        <div class="card" style="margin-top: 20px;">
+            <table id="projects-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                    </tr>
+                </thead>
+                <tbody id="projects-body">
+                    <tr><td colspan="4" style="text-align:center;">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:4000/api';
+
+        async function loadProjects() {
+            try {
+                const data = await fetch(\`\${API_URL}/projects\`).then(r => r.json());
+                const tbody = document.getElementById('projects-body');
+                if (data.projects.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No projects yet</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = data.projects.map(p => \`
+                    <tr>
+                        <td><strong>\${p.name}</strong></td>
+                        <td>\${p.type}</td>
+                        <td><span style="color: #8afd81">\${p.status}</span></td>
+                        <td>\${new Date(p.created_at).toLocaleDateString()}</td>
+                    </tr>
+                \`).join('');
+            } catch (error) {
+                console.error('Error loading projects:', error);
+            }
+        }
+
+        loadProjects();
+    </script>
+</body>
+</html>

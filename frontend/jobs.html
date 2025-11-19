@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jobs - HearstAI</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚙️ Jobs</h1>
+            <p>Monitor Claude AI execution jobs</p>
+        </div>
+
+        <nav class="nav">
+            <a href="/">Dashboard</a>
+            <a href="/projects.html">Projects</a>
+            <a href="/jobs.html" class="active">Jobs</a>
+            <a href="/electricity.html">Electricity</a>
+        </nav>
+
+        <button class="btn" onclick="alert('Create job modal - Coming soon')">+ New Job</button>
+
+        <div class="card" style="margin-top: 20px;">
+            <table id="jobs-table">
+                <thead>
+                    <tr>
+                        <th>Project</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                    </tr>
+                </thead>
+                <tbody id="jobs-body">
+                    <tr><td colspan="4" style="text-align:center;">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:4000/api';
+
+        async function loadJobs() {
+            try {
+                const data = await fetch(\`\${API_URL}/jobs\`).then(r => r.json());
+                const tbody = document.getElementById('jobs-body');
+                if (data.jobs.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No jobs yet</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = data.jobs.map(j => \`
+                    <tr>
+                        <td><strong>\${j.project_name || 'Unknown'}</strong></td>
+                        <td>\${j.type}</td>
+                        <td><span style="color: \${j.status === 'success' ? '#8afd81' : j.status === 'failed' ? '#ff4d4d' : '#ffa500'}">\${j.status}</span></td>
+                        <td>\${new Date(j.created_at).toLocaleString()}</td>
+                    </tr>
+                \`).join('');
+            } catch (error) {
+                console.error('Error loading jobs:', error);
+            }
+        }
+
+        loadJobs();
+        setInterval(loadJobs, 5000);
+    </script>
+</body>
+</html>

@@ -58,12 +58,12 @@
     background: rgba(26, 26, 26, 0.6) !important;
     backdrop-filter: blur(10px) saturate(180%) !important;
     -webkit-backdrop-filter: blur(10px) saturate(180%) !important;
-    border: 1px solid rgba(138, 253, 129, 0.1) !important;
+    border: 1px solid rgba(197, 255, 167, 0.1) !important;
     border-radius: var(--radius-md) !important;
     padding: var(--space-1) !important;
     box-shadow: 
         0 4px 16px rgba(0, 0, 0, 0.3),
-        inset 0 1px 0 rgba(138, 253, 129, 0.05) !important;
+        inset 0 1px 0 rgba(197, 255, 167, 0.05) !important;
 }
 
 /* Tab button - Style vert HEARST */
@@ -86,7 +86,7 @@
 }
 
 .cockpit-nav-tab:hover {
-    background: rgba(138, 253, 129, 0.1) !important;
+    background: rgba(197, 255, 167, 0.1) !important;
     color: var(--primary-green) !important;
 }
 
@@ -95,14 +95,14 @@
     color: var(--primary-dark) !important;
     font-weight: var(--font-semibold) !important;
     box-shadow: 
-        0 2px 8px rgba(138, 253, 129, 0.3),
+        0 2px 8px rgba(197, 255, 167, 0.3),
         inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
 }
 
 .cockpit-nav-tab.active:hover {
-    background: rgba(138, 253, 129, 0.9) !important;
+    background: rgba(197, 255, 167, 0.9) !important;
     box-shadow: 
-        0 4px 12px rgba(138, 253, 129, 0.4),
+        0 4px 12px rgba(197, 255, 167, 0.4),
         inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
 }
 

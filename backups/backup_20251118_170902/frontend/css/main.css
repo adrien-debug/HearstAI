@@ -14,7 +14,7 @@
        ==================================== */
     
     /* Couleurs principales */
-    --primary-green: #8afd81;          /* Accent principal (CTA, focus, highlights) */
+    --primary-green: #C5FFA7;          /* Accent principal (CTA, focus, highlights) */
     --primary-dark: #000000;           /* Fond principal */
     --primary-grey: #1a1a1a;          /* Fond secondaire (cards, panels) */
     
@@ -110,8 +110,8 @@
     --shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.6);
     
     /* Glow green (accent) */
-    --glow-green: 0 0 20px rgba(138, 253, 129, 0.3);
-    --glow-green-strong: 0 0 30px rgba(138, 253, 129, 0.5);
+    --glow-green: 0 0 20px rgba(197, 255, 167, 0.3);
+    --glow-green-strong: 0 0 30px rgba(197, 255, 167, 0.5);
     
     /* ====================================
        ANIMATIONS & TRANSITIONS
@@ -140,7 +140,7 @@
     --bg-secondary: #1a1a1a; /* ✅ Standard HEARST - Background secondaire */
     --bg-tertiary: #242424; /* ✅ Standard HEARST - Background tertiaire */
     --accent-primary: var(--primary-green);
-    --accent-color: var(--primary-green); /* ✅ Garde #8afd81 (pas #8AE38A) */
+    --accent-color: var(--primary-green); /* ✅ Garde #C5FFA7 (pas #8AE38A) */
     --border-color: rgba(255, 255, 255, 0.08); /* ✅ Match demande */
     --border-hover: var(--grey-200);
     --spacing-xs: var(--space-1);
@@ -320,19 +320,19 @@ body {
 }
 
 .nav-item:hover {
-    background: #8afd81 !important;
+    background: #C5FFA7 !important;
     color: #000000 !important;
     box-shadow: 
-        0 4px 12px rgba(138, 253, 129, 0.2),
+        0 4px 12px rgba(197, 255, 167, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
 }
 
 .nav-item.active {
-    background: #8afd81 !important;
+    background: #C5FFA7 !important;
     color: #000000 !important;
     font-weight: 600 !important;
     box-shadow: 
-        0 4px 16px rgba(138, 253, 129, 0.3),
+        0 4px 16px rgba(197, 255, 167, 0.3),
         inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
 }
 
@@ -557,7 +557,7 @@ body {
 
 .user-badge:hover {
     background: rgba(42, 42, 42, 0.8) !important;
-    border-color: rgba(138, 253, 129, 0.3) !important;
+    border-color: rgba(197, 255, 167, 0.3) !important;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4) !important;
 }
 
@@ -570,7 +570,7 @@ body {
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    box-shadow: 0 2px 8px rgba(138, 253, 129, 0.3) !important;
+    box-shadow: 0 2px 8px rgba(197, 255, 167, 0.3) !important;
 }
 
 .user-avatar-initials {
@@ -738,8 +738,8 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, #8afd81 0%, #7bed9f 100%) !important;
-    box-shadow: 0 0 10px rgba(138, 253, 129, 0.5) !important;
+    background: linear-gradient(180deg, #C5FFA7 0%, #7bed9f 100%) !important;
+    box-shadow: 0 0 10px rgba(197, 255, 167, 0.5) !important;
 }
 
 /* ====================================
@@ -773,10 +773,10 @@ body {
 }
 
 .nav-item:hover {
-    background: rgba(138, 253, 129, 0.15) !important;
+    background: rgba(197, 255, 167, 0.15) !important;
     color: var(--primary-green) !important;
     box-shadow: 
-        0 2px 8px rgba(138, 253, 129, 0.15),
+        0 2px 8px rgba(197, 255, 167, 0.15),
         inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
     transform: translateX(2px) !important;
 }
@@ -785,7 +785,7 @@ body {
     background: var(--primary-green) !important;
     color: var(--primary-dark) !important;
     box-shadow: 
-        0 4px 16px rgba(138, 253, 129, 0.4),
+        0 4px 16px rgba(197, 255, 167, 0.4),
         inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
 }
 
@@ -836,7 +836,7 @@ body {
 }
 
 .notification-btn:hover {
-    background: rgba(138, 253, 129, 0.1) !important;
+    background: rgba(197, 255, 167, 0.1) !important;
     color: var(--primary-green) !important;
 }
 
@@ -849,14 +849,14 @@ body {
 
 .user-badge:hover {
     background: rgba(26, 26, 26, 0.95) !important;
-    border-color: rgba(138, 253, 129, 0.3) !important;
+    border-color: rgba(197, 255, 167, 0.3) !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
 }
 
 .user-avatar-circle {
     width: 28px !important;
     height: 28px !important;
-    box-shadow: 0 2px 8px rgba(138, 253, 129, 0.4) !important;
+    box-shadow: 0 2px 8px rgba(197, 255, 167, 0.4) !important;
 }
 
 /* ====================================
@@ -944,10 +944,10 @@ body {
     background: linear-gradient(180deg, rgba(10, 10, 10, 0.95) 0%, rgba(0, 0, 0, 1) 100%) !important;
     backdrop-filter: blur(24px) saturate(200%) !important;
     -webkit-backdrop-filter: blur(24px) saturate(200%) !important;
-    border-top: 1px solid rgba(138, 253, 129, 0.1) !important;
+    border-top: 1px solid rgba(197, 255, 167, 0.1) !important;
     box-shadow: 
         0 -4px 32px rgba(0, 0, 0, 0.6),
-        inset 0 1px 0 rgba(138, 253, 129, 0.05) !important;
+        inset 0 1px 0 rgba(197, 255, 167, 0.05) !important;
     padding: 40px var(--space-8) 40px var(--space-8) !important;
     margin-top: auto;
     position: relative;
@@ -964,9 +964,9 @@ body {
     background: linear-gradient(
         90deg,
         transparent,
-        rgba(138, 253, 129, 0.3) 20%,
-        rgba(138, 253, 129, 0.5) 50%,
-        rgba(138, 253, 129, 0.3) 80%,
+        rgba(197, 255, 167, 0.3) 20%,
+        rgba(197, 255, 167, 0.5) 50%,
+        rgba(197, 255, 167, 0.3) 80%,
         transparent
     );
     opacity: 0.6;
@@ -982,7 +982,7 @@ body {
     background: linear-gradient(
         90deg,
         transparent,
-        rgba(138, 253, 129, 0.1) 50%,
+        rgba(197, 255, 167, 0.1) 50%,
         transparent
     );
 }
@@ -1013,7 +1013,7 @@ body {
 .footer-logo {
     font-size: var(--text-lg);
     font-weight: var(--font-bold);
-    background: linear-gradient(135deg, #ffffff 0%, #8afd81 100%) !important;
+    background: linear-gradient(135deg, #ffffff 0%, #C5FFA7 100%) !important;
     -webkit-background-clip: text !important;
     -webkit-text-fill-color: transparent !important;
     background-clip: text !important;
@@ -1100,18 +1100,18 @@ body {
 
 .footer-copyright {
     font-size: var(--text-xs);
-    color: #8AFD81;
+    color: #C5FFA7;
     letter-spacing: 0.1px;
 }
 
 .footer-version {
     font-size: var(--text-xs);
-    color: #8AFD81;
+    color: #C5FFA7;
     font-weight: var(--font-semibold);
     letter-spacing: 0.2px;
     padding: var(--space-1) var(--space-3);
-    background: rgba(138, 253, 129, 0.1);
-    border: 1px solid rgba(138, 253, 129, 0.2);
+    background: rgba(197, 255, 167, 0.1);
+    border: 1px solid rgba(197, 255, 167, 0.2);
     border-radius: var(--radius-sm);
     transform: translateY(-10px);
 }

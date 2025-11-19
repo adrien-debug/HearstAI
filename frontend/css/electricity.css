@@ -1,0 +1,680 @@
+/* ====================================
+   ELECTRICITY VIEW STYLES - HEARST Design System
+   PREMIUM VERSION - SANS !important
+   ==================================== */
+
+/* Electricity View Container */
+.electricity-view {
+    padding: var(--space-8) var(--space-10);
+    padding-top: var(--space-8);
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+    min-height: 100%;
+    overflow-y: visible;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.electricity-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-10);
+    min-height: 100%;
+    overflow-y: visible;
+    overflow-x: hidden;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-8);
+    margin-bottom: var(--space-10);
+    padding: 0 var(--space-2);
+}
+
+.stat-card {
+    background: var(--gradient-subtle);
+    backdrop-filter: var(--blur-md);
+    -webkit-backdrop-filter: var(--blur-md);
+    border: 2px solid var(--color-light-green-2);
+    border-radius: var(--radius-section);
+    padding: var(--space-8);
+    transition: all var(--transition-base);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 
+        var(--shadow-xl),
+        var(--shadow-glow-green);
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--gradient-primary);
+    opacity: 1;
+    z-index: 1;
+}
+
+.stat-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+        circle at top right,
+        rgba(163, 255, 139, 0.1) 0%,
+        transparent 60%
+    );
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.stat-card > * {
+    position: relative;
+    z-index: 1;
+}
+
+.stat-card:hover {
+    box-shadow: 
+        var(--shadow-2xl),
+        0 0 40px rgba(163, 255, 139, 0.4),
+        0 0 80px rgba(163, 255, 139, 0.2);
+    transform: translateY(-6px);
+    border-color: var(--color-primary-light-green);
+}
+
+.stat-label {
+    font-size: var(--typography-body-minor-size);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-4);
+    font-weight: var(--typography-body-minor-weight);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.stat-value {
+    font-size: 42px;
+    font-weight: var(--typography-display-weight);
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: var(--space-2);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    filter: drop-shadow(0 0 20px rgba(163, 255, 139, 0.3));
+}
+
+.stat-value.green {
+    color: var(--color-primary-light-green);
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.stat-change {
+    font-size: var(--typography-caption-size);
+    color: var(--color-primary-light-green);
+    font-weight: var(--typography-caption-bold-weight);
+}
+
+/* Section Styles */
+.electricity-view .section {
+    margin-bottom: var(--space-10);
+    padding: 0 var(--space-2);
+}
+
+.electricity-view .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-8);
+    flex-wrap: wrap;
+    gap: var(--space-6);
+    padding: 0 var(--space-3);
+}
+
+.electricity-view .section-title {
+    font-size: var(--typography-section-title-size);
+    font-weight: var(--typography-section-title-weight);
+    color: var(--color-text-default);
+    letter-spacing: -0.01em;
+    line-height: var(--typography-section-title-line-height);
+}
+
+.electricity-view .section-subtitle {
+    font-size: var(--typography-body-size);
+    color: var(--color-text-secondary);
+    margin-top: var(--space-2);
+    font-weight: var(--typography-body-weight);
+}
+
+/* Card Styles - Premium */
+.electricity-view .card {
+    background: var(--gradient-subtle);
+    backdrop-filter: var(--blur-md);
+    -webkit-backdrop-filter: var(--blur-md);
+    border: 2px solid var(--color-light-green-2);
+    border-radius: var(--radius-section);
+    padding: var(--space-8);
+    transition: all var(--transition-base);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 
+        var(--shadow-xl),
+        var(--shadow-glow-green);
+}
+
+.electricity-view .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--gradient-primary);
+    opacity: 1;
+    z-index: 1;
+}
+
+.electricity-view .card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+        circle at top right,
+        rgba(163, 255, 139, 0.08) 0%,
+        transparent 60%
+    );
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.electricity-view .card > * {
+    position: relative;
+    z-index: 1;
+}
+
+.electricity-view .card:hover {
+    box-shadow: 
+        var(--shadow-2xl),
+        0 0 40px rgba(163, 255, 139, 0.4),
+        0 0 80px rgba(163, 255, 139, 0.2);
+    transform: translateY(-6px);
+    border-color: var(--color-primary-light-green);
+}
+
+.electricity-view .card-title {
+    font-size: var(--typography-section-title-size);
+    font-weight: var(--typography-section-title-weight);
+    color: var(--color-text-default);
+    margin: 0 0 var(--space-6) 0;
+    letter-spacing: -0.01em;
+    line-height: var(--typography-section-title-line-height);
+}
+
+/* Table Styles - Premium */
+.electricity-view .table-container {
+    background: var(--gradient-subtle);
+    backdrop-filter: var(--blur-md);
+    -webkit-backdrop-filter: var(--blur-md);
+    border: 2px solid var(--color-light-green-2);
+    border-radius: var(--radius-section);
+    overflow: hidden;
+    box-shadow: 
+        var(--shadow-xl),
+        var(--shadow-glow-green);
+    transition: all var(--transition-base);
+}
+
+.electricity-view .table-container:hover {
+    box-shadow: 
+        var(--shadow-2xl),
+        0 0 40px rgba(163, 255, 139, 0.4),
+        0 0 80px rgba(163, 255, 139, 0.2);
+    transform: translateY(-4px);
+    border-color: var(--color-primary-light-green);
+}
+
+.electricity-view .table-container table {
+    width: 100%;
+    border-collapse: collapse;
+    background: transparent;
+}
+
+.electricity-view .table-container table thead {
+    background: var(--gradient-accent);
+    border-bottom: 2px solid var(--color-primary-light-green);
+}
+
+.electricity-view .table-container table thead th {
+    padding: var(--space-5) var(--space-6);
+    text-align: left;
+    font-size: var(--typography-caption-bold-size);
+    font-weight: var(--typography-caption-bold-weight);
+    color: var(--color-text-negative);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-bottom: none;
+}
+
+.electricity-view .table-container table td {
+    padding: var(--space-5) var(--space-6);
+    border-top: 1px solid var(--color-ash-grey-1);
+    color: var(--color-text-default);
+    font-size: var(--typography-body-size);
+    font-weight: var(--typography-body-weight);
+}
+
+.electricity-view .table-container table tbody tr {
+    transition: all var(--transition-fast);
+}
+
+.electricity-view .table-container table tbody tr:nth-child(even) {
+    background: rgba(163, 255, 139, 0.03);
+}
+
+.electricity-view .table-container table tbody tr:hover {
+    background: linear-gradient(
+        90deg,
+        rgba(163, 255, 139, 0.08) 0%,
+        rgba(163, 255, 139, 0.15) 50%,
+        rgba(163, 255, 139, 0.08) 100%
+    );
+    box-shadow: inset 3px 0 0 var(--color-primary-light-green);
+    transform: translateX(4px);
+}
+
+.electricity-view .table-container table tbody tr.total-row {
+    background: var(--gradient-subtle);
+    font-weight: var(--typography-body-bold-weight);
+    border-top: 2px solid var(--color-primary-light-green);
+}
+
+.electricity-view .table-container table tbody tr.total-row td {
+    color: var(--color-text-default);
+    font-size: var(--typography-subsection-title-size);
+    padding: var(--space-6) var(--space-6);
+}
+
+.electricity-view .table-container table tbody tr.total-row td:last-child {
+    color: var(--color-primary-light-green);
+    font-weight: var(--typography-section-title-weight);
+    filter: drop-shadow(0 0 10px rgba(163, 255, 139, 0.3));
+}
+
+/* Filters - Premium */
+.electricity-view .filters {
+    display: flex;
+    gap: var(--space-6);
+    align-items: flex-end;
+    margin-bottom: var(--space-8);
+    flex-wrap: wrap;
+    padding: 0 var(--space-3);
+}
+
+.electricity-view .filter-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+.electricity-view .filter-group label {
+    display: block;
+    font-size: var(--typography-body-minor-size);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-3);
+    font-weight: var(--typography-body-minor-bold-weight);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.electricity-view .filter-group input,
+.electricity-view .filter-group select {
+    width: 100%;
+    padding: var(--space-4) var(--space-5);
+    background: var(--gradient-subtle);
+    border: 2px solid var(--color-ash-grey-2);
+    border-radius: var(--radius-default);
+    color: var(--color-text-default);
+    font-size: var(--typography-body-size);
+    font-family: var(--font-family-primary);
+    transition: all var(--transition-base);
+    backdrop-filter: var(--blur-sm);
+}
+
+.electricity-view .filter-group input:focus,
+.electricity-view .filter-group select:focus {
+    outline: none;
+    border-color: var(--color-primary-light-green);
+    box-shadow: 
+        0 0 0 4px rgba(163, 255, 139, 0.2),
+        var(--shadow-lg);
+}
+
+.electricity-view .filter-group input:hover,
+.electricity-view .filter-group select:hover {
+    border-color: var(--color-primary-light-green);
+    background: var(--color-light-green-1);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Buttons in filters */
+.electricity-view .filters .btn {
+    padding: var(--space-4) var(--space-7);
+    border-radius: var(--radius-default);
+    font-size: var(--typography-body-size);
+    font-weight: var(--typography-body-bold-weight);
+    transition: all var(--transition-base);
+    cursor: pointer;
+    border: none;
+    letter-spacing: 0.01em;
+}
+
+.electricity-view .filters .btn-primary {
+    background: var(--gradient-primary);
+    color: var(--color-text-default);
+    box-shadow: 
+        var(--shadow-lg),
+        var(--shadow-glow-green);
+}
+
+.electricity-view .filters .btn-primary:hover {
+    background: linear-gradient(135deg, #8DFFA9 0%, #A3FF8B 50%, #B8FFCA 100%);
+    box-shadow: 
+        var(--shadow-xl),
+        0 0 30px rgba(163, 255, 139, 0.5),
+        0 0 60px rgba(163, 255, 139, 0.3);
+    transform: translateY(-3px) scale(1.02);
+}
+
+.electricity-view .filters .btn-secondary {
+    background: var(--gradient-subtle);
+    color: var(--color-text-default);
+    border: 2px solid var(--color-ash-grey-2);
+    box-shadow: var(--shadow-md);
+}
+
+.electricity-view .filters .btn-secondary:hover {
+    border-color: var(--color-primary-light-green);
+    background: var(--color-light-green-1);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Tabs - Premium */
+.electricity-view .tabs {
+    display: flex;
+    gap: var(--space-2);
+    border-bottom: 2px solid var(--color-ash-grey-1);
+    margin-bottom: var(--space-8);
+    padding: 0 var(--space-3);
+}
+
+.electricity-view .tab {
+    padding: var(--space-4) var(--space-6);
+    background: transparent;
+    color: var(--color-text-secondary);
+    border: none;
+    cursor: pointer;
+    font-size: var(--typography-body-size);
+    font-weight: var(--typography-body-bold-weight);
+    transition: all var(--transition-base);
+    border-bottom: 3px solid transparent;
+    position: relative;
+    letter-spacing: 0.01em;
+}
+
+.electricity-view .tab::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--gradient-primary);
+    opacity: 0;
+    transition: opacity var(--transition-base);
+}
+
+.electricity-view .tab:hover {
+    color: var(--color-primary-light-green);
+    transform: translateY(-2px);
+}
+
+.electricity-view .tab.active {
+    color: var(--color-primary-light-green);
+    border-bottom-color: var(--color-primary-light-green);
+}
+
+.electricity-view .tab.active::after {
+    opacity: 1;
+}
+
+/* Provider Buttons - Premium */
+.electricity-view .provider-buttons {
+    display: flex;
+    gap: var(--space-4);
+    margin-bottom: var(--space-8);
+    flex-wrap: wrap;
+    padding: 0 var(--space-3);
+}
+
+.electricity-view .provider-btn {
+    padding: var(--space-4) var(--space-7);
+    border-radius: var(--radius-default);
+    background: var(--gradient-subtle);
+    border: 2px solid var(--color-ash-grey-2);
+    color: var(--color-text-default);
+    font-size: var(--typography-body-size);
+    font-weight: var(--typography-body-bold-weight);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    letter-spacing: 0.01em;
+    box-shadow: var(--shadow-md);
+}
+
+.electricity-view .provider-btn:hover {
+    border-color: var(--color-primary-light-green);
+    background: var(--color-light-green-1);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.electricity-view .provider-btn.active {
+    background: var(--gradient-primary);
+    border-color: var(--color-primary-light-green);
+    color: var(--color-text-default);
+    box-shadow: 
+        var(--shadow-lg),
+        var(--shadow-glow-green);
+}
+
+.electricity-view .provider-btn.active:hover {
+    background: linear-gradient(135deg, #8DFFA9 0%, #A3FF8B 50%, #B8FFCA 100%);
+    box-shadow: 
+        var(--shadow-xl),
+        0 0 30px rgba(163, 255, 139, 0.5);
+    transform: translateY(-3px) scale(1.02);
+}
+
+/* Chart Container - Premium */
+.electricity-view .chart-container {
+    background: var(--gradient-subtle);
+    backdrop-filter: var(--blur-md);
+    -webkit-backdrop-filter: var(--blur-md);
+    border: 2px solid var(--color-light-green-2);
+    border-radius: var(--radius-section);
+    padding: var(--space-8);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 
+        var(--shadow-xl),
+        var(--shadow-glow-green);
+    transition: all var(--transition-base);
+}
+
+.electricity-view .chart-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--gradient-primary);
+    opacity: 1;
+    z-index: 1;
+}
+
+.electricity-view .chart-container::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+        circle at top right,
+        rgba(163, 255, 139, 0.08) 0%,
+        transparent 60%
+    );
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.electricity-view .chart-container > * {
+    position: relative;
+    z-index: 1;
+}
+
+.electricity-view .chart-container:hover {
+    box-shadow: 
+        var(--shadow-2xl),
+        0 0 40px rgba(163, 255, 139, 0.4),
+        0 0 80px rgba(163, 255, 139, 0.2);
+    transform: translateY(-4px);
+    border-color: var(--color-primary-light-green);
+}
+
+.electricity-view .chart-title {
+    font-size: var(--typography-subsection-title-size);
+    font-weight: var(--typography-subsection-title-weight);
+    color: var(--color-text-default);
+    margin-bottom: var(--space-6);
+    letter-spacing: -0.01em;
+}
+
+/* ====================================
+   RESPONSIVE DESIGN - MOBILE FIRST
+   ==================================== */
+
+/* Tablet (max-width: 1024px) */
+@media (max-width: 1024px) {
+    .electricity-view {
+        padding: var(--space-6) var(--space-8);
+        padding-top: var(--space-6);
+    }
+
+    .electricity-content {
+        gap: var(--space-8);
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: var(--space-6);
+    }
+
+    .electricity-view .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-4);
+    }
+
+    .electricity-view .filters {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .electricity-view .filter-group {
+        width: 100%;
+    }
+
+    .electricity-view .provider-buttons {
+        flex-direction: column;
+    }
+
+    .electricity-view .provider-btn {
+        width: 100%;
+    }
+}
+
+/* Mobile (max-width: 768px) */
+@media (max-width: 768px) {
+    .electricity-view {
+        padding: var(--space-5) var(--space-6);
+        padding-top: var(--space-5);
+    }
+
+    .electricity-content {
+        gap: var(--space-6);
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-5);
+    }
+
+    .stat-card {
+        padding: var(--space-5);
+    }
+
+    .stat-value {
+        font-size: 32px;
+    }
+
+    .electricity-view .card {
+        padding: var(--space-5);
+    }
+
+    .electricity-view .table-container table thead th,
+    .electricity-view .table-container table td {
+        padding: var(--space-3) var(--space-4);
+        font-size: var(--typography-body-minor-size);
+    }
+
+    .electricity-view .chart-container {
+        padding: var(--space-5);
+    }
+}
+
+/* Small Mobile (max-width: 480px) */
+@media (max-width: 480px) {
+    .electricity-view {
+        padding: var(--space-4) var(--space-5);
+        padding-top: var(--space-4);
+    }
+
+    .electricity-content {
+        gap: var(--space-5);
+    }
+
+    .stat-value {
+        font-size: 28px;
+    }
+
+    .electricity-view .table-container {
+        overflow-x: auto;
+    }
+
+    .electricity-view .table-container table {
+        min-width: 600px;
+    }
+}

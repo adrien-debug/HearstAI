@@ -146,7 +146,7 @@ const themeToggleStyles = `
 }
 
 [data-theme="light"] .nav-item.active {
-    background: rgba(138, 253, 129, 0.1) !important;
+    background: rgba(197, 255, 167, 0.1) !important;
 }
 
 [data-theme="light"] .logo-text {

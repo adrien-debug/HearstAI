@@ -224,12 +224,12 @@ const dashboardStyles = `
     border-radius: var(--radius-lg);
     padding: var(--space-10);
     margin-bottom: var(--space-8);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(138, 253, 129, 0.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(197, 255, 167, 0.05);
     transition: all var(--duration-normal) var(--ease-in-out);
 }
 
 .wallet-card:hover {
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(138, 253, 129, 0.1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(197, 255, 167, 0.1);
     transform: translateY(-2px);
 }
 
@@ -262,7 +262,7 @@ const dashboardStyles = `
     color: var(--primary-green);
     letter-spacing: -0.02em;
     line-height: 1.2;
-    text-shadow: 0 0 20px rgba(138, 253, 129, 0.3);
+    text-shadow: 0 0 20px rgba(197, 255, 167, 0.3);
 }
 
 .wallet-balance-usd {
@@ -287,7 +287,7 @@ const dashboardStyles = `
 }
 
 .wallet-address:hover {
-    border-color: rgba(138, 253, 129, 0.3);
+    border-color: rgba(197, 255, 167, 0.3);
     background: rgba(10, 10, 10, 0.8);
 }
 
@@ -310,9 +310,9 @@ const dashboardStyles = `
 }
 
 .wallet-address-copy:hover {
-    background: rgba(138, 253, 129, 0.1);
+    background: rgba(197, 255, 167, 0.1);
     color: var(--primary-green);
-    box-shadow: 0 0 12px rgba(138, 253, 129, 0.2);
+    box-shadow: 0 0 12px rgba(197, 255, 167, 0.2);
 }
 
 .wallet-address-copy svg {
@@ -331,7 +331,7 @@ const dashboardStyles = `
     color: var(--primary-green);
     font-weight: var(--font-semibold);
     font-family: var(--font-mono);
-    text-shadow: 0 0 10px rgba(138, 253, 129, 0.2);
+    text-shadow: 0 0 10px rgba(197, 255, 167, 0.2);
 }
 
 /* Transaction History Section */
@@ -385,7 +385,7 @@ const dashboardStyles = `
 .date-range-selector:hover {
     border-color: var(--primary-green);
     background: var(--grey-200);
-    box-shadow: 0 0 0 1px rgba(138, 253, 129, 0.2);
+    box-shadow: 0 0 0 1px rgba(197, 255, 167, 0.2);
 }
 
 .date-range-text {
@@ -411,13 +411,13 @@ const dashboardStyles = `
 
 .contract-selector:hover {
     border-color: var(--primary-green);
-    box-shadow: 0 0 0 1px rgba(138, 253, 129, 0.2);
+    box-shadow: 0 0 0 1px rgba(197, 255, 167, 0.2);
 }
 
 .contract-selector:focus {
     outline: none;
     border-color: var(--primary-green);
-    box-shadow: 0 0 0 3px rgba(138, 253, 129, 0.1);
+    box-shadow: 0 0 0 3px rgba(197, 255, 167, 0.1);
 }
 
 /* Transaction History Table */
@@ -436,7 +436,7 @@ const dashboardStyles = `
     font-weight: var(--font-semibold);
     font-family: var(--font-mono);
     font-size: var(--text-base);
-    text-shadow: 0 0 10px rgba(138, 253, 129, 0.2);
+    text-shadow: 0 0 10px rgba(197, 255, 167, 0.2);
 }
 
 .reward-hashrate {
@@ -454,7 +454,7 @@ const dashboardStyles = `
 
 .table-total-row {
     background: rgba(42, 42, 42, 0.5);
-    border-top: var(--border-medium) solid rgba(138, 253, 129, 0.2);
+    border-top: var(--border-medium) solid rgba(197, 255, 167, 0.2);
     backdrop-filter: blur(8px);
 }
 
@@ -467,14 +467,14 @@ const dashboardStyles = `
     color: var(--primary-green);
     font-size: var(--text-lg);
     font-family: var(--font-mono);
-    text-shadow: 0 0 12px rgba(138, 253, 129, 0.3);
+    text-shadow: 0 0 12px rgba(197, 255, 167, 0.3);
     font-weight: var(--font-bold);
 }
 
 /* Button Transaction History - Premium Style */
 .btn.btn-transaction-history,
 button.btn-transaction-history {
-    background-color: #8AFD81 !important;
+    background-color: #C5FFA7 !important;
     color: #000 !important;
     border-radius: 30px !important;
     font-weight: 600 !important;
@@ -488,7 +488,7 @@ button.btn-transaction-history:hover,
 .btn.btn-transaction-history:active,
 button.btn-transaction-history:active {
     background-color: #70D467 !important;
-    box-shadow: 0 0 12px rgba(138, 253, 129, 0.55) !important;
+    box-shadow: 0 0 12px rgba(197, 255, 167, 0.55) !important;
     transform: translateY(-1px) !important;
     color: #000 !important;
 }

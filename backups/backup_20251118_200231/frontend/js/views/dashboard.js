@@ -312,7 +312,7 @@ const dashboardStyles = `
     inset: 0;
     background: radial-gradient(
         circle at top right,
-        rgba(138, 253, 129, 0.05) 0%,
+        rgba(197, 255, 167, 0.05) 0%,
         transparent 50%
     );
     border-radius: inherit;
@@ -329,7 +329,7 @@ const dashboardStyles = `
     box-shadow: 
         0 12px 48px rgba(0, 0, 0, 0.5),
         0 4px 16px rgba(0, 0, 0, 0.4),
-        0 0 0 1px rgba(138, 253, 129, 0.2),
+        0 0 0 1px rgba(197, 255, 167, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
     transform: translateY(-4px) !important;
 }
@@ -361,10 +361,10 @@ const dashboardStyles = `
 .wallet-balance-btc {
     font-size: var(--text-4xl);
     font-weight: var(--font-bold);
-    color: #8afd81;
+    color: #C5FFA7;
     letter-spacing: -0.02em;
     line-height: var(--leading-tight);
-    text-shadow: 0 0 20px rgba(138, 253, 129, 0.3);
+    text-shadow: 0 0 20px rgba(197, 255, 167, 0.3);
 }
 
 .wallet-balance-usd {
@@ -389,7 +389,7 @@ const dashboardStyles = `
 }
 
 .wallet-address:hover {
-    border-color: rgba(138, 253, 129, 0.3);
+    border-color: rgba(197, 255, 167, 0.3);
     background: rgba(10, 10, 10, 0.8);
 }
 
@@ -412,9 +412,9 @@ const dashboardStyles = `
 }
 
 .wallet-address-copy:hover {
-    background: rgba(138, 253, 129, 0.1);
-    color: #8afd81;
-    box-shadow: 0 0 12px rgba(138, 253, 129, 0.2);
+    background: rgba(197, 255, 167, 0.1);
+    color: #C5FFA7;
+    box-shadow: 0 0 12px rgba(197, 255, 167, 0.2);
 }
 
 .wallet-address-copy svg {
@@ -455,7 +455,7 @@ const dashboardStyles = `
     inset: 0;
     background: radial-gradient(
         circle at top right,
-        rgba(138, 253, 129, 0.05) 0%,
+        rgba(197, 255, 167, 0.05) 0%,
         transparent 50%
     );
     border-radius: inherit;
@@ -472,7 +472,7 @@ const dashboardStyles = `
     box-shadow: 
         0 12px 48px rgba(0, 0, 0, 0.5),
         0 4px 16px rgba(0, 0, 0, 0.4),
-        0 0 0 1px rgba(138, 253, 129, 0.2),
+        0 0 0 1px rgba(197, 255, 167, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
 }
 
@@ -516,8 +516,8 @@ const dashboardStyles = `
 }
 
 .legend-dot.green {
-    background-color: #8afd81;
-    box-shadow: 0 0 8px rgba(138, 253, 129, 0.5);
+    background-color: #C5FFA7;
+    box-shadow: 0 0 8px rgba(197, 255, 167, 0.5);
 }
 
 .legend-dot.gray {
@@ -579,13 +579,13 @@ const dashboardStyles = `
     box-shadow: 
         0 12px 48px rgba(0, 0, 0, 0.5),
         0 4px 16px rgba(0, 0, 0, 0.4),
-        0 0 0 1px rgba(138, 253, 129, 0.2),
+        0 0 0 1px rgba(197, 255, 167, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
 }
 
 .transactions-section .table thead tr {
     background: linear-gradient(180deg, #454646 0%, #3a3a3a 100%) !important;
-    border-bottom: var(--border-medium) solid rgba(138, 253, 129, 0.3) !important;
+    border-bottom: var(--border-medium) solid rgba(197, 255, 167, 0.3) !important;
 }
 
 .transactions-section .table thead th {
@@ -610,11 +610,11 @@ const dashboardStyles = `
 .transactions-section .table tbody tr:hover {
     background: linear-gradient(
         90deg,
-        rgba(138, 253, 129, 0.05) 0%,
-        rgba(138, 253, 129, 0.1) 50%,
-        rgba(138, 253, 129, 0.05) 100%
+        rgba(197, 255, 167, 0.05) 0%,
+        rgba(197, 255, 167, 0.1) 50%,
+        rgba(197, 255, 167, 0.05) 100%
     ) !important;
-    box-shadow: inset 2px 0 0 #8afd81 !important;
+    box-shadow: inset 2px 0 0 #C5FFA7 !important;
     transform: translateX(2px) !important;
 }
 
@@ -702,10 +702,10 @@ const dashboardStyles = `
 
 
 .transaction-amount {
-    color: #8afd81;
+    color: #C5FFA7;
     font-weight: var(--font-semibold);
     font-family: var(--font-mono);
-    text-shadow: 0 0 10px rgba(138, 253, 129, 0.2);
+    text-shadow: 0 0 10px rgba(197, 255, 167, 0.2);
 }
 
 /* Hidden rows by default */
@@ -752,9 +752,9 @@ const dashboardStyles = `
 }
 
 .btn-see-more:hover {
-    color: #8afd81;
+    color: #C5FFA7;
     opacity: 1;
-    background: rgba(138, 253, 129, 0.03);
+    background: rgba(197, 255, 167, 0.03);
 }
 
 .btn-see-more:active {
@@ -866,15 +866,15 @@ const dashboardStyles = `
 
 .transaction-history-controls .date-range-select:hover,
 .transaction-history-controls .contract-select:hover {
-    border-color: rgba(138, 253, 129, 0.3) !important;
+    border-color: rgba(197, 255, 167, 0.3) !important;
     background: rgba(10, 10, 10, 0.8) !important;
 }
 
 .transaction-history-controls .date-range-select:focus,
 .transaction-history-controls .contract-select:focus {
     outline: none !important;
-    border-color: #8afd81 !important;
-    box-shadow: 0 0 0 3px rgba(138, 253, 129, 0.1) !important;
+    border-color: #C5FFA7 !important;
+    box-shadow: 0 0 0 3px rgba(197, 255, 167, 0.1) !important;
 }
 
 .date-range-select,
@@ -904,15 +904,15 @@ const dashboardStyles = `
 
 .date-range-select:hover,
 .contract-select:hover {
-    border-color: #8afd81;
-    background: rgba(138, 253, 129, 0.05);
+    border-color: #C5FFA7;
+    background: rgba(197, 255, 167, 0.05);
 }
 
 .date-range-select:focus,
 .contract-select:focus {
     outline: none;
-    border-color: #8afd81;
-    box-shadow: 0 0 0 1px rgba(138, 253, 129, 0.2);
+    border-color: #C5FFA7;
+    box-shadow: 0 0 0 1px rgba(197, 255, 167, 0.2);
 }
 
 .date-range-select option,
@@ -928,7 +928,7 @@ const dashboardStyles = `
     font-size: var(--text-sm) !important;
     font-weight: var(--font-semibold) !important;
     border-radius: var(--radius-full) !important;
-    background: #8afd81 !important;
+    background: #C5FFA7 !important;
     color: #000000 !important;
     border: none !important;
     transition: all var(--transition-normal) !important;
@@ -937,14 +937,14 @@ const dashboardStyles = `
     box-sizing: border-box !important;
     letter-spacing: -0.01em !important;
     box-shadow: 
-        0 4px 16px rgba(138, 253, 129, 0.4),
+        0 4px 16px rgba(197, 255, 167, 0.4),
         inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
 }
 
 .btn-export-excel:hover:not(:disabled) {
     background: #B0FF8F !important;
     box-shadow: 
-        0 6px 24px rgba(138, 253, 129, 0.4),
+        0 6px 24px rgba(197, 255, 167, 0.4),
         inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
     transform: translateY(-1px) scale(1.02) !important;
 }
@@ -975,7 +975,7 @@ const dashboardStyles = `
     box-shadow: 
         0 12px 48px rgba(0, 0, 0, 0.5),
         0 4px 16px rgba(0, 0, 0, 0.4),
-        0 0 0 1px rgba(138, 253, 129, 0.2),
+        0 0 0 1px rgba(197, 255, 167, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
 }
 
@@ -988,7 +988,7 @@ const dashboardStyles = `
 
 .transaction-history-table thead tr {
     background: linear-gradient(180deg, #454646 0%, #3a3a3a 100%) !important;
-    border-bottom: var(--border-medium) solid rgba(138, 253, 129, 0.3) !important;
+    border-bottom: var(--border-medium) solid rgba(197, 255, 167, 0.3) !important;
 }
 
 .transaction-history-table thead th {
@@ -1013,11 +1013,11 @@ const dashboardStyles = `
 .transaction-history-table tbody tr:hover {
     background: linear-gradient(
         90deg,
-        rgba(138, 253, 129, 0.05) 0%,
-        rgba(138, 253, 129, 0.1) 50%,
-        rgba(138, 253, 129, 0.05) 100%
+        rgba(197, 255, 167, 0.05) 0%,
+        rgba(197, 255, 167, 0.1) 50%,
+        rgba(197, 255, 167, 0.05) 100%
     ) !important;
-    box-shadow: inset 2px 0 0 #8afd81 !important;
+    box-shadow: inset 2px 0 0 #C5FFA7 !important;
     transform: translateX(2px) !important;
 }
 
@@ -1030,10 +1030,10 @@ const dashboardStyles = `
 
 .transaction-amount,
 .transaction-reward {
-    color: #8afd81;
+    color: #C5FFA7;
     font-weight: var(--font-semibold);
     font-family: var(--font-mono);
-    text-shadow: 0 0 10px rgba(138, 253, 129, 0.2);
+    text-shadow: 0 0 10px rgba(197, 255, 167, 0.2);
 }
 
 .transaction-history-total {
@@ -1048,15 +1048,15 @@ const dashboardStyles = `
 }
 
 .transaction-history-total .total-amount {
-    color: #8afd81;
+    color: #C5FFA7;
     margin-left: var(--space-2);
-    text-shadow: 0 0 10px rgba(138, 253, 129, 0.2);
+    text-shadow: 0 0 10px rgba(197, 255, 167, 0.2);
 }
 
 /* Button Transaction History - Premium Style */
 .btn.btn-transaction-history,
 button.btn-transaction-history {
-    background-color: #8afd81 !important;
+    background-color: #C5FFA7 !important;
     color: #000 !important;
     border-radius: 30px !important;
     font-weight: 600 !important;
@@ -1070,7 +1070,7 @@ button.btn-transaction-history:hover,
 .btn.btn-transaction-history:active,
 button.btn-transaction-history:active {
     background-color: #B0FF8F !important;
-    box-shadow: 0 0 12px rgba(138, 253, 129, 0.55) !important;
+    box-shadow: 0 0 12px rgba(197, 255, 167, 0.55) !important;
     transform: translateY(-1px) !important;
     color: #000 !important;
 }
@@ -1190,9 +1190,9 @@ function initWalletPerformanceChart() {
 
     // Create gradients
     const btcGradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 201);
-    btcGradient.addColorStop(0, 'rgba(138, 253, 129, 0.3)');
-    btcGradient.addColorStop(0.5, 'rgba(138, 253, 129, 0.1)');
-    btcGradient.addColorStop(1, 'rgba(138, 253, 129, 0)');
+    btcGradient.addColorStop(0, 'rgba(197, 255, 167, 0.3)');
+    btcGradient.addColorStop(0.5, 'rgba(197, 255, 167, 0.1)');
+    btcGradient.addColorStop(1, 'rgba(197, 255, 167, 0)');
 
     const transactionGradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 201);
     transactionGradient.addColorStop(0, 'rgba(136, 136, 136, 0.25)');
@@ -1207,14 +1207,14 @@ function initWalletPerformanceChart() {
                 {
                     label: 'BTC Wallet',
                     data: [0.025, 0.027, 0.029, 0.031, 0.030, 0.032, 0.031, 0.030, 0.032, 0.031, 0.031, 0.032],
-                    borderColor: '#8afd81',
+                    borderColor: '#C5FFA7',
                     backgroundColor: btcGradient,
                     borderWidth: 3,
                     fill: true,
                     tension: 0.4,
                     pointRadius: 0,
                     pointHoverRadius: 8,
-                    pointHoverBackgroundColor: '#8afd81',
+                    pointHoverBackgroundColor: '#C5FFA7',
                     pointHoverBorderColor: '#FFFFFF',
                     pointHoverBorderWidth: 3,
                     yAxisID: 'y'
@@ -1249,11 +1249,11 @@ function initWalletPerformanceChart() {
                 },
                 tooltip: {
                     backgroundColor: 'rgba(0, 0, 0, 0.95)',
-                    titleColor: '#8afd81',
+                    titleColor: '#C5FFA7',
                     titleFont: { size: 13, family: 'Inter', weight: '700' },
                     bodyColor: '#E8E8E8',
                     bodyFont: { size: 12, family: 'Inter', weight: '500' },
-                    borderColor: 'rgba(138, 253, 129, 0.3)',
+                    borderColor: 'rgba(197, 255, 167, 0.3)',
                     borderWidth: 1,
                     padding: 14,
                     cornerRadius: 8,
@@ -1319,8 +1319,8 @@ function initWalletBarChart() {
 
     // Créer des gradients similaires au graphique existant
     const btcGradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 201);
-    btcGradient.addColorStop(0, 'rgba(138, 253, 129, 0.8)');
-    btcGradient.addColorStop(1, 'rgba(138, 253, 129, 0.3)');
+    btcGradient.addColorStop(0, 'rgba(197, 255, 167, 0.8)');
+    btcGradient.addColorStop(1, 'rgba(197, 255, 167, 0.3)');
 
     const transactionGradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 201);
     transactionGradient.addColorStop(0, 'rgba(136, 136, 136, 0.8)');
@@ -1335,7 +1335,7 @@ function initWalletBarChart() {
                     label: 'BTC Wallet',
                     data: [0.025, 0.027, 0.029, 0.031, 0.030, 0.032, 0.031, 0.030, 0.032, 0.031, 0.031, 0.032],
                     backgroundColor: btcGradient,
-                    borderColor: '#8afd81',
+                    borderColor: '#C5FFA7',
                     borderWidth: 2,
                     borderRadius: 4,
                     borderSkipped: false,
@@ -1364,11 +1364,11 @@ function initWalletBarChart() {
                 },
                 tooltip: {
                     backgroundColor: 'rgba(0, 0, 0, 0.95)',
-                    titleColor: '#8afd81',
+                    titleColor: '#C5FFA7',
                     titleFont: { size: 13, family: 'Inter', weight: '700' },
                     bodyColor: '#E8E8E8',
                     bodyFont: { size: 12, family: 'Inter', weight: '500' },
-                    borderColor: 'rgba(138, 253, 129, 0.3)',
+                    borderColor: 'rgba(197, 255, 167, 0.3)',
                     borderWidth: 1,
                     padding: 14,
                     cornerRadius: 8,

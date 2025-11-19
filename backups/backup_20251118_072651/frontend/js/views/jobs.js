@@ -129,12 +129,12 @@ export const jobsStyles = `
     border: 1px solid var(--border-color);
     border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(138, 253, 129, 0.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(197, 255, 167, 0.05);
     transition: all var(--duration-normal) var(--ease-in-out);
 }
 
 .table-container:hover {
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(138, 253, 129, 0.1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(197, 255, 167, 0.1);
 }
 
 .table {
@@ -168,7 +168,7 @@ export const jobsStyles = `
 
 .table tbody tr:hover {
     background: var(--bg-hover);
-    box-shadow: inset 0 0 0 1px rgba(138, 253, 129, 0.1);
+    box-shadow: inset 0 0 0 1px rgba(197, 255, 167, 0.1);
 }
 
 .text-center {
@@ -181,13 +181,13 @@ export const jobsStyles = `
 
 code {
     font-family: 'Courier New', monospace;
-    background: rgba(138, 253, 129, 0.1);
+    background: rgba(197, 255, 167, 0.1);
     padding: 2px 6px;
     border-radius: 3px;
     font-size: 12px;
     color: var(--accent-primary);
-    text-shadow: 0 0 8px rgba(138, 253, 129, 0.2);
-    border: 1px solid rgba(138, 253, 129, 0.2);
+    text-shadow: 0 0 8px rgba(197, 255, 167, 0.2);
+    border: 1px solid rgba(197, 255, 167, 0.2);
 }
 
 .badge-dot::before {

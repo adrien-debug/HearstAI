@@ -14,7 +14,7 @@
        ==================================== */
     
     /* Couleurs principales */
-    --primary-green: #8afd81;          /* Accent principal (CTA, focus, highlights) */
+    --primary-green: #C5FFA7;          /* Accent principal (CTA, focus, highlights) */
     --primary-dark: #000000;           /* Fond principal */
     --primary-grey: #1a1a1a;          /* Fond secondaire (cards, panels) */
     
@@ -107,8 +107,8 @@
     --shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.6);
     
     /* Glow green (accent) */
-    --glow-green: 0 0 20px rgba(138, 253, 129, 0.3);
-    --glow-green-strong: 0 0 30px rgba(138, 253, 129, 0.5);
+    --glow-green: 0 0 20px rgba(197, 255, 167, 0.3);
+    --glow-green-strong: 0 0 30px rgba(197, 255, 167, 0.5);
     
     /* ====================================
        ANIMATIONS & TRANSITIONS
@@ -245,13 +245,13 @@ body {
 
 .nav-item:hover {
     background: rgba(31, 49, 33, 0.3) !important;
-    color: #8AFD81 !important;
+    color: #C5FFA7 !important;
 }
 
 .nav-item.active {
     background: #1F3121 !important;
-    color: #8AFD81 !important;
-    border-left: 4px solid #8AFD81;
+    color: #C5FFA7 !important;
+    border-left: 4px solid #C5FFA7;
     padding-left: calc(var(--space-6) - 4px);
     font-weight: var(--font-semibold);
     letter-spacing: -0.01em;
@@ -278,12 +278,12 @@ body {
 .nav-item:hover .nav-icon,
 .nav-item.active .nav-icon {
     opacity: 1;
-    color: #8AFD81;
+    color: #C5FFA7;
 }
 
 .nav-item:hover .nav-label,
 .nav-item.active .nav-label {
-    color: #8AFD81;
+    color: #C5FFA7;
 }
 
 .nav-label {

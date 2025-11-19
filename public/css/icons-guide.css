@@ -1,0 +1,255 @@
+/* ====================================
+   ICONS BEST PRACTICES GUIDE
+   HEARST AI - 24x24px Outline Rounded
+   ==================================== */
+
+/* ====================================
+   ICON CONTAINER BASE
+   ==================================== */
+
+.icon-container {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--icon-size-standard);
+    height: var(--icon-size-standard);
+    flex-shrink: 0;
+}
+
+/* ====================================
+   ICON SVG BASE STYLES
+   ==================================== */
+
+.icon-container svg,
+.icon-svg {
+    width: 100%;
+    height: 100%;
+    stroke: var(--icon-color-default);
+    fill: none;
+    stroke-width: var(--icon-stroke-width);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: stroke var(--transition-fast);
+}
+
+/* ====================================
+   ICON COLOR VARIANTS
+   ==================================== */
+
+.icon-accent svg,
+.icon-accent {
+    stroke: var(--color-text-accent);
+}
+
+.icon-secondary svg,
+.icon-secondary {
+    stroke: var(--color-text-secondary-2);
+}
+
+.icon-default svg,
+.icon-default {
+    stroke: var(--color-text-default);
+}
+
+.icon-negative svg,
+.icon-negative {
+    stroke: var(--color-text-negative);
+}
+
+.icon-error svg,
+.icon-error {
+    stroke: var(--color-text-error);
+}
+
+.icon-warning svg,
+.icon-warning {
+    stroke: var(--color-text-warning);
+}
+
+.icon-success svg,
+.icon-success {
+    stroke: var(--color-text-success);
+}
+
+/* ====================================
+   ICON SIZE VARIANTS
+   ==================================== */
+
+.icon-small {
+    width: 16px;
+    height: 16px;
+}
+
+.icon-medium {
+    width: var(--icon-size-standard);
+    height: var(--icon-size-standard);
+}
+
+.icon-large {
+    width: 32px;
+    height: 32px;
+}
+
+.icon-small svg,
+.icon-medium svg,
+.icon-large svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* ====================================
+   ICON IN BUTTONS
+   ==================================== */
+
+.btn-example .icon-container {
+    width: 20px;
+    height: 20px;
+}
+
+.btn-example .icon-container svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* ====================================
+   ICON IN NAVIGATION
+   ==================================== */
+
+.nav-icon {
+    width: var(--icon-size-standard);
+    height: var(--icon-size-standard);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-icon svg {
+    width: var(--icon-size-standard);
+    height: var(--icon-size-standard);
+    stroke: currentColor;
+    fill: none;
+    stroke-width: var(--icon-stroke-width);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* ====================================
+   ICON ANIMATIONS
+   ==================================== */
+
+.icon-rotate {
+    transition: transform var(--transition-normal);
+}
+
+.icon-rotate:hover {
+    transform: rotate(90deg);
+}
+
+.icon-scale {
+    transition: transform var(--transition-fast);
+}
+
+.icon-scale:hover {
+    transform: scale(1.1);
+}
+
+.icon-pulse {
+    animation: icon-pulse 2s ease-in-out infinite;
+}
+
+@keyframes icon-pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* ====================================
+   ICON USAGE EXAMPLES
+   ==================================== */
+
+/* Example: Icon with text */
+.icon-with-text {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-3);
+}
+
+.icon-with-text .icon-container {
+    flex-shrink: 0;
+}
+
+/* Example: Icon button */
+.icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: var(--border-width-thin) solid var(--border-color-default);
+    border-radius: var(--radius-cards);
+    background: var(--color-surface-default);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+}
+
+.icon-button:hover {
+    background: var(--color-surface-subtle-green);
+    border-color: var(--border-color-hover);
+}
+
+.icon-button .icon-container {
+    width: var(--icon-size-standard);
+    height: var(--icon-size-standard);
+}
+
+/* Example: Icon in badge */
+.badge-with-icon {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    padding: var(--spacing-2) var(--spacing-4);
+    border-radius: var(--radius-rounded);
+    background: var(--color-surface-subtle-green);
+}
+
+.badge-with-icon .icon-container {
+    width: 16px;
+    height: 16px;
+}
+
+.badge-with-icon .icon-container svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* ====================================
+   ICON INJECTION BEST PRACTICE
+   ==================================== */
+
+/*
+HTML Structure:
+<div class="icon-container icon-accent">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="..." />
+    </svg>
+</div>
+
+Or with data-icon attribute (if using JS icon system):
+<span class="icon-container" data-icon="home"></span>
+
+JavaScript injection example:
+function injectIcon(container, iconName) {
+    const svg = getIconSVG(iconName); // Your icon fetching function
+    container.innerHTML = svg;
+    container.querySelector('svg').setAttribute('viewBox', '0 0 24 24');
+    container.querySelector('svg').style.stroke = 'currentColor';
+    container.querySelector('svg').style.fill = 'none';
+    container.querySelector('svg').style.strokeWidth = '1.5';
+    container.querySelector('svg').style.strokeLinecap = 'round';
+    container.querySelector('svg').style.strokeLinejoin = 'round';
+}
+*/
+

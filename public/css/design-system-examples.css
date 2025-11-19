@@ -1,0 +1,396 @@
+/* ====================================
+   DESIGN SYSTEM EXAMPLES
+   Component Style Examples
+   ==================================== */
+
+/* ====================================
+   CARD COMPONENT EXAMPLE
+   ==================================== */
+
+.card-example {
+    background: var(--color-surface-default);
+    border: var(--border-width-thin) solid var(--border-color-default);
+    border-radius: var(--radius-cards);
+    padding: var(--spacing-6);
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-normal);
+}
+
+.card-example:hover {
+    border-color: var(--border-color-hover);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.card-example-header {
+    margin-bottom: var(--spacing-5);
+    padding-bottom: var(--spacing-5);
+    border-bottom: var(--border-width-thin) solid var(--border-color-default);
+}
+
+.card-example-title {
+    font-family: var(--font-family-primary);
+    font-size: var(--typography-section-title-size);
+    font-weight: var(--typography-section-title-weight);
+    line-height: var(--typography-section-title-line-height);
+    letter-spacing: var(--typography-section-title-letter-spacing);
+    color: var(--color-text-default);
+    margin: 0;
+}
+
+.card-example-body {
+    font-family: var(--font-family-primary);
+    font-size: var(--typography-body-size);
+    font-weight: var(--typography-body-weight);
+    line-height: var(--typography-body-line-height);
+    color: var(--color-text-secondary-1);
+    margin-bottom: var(--spacing-5);
+}
+
+.card-example-footer {
+    display: flex;
+    gap: var(--spacing-3);
+    margin-top: var(--spacing-5);
+    padding-top: var(--spacing-5);
+    border-top: var(--border-width-thin) solid var(--border-color-default);
+}
+
+/* ====================================
+   BUTTON COMPONENT EXAMPLE
+   ==================================== */
+
+.btn-example {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-3);
+    padding: var(--spacing-3) var(--spacing-6);
+    border: var(--border-width-thin) solid transparent;
+    border-radius: var(--radius-cards);
+    font-family: var(--font-family-primary);
+    font-size: var(--typography-body-size);
+    font-weight: var(--typography-body-bold-weight);
+    line-height: var(--typography-body-line-height);
+    color: var(--color-text-default);
+    background: var(--color-surface-accent);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    text-decoration: none;
+}
+
+.btn-example:hover {
+    background: var(--color-primary-light-green-5);
+    box-shadow: var(--shadow-green-glow);
+    transform: translateY(-1px);
+}
+
+.btn-example:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-example-secondary {
+    background: var(--color-surface-default);
+    border-color: var(--border-color-default);
+    color: var(--color-text-default);
+}
+
+.btn-example-secondary:hover {
+    background: var(--color-surface-subtle-green);
+    border-color: var(--border-color-hover);
+}
+
+.btn-example-icon {
+    width: var(--icon-size-standard);
+    height: var(--icon-size-standard);
+    stroke: currentColor;
+    fill: none;
+    stroke-width: var(--icon-stroke-width);
+}
+
+/* ====================================
+   INPUT COMPONENT EXAMPLE
+   ==================================== */
+
+.input-example {
+    width: 100%;
+    padding: var(--spacing-3) var(--spacing-5);
+    border: var(--border-width-thin) solid var(--border-color-default);
+    border-radius: var(--radius-cards);
+    font-family: var(--font-family-primary);
+    font-size: var(--typography-body-size);
+    font-weight: var(--typography-body-weight);
+    line-height: var(--typography-body-line-height);
+    color: var(--color-text-default);
+    background: var(--color-surface-default);
+    transition: all var(--transition-normal);
+}
+
+.input-example:focus {
+    outline: none;
+    border-color: var(--border-color-active);
+    box-shadow: 0 0 0 3px rgba(163, 255, 139, 0.1);
+}
+
+.input-example::placeholder {
+    color: var(--color-text-tertiary);
+}
+
+/* ====================================
+   BADGE COMPONENT EXAMPLE
+   ==================================== */
+
+.badge-example {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    padding: var(--spacing-2) var(--spacing-4);
+    border-radius: var(--radius-rounded);
+    font-family: var(--font-family-primary);
+    font-size: var(--typography-caption-size);
+    font-weight: var(--typography-caption-bold-weight);
+    line-height: var(--typography-caption-line-height);
+    background: var(--color-surface-subtle-green);
+    color: var(--color-text-default);
+}
+
+.badge-example-accent {
+    background: var(--color-surface-accent);
+    color: var(--color-text-default);
+}
+
+.badge-example-secondary {
+    background: var(--color-surface-grey);
+    color: var(--color-text-secondary-1);
+}
+
+/* ====================================
+   ICON COMPONENT EXAMPLE
+   ==================================== */
+
+.icon-example {
+    width: var(--icon-size-standard);
+    height: var(--icon-size-standard);
+    stroke: var(--icon-color-default);
+    fill: none;
+    stroke-width: var(--icon-stroke-width);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex-shrink: 0;
+}
+
+.icon-example-accent {
+    stroke: var(--color-text-accent);
+}
+
+.icon-example-secondary {
+    stroke: var(--color-text-secondary-2);
+}
+
+/* ====================================
+   DECORATIVE PATTERN EXAMPLES
+   ==================================== */
+
+.pattern-spherical {
+    background-image: var(--pattern-spherical-mesh);
+    background-repeat: repeat;
+    background-size: 40px 40px;
+}
+
+.pattern-stacked-squares {
+    background-image: var(--pattern-stacked-squares);
+    background-repeat: repeat;
+    background-size: 40px 40px;
+}
+
+.pattern-cube-mesh {
+    background-image: var(--pattern-cube-mesh);
+    background-repeat: repeat;
+    background-size: 60px 60px;
+}
+
+.pattern-separator {
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        var(--border-color-default) 20%,
+        var(--border-color-default) 80%,
+        transparent
+    );
+    margin: var(--spacing-6) 0;
+}
+
+/* ====================================
+   GRID SYSTEM EXAMPLE
+   ==================================== */
+
+.grid-example {
+    display: grid;
+    grid-template-columns: repeat(var(--grid-columns), 1fr);
+    gap: var(--grid-gutter);
+    max-width: var(--grid-container-max-width);
+    margin: 0 auto;
+    padding: 0 var(--spacing-6);
+}
+
+.grid-example-item {
+    background: var(--color-surface-default);
+    border: var(--border-width-thin) solid var(--border-color-default);
+    border-radius: var(--radius-cards);
+    padding: var(--spacing-6);
+}
+
+.grid-example-item-1 { grid-column: span 1; }
+.grid-example-item-2 { grid-column: span 2; }
+.grid-example-item-3 { grid-column: span 3; }
+.grid-example-item-4 { grid-column: span 4; }
+.grid-example-item-6 { grid-column: span 6; }
+.grid-example-item-12 { grid-column: span 12; }
+
+/* ====================================
+   SURFACE VARIATIONS
+   ==================================== */
+
+.surface-default {
+    background: var(--color-surface-default);
+    color: var(--color-text-default);
+}
+
+.surface-subtle-green {
+    background: var(--color-surface-subtle-green);
+    color: var(--color-text-default);
+}
+
+.surface-green-light {
+    background: var(--color-surface-green-light);
+    color: var(--color-text-default);
+}
+
+.surface-accent {
+    background: var(--color-surface-accent);
+    color: var(--color-text-default);
+}
+
+.surface-overlay-1 {
+    background: var(--color-surface-overlay-1);
+}
+
+.surface-overlay-2 {
+    background: var(--color-surface-overlay-2);
+}
+
+.surface-overlay-3 {
+    background: var(--color-surface-overlay-3);
+}
+
+.surface-overlay-4 {
+    background: var(--color-surface-overlay-4);
+}
+
+/* ====================================
+   TEXT COLOR VARIATIONS
+   ==================================== */
+
+.text-default {
+    color: var(--color-text-default);
+}
+
+.text-negative {
+    color: var(--color-text-negative);
+}
+
+.text-accent {
+    color: var(--color-text-accent);
+}
+
+.text-accent-lighter {
+    color: var(--color-text-accent-lighter);
+}
+
+.text-accent-darker {
+    color: var(--color-text-accent-darker);
+}
+
+.text-secondary-1 {
+    color: var(--color-text-secondary-1);
+}
+
+.text-secondary-2 {
+    color: var(--color-text-secondary-2);
+}
+
+.text-secondary-3 {
+    color: var(--color-text-secondary-3);
+}
+
+.text-tertiary {
+    color: var(--color-text-tertiary);
+}
+
+.text-auxiliary {
+    color: var(--color-text-auxiliary);
+}
+
+.text-error {
+    color: var(--color-text-error);
+}
+
+.text-warning {
+    color: var(--color-text-warning);
+}
+
+.text-success {
+    color: var(--color-text-success);
+}
+
+/* ====================================
+   SPACING UTILITIES
+   ==================================== */
+
+.m-0 { margin: var(--spacing-0); }
+.m-1 { margin: var(--spacing-1); }
+.m-2 { margin: var(--spacing-2); }
+.m-3 { margin: var(--spacing-3); }
+.m-4 { margin: var(--spacing-4); }
+.m-5 { margin: var(--spacing-5); }
+.m-6 { margin: var(--spacing-6); }
+.m-7 { margin: var(--spacing-7); }
+.m-8 { margin: var(--spacing-8); }
+.m-9 { margin: var(--spacing-9); }
+.m-10 { margin: var(--spacing-10); }
+
+.p-0 { padding: var(--spacing-0); }
+.p-1 { padding: var(--spacing-1); }
+.p-2 { padding: var(--spacing-2); }
+.p-3 { padding: var(--spacing-3); }
+.p-4 { padding: var(--spacing-4); }
+.p-5 { padding: var(--spacing-5); }
+.p-6 { padding: var(--spacing-6); }
+.p-7 { padding: var(--spacing-7); }
+.p-8 { padding: var(--spacing-8); }
+.p-9 { padding: var(--spacing-9); }
+.p-10 { padding: var(--spacing-10); }
+
+.gap-0 { gap: var(--spacing-0); }
+.gap-1 { gap: var(--spacing-1); }
+.gap-2 { gap: var(--spacing-2); }
+.gap-3 { gap: var(--spacing-3); }
+.gap-4 { gap: var(--spacing-4); }
+.gap-5 { gap: var(--spacing-5); }
+.gap-6 { gap: var(--spacing-6); }
+.gap-7 { gap: var(--spacing-7); }
+.gap-8 { gap: var(--spacing-8); }
+.gap-9 { gap: var(--spacing-9); }
+.gap-10 { gap: var(--spacing-10); }
+
+/* ====================================
+   RADIUS UTILITIES
+   ==================================== */
+
+.radius-flat { border-radius: var(--radius-flat); }
+.radius-small-cards { border-radius: var(--radius-small-cards); }
+.radius-cards { border-radius: var(--radius-cards); }
+.radius-sections { border-radius: var(--radius-sections); }
+.radius-rounded { border-radius: var(--radius-rounded); }
+

@@ -8,10 +8,13 @@
     <!-- Design System Tokens - Charger en premier -->
     <link rel="stylesheet" href="css/design-tokens.css">
     <!-- Note: Pour charger FK Grotesk Trial, ajouter: <link href="[URL_FONT]" rel="stylesheet"> -->
+    <link rel="stylesheet" href="css/components-examples.css">
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/cockpit.css">
     <link rel="stylesheet" href="css/projections.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/electricity.css">
     <link rel="stylesheet" href="css/override-cockpit.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -67,10 +70,11 @@
             <!-- Header -->
             <header class="header" id="header">
                 <div class="header-left">
+                    <img src="assets/images/logo.png" alt="HearstAI Logo" class="header-logo" />
                     <h2 class="page-title" id="page-title">Dashboard</h2>
                 </div>
                 <div class="header-right">
-                    <button class="btn btn-primary" id="btn-new-action" style="display: none;">
+                    <button class="btn-menu-premium" id="btn-new-action" style="display: none;">
                         <span>+ New</span>
                     </button>
                     <button class="user-badge" id="admin-btn" data-view="admin-panel" style="background: transparent; border: none; cursor: pointer;">
@@ -109,15 +113,27 @@
         
         // Error handler for unhandled errors
         window.addEventListener('error', (event) => {
-            console.error('❌ Global error:', event.error);
+            // Ignore errors that are null or don't have useful information
+            if (!event.error && !event.message) {
+                return;
+            }
+            
+            const errorMessage = event.error?.message || event.message || 'Unknown error';
+            const errorStack = event.error?.stack || '';
+            
+            // Only log meaningful errors
+            if (errorMessage !== 'null' && errorMessage !== 'undefined') {
+                console.error('❌ Global error:', event.error || errorMessage);
+            }
+            
             const contentArea = document.getElementById('content-area');
-            if (contentArea && !contentArea.querySelector('.dashboard-view')) {
+            if (contentArea && !contentArea.querySelector('.dashboard-view') && !contentArea.querySelector('.card')) {
                 contentArea.innerHTML = `
                     <div class="card">
                         <div class="card-body">
                             <h3 class="text-danger">JavaScript Error</h3>
-                            <p class="text-secondary">${event.error?.message || 'Unknown error'}</p>
-                            <pre style="background: var(--primary-grey); padding: var(--space-4); border-radius: var(--radius-md); color: var(--text-secondary); font-size: var(--text-sm); overflow: auto;">${event.error?.stack || ''}</pre>
+                            <p class="text-secondary">${errorMessage}</p>
+                            ${errorStack ? `<pre style="background: var(--primary-grey); padding: var(--space-4); border-radius: var(--radius-md); color: var(--text-secondary); font-size: var(--text-sm); overflow: auto;">${errorStack}</pre>` : ''}
                             <button class="btn btn-primary mt-md" onclick="location.reload()">Reload Page</button>
                         </div>
                     </div>

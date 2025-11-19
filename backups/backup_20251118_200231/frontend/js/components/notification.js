@@ -153,7 +153,7 @@ const notificationStyles = `
 
 .notification {
     background: #1A1A1A;
-    border: 1px solid rgba(138, 253, 129, 0.08);
+    border: 1px solid rgba(197, 255, 167, 0.08);
     border-radius: 16px;
     padding: 16px;
     display: flex;

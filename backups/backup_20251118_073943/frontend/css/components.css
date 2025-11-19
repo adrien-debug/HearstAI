@@ -96,7 +96,7 @@ button[type="submit"]:disabled {
 /* Button Transaction History - Premium Style */
 .btn.btn-transaction-history,
 button.btn-transaction-history {
-    background-color: #8AFD81 !important;
+    background-color: #C5FFA7 !important;
     color: #000 !important;
     border-radius: 30px !important;
     font-weight: 600 !important;
@@ -110,7 +110,7 @@ button.btn-transaction-history:hover,
 .btn.btn-transaction-history:active,
 button.btn-transaction-history:active {
     background-color: #70D467 !important;
-    box-shadow: 0 0 12px rgba(138, 253, 129, 0.55) !important;
+    box-shadow: 0 0 12px rgba(197, 255, 167, 0.55) !important;
     transform: translateY(-1px) !important;
     color: #000 !important;
 }
@@ -134,7 +134,7 @@ button.btn-transaction-history:active {
 }
 
 .btn-secondary:hover:not(:disabled) {
-    background: rgba(138, 253, 129, 0.1);
+    background: rgba(197, 255, 167, 0.1);
     box-shadow: var(--glow-green);
     transform: translateY(-1px);
 }
@@ -207,7 +207,7 @@ button.btn-transaction-history:active {
     border: var(--border-thin) solid var(--grey-100);
     border-radius: var(--radius-lg);
     padding: var(--space-6);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(138, 253, 129, 0.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(197, 255, 167, 0.05);
     transition: all var(--duration-normal) var(--ease-in-out);
 }
 
@@ -215,8 +215,8 @@ button.btn-transaction-history:active {
 .panel:hover,
 .widget:hover,
 .box:hover {
-    border-color: rgba(138, 253, 129, 0.3);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(138, 253, 129, 0.1);
+    border-color: rgba(197, 255, 167, 0.3);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(197, 255, 167, 0.1);
     transform: translateY(-2px);
 }
 
@@ -272,12 +272,12 @@ button.btn-transaction-history:active {
     border: var(--border-thin) solid var(--grey-100);
     border-radius: var(--radius-lg);
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(138, 253, 129, 0.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(197, 255, 167, 0.05);
     transition: all var(--duration-normal) var(--ease-in-out);
 }
 
 .table-container:hover {
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(138, 253, 129, 0.1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(197, 255, 167, 0.1);
 }
 
 .table {
@@ -315,7 +315,7 @@ button.btn-transaction-history:active {
 
 .table tbody tr:hover {
     background: var(--grey-200);
-    box-shadow: inset 0 0 0 1px rgba(138, 253, 129, 0.1);
+    box-shadow: inset 0 0 0 1px rgba(197, 255, 167, 0.1);
 }
 
 /* ====================================
@@ -359,11 +359,11 @@ button.btn-transaction-history:active {
 }
 
 .badge-green {
-    background: rgba(138, 253, 129, 0.15);
+    background: rgba(197, 255, 167, 0.15);
     color: var(--primary-green);
     border: var(--border-thin) solid var(--primary-green);
-    text-shadow: 0 0 8px rgba(138, 253, 129, 0.3);
-    box-shadow: 0 0 8px rgba(138, 253, 129, 0.1);
+    text-shadow: 0 0 8px rgba(197, 255, 167, 0.3);
+    box-shadow: 0 0 8px rgba(197, 255, 167, 0.1);
 }
 
 .badge-grey {
@@ -431,7 +431,7 @@ input[type="number"]:hover,
 input[type="date"]:hover,
 textarea:hover,
 select:hover {
-    border-color: rgba(138, 253, 129, 0.3);
+    border-color: rgba(197, 255, 167, 0.3);
     background: rgba(10, 10, 10, 0.8);
 }
 
@@ -448,7 +448,7 @@ textarea:focus,
 select:focus {
     outline: none;
     border-color: var(--primary-green);
-    box-shadow: 0 0 0 3px rgba(138, 253, 129, 0.1);
+    box-shadow: 0 0 0 3px rgba(197, 255, 167, 0.1);
 }
 
 .input::placeholder,

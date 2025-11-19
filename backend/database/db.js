@@ -1,6 +1,3 @@
-// Database Connection Module
-// SQLite3 with better-sqlite3 for synchronous operations
-
 const Database = require('better-sqlite3');
 const path = require('path');
 const fs = require('fs');
@@ -8,32 +5,18 @@ const fs = require('fs');
 class DatabaseManager {
     constructor() {
         this.db = null;
-        this.dbPath = path.join(__dirname, '../../storage/claude-cicd.db');
+        this.dbPath = path.join(__dirname, '../../data/hearstai.db');
     }
 
-    /**
-     * Initialize database connection and create tables
-     */
     initialize() {
         try {
-            // Ensure storage directory exists
-            const storageDir = path.dirname(this.dbPath);
-            if (!fs.existsSync(storageDir)) {
-                fs.mkdirSync(storageDir, { recursive: true });
+            const dataDir = path.dirname(this.dbPath);
+            if (!fs.existsSync(dataDir)) {
+                fs.mkdirSync(dataDir, { recursive: true });
             }
-
-            // Open database connection
             this.db = new Database(this.dbPath);
-            
-            // Enable foreign keys
-            this.db.pragma('foreign_keys = ON');
-            
-            // Enable WAL mode for better concurrency
             this.db.pragma('journal_mode = WAL');
-
-            // Create tables from schema
             this.createTables();
-
             console.log('✅ Database initialized successfully');
             return true;
         } catch (error) {
@@ -42,99 +25,60 @@ class DatabaseManager {
         }
     }
 
-    /**
-     * Create tables from schema.sql
-     */
     createTables() {
-        const schemaPath = path.join(__dirname, 'schema.sql');
-        const schema = fs.readFileSync(schemaPath, 'utf8');
-        
-        // Execute schema (supports multiple statements)
-        this.db.exec(schema);
-        
+        this.db.exec(`
+            CREATE TABLE IF NOT EXISTS projects (
+                id TEXT PRIMARY KEY, name TEXT NOT NULL, description TEXT,
+                type TEXT NOT NULL, status TEXT DEFAULT 'active',
+                repo_type TEXT NOT NULL, repo_url TEXT, repo_branch TEXT,
+                local_path TEXT, stable_version_id TEXT,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+            );
+            CREATE TABLE IF NOT EXISTS versions (
+                id TEXT PRIMARY KEY, project_id TEXT NOT NULL,
+                label TEXT NOT NULL, description TEXT,
+                parent_version_id TEXT, is_stable INTEGER DEFAULT 0,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (project_id) REFERENCES projects(id)
+            );
+            CREATE TABLE IF NOT EXISTS jobs (
+                id TEXT PRIMARY KEY, project_id TEXT NOT NULL,
+                type TEXT NOT NULL, status TEXT DEFAULT 'pending',
+                input_prompt TEXT NOT NULL, output_result TEXT,
+                prompt_profile_id TEXT, context_data TEXT, metadata TEXT,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                started_at TEXT, completed_at TEXT,
+                FOREIGN KEY (project_id) REFERENCES projects(id)
+            );
+            CREATE TABLE IF NOT EXISTS job_logs (
+                id TEXT PRIMARY KEY, job_id TEXT NOT NULL,
+                level TEXT NOT NULL, message TEXT NOT NULL, metadata TEXT,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (job_id) REFERENCES jobs(id)
+            );
+            CREATE TABLE IF NOT EXISTS version_files (
+                id TEXT PRIMARY KEY, version_id TEXT NOT NULL,
+                file_path TEXT NOT NULL, content TEXT NOT NULL,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (version_id) REFERENCES versions(id)
+            );
+        `);
         console.log('✅ Database tables created/verified');
     }
 
-    /**
-     * Get database instance
-     */
     getDb() {
-        if (!this.db) {
-            throw new Error('Database not initialized. Call initialize() first.');
-        }
+        if (!this.db) throw new Error('Database not initialized');
         return this.db;
     }
 
-    /**
-     * Close database connection
-     */
     close() {
         if (this.db) {
             this.db.close();
-            this.db = null;
             console.log('✅ Database connection closed');
-        }
-    }
-
-    /**
-     * Execute a query
-     */
-    query(sql, params = []) {
-        return this.db.prepare(sql).all(params);
-    }
-
-    /**
-     * Execute a single row query
-     */
-    queryOne(sql, params = []) {
-        return this.db.prepare(sql).get(params);
-    }
-
-    /**
-     * Execute an insert/update/delete
-     */
-    run(sql, params = []) {
-        return this.db.prepare(sql).run(params);
-    }
-
-    /**
-     * Begin transaction
-     */
-    beginTransaction() {
-        return this.db.prepare('BEGIN TRANSACTION').run();
-    }
-
-    /**
-     * Commit transaction
-     */
-    commit() {
-        return this.db.prepare('COMMIT').run();
-    }
-
-    /**
-     * Rollback transaction
-     */
-    rollback() {
-        return this.db.prepare('ROLLBACK').run();
-    }
-
-    /**
-     * Execute in transaction
-     */
-    transaction(callback) {
-        try {
-            this.beginTransaction();
-            const result = callback();
-            this.commit();
-            return result;
-        } catch (error) {
-            this.rollback();
-            throw error;
         }
     }
 }
 
-// Singleton instance
 const dbManager = new DatabaseManager();
-
 module.exports = dbManager;

@@ -77,7 +77,7 @@ export const adminPanelStyles = `
         }
 
         .kpi-card:hover {
-            border-color: rgba(138, 253, 129, 0.3);
+            border-color: rgba(197, 255, 167, 0.3);
             box-shadow: var(--shadow-md);
             transform: translateY(-4px);
         }
@@ -107,9 +107,9 @@ export const adminPanelStyles = `
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(138, 253, 129, 0.1);
+            background: rgba(197, 255, 167, 0.1);
             border-radius: var(--radius-md);
-            border: 1px solid rgba(138, 253, 129, 0.2);
+            border: 1px solid rgba(197, 255, 167, 0.2);
         }
 
         .kpi-icon svg {
@@ -139,7 +139,7 @@ export const adminPanelStyles = `
         }
 
         .trend-positive {
-            background: rgba(138, 253, 129, 0.15);
+            background: rgba(197, 255, 167, 0.15);
             color: var(--primary-green);
         }
 
@@ -209,7 +209,7 @@ export const adminPanelStyles = `
         }
 
         .stats-table tbody tr:hover {
-            background: rgba(138, 253, 129, 0.05);
+            background: rgba(197, 255, 167, 0.05);
         }
 
         .stats-table td {
@@ -236,9 +236,9 @@ export const adminPanelStyles = `
         }
 
         .badge-success {
-            background: rgba(138, 253, 129, 0.15);
+            background: rgba(197, 255, 167, 0.15);
             color: var(--primary-green);
-            border: 1px solid rgba(138, 253, 129, 0.3);
+            border: 1px solid rgba(197, 255, 167, 0.3);
         }
 
         .badge-warning {
@@ -316,9 +316,9 @@ export const adminPanelStyles = `
         }
 
         .status-done {
-            background: rgba(138, 253, 129, 0.2);
+            background: rgba(197, 255, 167, 0.2);
             color: var(--primary-green);
-            border: 1px solid rgba(138, 253, 129, 0.3);
+            border: 1px solid rgba(197, 255, 167, 0.3);
         }
 
         /* Kanban Board */
@@ -373,7 +373,7 @@ export const adminPanelStyles = `
         }
 
         .kanban-card:hover {
-            border-color: rgba(138, 253, 129, 0.3);
+            border-color: rgba(197, 255, 167, 0.3);
             transform: translateX(2px);
         }
 
@@ -506,7 +506,7 @@ export const adminPanelStyles = `
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(138, 253, 129, 0.1);
+            background: rgba(197, 255, 167, 0.1);
             border-radius: var(--radius-md);
         }
 
@@ -569,8 +569,8 @@ export const adminPanelStyles = `
 
         .team-card:hover {
             transform: translateY(-4px);
-            border-color: rgba(138, 253, 129, 0.3);
-            box-shadow: 0 8px 24px rgba(138, 253, 129, 0.15);
+            border-color: rgba(197, 255, 167, 0.3);
+            box-shadow: 0 8px 24px rgba(197, 255, 167, 0.15);
         }
 
         .team-header {
@@ -601,14 +601,14 @@ export const adminPanelStyles = `
             width: 36px;
             height: 36px;
             border-radius: 50%;
-            background: rgba(138, 253, 129, 0.1);
+            background: rgba(197, 255, 167, 0.1);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: var(--text-xs);
             font-weight: var(--font-bold);
             color: var(--primary-green);
-            border: 2px solid rgba(138, 253, 129, 0.3);
+            border: 2px solid rgba(197, 255, 167, 0.3);
         }
 
         .team-name {
@@ -664,10 +664,10 @@ export const adminPanelStyles = `
             text-transform: uppercase;
             letter-spacing: 0.5px;
             padding: 4px 8px;
-            background: rgba(138, 253, 129, 0.1);
+            background: rgba(197, 255, 167, 0.1);
             color: var(--primary-green);
             border-radius: var(--radius-sm);
-            border: 1px solid rgba(138, 253, 129, 0.2);
+            border: 1px solid rgba(197, 255, 167, 0.2);
         }
 
         /* Revenue Cards */
@@ -690,7 +690,7 @@ export const adminPanelStyles = `
 
         .revenue-card:hover {
             transform: translateY(-2px);
-            border-color: rgba(138, 253, 129, 0.3);
+            border-color: rgba(197, 255, 167, 0.3);
         }
 
         .revenue-icon {
@@ -806,13 +806,13 @@ export const adminPanelStyles = `
 
         .org-card-ceo {
             border: 2px solid var(--primary-green);
-            box-shadow: 0 0 20px rgba(138, 253, 129, 0.3);
+            box-shadow: 0 0 20px rgba(197, 255, 167, 0.3);
         }
 
         .org-card:hover {
             transform: translateY(-4px);
-            border-color: rgba(138, 253, 129, 0.3);
-            box-shadow: 0 8px 24px rgba(138, 253, 129, 0.15);
+            border-color: rgba(197, 255, 167, 0.3);
+            box-shadow: 0 8px 24px rgba(197, 255, 167, 0.15);
         }
 
         .org-avatar {
@@ -832,7 +832,7 @@ export const adminPanelStyles = `
 
         .org-card:hover .org-avatar {
             border-color: var(--primary-green);
-            box-shadow: 0 0 16px rgba(138, 253, 129, 0.3);
+            box-shadow: 0 0 16px rgba(197, 255, 167, 0.3);
         }
 
         .org-info {
@@ -859,9 +859,9 @@ export const adminPanelStyles = `
             font-size: var(--text-xs);
             color: var(--text-muted);
             padding: 4px 12px;
-            background: rgba(138, 253, 129, 0.1);
+            background: rgba(197, 255, 167, 0.1);
             border-radius: var(--radius-sm);
-            border: 1px solid rgba(138, 253, 129, 0.2);
+            border: 1px solid rgba(197, 255, 167, 0.2);
         }
 
         /* Hiring Pipeline */
@@ -880,7 +880,7 @@ export const adminPanelStyles = `
         }
 
         .hiring-stage:hover {
-            border-color: rgba(138, 253, 129, 0.3);
+            border-color: rgba(197, 255, 167, 0.3);
             transform: translateY(-2px);
         }
 

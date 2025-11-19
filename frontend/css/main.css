@@ -15,7 +15,7 @@
        ==================================== */
     
     /* Couleurs principales - Alias vers nouveaux tokens */
-    --primary-green: var(--color-primary-light-green); /* #A3FF8B */
+    --primary-green: var(--color-primary-light-green); /* #C5FFA7 */
     --primary-dark: var(--color-black-100); /* #000000 */
     --primary-grey: var(--color-black-300); /* #1A1A1A */
     
@@ -173,9 +173,9 @@ body {
     line-height: var(--typography-body-line-height); /* 24px / 16px = 1.5 */
     overflow-x: hidden;
     overflow-y: hidden;
-    font-weight: var(--font-normal);
-    font-size: var(--typography-body-minor-size); /* 14px */
-    letter-spacing: -0.01em;
+    font-weight: var(--typography-body-weight); /* 400 */
+    font-size: var(--typography-body-size); /* 16px - Taille standard du body */
+    letter-spacing: var(--typography-body-letter-spacing); /* 0px */
     height: 100%;
     width: calc(100% + 20px);
     margin: 20px 0 0 0;
@@ -464,6 +464,14 @@ body {
     padding-left: var(--space-8);
 }
 
+.header-logo {
+    height: 40px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+    flex-shrink: 0;
+}
+
 .page-title {
     font-size: var(--text-xl);
     font-weight: var(--font-semibold);
@@ -607,6 +615,17 @@ body {
     display: grid; /* ✅ Match demande */
     gap: var(--space-6); /* 24px - Standard grid gap */
     grid-template-columns: 1fr; /* ✅ Match demande */
+    /* Typographie : hérite du body (16px) */
+    font-size: var(--typography-body-size); /* 16px - Taille standard */
+    line-height: var(--typography-body-line-height); /* 24px */
+}
+
+/* Paragraphes et texte principal dans le content-area */
+.content-area p,
+.content-area .text-body {
+    font-size: var(--typography-body-size); /* 16px */
+    line-height: var(--typography-body-line-height); /* 24px */
+    color: var(--text-primary);
 }
 
 /* ====================================
@@ -704,6 +723,13 @@ body {
     padding: 0 !important;
     position: relative !important;
     gap: 0 !important;
+    scroll-behavior: smooth !important;
+}
+
+/* Assure que le dashboard-view peut scroller correctement */
+.content-area .dashboard-view {
+    min-height: fit-content !important;
+    overflow: visible !important;
 }
 
 /* ====================================
@@ -844,8 +870,8 @@ body {
    ==================================== */
 
 body {
-    font-size: var(--text-sm) !important;
-    letter-spacing: -0.01em !important;
+    font-size: var(--typography-body-size) !important; /* 16px - Taille standard du body */
+    letter-spacing: var(--typography-body-letter-spacing) !important; /* 0px */
     -webkit-font-smoothing: antialiased !important;
     -moz-osx-font-smoothing: grayscale !important;
 }
@@ -1117,5 +1143,215 @@ body {
     50% { 
         opacity: 0.5; 
         box-shadow: 0 0 16px var(--color-primary-light-green);
+    }
+}
+
+/* ====================================
+   🎨 DESIGN PREMIUM ULTRA PROPRE - PATCH FINAL
+   Date: 19 Nov 2025
+   Objectif: Interface 10× plus belle, lisible, professionnelle
+   ==================================== */
+
+/* ====================================
+   SIDEBAR - PREMIUM ULTRA PROPRE
+   ==================================== */
+
+.sidebar {
+    background: rgba(0, 0, 0, 0.98) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.06) !important;
+    box-shadow: 
+        4px 0 40px rgba(0, 0, 0, 0.7),
+        inset -1px 0 0 rgba(255, 255, 255, 0.02) !important;
+}
+
+.sidebar-nav {
+    gap: var(--space-1) !important;
+    padding: var(--space-2) 0 !important;
+}
+
+.nav-item {
+    padding: var(--space-3) var(--space-4) !important;
+    margin-bottom: var(--space-1) !important;
+    border-radius: var(--radius-md) !important;
+    font-size: var(--text-sm) !important;
+    font-weight: 500 !important;
+    letter-spacing: -0.01em !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    min-height: 40px !important;
+}
+
+.nav-item:hover {
+    background: rgba(197, 255, 167, 0.08) !important;
+    transform: translateX(2px) !important;
+    box-shadow: 
+        0 2px 8px rgba(197, 255, 167, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
+}
+
+.nav-item.active {
+    background: var(--color-primary-light-green) !important;
+    color: var(--color-text-default) !important;
+    font-weight: 600 !important;
+    box-shadow: 
+        0 4px 16px rgba(197, 255, 167, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25),
+        0 0 0 1px rgba(197, 255, 167, 0.2) !important;
+    transform: translateX(0) !important;
+}
+
+.sidebar-version {
+    padding: var(--space-5) 0 0 0 !important;
+    margin-top: var(--space-5) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+    font-size: 10px !important;
+    letter-spacing: 0.3px !important;
+    color: rgba(255, 255, 255, 0.4) !important;
+}
+
+/* ====================================
+   HEADER - PREMIUM ULTRA PROPRE
+   ==================================== */
+
+.header {
+    background: rgba(10, 10, 10, 0.9) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+    box-shadow: 
+        0 2px 20px rgba(0, 0, 0, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.02) !important;
+    height: 72px !important;
+    padding: 0 var(--space-8) !important;
+}
+
+.header-left {
+    padding-left: calc(var(--space-8) + var(--space-5)) !important;
+}
+
+.header-right {
+    padding-right: var(--space-8) !important;
+    gap: var(--space-3) !important;
+}
+
+.notification-btn {
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: var(--radius-md) !important;
+    background: rgba(26, 26, 26, 0.6) !important;
+    border: 1px solid rgba(255, 255, 255, 0.06) !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.notification-btn:hover {
+    background: rgba(197, 255, 167, 0.1) !important;
+    border-color: rgba(197, 255, 167, 0.3) !important;
+    color: var(--primary-green) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(197, 255, 167, 0.2) !important;
+}
+
+.user-badge {
+    padding: var(--space-2) var(--space-4) !important;
+    background: rgba(26, 26, 26, 0.7) !important;
+    border: 1px solid rgba(255, 255, 255, 0.06) !important;
+    box-shadow: 
+        0 2px 12px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.user-badge:hover {
+    background: rgba(26, 26, 26, 0.9) !important;
+    border-color: rgba(197, 255, 167, 0.3) !important;
+    box-shadow: 
+        0 4px 16px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(197, 255, 167, 0.15) !important;
+    transform: translateY(-1px) !important;
+}
+
+.user-avatar-circle {
+    width: 30px !important;
+    height: 30px !important;
+    box-shadow: 
+        0 2px 8px rgba(197, 255, 167, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+/* ====================================
+   CONTENT AREA - PREMIUM ULTRA PROPRE
+   ==================================== */
+
+.content-area {
+    padding: var(--space-6) var(--space-8) var(--space-10) var(--space-8) !important;
+    gap: var(--space-6) !important;
+    background: linear-gradient(180deg, #000000 0%, #0a0a0a 50%, #000000 100%) !important;
+}
+
+/* ====================================
+   TYPOGRAPHIE - PREMIUM ULTRA PROPRE
+   ==================================== */
+
+body {
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    text-rendering: optimizeLegibility !important;
+    font-feature-settings: "kern" 1, "liga" 1 !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    letter-spacing: -0.02em !important;
+    font-weight: 600 !important;
+}
+
+/* ====================================
+   RESPONSIVE - PREMIUM ULTRA PROPRE
+   ==================================== */
+
+@media (max-width: 1440px) {
+    .content-area {
+        padding: var(--space-5) var(--space-6) var(--space-8) var(--space-6) !important;
+    }
+    
+    .header-left,
+    .header-right {
+        padding-left: var(--space-6) !important;
+        padding-right: var(--space-6) !important;
+    }
+}
+
+@media (max-width: 1024px) {
+    .sidebar {
+        width: 180px !important;
+    }
+    
+    .main-content {
+        margin-left: 180px !important;
+        width: calc(100% - 180px) !important;
+    }
+    
+    .content-area {
+        padding: var(--space-4) var(--space-5) var(--space-6) var(--space-5) !important;
+        gap: var(--space-5) !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 160px !important;
+    }
+    
+    .main-content {
+        margin-left: 160px !important;
+        width: calc(100% - 160px) !important;
+    }
+    
+    .header {
+        height: 64px !important;
+        padding: 0 var(--space-4) !important;
+    }
+    
+    .content-area {
+        padding: var(--space-4) !important;
+        gap: var(--space-4) !important;
     }
 }

@@ -1,0 +1,163 @@
+/* ====================================
+   TYPOGRAPHY MIXINS - FK Grotesk Trial
+   HEARST AI
+   ==================================== */
+
+@import 'design-tokens.scss';
+
+// ====================================
+// MIXIN: Typography Style
+// ====================================
+
+@mixin typography-display {
+    font-family: $font-family-primary;
+    font-size: map-get($typography-display, size);
+    font-weight: map-get($typography-display, weight);
+    line-height: map-get($typography-display, line-height);
+    letter-spacing: map-get($typography-display, letter-spacing);
+}
+
+@mixin typography-page-title {
+    font-family: $font-family-primary;
+    font-size: map-get($typography-page-title, size);
+    font-weight: map-get($typography-page-title, weight);
+    line-height: map-get($typography-page-title, line-height);
+    letter-spacing: map-get($typography-page-title, letter-spacing);
+}
+
+@mixin typography-section-title {
+    font-family: $font-family-primary;
+    font-size: map-get($typography-section-title, size);
+    font-weight: map-get($typography-section-title, weight);
+    line-height: map-get($typography-section-title, line-height);
+    letter-spacing: map-get($typography-section-title, letter-spacing);
+}
+
+@mixin typography-subsection-title {
+    font-family: $font-family-primary;
+    font-size: map-get($typography-subsection-title, size);
+    font-weight: map-get($typography-subsection-title, weight);
+    line-height: map-get($typography-subsection-title, line-height);
+    letter-spacing: map-get($typography-subsection-title, letter-spacing);
+}
+
+@mixin typography-body-bold {
+    font-family: $font-family-primary;
+    font-size: map-get($typography-body-bold, size);
+    font-weight: map-get($typography-body-bold, weight);
+    line-height: map-get($typography-body-bold, line-height);
+    letter-spacing: map-get($typography-body-bold, letter-spacing);
+}
+
+@mixin typography-body {
+    font-family: $font-family-primary;
+    font-size: map-get($typography-body, size);
+    font-weight: map-get($typography-body, weight);
+    line-height: map-get($typography-body, line-height);
+    letter-spacing: map-get($typography-body, letter-spacing);
+}
+
+@mixin typography-body-minor-bold {
+    font-family: $font-family-primary;
+    font-size: map-get($typography-body-minor-bold, size);
+    font-weight: map-get($typography-body-minor-bold, weight);
+    line-height: map-get($typography-body-minor-bold, line-height);
+    letter-spacing: map-get($typography-body-minor-bold, letter-spacing);
+}
+
+@mixin typography-body-minor {
+    font-family: $font-family-primary;
+    font-size: map-get($typography-body-minor, size);
+    font-weight: map-get($typography-body-minor, weight);
+    line-height: map-get($typography-body-minor, line-height);
+    letter-spacing: map-get($typography-body-minor, letter-spacing);
+}
+
+@mixin typography-caption-bold {
+    font-family: $font-family-primary;
+    font-size: map-get($typography-caption-bold, size);
+    font-weight: map-get($typography-caption-bold, weight);
+    line-height: map-get($typography-caption-bold, line-height);
+    letter-spacing: map-get($typography-caption-bold, letter-spacing);
+}
+
+@mixin typography-caption {
+    font-family: $font-family-primary;
+    font-size: map-get($typography-caption, size);
+    font-weight: map-get($typography-caption, weight);
+    line-height: map-get($typography-caption, line-height);
+    letter-spacing: map-get($typography-caption, letter-spacing);
+}
+
+// ====================================
+// MIXIN: Generic Typography Helper
+// ====================================
+
+@mixin typography($style) {
+    @if $style == 'display' {
+        @include typography-display;
+    } @else if $style == 'page-title' {
+        @include typography-page-title;
+    } @else if $style == 'section-title' {
+        @include typography-section-title;
+    } @else if $style == 'subsection-title' {
+        @include typography-subsection-title;
+    } @else if $style == 'body-bold' {
+        @include typography-body-bold;
+    } @else if $style == 'body' {
+        @include typography-body;
+    } @else if $style == 'body-minor-bold' {
+        @include typography-body-minor-bold;
+    } @else if $style == 'body-minor' {
+        @include typography-body-minor;
+    } @else if $style == 'caption-bold' {
+        @include typography-caption-bold;
+    } @else if $style == 'caption' {
+        @include typography-caption;
+    }
+}
+
+// ====================================
+// CSS CLASSES (for direct use)
+// ====================================
+
+.typography-display {
+    @include typography-display;
+}
+
+.typography-page-title {
+    @include typography-page-title;
+}
+
+.typography-section-title {
+    @include typography-section-title;
+}
+
+.typography-subsection-title {
+    @include typography-subsection-title;
+}
+
+.typography-body-bold {
+    @include typography-body-bold;
+}
+
+.typography-body {
+    @include typography-body;
+}
+
+.typography-body-minor-bold {
+    @include typography-body-minor-bold;
+}
+
+.typography-body-minor {
+    @include typography-body-minor;
+}
+
+.typography-caption-bold {
+    @include typography-caption-bold;
+}
+
+.typography-caption {
+    @include typography-caption;
+}
+

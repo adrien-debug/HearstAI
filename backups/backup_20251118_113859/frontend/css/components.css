@@ -53,7 +53,7 @@
 .btn-primary,
 .btn,
 button[type="submit"] {
-    background: linear-gradient(135deg, #8afd81 0%, #7bed9f 100%) !important;
+    background: linear-gradient(135deg, #C5FFA7 0%, #7bed9f 100%) !important;
     color: var(--primary-dark);
     padding: var(--space-3) var(--space-6);
     border-radius: var(--radius-md);
@@ -71,7 +71,7 @@ button[type="submit"] {
     position: relative;
     overflow: hidden;
     box-shadow: 
-        0 4px 16px rgba(138, 253, 129, 0.4),
+        0 4px 16px rgba(197, 255, 167, 0.4),
         inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
 }
 
@@ -112,7 +112,7 @@ button[type="submit"]:hover:not(:disabled)::before {
 button[type="submit"]:hover:not(:disabled) {
     background: linear-gradient(135deg, #75fc6c 0%, #6ae88f 100%) !important;
     box-shadow: 
-        0 6px 24px rgba(138, 253, 129, 0.4),
+        0 6px 24px rgba(197, 255, 167, 0.4),
         inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
     transform: translateY(-1px);
 }
@@ -135,7 +135,7 @@ button[type="submit"]:disabled {
 /* Button Transaction History - Premium Style */
 .btn.btn-transaction-history,
 button.btn-transaction-history {
-    background-color: #8AFD81 !important;
+    background-color: #C5FFA7 !important;
     color: #000 !important;
     border-radius: 30px !important;
     font-weight: 600 !important;
@@ -149,7 +149,7 @@ button.btn-transaction-history:hover,
 .btn.btn-transaction-history:active,
 button.btn-transaction-history:active {
     background-color: #70D467 !important;
-    box-shadow: 0 0 12px rgba(138, 253, 129, 0.55) !important;
+    box-shadow: 0 0 12px rgba(197, 255, 167, 0.55) !important;
     transform: translateY(-1px) !important;
     color: #000 !important;
 }
@@ -173,7 +173,7 @@ button.btn-transaction-history:active {
 }
 
 .btn-secondary:hover:not(:disabled) {
-    background: rgba(138, 253, 129, 0.1);
+    background: rgba(197, 255, 167, 0.1);
     box-shadow: var(--glow-green);
     transform: translateY(-1px);
 }
@@ -286,7 +286,7 @@ button.btn-transaction-history:active {
     inset: 0;
     background: radial-gradient(
         circle at top right,
-        rgba(138, 253, 129, 0.05) 0%,
+        rgba(197, 255, 167, 0.05) 0%,
         transparent 50%
     );
     border-radius: inherit;
@@ -301,7 +301,7 @@ button.btn-transaction-history:active {
     box-shadow: 
         0 12px 48px rgba(0, 0, 0, 0.5),
         0 4px 16px rgba(0, 0, 0, 0.4),
-        0 0 0 1px rgba(138, 253, 129, 0.2),
+        0 0 0 1px rgba(197, 255, 167, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
     transform: translateY(-4px) !important;
 }
@@ -386,7 +386,7 @@ button.btn-transaction-history:active {
     background: linear-gradient(
         135deg,
         transparent 0%,
-        rgba(138, 253, 129, 0.3) 50%,
+        rgba(197, 255, 167, 0.3) 50%,
         transparent 100%
     );
     border-radius: inherit;
@@ -402,7 +402,7 @@ button.btn-transaction-history:active {
     left: 0;
     width: 4px;
     height: 100%;
-    background: linear-gradient(180deg, #8afd81 0%, transparent 100%);
+    background: linear-gradient(180deg, #C5FFA7 0%, transparent 100%);
     opacity: 0;
     transition: opacity 0.3s;
     z-index: 0;
@@ -413,7 +413,7 @@ button.btn-transaction-history:active {
     box-shadow: 
         0 12px 48px rgba(0, 0, 0, 0.5),
         0 4px 16px rgba(0, 0, 0, 0.4),
-        0 0 0 1px rgba(138, 253, 129, 0.2),
+        0 0 0 1px rgba(197, 255, 167, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
 }
 
@@ -462,7 +462,7 @@ button.btn-transaction-history:active {
 }
 
 .table-container:hover {
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(138, 253, 129, 0.1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(197, 255, 167, 0.1);
 }
 
 .table {
@@ -475,7 +475,7 @@ button.btn-transaction-history:active {
 
 .table thead {
     background: linear-gradient(180deg, #454646 0%, #3a3a3a 100%) !important;
-    border-bottom: 2px solid rgba(138, 253, 129, 0.3) !important;
+    border-bottom: 2px solid rgba(197, 255, 167, 0.3) !important;
 }
 
 .table th {
@@ -506,11 +506,11 @@ button.btn-transaction-history:active {
 .table tbody tr:hover {
     background: linear-gradient(
         90deg,
-        rgba(138, 253, 129, 0.05) 0%,
-        rgba(138, 253, 129, 0.1) 50%,
-        rgba(138, 253, 129, 0.05) 100%
+        rgba(197, 255, 167, 0.05) 0%,
+        rgba(197, 255, 167, 0.1) 50%,
+        rgba(197, 255, 167, 0.05) 100%
     ) !important;
-    box-shadow: inset 2px 0 0 #8afd81 !important;
+    box-shadow: inset 2px 0 0 #C5FFA7 !important;
     transform: translateX(2px) !important;
 }
 
@@ -555,11 +555,11 @@ button.btn-transaction-history:active {
 }
 
 .badge-green {
-    background: rgba(138, 253, 129, 0.15);
+    background: rgba(197, 255, 167, 0.15);
     color: var(--primary-green);
     border: var(--border-thin) solid var(--primary-green);
-    text-shadow: 0 0 8px rgba(138, 253, 129, 0.3);
-    box-shadow: 0 0 8px rgba(138, 253, 129, 0.1);
+    text-shadow: 0 0 8px rgba(197, 255, 167, 0.3);
+    box-shadow: 0 0 8px rgba(197, 255, 167, 0.1);
 }
 
 .badge-grey {
@@ -627,7 +627,7 @@ input[type="number"]:hover,
 input[type="date"]:hover,
 textarea:hover,
 select:hover {
-    border-color: rgba(138, 253, 129, 0.3);
+    border-color: rgba(197, 255, 167, 0.3);
     background: rgba(10, 10, 10, 0.8);
 }
 
@@ -644,7 +644,7 @@ textarea:focus,
 select:focus {
     outline: none;
     border-color: var(--primary-green);
-    box-shadow: 0 0 0 3px rgba(138, 253, 129, 0.1);
+    box-shadow: 0 0 0 3px rgba(197, 255, 167, 0.1);
 }
 
 .input::placeholder,

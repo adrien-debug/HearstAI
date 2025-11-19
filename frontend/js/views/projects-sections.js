@@ -1,7 +1,30 @@
 // Projects Sections - Mining Intelligence Platform
-// Toutes les sections de projections avec design system HEARST (#8afd81)
+// Toutes les sections de projections avec design system HEARST (#C5FFA7)
 
 import { Icons } from '../icons.js';
+
+// Définir window.calculateProjection globalement dès le chargement du module
+// pour qu'elle soit disponible même si initCalculator n'a pas encore tourné
+if (typeof window !== 'undefined') {
+    window.calculateProjection = () => {
+        console.log('📊 Calculating projection from projects-sections...');
+        // Navigate to results section
+        if (window.showProjectionSection) {
+            console.log('✅ showProjectionSection available, navigating to results...');
+            window.showProjectionSection('results');
+        } else {
+            console.warn('⚠️ showProjectionSection not available yet, retrying...');
+            setTimeout(() => {
+                if (window.showProjectionSection) {
+                    console.log('✅ showProjectionSection now available, retrying navigation...');
+                    window.showProjectionSection('results');
+                } else {
+                    console.error('❌ showProjectionSection still not available after retry');
+                }
+            }, 100);
+        }
+    };
+}
 
 // Render projection section content
 export function renderProjectionSection(sectionId) {
@@ -31,19 +54,19 @@ export function renderProjectionSection(sectionId) {
 function renderProjectionCard(name, date, number, hashrate, btc) {
     return `
 <div style="background: rgba(26, 26, 26, 0.9); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 24px; cursor: pointer; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3); transition: all 0.3s ease;" 
-     onmouseover="this.style.borderColor='#8afd81'; this.style.transform='translateY(-2px)'" 
+     onmouseover="this.style.borderColor='#C5FFA7'; this.style.transform='translateY(-2px)'" 
      onmouseout="this.style.borderColor='rgba(255, 255, 255, 0.1)'; this.style.transform='translateY(0)'">
     <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
         <div>
             <div style="font-size: 11px; color: #888; text-transform: uppercase; margin-bottom: 4px;">Projection ${name}</div>
             <div style="font-size: 11px; color: #aaa;">${date}</div>
         </div>
-        <div style="width: 32px; height: 32px; background: rgba(138, 253, 129, 0.2); border: 1px solid #8afd81; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #8afd81; font-weight: 600;">${number}</div>
+        <div style="width: 32px; height: 32px; background: rgba(197, 255, 167, 0.2); border: 1px solid #C5FFA7; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #C5FFA7; font-weight: 600;">${number}</div>
     </div>
     <div style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 16px;">
         <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
             <span style="font-size: 11px; color: #aaa;">Hashrate</span>
-            <span style="font-size: 14px; font-weight: 600; color: #8afd81;">${hashrate}</span>
+            <span style="font-size: 14px; font-weight: 600; color: #C5FFA7;">${hashrate}</span>
         </div>
         <div style="display: flex; justify-content: space-between;">
             <span style="font-size: 11px; color: #aaa;">BTC</span>
@@ -57,17 +80,17 @@ function renderProjectionCard(name, date, number, hashrate, btc) {
 // Helper function pour les lignes du tableau (définie AVANT renderOverviewSection)
 function renderProjectionTableRow(name, date, hashrate, btc, status) {
     const statusColors = {
-        'active': { bg: 'rgba(138, 253, 129, 0.15)', color: '#8afd81', text: 'Active' },
-        'completed': { bg: 'rgba(138, 253, 129, 0.1)', color: '#8afd81', text: 'Completed' },
+        'active': { bg: 'rgba(197, 255, 167, 0.15)', color: '#C5FFA7', text: 'Active' },
+        'completed': { bg: 'rgba(197, 255, 167, 0.1)', color: '#C5FFA7', text: 'Completed' },
         'pending': { bg: 'rgba(255, 255, 255, 0.1)', color: '#aaa', text: 'Pending' }
     };
     const statusStyle = statusColors[status] || statusColors.pending;
     
     return `
-<tr style="cursor: pointer;" onmouseover="this.style.background='rgba(138, 253, 129, 0.03)'" onmouseout="this.style.background='transparent'">
+<tr style="cursor: pointer;" onmouseover="this.style.background='rgba(197, 255, 167, 0.03)'" onmouseout="this.style.background='transparent'">
     <td style="font-weight: 600; color: var(--text-primary);">Projection ${name}</td>
     <td style="color: var(--text-secondary);">${date}</td>
-    <td style="color: #8afd81; font-weight: 600;">${hashrate}</td>
+    <td style="color: #C5FFA7; font-weight: 600;">${hashrate}</td>
     <td style="color: var(--text-primary); font-weight: 600;">${btc}</td>
     <td>
         <span style="padding: 4px 10px; background: ${statusStyle.bg}; border: 1px solid ${statusStyle.color}; border-radius: 4px; font-size: 10px; font-weight: 700; color: ${statusStyle.color}; text-transform: uppercase;">
@@ -76,13 +99,13 @@ function renderProjectionTableRow(name, date, hashrate, btc, status) {
     </td>
     <td>
         <div style="display: flex; gap: 8px;">
-            <button style="padding: 6px 12px; background: rgba(138, 253, 129, 0.1); border: 1px solid #8afd81; border-radius: 6px; color: #8afd81; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s;" 
-                    onmouseover="this.style.background='rgba(138, 253, 129, 0.2)'" 
-                    onmouseout="this.style.background='rgba(138, 253, 129, 0.1)'">
+            <button style="padding: 6px 12px; background: rgba(197, 255, 167, 0.1); border: 1px solid #C5FFA7; border-radius: 6px; color: #C5FFA7; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s;" 
+                    onmouseover="this.style.background='rgba(197, 255, 167, 0.2)'" 
+                    onmouseout="this.style.background='rgba(197, 255, 167, 0.1)'">
                 View
             </button>
             <button style="padding: 6px 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; color: var(--text-secondary); font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s;" 
-                    onmouseover="this.style.borderColor='#8afd81'; this.style.color='#8afd81'" 
+                    onmouseover="this.style.borderColor='#C5FFA7'; this.style.color='#C5FFA7'" 
                     onmouseout="this.style.borderColor='rgba(255, 255, 255, 0.1)'; this.style.color='var(--text-secondary)'">
                 Edit
             </button>
@@ -97,7 +120,11 @@ function renderOverviewSection() {
     try {
         return `
 <div id="overview-section" style="padding: 20px; width: 100%;">
-    <h2 style="font-size: 24px; font-weight: 700; color: #ffffff; margin-bottom: 32px;">Lasts Projections</h2>
+    <!-- Header avec logo -->
+    <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 32px;">
+        <img src="assets/images/logo.png" alt="HearstAI Logo" style="height: 40px; width: auto; display: block;" />
+        <h2 style="font-size: 24px; font-weight: 700; color: #ffffff; margin: 0;">Lasts Projections</h2>
+    </div>
     
     <!-- 5 Boxes des dernières projections -->
     <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; margin-bottom: 48px;">
@@ -171,7 +198,7 @@ function renderMarketMetrics() {
         <div class="section-premium">
             <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 40px;">
                 <div style="display: flex; align-items: center; gap: 6px; padding: 6px 12px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 20px;">
-                    <div style="width: 6px; height: 6px; background: #8afd81; border-radius: 50%; animation: pulse 2s infinite;"></div>
+                    <div style="width: 6px; height: 6px; background: #C5FFA7; border-radius: 50%; animation: pulse 2s infinite;"></div>
                     <span style="font-size: 11px; color: var(--text-muted); font-weight: 600;">Updated: <span id="lastUpdate" style="color: var(--text-primary);">Just now</span></span>
                 </div>
             </div>
@@ -189,7 +216,7 @@ function renderMetricCard(color, label, value, description, icon) {
     return `
         <div class="metric-card ${color}">
             <div class="metric-icon-wrapper ${color}">
-                <svg fill="#8afd81" height="17" viewBox="0 0 24 24" width="17">
+                <svg fill="#C5FFA7" height="17" viewBox="0 0 24 24" width="17">
                     ${getMetricIcon(icon)}
                 </svg>
             </div>
@@ -216,8 +243,8 @@ function renderLiveNewsFeed() {
         <div class="section-premium" style="margin-top: 32px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
                 <div style="display: flex; align-items: center; gap: 12px;">
-                    <div style="width: 40px; height: 40px; background: linear-gradient(135deg, rgba(138, 253, 129, 0.2), rgba(138, 253, 129, 0.05)); border-radius: 10px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(138, 253, 129, 0.3);">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8afd81" stroke-width="2">
+                    <div style="width: 40px; height: 40px; background: linear-gradient(135deg, rgba(197, 255, 167, 0.2), rgba(197, 255, 167, 0.05)); border-radius: 10px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(197, 255, 167, 0.3);">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C5FFA7" stroke-width="2">
                             <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/>
                         </svg>
                     </div>
@@ -227,9 +254,9 @@ function renderLiveNewsFeed() {
                     </div>
                 </div>
                 <div style="display: flex; align-items: center; gap: 8px;">
-                    <div style="display: flex; align-items: center; gap: 6px; padding: 6px 12px; background: rgba(138, 253, 129, 0.1); border: 1px solid #8afd81; border-radius: 20px;">
-                        <div style="width: 6px; height: 6px; background: #8afd81; border-radius: 50%; animation: pulse 2s infinite;"></div>
-                        <span style="font-size: 11px; color: #8afd81; font-weight: 700;">8 NEW</span>
+                    <div style="display: flex; align-items: center; gap: 6px; padding: 6px 12px; background: rgba(197, 255, 167, 0.1); border: 1px solid #C5FFA7; border-radius: 20px;">
+                        <div style="width: 6px; height: 6px; background: #C5FFA7; border-radius: 50%; animation: pulse 2s infinite;"></div>
+                        <span style="font-size: 11px; color: #C5FFA7; font-weight: 700;">8 NEW</span>
                     </div>
                     <button onclick="refreshNewsFeed()" class="btn btn-sm btn-secondary">
                         <span class="icon-inline">${getRefreshIcon()}</span> Refresh
@@ -261,10 +288,10 @@ function renderNewsItems() {
     ];
     
     return news.map(item => `
-        <div class="news-item" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; transition: all 0.2s; cursor: pointer;" onmouseover="this.style.borderColor='#8afd81'" onmouseout="this.style.borderColor='var(--border-color)'">
+        <div class="news-item" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; transition: all 0.2s; cursor: pointer;" onmouseover="this.style.borderColor='#C5FFA7'" onmouseout="this.style.borderColor='var(--border-color)'">
             <div style="display: flex; gap: 14px;">
-                <div style="width: 44px; height: 44px; background: rgba(138, 253, 129, 0.15); border: 1px solid rgba(138, 253, 129, 0.3); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8afd81" stroke-width="1.5">
+                <div style="width: 44px; height: 44px; background: rgba(197, 255, 167, 0.15); border: 1px solid rgba(197, 255, 167, 0.3); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C5FFA7" stroke-width="1.5">
                         <rect x="2" y="4" width="20" height="4" rx="1" stroke-linejoin="round"/>
                         <rect x="2" y="10" width="20" height="4" rx="1" stroke-linejoin="round"/>
                         <rect x="2" y="16" width="20" height="4" rx="1" stroke-linejoin="round"/>
@@ -272,7 +299,7 @@ function renderNewsItems() {
                 </div>
                 <div style="flex: 1;">
                     <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;">
-                        <span style="padding: 3px 8px; background: rgba(138, 253, 129, 0.15); border: 1px solid #8afd81; border-radius: 4px; font-size: 9px; font-weight: 700; color: #8afd81; text-transform: uppercase; letter-spacing: 0.5px;">${item.type}</span>
+                        <span style="padding: 3px 8px; background: rgba(197, 255, 167, 0.15); border: 1px solid #C5FFA7; border-radius: 4px; font-size: 9px; font-weight: 700; color: #C5FFA7; text-transform: uppercase; letter-spacing: 0.5px;">${item.type}</span>
                         <span style="font-size: 11px; color: var(--text-muted); font-weight: 500;">${item.time}</span>
                     </div>
                     <h3 style="font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; line-height: 1.4;">${item.title}</h3>
@@ -319,21 +346,21 @@ function renderMiningEquipment() {
                                 <td>605 TH/s</td>
                                 <td>9.7 J/TH</td>
                                 <td>5,870 W</td>
-                                <td style="color: #8afd81; font-weight: 600;">$8,500</td>
+                                <td style="color: #C5FFA7; font-weight: 600;">$8,500</td>
                             </tr>
                             <tr>
                                 <td style="font-weight: 600; color: var(--text-primary);">Antminer S21 Pro</td>
                                 <td>234 TH/s</td>
                                 <td>15.0 J/TH</td>
                                 <td>3,510 W</td>
-                                <td style="color: #8afd81; font-weight: 600;">$4,008</td>
+                                <td style="color: #C5FFA7; font-weight: 600;">$4,008</td>
                             </tr>
                             <tr>
                                 <td style="font-weight: 600; color: var(--text-primary);">Whatsminer M60S++</td>
                                 <td>188 TH/s</td>
                                 <td>18.5 J/TH</td>
                                 <td>3,478 W</td>
-                                <td style="color: #8afd81; font-weight: 600;">$5,800</td>
+                                <td style="color: #C5FFA7; font-weight: 600;">$5,800</td>
                             </tr>
                         </tbody>
                     </table>
@@ -373,7 +400,7 @@ function renderMiningPools() {
                                 <td style="font-weight: 600; color: var(--text-primary);">Foundry USA</td>
                                 <td>29.8%</td>
                                 <td>42</td>
-                                <td style="color: #8afd81;">0%</td>
+                                <td style="color: #C5FFA7;">0%</td>
                             </tr>
                             <tr>
                                 <td style="font-weight: 600; color: var(--text-primary);">Antpool</td>
@@ -437,25 +464,25 @@ function renderEnergyCosts() {
                                 <td style="font-weight: 600; color: var(--text-primary);">North America</td>
                                 <td>$0.045/kWh</td>
                                 <td>$0.03 - $0.08</td>
-                                <td><span style="color: #8afd81;">Stable</span></td>
+                                <td><span style="color: #C5FFA7;">Stable</span></td>
                             </tr>
                             <tr>
                                 <td style="font-weight: 600; color: var(--text-primary);">Central Asia</td>
                                 <td>$0.038/kWh</td>
                                 <td>$0.025 - $0.055</td>
-                                <td><span style="color: #8afd81;">Growing</span></td>
+                                <td><span style="color: #C5FFA7;">Growing</span></td>
                             </tr>
                             <tr>
                                 <td style="font-weight: 600; color: var(--text-primary);">Europe</td>
                                 <td>$0.085/kWh</td>
                                 <td>$0.06 - $0.12</td>
-                                <td><span style="color: #8afd81;">High</span></td>
+                                <td><span style="color: #C5FFA7;">High</span></td>
                             </tr>
                             <tr>
                                 <td style="font-weight: 600; color: var(--text-primary);">South America</td>
                                 <td>$0.052/kWh</td>
                                 <td>$0.035 - $0.075</td>
-                                <td><span style="color: #8afd81;">Stable</span></td>
+                                <td><span style="color: #C5FFA7;">Stable</span></td>
                             </tr>
                         </tbody>
                     </table>
@@ -493,12 +520,12 @@ function renderNetworkStats() {
                             <tr>
                                 <td style="font-weight: 600; color: var(--text-primary);">Total Hashrate</td>
                                 <td>742 EH/s</td>
-                                <td style="color: #8afd81;">+2.3%</td>
+                                <td style="color: #C5FFA7;">+2.3%</td>
                             </tr>
                             <tr>
                                 <td style="font-weight: 600; color: var(--text-primary);">Difficulty</td>
                                 <td>107.3T</td>
-                                <td style="color: #8afd81;">+1.8%</td>
+                                <td style="color: #C5FFA7;">+1.8%</td>
                             </tr>
                             <tr>
                                 <td style="font-weight: 600; color: var(--text-primary);">Avg Block Time</td>
@@ -508,7 +535,7 @@ function renderNetworkStats() {
                             <tr>
                                 <td style="font-weight: 600; color: var(--text-primary);">Transactions/Block</td>
                                 <td>3,247</td>
-                                <td style="color: #8afd81;">+5.1%</td>
+                                <td style="color: #C5FFA7;">+5.1%</td>
                             </tr>
                         </tbody>
                     </table>
@@ -523,6 +550,12 @@ function renderCalculatorSection() {
     return `
         <div class="projection-tab-content active" id="calculator-section">
             <div style="width: 100%; padding: 40px 20px;">
+                <!-- Header avec logo -->
+                <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 32px;">
+                    <img src="assets/images/logo.png" alt="HearstAI Logo" style="height: 40px; width: auto; display: block;" />
+                    <h2 style="font-size: 24px; font-weight: 700; color: #ffffff; margin: 0;">Projection Calculator</h2>
+                </div>
+                
                 <!-- STEPPER NAVIGATION -->
                 <div class="stepper-container">
                     <div class="stepper">
@@ -607,13 +640,13 @@ function renderCalculatorStep0() {
                 
                 <div class="grid-2">
                     <div>
-                        <label class="form-label">Project Name</label>
-                        <input type="text" class="form-input" placeholder="My Mining Project" value="Project Alpha">
+                        <label class="form-label" for="project-name-input">Project Name</label>
+                        <input type="text" id="project-name-input" name="project_name" class="form-input" placeholder="My Mining Project" value="Project Alpha">
                     </div>
                     
                     <div>
-                        <label class="form-label">Currency</label>
-                        <select class="form-input">
+                        <label class="form-label" for="project-currency">Currency</label>
+                        <select id="project-currency" name="currency" class="form-input">
                             <option value="USD" selected>USD ($)</option>
                             <option value="EUR">EUR (€)</option>
                             <option value="AED">AED (د.إ)</option>
@@ -621,13 +654,13 @@ function renderCalculatorStep0() {
                     </div>
                     
                     <div>
-                        <label class="form-label">Country / Location</label>
-                        <input type="text" class="form-input" placeholder="United States" value="United States">
+                        <label class="form-label" for="project-country">Country / Location</label>
+                        <input type="text" id="project-country" name="country" class="form-input" placeholder="United States" value="United States">
                     </div>
                     
                     <div>
                         <label class="form-label">Total Budget (Optional)</label>
-                        <input type="number" class="form-input" id="totalBudget" placeholder="2500000" value="2500000">
+                        <input type="number" class="form-input" id="totalBudget" name="total_budget" placeholder="2500000" value="2500000">
                         <small style="color: var(--text-muted); font-size: 11px; margin-top: 4px; display: block;">
                             Will help compute max units after machine selection
                         </small>
@@ -671,7 +704,7 @@ function renderCalculatorStep0() {
                 <div class="grid-2" style="margin-bottom: 16px;">
                     <div>
                         <label class="form-label">Mode</label>
-                        <select class="form-input" id="horizonMode">
+                        <select class="form-input" id="horizonMode" name="horizon_mode">
                             <option value="YEARS" selected>Years</option>
                             <option value="MONTHS">Months</option>
                         </select>
@@ -679,7 +712,7 @@ function renderCalculatorStep0() {
                     
                     <div>
                         <label class="form-label">Duration</label>
-                        <input type="number" class="form-input" id="horizonValue" value="4" min="1">
+                        <input type="number" class="form-input" id="horizonValue" name="horizon_value" value="4" min="1">
                     </div>
                 </div>
                 
@@ -816,22 +849,22 @@ function renderCalculatorStep1() {
                 <div class="grid-4">
                     <div>
                         <label class="form-label">Hashrate (TH/s)</label>
-                        <input type="number" class="form-input" id="machineHashrate" value="605">
+                        <input type="number" class="form-input" id="machineHashrate" name="machine_hashrate" value="605">
                     </div>
                     
                     <div>
                         <label class="form-label">Power Draw (W)</label>
-                        <input type="number" class="form-input" id="machinePower" value="5870">
+                        <input type="number" class="form-input" id="machinePower" name="machine_power" value="5870">
                     </div>
                     
                     <div>
                         <label class="form-label">Efficiency (J/TH)</label>
-                        <input type="number" class="form-input" id="machineEfficiency" value="9.7" step="0.1">
+                        <input type="number" class="form-input" id="machineEfficiency" name="machine_efficiency" value="9.7" step="0.1">
                     </div>
                     
                     <div>
                         <label class="form-label">Unit Price ($)</label>
-                        <input type="number" class="form-input" id="machinePrice" value="8500">
+                        <input type="number" class="form-input" id="machinePrice" name="machine_price" value="8500">
                     </div>
                 </div>
             </div>
@@ -884,17 +917,17 @@ function renderCalculatorStep2() {
                 <div class="grid-3">
                     <div>
                         <label class="form-label">Base Tariff ($/kWh)</label>
-                        <input type="number" class="form-input" id="baseTariff" value="0.07" step="0.001">
+                        <input type="number" class="form-input" id="baseTariff" name="base_tariff" value="0.07" step="0.001">
                     </div>
                     
                     <div>
                         <label class="form-label">Demand Charge ($/kW/mo)</label>
-                        <input type="number" class="form-input" id="demandCharge" value="0" step="0.1">
+                        <input type="number" class="form-input" id="demandCharge" name="demand_charge" value="0" step="0.1">
                     </div>
                     
                     <div>
                         <label class="form-label">Curtailment (% hours)</label>
-                        <input type="number" class="form-input" id="curtailment" value="0" min="0" max="100">
+                        <input type="number" class="form-input" id="curtailment" name="curtailment" value="0" min="0" max="100">
                     </div>
                 </div>
             </div>
@@ -905,17 +938,17 @@ function renderCalculatorStep2() {
                 <div class="grid-3">
                     <div>
                         <label class="form-label">Max Available Power (MW)</label>
-                        <input type="number" class="form-input" id="maxPower" value="10" step="0.1">
+                        <input type="number" class="form-input" id="maxPower" name="max_power" value="10" step="0.1">
                     </div>
                     
                     <div>
                         <label class="form-label">PUE / Cooling Factor</label>
-                        <input type="number" class="form-input" id="pue" value="1.1" step="0.01">
+                        <input type="number" class="form-input" id="pue" name="pue" value="1.1" step="0.01">
                     </div>
                     
                     <div>
                         <label class="form-label">VAT on CAPEX (%)</label>
-                        <input type="number" class="form-input" id="vatRate" value="0" step="0.1">
+                        <input type="number" class="form-input" id="vatRate" name="vat_rate" value="0" step="0.1">
                     </div>
                 </div>
             </div>
@@ -960,7 +993,7 @@ function renderCalculatorStep3() {
                     <div>
                         <label class="form-label">Budget for Rigs (%)</label>
                         <input type="range" class="form-input" id="rigBudgetPercent" min="0" max="100" value="70">
-                        <div style="text-align: center; margin-top: 8px; font-size: 18px; font-weight: 700; color: #8afd81;">
+                        <div style="text-align: center; margin-top: 8px; font-size: 18px; font-weight: 700; color: #C5FFA7;">
                             70% = $1,750,000
                         </div>
                         <div style="text-align: center; margin-top: 4px; font-size: 13px; color: var(--text-muted);">
@@ -971,7 +1004,7 @@ function renderCalculatorStep3() {
                     <div>
                         <label class="form-label">Budget for Infrastructure (%)</label>
                         <input type="range" class="form-input" id="infraBudgetPercent" min="0" max="100" value="30">
-                        <div style="text-align: center; margin-top: 8px; font-size: 18px; font-weight: 700; color: #8afd81;">
+                        <div style="text-align: center; margin-top: 8px; font-size: 18px; font-weight: 700; color: #C5FFA7;">
                             30% = $750,000
                         </div>
                         <div style="text-align: center; margin-top: 4px; font-size: 13px; color: var(--text-muted);">
@@ -991,8 +1024,8 @@ function renderCalculatorStep3() {
                     </div>
                     
                     <div>
-                        <label class="form-label">Total Power (MW)</label>
-                        <input type="text" class="form-input" value="1.17" disabled>
+                        <label class="form-label" for="total-power-display">Total Power (MW)</label>
+                        <input type="text" id="total-power-display" name="total_power" class="form-input" value="1.17" disabled>
                     </div>
                 </div>
             </div>
@@ -1005,7 +1038,7 @@ function renderCalculatorStep3() {
                 
                 <table style="width: 100%; border-collapse: collapse;">
                     <thead>
-                        <tr style="border-bottom: 1px solid rgba(138, 253, 129, 0.15);">
+                        <tr style="border-bottom: 1px solid rgba(197, 255, 167, 0.15);">
                             <th style="text-align: left; padding: 10px; font-size: 12px; color: var(--text-muted); text-transform: uppercase;">Phase</th>
                             <th style="text-align: right; padding: 10px; font-size: 12px; color: var(--text-muted); text-transform: uppercase;">Units</th>
                             <th style="text-align: right; padding: 10px; font-size: 12px; color: var(--text-muted); text-transform: uppercase;">Start Month</th>
@@ -1013,17 +1046,17 @@ function renderCalculatorStep3() {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr style="border-bottom: 1px solid rgba(138, 253, 129, 0.15);">
+                        <tr style="border-bottom: 1px solid rgba(197, 255, 167, 0.15);">
                             <td style="padding: 10px; color: var(--text-primary);">Phase 1</td>
-                            <td style="padding: 10px; text-align: right;"><input type="number" style="width: 80px; background: rgba(26, 26, 26, 0.9); border: 1px solid rgba(138, 253, 129, 0.15); border-radius: 6px; padding: 6px; color: var(--text-primary); text-align: right;" value="100"></td>
-                            <td style="padding: 10px; text-align: right;"><input type="number" style="width: 80px; background: rgba(26, 26, 26, 0.9); border: 1px solid rgba(138, 253, 129, 0.15); border-radius: 6px; padding: 6px; color: var(--text-primary); text-align: right;" value="0"></td>
-                            <td style="padding: 10px; text-align: right;"><input type="number" style="width: 80px; background: rgba(26, 26, 26, 0.9); border: 1px solid rgba(138, 253, 129, 0.15); border-radius: 6px; padding: 6px; color: var(--text-primary); text-align: right;" value="1"></td>
+                            <td style="padding: 10px; text-align: right;"><input type="number" id="phase1-month" name="phase1_month" style="width: 80px; background: rgba(26, 26, 26, 0.9); border: 1px solid rgba(197, 255, 167, 0.15); border-radius: 6px; padding: 6px; color: var(--text-primary); text-align: right;" value="100"></td>
+                            <td style="padding: 10px; text-align: right;"><input type="number" id="phase1-units" name="phase1_units" style="width: 80px; background: rgba(26, 26, 26, 0.9); border: 1px solid rgba(197, 255, 167, 0.15); border-radius: 6px; padding: 6px; color: var(--text-primary); text-align: right;" value="0"></td>
+                            <td style="padding: 10px; text-align: right;"><input type="number" id="phase1-percent" name="phase1_percent" style="width: 80px; background: rgba(26, 26, 26, 0.9); border: 1px solid rgba(197, 255, 167, 0.15); border-radius: 6px; padding: 6px; color: var(--text-primary); text-align: right;" value="1"></td>
                         </tr>
                         <tr>
                             <td style="padding: 10px; color: var(--text-primary);">Phase 2</td>
-                            <td style="padding: 10px; text-align: right;"><input type="number" style="width: 80px; background: rgba(26, 26, 26, 0.9); border: 1px solid rgba(138, 253, 129, 0.15); border-radius: 6px; padding: 6px; color: var(--text-primary); text-align: right;" value="106"></td>
-                            <td style="padding: 10px; text-align: right;"><input type="number" style="width: 80px; background: rgba(26, 26, 26, 0.9); border: 1px solid rgba(138, 253, 129, 0.15); border-radius: 6px; padding: 6px; color: var(--text-primary); text-align: right;" value="3"></td>
-                            <td style="padding: 10px; text-align: right;"><input type="number" style="width: 80px; background: rgba(26, 26, 26, 0.9); border: 1px solid rgba(138, 253, 129, 0.15); border-radius: 6px; padding: 6px; color: var(--text-primary); text-align: right;" value="2"></td>
+                            <td style="padding: 10px; text-align: right;"><input type="number" id="phase2-month" name="phase2_month" style="width: 80px; background: rgba(26, 26, 26, 0.9); border: 1px solid rgba(197, 255, 167, 0.15); border-radius: 6px; padding: 6px; color: var(--text-primary); text-align: right;" value="106"></td>
+                            <td style="padding: 10px; text-align: right;"><input type="number" id="phase2-units" name="phase2_units" style="width: 80px; background: rgba(26, 26, 26, 0.9); border: 1px solid rgba(197, 255, 167, 0.15); border-radius: 6px; padding: 6px; color: var(--text-primary); text-align: right;" value="3"></td>
+                            <td style="padding: 10px; text-align: right;"><input type="number" id="phase2-percent" name="phase2_percent" style="width: 80px; background: rgba(26, 26, 26, 0.9); border: 1px solid rgba(197, 255, 167, 0.15); border-radius: 6px; padding: 6px; color: var(--text-primary); text-align: right;" value="2"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -1085,11 +1118,11 @@ function renderCalculatorStep4() {
                 <div class="grid-2">
                     <div>
                         <label class="form-label">Start Price ($)</label>
-                        <input type="number" class="form-input" id="customBtcStart" value="95000">
+                        <input type="number" class="form-input" id="customBtcStart" name="custom_btc_start" value="95000">
                     </div>
                     <div>
                         <label class="form-label">End Price ($)</label>
-                        <input type="number" class="form-input" id="customBtcEnd" value="120000">
+                        <input type="number" class="form-input" id="customBtcEnd" name="custom_btc_end" value="120000">
                     </div>
                 </div>
             </div>
@@ -1099,12 +1132,12 @@ function renderCalculatorStep4() {
                 
                 <div class="grid-2">
                     <div>
-                        <label class="form-label">Initial Difficulty</label>
-                        <input type="text" class="form-input" value="120 T" disabled>
+                        <label class="form-label" for="initial-difficulty-display">Initial Difficulty</label>
+                        <input type="text" id="initial-difficulty-display" name="initial_difficulty" class="form-input" value="120 T" disabled>
                     </div>
                     <div>
                         <label class="form-label">Annual Growth (%)</label>
-                        <input type="number" class="form-input" id="difficultyGrowth" value="10" min="0" max="100">
+                        <input type="number" class="form-input" id="difficultyGrowth" name="difficulty_growth" value="10" min="0" max="100">
                     </div>
                 </div>
             </div>
@@ -1127,23 +1160,23 @@ function renderCalculatorStep5() {
                 <div class="grid-2">
                     <div>
                         <label class="form-label">Staffing ($)</label>
-                        <input type="number" class="form-input" id="opexStaffing" value="15000">
+                        <input type="number" class="form-input" id="opexStaffing" name="opex_staffing" value="15000">
                     </div>
                     <div>
                         <label class="form-label">Rent / Site ($)</label>
-                        <input type="number" class="form-input" id="opexRent" value="5000">
+                        <input type="number" class="form-input" id="opexRent" name="opex_rent" value="5000">
                     </div>
                     <div>
                         <label class="form-label">Maintenance ($)</label>
-                        <input type="number" class="form-input" id="opexMaintenance" value="2000">
+                        <input type="number" class="form-input" id="opexMaintenance" name="opex_maintenance" value="2000">
                     </div>
                     <div>
                         <label class="form-label">Software ($)</label>
-                        <input type="number" class="form-input" id="opexSoftware" value="1000">
+                        <input type="number" class="form-input" id="opexSoftware" name="opex_software" value="1000">
                     </div>
                     <div>
                         <label class="form-label">Other ($)</label>
-                        <input type="number" class="form-input" id="opexOther" value="500">
+                        <input type="number" class="form-input" id="opexOther" name="opex_other" value="500">
                     </div>
                 </div>
             </div>
@@ -1205,15 +1238,15 @@ function renderCalculatorStep6() {
                 <div class="grid-2">
                     <div>
                         <label class="form-label">Loan Amount ($)</label>
-                        <input type="number" class="form-input" id="loanAmount" value="0">
+                        <input type="number" class="form-input" id="loanAmount" name="loan_amount" value="0">
                     </div>
                     <div>
                         <label class="form-label">Interest Rate (%)</label>
-                        <input type="number" class="form-input" id="interestRate" value="0" step="0.1" min="0" max="100">
+                        <input type="number" class="form-input" id="interestRate" name="interest_rate" value="0" step="0.1" min="0" max="100">
                     </div>
                     <div>
                         <label class="form-label">Loan Term (Months)</label>
-                        <input type="number" class="form-input" id="loanTerm" value="0" min="0">
+                        <input type="number" class="form-input" id="loanTerm" name="loan_term" value="0" min="0">
                     </div>
                 </div>
             </div>
@@ -1311,7 +1344,7 @@ function renderCalculatorSummary() {
                 <span class="summary-value">1.21 MW</span>
             </div>
             
-            <div class="summary-item" style="padding-top: 12px; margin-top: 12px; border-top: 1px solid #8afd81;">
+            <div class="summary-item" style="padding-top: 12px; margin-top: 12px; border-top: 1px solid #C5FFA7;">
                 <span class="summary-label">Total Budget</span>
                 <span class="summary-value highlight">$2,500,000</span>
             </div>
@@ -1326,7 +1359,7 @@ function renderCalculatorSummary() {
                 <span class="summary-value">$322,504</span>
             </div>
             
-            <div class="summary-item" style="padding-top: 12px; margin-top: 12px; border-top: 1px solid #8afd81;">
+            <div class="summary-item" style="padding-top: 12px; margin-top: 12px; border-top: 1px solid #C5FFA7;">
                 <span class="summary-label">Annual ROI</span>
                 <span class="summary-value highlight">57.8%</span>
             </div>
@@ -1346,9 +1379,12 @@ function renderResultsSection() {
             <!-- ANALYSIS RESULTS HEADER -->
             <div class="section-premium">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
-                    <div>
-                        <h2 style="font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; letter-spacing: -0.5px;">Analysis Results</h2>
-                        <p style="font-size: 13px; color: var(--text-muted); font-weight: 500;">Project Alpha • Nov 9, 2025 at 5:55 AM</p>
+                    <div style="display: flex; align-items: center; gap: 16px;">
+                        <img src="assets/images/logo.png" alt="HearstAI Logo" style="height: 32px; width: auto; display: block;" />
+                        <div>
+                            <h2 style="font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; letter-spacing: -0.5px;">Analysis Results</h2>
+                            <p style="font-size: 13px; color: var(--text-muted); font-weight: 500;">Project Alpha • Nov 9, 2025 at 5:55 AM</p>
+                        </div>
                     </div>
                     <div style="display: flex; align-items: center; gap: 12px;">
                         <button class="btn btn-secondary" onclick="exportResultsPDF()">Export PDF</button>
@@ -1408,7 +1444,7 @@ function renderResultsSection() {
                         <p style="font-size: 12px; color: var(--text-muted); font-weight: 500;">12-month forecast</p>
                     </div>
                 </div>
-                <div style="background: #1A1A1A; border: 1px solid rgba(138, 253, 129, 0.15); border-radius: 12px; padding: 24px;">
+                <div style="background: #1A1A1A; border: 1px solid rgba(197, 255, 167, 0.15); border-radius: 12px; padding: 24px;">
                     <div style="position: relative; height: 400px;">
                         <canvas id="revenueChartAnalysis"></canvas>
                     </div>
@@ -1419,7 +1455,7 @@ function renderResultsSection() {
             <div class="section-premium" style="margin-top: 32px;">
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
                     <!-- CUMULATIVE CASH FLOW -->
-                    <div style="background: #1A1A1A; border: 1px solid rgba(138, 253, 129, 0.15); border-radius: 12px; padding: 24px;">
+                    <div style="background: #1A1A1A; border: 1px solid rgba(197, 255, 167, 0.15); border-radius: 12px; padding: 24px;">
                         <div style="margin-bottom: 20px;">
                             <h3 style="font-size: 15px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">Cumulative Cash Flow</h3>
                             <p style="font-size: 12px; color: var(--text-muted);">Break-even analysis</p>
@@ -1430,7 +1466,7 @@ function renderResultsSection() {
                     </div>
 
                     <!-- COST BREAKDOWN -->
-                    <div style="background: #1A1A1A; border: 1px solid rgba(138, 253, 129, 0.15); border-radius: 12px; padding: 24px;">
+                    <div style="background: #1A1A1A; border: 1px solid rgba(197, 255, 167, 0.15); border-radius: 12px; padding: 24px;">
                         <div style="margin-bottom: 20px;">
                             <h3 style="font-size: 15px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">Cost Breakdown</h3>
                             <p style="font-size: 12px; color: var(--text-muted);">CAPEX vs OPEX distribution</p>
@@ -1469,7 +1505,7 @@ function renderResultsSection() {
                                 <td>$9,403,216</td>
                                 <td>$8,750,861</td>
                                 <td>$8,149,301</td>
-                                <td style="color: #8afd81; font-weight: 600;">$36,414,578</td>
+                                <td style="color: #C5FFA7; font-weight: 600;">$36,414,578</td>
                             </tr>
                             <tr>
                                 <td style="font-weight: 600; color: var(--text-primary);">OPEX</td>
@@ -1481,11 +1517,11 @@ function renderResultsSection() {
                             </tr>
                             <tr>
                                 <td style="font-weight: 600; color: var(--text-primary);">Net Profit</td>
-                                <td style="color: #8afd81; font-weight: 600;">$5,617,008</td>
-                                <td style="color: #8afd81; font-weight: 600;">$4,979,851</td>
-                                <td style="color: #8afd81; font-weight: 600;">$4,392,732</td>
-                                <td style="color: #8afd81; font-weight: 600;">$3,851,328</td>
-                                <td style="color: #8afd81; font-weight: 600;">$18,840,919</td>
+                                <td style="color: #C5FFA7; font-weight: 600;">$5,617,008</td>
+                                <td style="color: #C5FFA7; font-weight: 600;">$4,979,851</td>
+                                <td style="color: #C5FFA7; font-weight: 600;">$4,392,732</td>
+                                <td style="color: #C5FFA7; font-weight: 600;">$3,851,328</td>
+                                <td style="color: #C5FFA7; font-weight: 600;">$18,840,919</td>
                             </tr>
                         </tbody>
                     </table>
@@ -1507,32 +1543,32 @@ function renderChartsSection() {
                     </div>
                 </div>
                 <div id="chartsContent">
-                    <div class="chart-container" style="background: #1A1A1A; border: 1px solid rgba(138, 253, 129, 0.15); border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+                    <div class="chart-container" style="background: #1A1A1A; border: 1px solid rgba(197, 255, 167, 0.15); border-radius: 12px; padding: 24px; margin-bottom: 24px;">
                         <h3 style="font-size: 15px; font-weight: 700; color: var(--text-primary); margin-bottom: 16px;">Cumulative Cash Flow (12 Months)</h3>
                         <div style="position: relative; height: 400px;">
                             <canvas id="cashflowChart"></canvas>
                         </div>
                     </div>
-                    <div class="chart-container" style="background: #1A1A1A; border: 1px solid rgba(138, 253, 129, 0.15); border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+                    <div class="chart-container" style="background: #1A1A1A; border: 1px solid rgba(197, 255, 167, 0.15); border-radius: 12px; padding: 24px; margin-bottom: 24px;">
                         <h3 style="font-size: 15px; font-weight: 700; color: var(--text-primary); margin-bottom: 16px;">Monthly Revenue vs Costs</h3>
                         <div style="position: relative; height: 400px;">
                             <canvas id="revenueChart"></canvas>
                         </div>
                     </div>
-                    <div class="chart-container" style="background: #1A1A1A; border: 1px solid rgba(138, 253, 129, 0.15); border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+                    <div class="chart-container" style="background: #1A1A1A; border: 1px solid rgba(197, 255, 167, 0.15); border-radius: 12px; padding: 24px; margin-bottom: 24px;">
                         <h3 style="font-size: 15px; font-weight: 700; color: var(--text-primary); margin-bottom: 16px;">ROI Sensitivity Analysis (BTC Price Impact)</h3>
                         <div style="position: relative; height: 400px;">
                             <canvas id="sensitivityChart"></canvas>
                         </div>
                     </div>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 24px; margin-top: 32px;">
-                        <div class="chart-container" style="background: #1A1A1A; border: 1px solid rgba(138, 253, 129, 0.15); border-radius: 12px; padding: 24px;">
+                        <div class="chart-container" style="background: #1A1A1A; border: 1px solid rgba(197, 255, 167, 0.15); border-radius: 12px; padding: 24px;">
                             <h3 style="font-size: 15px; font-weight: 700; color: var(--text-primary); margin-bottom: 16px;">Monthly Cost Breakdown</h3>
                             <div style="position: relative; height: 300px;">
                                 <canvas id="costBreakdownChart"></canvas>
                             </div>
                         </div>
-                        <div class="chart-container" style="background: #1A1A1A; border: 1px solid rgba(138, 253, 129, 0.15); border-radius: 12px; padding: 24px;">
+                        <div class="chart-container" style="background: #1A1A1A; border: 1px solid rgba(197, 255, 167, 0.15); border-radius: 12px; padding: 24px;">
                             <h3 style="font-size: 15px; font-weight: 700; color: var(--text-primary); margin-bottom: 16px;">Network Hashrate Impact on Profitability</h3>
                             <div style="position: relative; height: 300px;">
                                 <canvas id="hashrateImpactChart"></canvas>
@@ -1564,8 +1600,8 @@ function renderMonteCarloSection() {
                         <p style="font-size: 12px; color: var(--text-muted); font-weight: 500;">Probabilistic analysis with 10,000 scenarios</p>
                     </div>
                 </div>
-                <div style="background: rgba(138, 253, 129, 0.1); border: 1px solid #8afd81; border-radius: 12px; padding: 16px; margin-bottom: 32px;">
-                    <strong style="color: #8afd81;">Stochastic Modeling:</strong> 
+                <div style="background: rgba(197, 255, 167, 0.1); border: 1px solid #C5FFA7; border-radius: 12px; padding: 16px; margin-bottom: 32px;">
+                    <strong style="color: #C5FFA7;">Stochastic Modeling:</strong> 
                     <span style="color: var(--text-secondary);">This simulation runs 10,000 iterations with randomized BTC price, network hashrate, and electricity cost variations to provide probability distributions of outcomes.</span>
                 </div>
                 <div class="param-card" style="max-width: 600px;">
@@ -1597,29 +1633,29 @@ function renderMonteCarloSection() {
                         <div class="param-card-title">Simulation Results</div>
                         <p style="color: var(--text-secondary); margin-bottom: 24px;">Break-even time distribution across all scenarios</p>
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px;">
-                            <div style="padding: 16px; background: rgba(26, 26, 26, 0.9); border: 1px solid rgba(138, 253, 129, 0.1); border-radius: 12px; text-align: center;">
+                            <div style="padding: 16px; background: rgba(26, 26, 26, 0.9); border: 1px solid rgba(197, 255, 167, 0.1); border-radius: 12px; text-align: center;">
                                 <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase;">10th Percentile</div>
                                 <div style="font-size: 24px; font-weight: 700; color: var(--text-primary);" id="p10">-- months</div>
                             </div>
-                            <div style="padding: 16px; background: rgba(26, 26, 26, 0.9); border: 1px solid rgba(138, 253, 129, 0.1); border-radius: 12px; text-align: center;">
+                            <div style="padding: 16px; background: rgba(26, 26, 26, 0.9); border: 1px solid rgba(197, 255, 167, 0.1); border-radius: 12px; text-align: center;">
                                 <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase;">25th Percentile</div>
                                 <div style="font-size: 24px; font-weight: 700; color: var(--text-primary);" id="p25">-- months</div>
                             </div>
-                            <div style="padding: 16px; background: rgba(138, 253, 129, 0.1); border: 1px solid #8afd81; border-radius: 12px; text-align: center;">
+                            <div style="padding: 16px; background: rgba(197, 255, 167, 0.1); border: 1px solid #C5FFA7; border-radius: 12px; text-align: center;">
                                 <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase;">Median (50th)</div>
-                                <div style="font-size: 24px; font-weight: 700; color: #8afd81;" id="p50">-- months</div>
+                                <div style="font-size: 24px; font-weight: 700; color: #C5FFA7;" id="p50">-- months</div>
                             </div>
-                            <div style="padding: 16px; background: rgba(26, 26, 26, 0.9); border: 1px solid rgba(138, 253, 129, 0.1); border-radius: 12px; text-align: center;">
+                            <div style="padding: 16px; background: rgba(26, 26, 26, 0.9); border: 1px solid rgba(197, 255, 167, 0.1); border-radius: 12px; text-align: center;">
                                 <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase;">75th Percentile</div>
                                 <div style="font-size: 24px; font-weight: 700; color: var(--text-primary);" id="p75">-- months</div>
                             </div>
-                            <div style="padding: 16px; background: rgba(26, 26, 26, 0.9); border: 1px solid rgba(138, 253, 129, 0.1); border-radius: 12px; text-align: center;">
+                            <div style="padding: 16px; background: rgba(26, 26, 26, 0.9); border: 1px solid rgba(197, 255, 167, 0.1); border-radius: 12px; text-align: center;">
                                 <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase;">90th Percentile</div>
                                 <div style="font-size: 24px; font-weight: 700; color: var(--text-primary);" id="p90">-- months</div>
                             </div>
                         </div>
                     </div>
-                    <div class="chart-container" style="background: #1A1A1A; border: 1px solid rgba(138, 253, 129, 0.15); border-radius: 12px; padding: 24px; margin-top: 24px;">
+                    <div class="chart-container" style="background: #1A1A1A; border: 1px solid rgba(197, 255, 167, 0.15); border-radius: 12px; padding: 24px; margin-top: 24px;">
                         <h3 style="font-size: 15px; font-weight: 700; color: var(--text-primary); margin-bottom: 16px;">ROI Distribution Histogram</h3>
                         <div style="position: relative; height: 400px;">
                             <canvas id="monteCarloChart"></canvas>
@@ -1644,8 +1680,8 @@ function renderProjectsListSection() {
                 </div>
                 <!-- PROJECTS TOOLBAR -->
                 <div style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; align-items: center;">
-                    <input class="form-input" id="projectSearch" onkeyup="filterProjects()" placeholder="Search projects..." style="flex: 1; min-width: 250px;" type="text"/>
-                    <select class="form-input" id="projectSortBy" onchange="filterProjects()" style="width: 180px;">
+                    <input class="form-input" id="projectSearch" name="project_search" onkeyup="filterProjects()" placeholder="Search projects..." style="flex: 1; min-width: 250px;" type="text"/>
+                    <select class="form-input" id="projectSortBy" name="project_sort_by" onchange="filterProjects()" style="width: 180px;">
                         <option value="date-desc">Newest First</option>
                         <option value="date-asc">Oldest First</option>
                         <option value="roi-desc">Highest ROI</option>
@@ -1662,7 +1698,7 @@ function renderProjectsListSection() {
                     <!-- Projects will be loaded here -->
                 </div>
                 <div id="noProjects" style="text-align: center; padding: 60px 20px;">
-                    <div style="width: 80px; height: 80px; margin: 0 auto 24px; background: rgba(26, 26, 26, 0.9); border: 1px solid rgba(138, 253, 129, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <div style="width: 80px; height: 80px; margin: 0 auto 24px; background: rgba(26, 26, 26, 0.9); border: 1px solid rgba(197, 255, 167, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
                         ${Icons.projects}
                     </div>
                     <p style="color: var(--text-muted); font-size: 16px; margin-bottom: 8px;">No saved projects yet</p>
@@ -1711,40 +1747,40 @@ function renderHardwareSection() {
                                         <td>234 TH/s</td>
                                         <td>3,510W</td>
                                         <td>15 J/TH</td>
-                                        <td style="color: #8afd81; font-weight: 600;">$5,600</td>
-                                        <td style="color: #8afd81; font-weight: 600;">$7.80</td>
+                                        <td style="color: #C5FFA7; font-weight: 600;">$5,600</td>
+                                        <td style="color: #C5FFA7; font-weight: 600;">$7.80</td>
                                     </tr>
                                     <tr>
                                         <td style="font-weight: 600; color: var(--text-primary);">Antminer S21 XP</td>
                                         <td>270 TH/s</td>
                                         <td>3,645W</td>
                                         <td>13.5 J/TH</td>
-                                        <td style="color: #8afd81; font-weight: 600;">$6,450</td>
-                                        <td style="color: #8afd81; font-weight: 600;">$9.20</td>
+                                        <td style="color: #C5FFA7; font-weight: 600;">$6,450</td>
+                                        <td style="color: #C5FFA7; font-weight: 600;">$9.20</td>
                                     </tr>
                                     <tr>
                                         <td style="font-weight: 600; color: var(--text-primary);">Whatsminer M60S</td>
                                         <td>186 TH/s</td>
                                         <td>3,441W</td>
                                         <td>18.5 J/TH</td>
-                                        <td style="color: #8afd81; font-weight: 600;">$3,400</td>
-                                        <td style="color: #8afd81; font-weight: 600;">$5.22</td>
+                                        <td style="color: #C5FFA7; font-weight: 600;">$3,400</td>
+                                        <td style="color: #C5FFA7; font-weight: 600;">$5.22</td>
                                     </tr>
                                     <tr>
                                         <td style="font-weight: 600; color: var(--text-primary);">Whatsminer M63S</td>
                                         <td>390 TH/s</td>
                                         <td>7,215W</td>
                                         <td>18.5 J/TH</td>
-                                        <td style="color: #8afd81; font-weight: 600;">$5,100</td>
-                                        <td style="color: #8afd81; font-weight: 600;">$10.50</td>
+                                        <td style="color: #C5FFA7; font-weight: 600;">$5,100</td>
+                                        <td style="color: #C5FFA7; font-weight: 600;">$10.50</td>
                                     </tr>
                                     <tr>
                                         <td style="font-weight: 600; color: var(--text-primary);">Canaan Avalon Q</td>
                                         <td>120 TH/s</td>
                                         <td>3,200W</td>
                                         <td>26.7 J/TH</td>
-                                        <td style="color: #8afd81; font-weight: 600;">$1,800</td>
-                                        <td style="color: #8afd81; font-weight: 600;">$2.85</td>
+                                        <td style="color: #C5FFA7; font-weight: 600;">$1,800</td>
+                                        <td style="color: #C5FFA7; font-weight: 600;">$2.85</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -1764,7 +1800,7 @@ function renderHardwareSection() {
                         <div class="grid-2" style="margin-bottom: 20px;">
                             <div>
                                 <label class="form-label">Select ASIC Model</label>
-                                <select class="form-input" id="hw_asicModel" onchange="updateHardwareCalc()">
+                                <select class="form-input" id="hw_asicModel" name="hw_asic_model" onchange="updateHardwareCalc()">
                                     <option value="s21pro">Antminer S21 Pro (234 TH/s)</option>
                                     <option value="s21xp">Antminer S21 XP (270 TH/s)</option>
                                     <option value="m60s">Whatsminer M60S (186 TH/s)</option>
@@ -1774,19 +1810,19 @@ function renderHardwareSection() {
                             </div>
                             <div>
                                 <label class="form-label">Number of Units</label>
-                                <input type="number" class="form-input" id="hw_units" value="10" min="1" onchange="updateHardwareCalc()">
+                                <input type="number" class="form-input" id="hw_units" name="hw_units" value="10" min="1" onchange="updateHardwareCalc()">
                             </div>
                             <div>
                                 <label class="form-label">Electricity Cost ($/kWh)</label>
-                                <input type="number" class="form-input" id="hw_elecCost" value="0.06" step="0.01" onchange="updateHardwareCalc()">
+                                <input type="number" class="form-input" id="hw_elecCost" name="hw_elec_cost" value="0.06" step="0.01" onchange="updateHardwareCalc()">
                             </div>
                             <div>
                                 <label class="form-label">Operating Hours/Day</label>
-                                <input type="number" class="form-input" id="hw_hours" value="24" min="1" max="24" onchange="updateHardwareCalc()">
+                                <input type="number" class="form-input" id="hw_hours" name="hw_hours" value="24" min="1" max="24" onchange="updateHardwareCalc()">
                             </div>
                         </div>
-                        <div style="background: rgba(26, 26, 26, 0.9); padding: 20px; border-radius: 12px; border: 1px solid rgba(138, 253, 129, 0.2);">
-                            <h3 style="font-size: 14px; margin-bottom: 16px; color: #8afd81; font-weight: 700;">Calculation Results</h3>
+                        <div style="background: rgba(26, 26, 26, 0.9); padding: 20px; border-radius: 12px; border: 1px solid rgba(197, 255, 167, 0.2);">
+                            <h3 style="font-size: 14px; margin-bottom: 16px; color: #C5FFA7; font-weight: 700;">Calculation Results</h3>
                             <div class="grid-2">
                                 <div>
                                     <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">Total Hashrate</p>
@@ -1794,15 +1830,15 @@ function renderHardwareSection() {
                                 </div>
                                 <div>
                                     <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">Power Consumption</p>
-                                    <p style="font-size: 20px; font-weight: 700; color: #8afd81;" id="hw_totalPower">35.1 kW</p>
+                                    <p style="font-size: 20px; font-weight: 700; color: #C5FFA7;" id="hw_totalPower">35.1 kW</p>
                                 </div>
                                 <div>
                                     <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">Daily Revenue</p>
-                                    <p style="font-size: 20px; font-weight: 700; color: #8afd81;" id="hw_dailyRev">$780.00</p>
+                                    <p style="font-size: 20px; font-weight: 700; color: #C5FFA7;" id="hw_dailyRev">$780.00</p>
                                 </div>
                                 <div>
                                     <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">Daily Profit</p>
-                                    <p style="font-size: 20px; font-weight: 700; color: #8afd81;" id="hw_dailyProfit">$729.46</p>
+                                    <p style="font-size: 20px; font-weight: 700; color: #C5FFA7;" id="hw_dailyProfit">$729.46</p>
                                 </div>
                             </div>
                         </div>
@@ -1833,14 +1869,14 @@ function renderEnergySection() {
                     <div class="accordion-content">
                         <div class="grid-2">
                             <div>
-                                <h4 style="color: #8afd81; margin-bottom: 16px; font-weight: 700;">${Icons.sun} Solar Power</h4>
+                                <h4 style="color: #C5FFA7; margin-bottom: 16px; font-weight: 700;">${Icons.sun} Solar Power</h4>
                                 <div style="margin-bottom: 16px;">
                                     <label class="form-label">Installed Capacity (MW)</label>
                                     <input type="number" class="form-input" id="en_solarCap" value="10" min="0" step="0.1" onchange="updateEnergyMix()">
                                 </div>
                                 <div>
                                     <label class="form-label">Panel Efficiency</label>
-                                    <select class="form-input">
+                                    <select class="form-input" id="en_solarType" name="en_solar_type">
                                         <option>Monocrystalline (20%)</option>
                                         <option>Polycrystalline (17%)</option>
                                         <option>Thin Film (15%)</option>
@@ -1848,7 +1884,7 @@ function renderEnergySection() {
                                 </div>
                             </div>
                             <div>
-                                <h4 style="color: #8afd81; margin-bottom: 16px; font-weight: 700;">${Icons.wind} Wind Power</h4>
+                                <h4 style="color: #C5FFA7; margin-bottom: 16px; font-weight: 700;">${Icons.wind} Wind Power</h4>
                                 <div style="margin-bottom: 16px;">
                                     <label class="form-label">Installed Capacity (MW)</label>
                                     <input type="number" class="form-input" id="en_windCap" value="15" min="0" step="0.1" onchange="updateEnergyMix()">
@@ -1862,7 +1898,7 @@ function renderEnergySection() {
                                 </div>
                             </div>
                             <div>
-                                <h4 style="color: #8afd81; margin-bottom: 16px; font-weight: 700;">${Icons.battery} Battery Storage</h4>
+                                <h4 style="color: #C5FFA7; margin-bottom: 16px; font-weight: 700;">${Icons.battery} Battery Storage</h4>
                                 <div style="margin-bottom: 16px;">
                                     <label class="form-label">Storage Capacity (MWh)</label>
                                     <input type="number" class="form-input" id="en_batteryCap" value="20" min="0" step="0.5" onchange="updateEnergyMix()">
@@ -1877,7 +1913,7 @@ function renderEnergySection() {
                                 </div>
                             </div>
                             <div>
-                                <h4 style="color: #8afd81; margin-bottom: 16px; font-weight: 700;">${Icons.energy} Grid Power</h4>
+                                <h4 style="color: #C5FFA7; margin-bottom: 16px; font-weight: 700;">${Icons.energy} Grid Power</h4>
                                 <div style="margin-bottom: 16px;">
                                     <label class="form-label">Grid Connection (MW)</label>
                                     <input type="number" class="form-input" id="en_gridCap" value="5" min="0" step="0.1" onchange="updateEnergyMix()">
@@ -2053,13 +2089,25 @@ export function initCalculator() {
     };
 
     // Calculate projection function
-    window.calculateProjection = () => {
-        console.log('Calculating projection...');
-        // Navigate to results section
-        if (window.showProjectionSection) {
-            window.showProjectionSection('results');
-        }
-    };
+    // Définir la fonction globalement pour qu'elle soit disponible même si initCalculator n'a pas encore tourné
+    if (!window.calculateProjection) {
+        window.calculateProjection = () => {
+            console.log('Calculating projection...');
+            // Navigate to results section
+            if (window.showProjectionSection) {
+                window.showProjectionSection('results');
+            } else {
+                console.warn('⚠️ showProjectionSection not available yet, retrying...');
+                setTimeout(() => {
+                    if (window.showProjectionSection) {
+                        window.showProjectionSection('results');
+                    } else {
+                        console.error('❌ showProjectionSection still not available');
+                    }
+                }, 100);
+            }
+        };
+    }
 
     // Initial setup
     setTimeout(() => {
@@ -2086,40 +2134,78 @@ window.refreshNewsFeed = function() {
 
 // Initialize Results
 export function initResults() {
-    console.log('Initializing Results Section');
+    console.log('📊 Initializing Results Section');
     
     // Initialize charts with 12 months of data
-    setTimeout(() => {
-        if (typeof Chart !== 'undefined') {
+    let retryCount = 0;
+    const maxRetries = 10;
+    
+    const tryInitCharts = () => {
+        if (typeof Chart === 'undefined') {
+            console.warn('⚠️ Chart.js not loaded yet, retrying...');
+            retryCount++;
+            if (retryCount < maxRetries) {
+                setTimeout(tryInitCharts, 500);
+            } else {
+                console.error('❌ Chart.js not loaded after', maxRetries, 'retries');
+            }
+            return;
+        }
+        
+        // Vérifier que les éléments canvas existent
+        const revenueCanvas = document.getElementById('revenueChartAnalysis');
+        const cashflowCanvas = document.getElementById('cashflowChartAnalysis');
+        const costCanvas = document.getElementById('costChartAnalysis');
+        
+        if (!revenueCanvas || !cashflowCanvas || !costCanvas) {
+            console.warn('⚠️ Canvas elements not found yet, retrying...', {
+                revenue: !!revenueCanvas,
+                cashflow: !!cashflowCanvas,
+                cost: !!costCanvas
+            });
+            retryCount++;
+            if (retryCount < maxRetries) {
+                setTimeout(tryInitCharts, 200);
+            } else {
+                console.error('❌ Canvas elements not found after', maxRetries, 'retries');
+            }
+            return;
+        }
+        
+        console.log('✅ All canvas elements found, initializing charts...');
+        try {
             initRevenueChartAnalysis();
             initCashflowChartAnalysis();
             initCostChartAnalysis();
-        } else {
-            console.warn('Chart.js not loaded yet');
-            setTimeout(() => {
-                initResults();
-            }, 500);
+            console.log('✅ All charts initialized successfully');
+        } catch (error) {
+            console.error('❌ Error initializing charts:', error);
         }
-    }, 200);
+    };
+    
+    setTimeout(tryInitCharts, 200);
 }
 
 // Initialize Revenue & Profitability Chart (12 months)
 function initRevenueChartAnalysis() {
     const ctx = document.getElementById('revenueChartAnalysis');
-    if (!ctx) return;
+    if (!ctx) {
+        console.warn('⚠️ revenueChartAnalysis canvas not found');
+        return;
+    }
 
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     
     // Create gradients
     const revenueGradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 400);
-    revenueGradient.addColorStop(0, 'rgba(138, 253, 129, 0.3)');
-    revenueGradient.addColorStop(0.5, 'rgba(138, 253, 129, 0.1)');
-    revenueGradient.addColorStop(1, 'rgba(138, 253, 129, 0)');
+    revenueGradient.addColorStop(0, 'rgba(197, 255, 167, 0.3)');
+    revenueGradient.addColorStop(0.5, 'rgba(197, 255, 167, 0.1)');
+    revenueGradient.addColorStop(1, 'rgba(197, 255, 167, 0)');
 
     const profitGradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 400);
-    profitGradient.addColorStop(0, 'rgba(138, 253, 129, 0.25)');
-    profitGradient.addColorStop(0.5, 'rgba(138, 253, 129, 0.08)');
-    profitGradient.addColorStop(1, 'rgba(138, 253, 129, 0)');
+    profitGradient.addColorStop(0, 'rgba(197, 255, 167, 0.25)');
+    profitGradient.addColorStop(0.5, 'rgba(197, 255, 167, 0.08)');
+    profitGradient.addColorStop(1, 'rgba(197, 255, 167, 0)');
 
     new Chart(ctx, {
         type: 'line',
@@ -2129,7 +2215,7 @@ function initRevenueChartAnalysis() {
                 {
                     label: 'Revenue',
                     data: [842600, 856200, 869800, 883400, 897000, 910600, 924200, 937800, 951400, 965000, 978600, 992200],
-                    borderColor: '#8afd81',
+                    borderColor: '#C5FFA7',
                     backgroundColor: revenueGradient,
                     borderWidth: 3,
                     fill: true,
@@ -2140,7 +2226,7 @@ function initRevenueChartAnalysis() {
                 {
                     label: 'Profit',
                     data: [468000, 475200, 482400, 489600, 496800, 504000, 511200, 518400, 525600, 532800, 540000, 547200],
-                    borderColor: '#8afd81',
+                    borderColor: '#C5FFA7',
                     backgroundColor: profitGradient,
                     borderWidth: 3,
                     fill: true,
@@ -2165,9 +2251,9 @@ function initRevenueChartAnalysis() {
                 },
                 tooltip: {
                     backgroundColor: 'rgba(0, 0, 0, 0.95)',
-                    titleColor: '#8afd81',
+                    titleColor: '#C5FFA7',
                     bodyColor: '#E8E8E8',
-                    borderColor: 'rgba(138, 253, 129, 0.3)',
+                    borderColor: 'rgba(197, 255, 167, 0.3)',
                     borderWidth: 1,
                     callbacks: {
                         label: function(context) {
@@ -2198,13 +2284,16 @@ function initRevenueChartAnalysis() {
 // Initialize Cash Flow Chart (12 months)
 function initCashflowChartAnalysis() {
     const ctx = document.getElementById('cashflowChartAnalysis');
-    if (!ctx) return;
+    if (!ctx) {
+        console.warn('⚠️ cashflowChartAnalysis canvas not found');
+        return;
+    }
 
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     
     const cashflowGradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 300);
-    cashflowGradient.addColorStop(0, 'rgba(138, 253, 129, 0.3)');
-    cashflowGradient.addColorStop(1, 'rgba(138, 253, 129, 0)');
+    cashflowGradient.addColorStop(0, 'rgba(197, 255, 167, 0.3)');
+    cashflowGradient.addColorStop(1, 'rgba(197, 255, 167, 0)');
 
     new Chart(ctx, {
         type: 'line',
@@ -2213,7 +2302,7 @@ function initCashflowChartAnalysis() {
             datasets: [{
                 label: 'Cumulative Cash Flow',
                 data: [-2500000, -2031400, -1562800, -1094200, -625600, -157000, 311600, 780200, 1248800, 1717400, 2186000, 2654600],
-                borderColor: '#8afd81',
+                borderColor: '#C5FFA7',
                 backgroundColor: cashflowGradient,
                 borderWidth: 3,
                 fill: true,
@@ -2229,9 +2318,9 @@ function initCashflowChartAnalysis() {
                 legend: { display: false },
                 tooltip: {
                     backgroundColor: 'rgba(0, 0, 0, 0.95)',
-                    titleColor: '#8afd81',
+                    titleColor: '#C5FFA7',
                     bodyColor: '#E8E8E8',
-                    borderColor: 'rgba(138, 253, 129, 0.3)',
+                    borderColor: 'rgba(197, 255, 167, 0.3)',
                     callbacks: {
                         label: function(context) {
                             return '$' + context.parsed.y.toLocaleString();
@@ -2261,7 +2350,10 @@ function initCashflowChartAnalysis() {
 // Initialize Cost Breakdown Chart
 function initCostChartAnalysis() {
     const ctx = document.getElementById('costChartAnalysis');
-    if (!ctx) return;
+    if (!ctx) {
+        console.warn('⚠️ costChartAnalysis canvas not found');
+        return;
+    }
 
     new Chart(ctx, {
         type: 'doughnut',
@@ -2269,8 +2361,8 @@ function initCostChartAnalysis() {
             labels: ['CAPEX', 'OPEX'],
             datasets: [{
                 data: [2500000, 4644000],
-                backgroundColor: ['#8afd81', 'rgba(138, 253, 129, 0.6)'],
-                borderColor: ['#8afd81', '#8afd81'],
+                backgroundColor: ['#C5FFA7', 'rgba(197, 255, 167, 0.6)'],
+                borderColor: ['#C5FFA7', '#C5FFA7'],
                 borderWidth: 2
             }]
         },
@@ -2289,7 +2381,7 @@ function initCostChartAnalysis() {
                 },
                 tooltip: {
                     backgroundColor: 'rgba(0, 0, 0, 0.95)',
-                    titleColor: '#8afd81',
+                    titleColor: '#C5FFA7',
                     bodyColor: '#E8E8E8',
                     callbacks: {
                         label: function(context) {
@@ -2333,8 +2425,8 @@ function initCashflowChart() {
 
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const cashflowGradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 400);
-    cashflowGradient.addColorStop(0, 'rgba(138, 253, 129, 0.3)');
-    cashflowGradient.addColorStop(1, 'rgba(138, 253, 129, 0)');
+    cashflowGradient.addColorStop(0, 'rgba(197, 255, 167, 0.3)');
+    cashflowGradient.addColorStop(1, 'rgba(197, 255, 167, 0)');
 
     new Chart(ctx, {
         type: 'line',
@@ -2343,7 +2435,7 @@ function initCashflowChart() {
             datasets: [{
                 label: 'Cumulative Cash Flow',
                 data: [-2500000, -2031400, -1562800, -1094200, -625600, -157000, 311600, 780200, 1248800, 1717400, 2186000, 2654600],
-                borderColor: '#8afd81',
+                borderColor: '#C5FFA7',
                 backgroundColor: cashflowGradient,
                 borderWidth: 3,
                 fill: true,
@@ -2357,9 +2449,9 @@ function initCashflowChart() {
                 legend: { display: false },
                 tooltip: {
                     backgroundColor: 'rgba(0, 0, 0, 0.95)',
-                    titleColor: '#8afd81',
+                    titleColor: '#C5FFA7',
                     bodyColor: '#E8E8E8',
-                    borderColor: 'rgba(138, 253, 129, 0.3)'
+                    borderColor: 'rgba(197, 255, 167, 0.3)'
                 }
             },
             scales: {
@@ -2377,8 +2469,8 @@ function initRevenueChart() {
 
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const revenueGradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 400);
-    revenueGradient.addColorStop(0, 'rgba(138, 253, 129, 0.3)');
-    revenueGradient.addColorStop(1, 'rgba(138, 253, 129, 0)');
+    revenueGradient.addColorStop(0, 'rgba(197, 255, 167, 0.3)');
+    revenueGradient.addColorStop(1, 'rgba(197, 255, 167, 0)');
 
     new Chart(ctx, {
         type: 'bar',
@@ -2388,14 +2480,14 @@ function initRevenueChart() {
                 {
                     label: 'Revenue',
                     data: [842600, 856200, 869800, 883400, 897000, 910600, 924200, 937800, 951400, 965000, 978600, 992200],
-                    backgroundColor: '#8afd81',
-                    borderColor: '#8afd81'
+                    backgroundColor: '#C5FFA7',
+                    borderColor: '#C5FFA7'
                 },
                 {
                     label: 'Costs',
                     data: [374600, 381000, 387400, 393800, 400200, 406600, 413000, 419400, 425800, 432200, 438600, 445000],
-                    backgroundColor: 'rgba(138, 253, 129, 0.4)',
-                    borderColor: 'rgba(138, 253, 129, 0.6)'
+                    backgroundColor: 'rgba(197, 255, 167, 0.4)',
+                    borderColor: 'rgba(197, 255, 167, 0.6)'
                 }
             ]
         },
@@ -2406,9 +2498,9 @@ function initRevenueChart() {
                 legend: { labels: { color: '#E8E8E8' } },
                 tooltip: {
                     backgroundColor: 'rgba(0, 0, 0, 0.95)',
-                    titleColor: '#8afd81',
+                    titleColor: '#C5FFA7',
                     bodyColor: '#E8E8E8',
-                    borderColor: 'rgba(138, 253, 129, 0.3)'
+                    borderColor: 'rgba(197, 255, 167, 0.3)'
                 }
             },
             scales: {
@@ -2431,8 +2523,8 @@ function initSensitivityChart() {
             datasets: [{
                 label: 'ROI %',
                 data: [12.5, 28.3, 44.1, 57.8, 71.5, 85.2],
-                borderColor: '#8afd81',
-                backgroundColor: 'rgba(138, 253, 129, 0.1)',
+                borderColor: '#C5FFA7',
+                backgroundColor: 'rgba(197, 255, 167, 0.1)',
                 borderWidth: 3,
                 fill: true,
                 tension: 0.4
@@ -2445,9 +2537,9 @@ function initSensitivityChart() {
                 legend: { labels: { color: '#E8E8E8' } },
                 tooltip: {
                     backgroundColor: 'rgba(0, 0, 0, 0.95)',
-                    titleColor: '#8afd81',
+                    titleColor: '#C5FFA7',
                     bodyColor: '#E8E8E8',
-                    borderColor: 'rgba(138, 253, 129, 0.3)'
+                    borderColor: 'rgba(197, 255, 167, 0.3)'
                 }
             },
             scales: {
@@ -2469,8 +2561,8 @@ function initCostBreakdownChart() {
             labels: ['Energy', 'Hardware', 'Infrastructure', 'Other'],
             datasets: [{
                 data: [387000, 250000, 150000, 50000],
-                backgroundColor: ['#8afd81', 'rgba(138, 253, 129, 0.7)', 'rgba(138, 253, 129, 0.5)', 'rgba(138, 253, 129, 0.3)'],
-                borderColor: '#8afd81',
+                backgroundColor: ['#C5FFA7', 'rgba(197, 255, 167, 0.7)', 'rgba(197, 255, 167, 0.5)', 'rgba(197, 255, 167, 0.3)'],
+                borderColor: '#C5FFA7',
                 borderWidth: 2
             }]
         },
@@ -2481,9 +2573,9 @@ function initCostBreakdownChart() {
                 legend: { labels: { color: '#E8E8E8' } },
                 tooltip: {
                     backgroundColor: 'rgba(0, 0, 0, 0.95)',
-                    titleColor: '#8afd81',
+                    titleColor: '#C5FFA7',
                     bodyColor: '#E8E8E8',
-                    borderColor: 'rgba(138, 253, 129, 0.3)'
+                    borderColor: 'rgba(197, 255, 167, 0.3)'
                 }
             }
         }
@@ -2502,8 +2594,8 @@ function initHashrateImpactChart() {
             datasets: [{
                 label: 'Monthly Profit',
                 data: [420000, 380000, 340000, 300000, 260000],
-                backgroundColor: '#8afd81',
-                borderColor: '#8afd81'
+                backgroundColor: '#C5FFA7',
+                borderColor: '#C5FFA7'
             }]
         },
         options: {
@@ -2513,9 +2605,9 @@ function initHashrateImpactChart() {
                 legend: { display: false },
                 tooltip: {
                     backgroundColor: 'rgba(0, 0, 0, 0.95)',
-                    titleColor: '#8afd81',
+                    titleColor: '#C5FFA7',
                     bodyColor: '#E8E8E8',
-                    borderColor: 'rgba(138, 253, 129, 0.3)'
+                    borderColor: 'rgba(197, 255, 167, 0.3)'
                 }
             },
             scales: {

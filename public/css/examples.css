@@ -1,0 +1,341 @@
+/* ====================================
+   DESIGN SYSTEM EXAMPLES
+   READY TO USE COMPONENTS
+   ==================================== */
+
+/* ====================================
+   CARD COMPONENT EXAMPLE
+   ==================================== */
+
+.card {
+    background: var(--theme-bg-secondary);
+    border: 1px solid var(--theme-border);
+    border-radius: var(--radius-cards);
+    padding: var(--spacing-6);
+    transition: all var(--transition-normal);
+}
+
+.card:hover {
+    border-color: var(--border-color-hover);
+    box-shadow: var(--shadow-md);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-5);
+    padding-bottom: var(--spacing-4);
+    border-bottom: 1px solid var(--theme-border);
+}
+
+.card-title {
+    font-size: var(--typography-section-title-size);
+    font-weight: var(--typography-section-title-weight);
+    line-height: var(--typography-section-title-line-height);
+    color: var(--theme-text-primary);
+    font-family: var(--font-family-primary);
+    margin: 0;
+}
+
+.card-subtitle {
+    font-size: var(--typography-body-minor-size);
+    font-weight: var(--typography-body-minor-weight);
+    line-height: var(--typography-body-minor-line-height);
+    color: var(--theme-text-secondary);
+    font-family: var(--font-family-primary);
+    margin: var(--spacing-2) 0 0 0;
+}
+
+.card-body {
+    color: var(--theme-text-primary);
+    font-size: var(--typography-body-size);
+    font-weight: var(--typography-body-weight);
+    line-height: var(--typography-body-line-height);
+    font-family: var(--font-family-primary);
+}
+
+/* Card with Accent */
+.card-accent {
+    background: linear-gradient(135deg, var(--color-primary-light-green-1) 0%, transparent 100%);
+    border: 1px solid var(--color-primary-light-green-4);
+}
+
+.card-accent .card-title {
+    color: var(--color-primary-light-green);
+}
+
+/* Card with Pattern Background */
+.card-pattern {
+    position: relative;
+    overflow: hidden;
+}
+
+.card-pattern::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--pattern-spherical-mesh);
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+.card-pattern > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* ====================================
+   TYPOGRAPHY EXAMPLES
+   ==================================== */
+
+.text-display {
+    font-size: var(--typography-display-size);
+    font-weight: var(--typography-display-weight);
+    line-height: var(--typography-display-line-height);
+    letter-spacing: var(--typography-display-letter-spacing);
+    font-family: var(--font-family-primary);
+    color: var(--theme-text-primary);
+}
+
+.text-page-title {
+    font-size: var(--typography-page-title-size);
+    font-weight: var(--typography-page-title-weight);
+    line-height: var(--typography-page-title-line-height);
+    letter-spacing: var(--typography-page-title-letter-spacing);
+    font-family: var(--font-family-primary);
+    color: var(--theme-text-primary);
+}
+
+.text-section-title {
+    font-size: var(--typography-section-title-size);
+    font-weight: var(--typography-section-title-weight);
+    line-height: var(--typography-section-title-line-height);
+    font-family: var(--font-family-primary);
+    color: var(--theme-text-primary);
+}
+
+.text-subsection-title {
+    font-size: var(--typography-subsection-title-size);
+    font-weight: var(--typography-subsection-title-weight);
+    line-height: var(--typography-subsection-title-line-height);
+    font-family: var(--font-family-primary);
+    color: var(--theme-text-primary);
+}
+
+.text-body-bold {
+    font-size: var(--typography-body-bold-size);
+    font-weight: var(--typography-body-bold-weight);
+    line-height: var(--typography-body-bold-line-height);
+    font-family: var(--font-family-primary);
+    color: var(--theme-text-primary);
+}
+
+.text-body {
+    font-size: var(--typography-body-size);
+    font-weight: var(--typography-body-weight);
+    line-height: var(--typography-body-line-height);
+    font-family: var(--font-family-primary);
+    color: var(--theme-text-primary);
+}
+
+.text-body-minor-bold {
+    font-size: var(--typography-body-minor-bold-size);
+    font-weight: var(--typography-body-minor-bold-weight);
+    line-height: var(--typography-body-minor-bold-line-height);
+    font-family: var(--font-family-primary);
+    color: var(--theme-text-secondary);
+}
+
+.text-body-minor {
+    font-size: var(--typography-body-minor-size);
+    font-weight: var(--typography-body-minor-weight);
+    line-height: var(--typography-body-minor-line-height);
+    font-family: var(--font-family-primary);
+    color: var(--theme-text-secondary);
+}
+
+.text-caption-bold {
+    font-size: var(--typography-caption-bold-size);
+    font-weight: var(--typography-caption-bold-weight);
+    line-height: var(--typography-caption-bold-line-height);
+    font-family: var(--font-family-primary);
+    color: var(--theme-text-tertiary);
+}
+
+.text-caption {
+    font-size: var(--typography-caption-size);
+    font-weight: var(--typography-caption-weight);
+    line-height: var(--typography-caption-line-height);
+    font-family: var(--font-family-primary);
+    color: var(--theme-text-tertiary);
+}
+
+/* Text Color Variants */
+.text-accent {
+    color: var(--color-text-accent);
+}
+
+.text-accent-lighter {
+    color: var(--color-text-accent-lighter);
+}
+
+.text-accent-darker {
+    color: var(--color-text-accent-darker);
+}
+
+.text-secondary {
+    color: var(--color-text-secondary-2);
+}
+
+.text-tertiary {
+    color: var(--color-text-tertiary);
+}
+
+.text-error {
+    color: var(--color-text-error);
+}
+
+.text-warning {
+    color: var(--color-text-warning);
+}
+
+.text-success {
+    color: var(--color-text-success);
+}
+
+/* ====================================
+   ICON COMPONENT EXAMPLE
+   ==================================== */
+
+.icon {
+    width: var(--icon-size-standard);
+    height: var(--icon-size-standard);
+    stroke-width: var(--icon-stroke-width);
+    color: var(--icon-color-default);
+    fill: none;
+    stroke: currentColor;
+    display: inline-block;
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+
+.icon-sm {
+    width: 16px;
+    height: 16px;
+}
+
+.icon-lg {
+    width: 32px;
+    height: 32px;
+}
+
+.icon-accent {
+    color: var(--color-primary-light-green);
+}
+
+.icon-secondary {
+    color: var(--color-text-secondary-2);
+}
+
+/* Icon Button */
+.icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-small-cards);
+    background: var(--theme-bg-tertiary);
+    border: 1px solid var(--theme-border);
+    color: var(--theme-text-primary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.icon-button:hover {
+    background: var(--theme-bg-secondary);
+    border-color: var(--border-color-hover);
+    color: var(--color-primary-light-green);
+}
+
+.icon-button:active {
+    transform: scale(0.95);
+}
+
+/* ====================================
+   BUTTON EXAMPLES
+   ==================================== */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-2);
+    padding: var(--spacing-3) var(--spacing-5);
+    border-radius: var(--radius-small-cards);
+    font-size: var(--typography-body-size);
+    font-weight: var(--typography-body-bold-weight);
+    font-family: var(--font-family-primary);
+    line-height: 1;
+    border: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    text-decoration: none;
+}
+
+.btn-primary {
+    background: var(--color-primary-light-green);
+    color: var(--color-black-100);
+}
+
+.btn-primary:hover {
+    background: var(--color-primary-light-green-5);
+    box-shadow: var(--shadow-green-glow);
+}
+
+.btn-secondary {
+    background: var(--theme-bg-tertiary);
+    color: var(--theme-text-primary);
+    border: 1px solid var(--theme-border);
+}
+
+.btn-secondary:hover {
+    background: var(--theme-bg-secondary);
+    border-color: var(--border-color-hover);
+}
+
+/* ====================================
+   SPACING UTILITIES
+   ==================================== */
+
+.m-0 { margin: var(--spacing-0); }
+.m-1 { margin: var(--spacing-1); }
+.m-2 { margin: var(--spacing-2); }
+.m-3 { margin: var(--spacing-3); }
+.m-4 { margin: var(--spacing-4); }
+.m-5 { margin: var(--spacing-5); }
+.m-6 { margin: var(--spacing-6); }
+.m-7 { margin: var(--spacing-7); }
+.m-8 { margin: var(--spacing-8); }
+
+.p-0 { padding: var(--spacing-0); }
+.p-1 { padding: var(--spacing-1); }
+.p-2 { padding: var(--spacing-2); }
+.p-3 { padding: var(--spacing-3); }
+.p-4 { padding: var(--spacing-4); }
+.p-5 { padding: var(--spacing-5); }
+.p-6 { padding: var(--spacing-6); }
+.p-7 { padding: var(--spacing-7); }
+.p-8 { padding: var(--spacing-8); }
+
+.gap-1 { gap: var(--spacing-1); }
+.gap-2 { gap: var(--spacing-2); }
+.gap-3 { gap: var(--spacing-3); }
+.gap-4 { gap: var(--spacing-4); }
+.gap-5 { gap: var(--spacing-5); }
+.gap-6 { gap: var(--spacing-6); }
+

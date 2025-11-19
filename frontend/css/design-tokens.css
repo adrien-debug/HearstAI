@@ -1,148 +1,154 @@
 /* ====================================
-   DESIGN SYSTEM TOKENS - HEARST AI
+   HEARST AI DESIGN SYSTEM - TOKENS
+   Charte graphique complète
    ==================================== */
 
 :root {
     /* ====================================
-       🎨 1. BRAND & PRIMARY COLORS
+       PRIMARY COLORS
        ==================================== */
-    
-    /* Primary Light Green */
     --color-primary-light-green: #A3FF8B;
-    --color-primary-light-green-1: #E5FFEB;
-    --color-primary-light-green-2: #CFFFDA;
-    --color-primary-light-green-3: #B8FFCA;
-    --color-primary-light-green-4: #A3FFBA;
-    --color-primary-light-green-5: #8DFFA9;
     
-    /* Accent Ash Grey */
+    /* Light Green Variants */
+    --color-light-green-1: #E5FFEB;
+    --color-light-green-2: #CFFFDA;
+    --color-light-green-3: #B8FFCA;
+    --color-light-green-4: #A3FFBA;
+    --color-light-green-5: #8DFFA9;
+    
+    /* ====================================
+       ACCENT COLORS
+       ==================================== */
     --color-accent-ash-grey: #9EB3A8;
+    
+    /* Ash Grey Variants */
     --color-ash-grey-1: #D9E1DD;
     --color-ash-grey-2: #C4CFCB;
     --color-ash-grey-3: #ADBAB6;
     --color-ash-grey-4: #9EB3A8;
     --color-ash-grey-5: #75847C;
     
-    /* Secondary Colors - Black Series */
-    --color-black-100: #000000;
-    --color-black-200: #0A0A0A;
-    --color-black-300: #1A1A1A;
-    --color-black-400: #2A2A2A;
+    /* ====================================
+       SECONDARY COLORS
+       ==================================== */
+    /* Black Series */
+    --color-black-pure: #000000;
+    --color-black-900: #1A1A1A;
+    --color-black-800: #2D2D2D;
+    --color-black-700: #404040;
     
-    /* Secondary Colors - Warm Grey Series */
-    --color-warm-grey-100: #F5F5F5;
-    --color-warm-grey-200: #E5E5E5;
-    --color-warm-grey-300: #D5D5D5;
-    --color-warm-grey-400: #C5C5C5;
-    --color-warm-grey-500: #B5B5B5;
+    /* Warm Grey Series */
+    --color-warm-grey-100: #F5F3F0;
+    --color-warm-grey-200: #E8E4DF;
+    --color-warm-grey-300: #D4CEC7;
+    --color-warm-grey-400: #B8AFA5;
+    --color-warm-grey-500: #9C8F83;
     
-    /* Secondary Colors - Terracotta Series */
-    --color-terracotta-100: #E8D5C4;
-    --color-terracotta-200: #D4B8A0;
-    --color-terracotta-300: #C09B7C;
-    --color-terracotta-400: #AC7E58;
-    --color-terracotta-500: #986134;
-    
-    /* Neutrals */
-    --color-neutral-white: #FFFFFF;
-    --color-neutral-grey-subtle: #F8F8F8;
-    --color-neutral-grey-subtle-darker: #E8E8E8;
-    
-    /* System Colors */
-    --color-system-error: #E74C3C;
-    --color-system-warning: #F39C12;
-    --color-system-success: #27AE60;
-    --color-system-info: #3498DB;
+    /* Terracotta Series */
+    --color-terracotta-100: #F5E6E0;
+    --color-terracotta-200: #E8C9BD;
+    --color-terracotta-300: #D4A68F;
+    --color-terracotta-400: #B87D5F;
+    --color-terracotta-500: #9C5A3F;
     
     /* ====================================
-       🧷 COLOR TOKENS - TEXT COLORS
+       NEUTRAL COLORS
        ==================================== */
+    --color-white-pure: #FFFFFF;
+    --color-grey-subtle: #F8F8F8;
+    --color-grey-subtle-darker: #E5E5E5;
     
+    /* ====================================
+       SYSTEM COLORS
+       ==================================== */
+    --color-error: #FF4444;
+    --color-warning: #FFB800;
+    --color-success: #00C853;
+    
+    /* ====================================
+       TEXT COLORS
+       ==================================== */
     --color-text-default: #000000;
     --color-text-negative: #FFFFFF;
-    --color-text-unrestricted: #9EB3A8;
-    --color-text-accent: #A3FF8B;
-    --color-text-accent-lighter: #CFFFDA;
-    --color-text-accent-darker: #8DFFA9;
-    --color-text-secondary-1: #75847C;
-    --color-text-secondary-2: #9EB3A8;
-    --color-text-secondary-3: #ADBAB6;
-    --color-text-tertiary: #C4CFCB;
-    --color-text-auxiliary: #D9E1DD;
-    --color-text-error: var(--color-system-error);
-    --color-text-warning: var(--color-system-warning);
-    --color-text-success: var(--color-system-success);
+    --color-text-unrestricted: #A3FF8B;
+    --color-text-accent: #9EB3A8;
+    --color-text-accent-lighter: #C4CFCB;
+    --color-text-accent-darker: #75847C;
+    --color-text-secondary: #6B7280;
+    --color-text-secondary-variant-1: #9CA3AF;
+    --color-text-secondary-variant-2: #D1D5DB;
+    --color-text-tertiary: #9CA3AF;
+    --color-text-auxiliary: #E5E7EB;
+    --color-text-error: #FF4444;
+    --color-text-warning: #FFB800;
+    --color-text-success: #00C853;
     
     /* ====================================
-       🧷 COLOR TOKENS - SURFACES
+       SURFACE COLORS
        ==================================== */
-    
     --color-surface-default: #FFFFFF;
     --color-surface-subtle-green: #E5FFEB;
     --color-surface-green-light: #CFFFDA;
-    --color-surface-accent: #A3FF8B;
-    --color-surface-brown: #E8D5C4;
-    --color-surface-grey: #F8F8F8;
-    --color-surface-overlay-0: rgba(0, 0, 0, 0);
-    --color-surface-overlay-1: rgba(0, 0, 0, 0.1);
-    --color-surface-overlay-2: rgba(0, 0, 0, 0.2);
-    --color-surface-overlay-3: rgba(0, 0, 0, 0.3);
-    --color-surface-overlay-4: rgba(0, 0, 0, 0.5);
+    --color-surface-accent: #9EB3A8;
+    --color-surface-brown: #9C5A3F;
+    --color-surface-grey-variant-1: #F8F8F8;
+    --color-surface-grey-variant-2: #E5E5E5;
+    --color-surface-grey-variant-3: #D1D5DB;
+    
+    /* Overlay Colors */
+    --color-overlay-0: rgba(0, 0, 0, 0);
+    --color-overlay-1: rgba(0, 0, 0, 0.1);
+    --color-overlay-2: rgba(0, 0, 0, 0.2);
+    --color-overlay-3: rgba(0, 0, 0, 0.3);
+    --color-overlay-4: rgba(0, 0, 0, 0.4);
+    --color-overlay-5: rgba(0, 0, 0, 0.5);
     
     /* ====================================
-       🧷 COLOR TOKENS - GRAPHICS PALETTE
+       GRAPHICS COLOR PALETTE (1-15)
        ==================================== */
-    
     --color-graphic-1: #A3FF8B;
     --color-graphic-2: #9EB3A8;
-    --color-graphic-3: #E8D5C4;
-    --color-graphic-4: #D4B8A0;
-    --color-graphic-5: #C09B7C;
-    --color-graphic-6: #AC7E58;
-    --color-graphic-7: #986134;
+    --color-graphic-3: #FFB800;
+    --color-graphic-4: #FF4444;
+    --color-graphic-5: #00C853;
+    --color-graphic-6: #8DFFA9;
+    --color-graphic-7: #CFFFDA;
     --color-graphic-8: #75847C;
-    --color-graphic-9: #ADBAB6;
-    --color-graphic-10: #C4CFCB;
-    --color-graphic-11: #D9E1DD;
-    --color-graphic-12: #E5FFEB;
-    --color-graphic-13: #CFFFDA;
-    --color-graphic-14: #B8FFCA;
-    --color-graphic-15: #8DFFA9;
+    --color-graphic-9: #B8FFCA;
+    --color-graphic-10: #D9E1DD;
+    --color-graphic-11: #9C5A3F;
+    --color-graphic-12: #B87D5F;
+    --color-graphic-13: #D4A68F;
+    --color-graphic-14: #E8C9BD;
+    --color-graphic-15: #F5E6E0;
     
     /* ====================================
-       🔲 3. CORNER RADIUS
+       SPACING SYSTEM (8px Rule)
        ==================================== */
+    --space-0: 0px;
+    --space-1: 2px;
+    --space-2: 4px;
+    --space-3: 8px;
+    --space-4: 12px;
+    --space-5: 16px;
+    --space-6: 24px;
+    --space-7: 32px;
+    --space-8: 48px;
+    --space-9: 64px;
+    --space-10: 80px;
     
+    /* ====================================
+       CORNER RADIUS
+       ==================================== */
     --radius-flat: 0px;
-    --radius-small-cards: 8px;
-    --radius-cards: 16px;
-    --radius-sections: 20px;
+    --radius-small: 8px;
+    --radius-default: 16px;
+    --radius-section: 20px;
     --radius-rounded: 1000px;
     
-    /* Default radius */
-    --radius-default: var(--radius-cards);
-    
     /* ====================================
-       📏 4. SPACING SYSTEM - 8px RULE
+       TYPOGRAPHY - FK Grotesk Trial
        ==================================== */
-    
-    --spacing-0: 0px;
-    --spacing-1: 2px;
-    --spacing-2: 4px;
-    --spacing-3: 8px;
-    --spacing-4: 12px;
-    --spacing-5: 16px;
-    --spacing-6: 24px;
-    --spacing-7: 32px;
-    --spacing-8: 48px;
-    --spacing-9: 64px;
-    --spacing-10: 80px;
-    
-    /* ====================================
-       🔤 5. TYPOGRAPHY - FK Grotesk Trial
-       ==================================== */
-    
-    /* Font Family */
     --font-family-primary: 'FK Grotesk Trial', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     --font-family-mono: 'Fira Code', 'Consolas', 'Monaco', monospace;
     
@@ -150,118 +156,106 @@
     --typography-display-size: 52px;
     --typography-display-weight: 700;
     --typography-display-line-height: 64px;
-    --typography-display-letter-spacing: 8px;
+    --typography-display-spacing: 8px;
     
     /* Page Title */
     --typography-page-title-size: 32px;
     --typography-page-title-weight: 600;
     --typography-page-title-line-height: 40px;
-    --typography-page-title-letter-spacing: 8px;
+    --typography-page-title-spacing: 8px;
     
     /* Section Title */
     --typography-section-title-size: 25px;
     --typography-section-title-weight: 600;
     --typography-section-title-line-height: 32px;
-    --typography-section-title-letter-spacing: 0px;
     
     /* Sub Section Title */
     --typography-subsection-title-size: 18px;
     --typography-subsection-title-weight: 500;
     --typography-subsection-title-line-height: 24px;
-    --typography-subsection-title-letter-spacing: 0px;
     
     /* Body Bold */
     --typography-body-bold-size: 16px;
     --typography-body-bold-weight: 500;
-    --typography-body-bold-line-height: 24px;
-    --typography-body-bold-letter-spacing: 0px;
     
     /* Body */
     --typography-body-size: 16px;
     --typography-body-weight: 400;
-    --typography-body-line-height: 24px;
-    --typography-body-letter-spacing: 0px;
     
     /* Body Minor Bold */
     --typography-body-minor-bold-size: 14px;
     --typography-body-minor-bold-weight: 500;
-    --typography-body-minor-bold-line-height: 20px;
-    --typography-body-minor-bold-letter-spacing: 0px;
     
     /* Body Minor */
     --typography-body-minor-size: 14px;
     --typography-body-minor-weight: 400;
-    --typography-body-minor-line-height: 20px;
-    --typography-body-minor-letter-spacing: 0px;
     
     /* Caption Bold */
     --typography-caption-bold-size: 12px;
     --typography-caption-bold-weight: 500;
-    --typography-caption-bold-line-height: 16px;
-    --typography-caption-bold-letter-spacing: 0px;
     
     /* Caption */
     --typography-caption-size: 12px;
     --typography-caption-weight: 400;
-    --typography-caption-line-height: 16px;
-    --typography-caption-letter-spacing: 0px;
     
     /* ====================================
-       🧭 7. ICONS
+       GRID / LAYOUT
        ==================================== */
-    
-    --icon-size-standard: 24px;
-    --icon-stroke-width: 1.5px;
-    --icon-color-default: currentColor;
-    
-    /* ====================================
-       🧱 2. GRID / LAYOUT (DESKTOP)
-       ==================================== */
-    
+    --grid-dashboard-width: 1440px;
     --grid-columns: 12;
     --grid-gutter: 24px;
-    --grid-breakpoint-desktop: 1440px;
-    --grid-container-max-width: 1440px;
+    --breakpoint-desktop-menu: 1440px;
     
     /* ====================================
-       🌀 8. PATTERNS & DECORATIVE
+       ICONS
        ==================================== */
-    
-    --pattern-spherical-mesh: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='spherical' x='0' y='0' width='40' height='40' patternUnits='userSpaceOnUse'%3E%3Ccircle cx='20' cy='20' r='2' fill='%23A3FF8B' opacity='0.1'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23spherical)'/%3E%3C/svg%3E");
-    --pattern-stacked-squares: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='squares' x='0' y='0' width='40' height='40' patternUnits='userSpaceOnUse'%3E%3Crect x='0' y='0' width='20' height='20' fill='none' stroke='%239EB3A8' stroke-width='1' opacity='0.1'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23squares)'/%3E%3C/svg%3E");
-    --pattern-cube-mesh: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='cube' x='0' y='0' width='60' height='60' patternUnits='userSpaceOnUse'%3E%3Cpath d='M0,0 L30,15 L30,45 L0,30 Z M30,15 L60,0 L60,30 L30,45 Z M0,30 L30,45 L30,75 L0,60 Z' fill='none' stroke='%23A3FF8B' stroke-width='1' opacity='0.08'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23cube)'/%3E%3C/svg%3E");
+    --icon-size-standard: 24px;
+    --icon-style: outline-rounded;
     
     /* ====================================
-       SHADOWS & EFFECTS
+       SHADOWS - PREMIUM
        ==================================== */
-    
-    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
-    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.15);
-    --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.2);
-    --shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.25);
-    --shadow-green-glow: 0 0 20px rgba(163, 255, 139, 0.3);
-    --shadow-green-glow-strong: 0 0 30px rgba(163, 255, 139, 0.5);
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    --shadow-glow-green: 0 0 20px rgba(163, 255, 139, 0.3), 0 0 40px rgba(163, 255, 139, 0.1);
+    --shadow-glow-accent: 0 0 20px rgba(158, 179, 168, 0.2), 0 0 40px rgba(158, 179, 168, 0.1);
+    --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
     
     /* ====================================
-       TRANSITIONS & ANIMATIONS
+       TRANSITIONS - PREMIUM
        ==================================== */
-    
     --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
-    --ease-in: cubic-bezier(0.4, 0, 1, 1);
-    --ease-out: cubic-bezier(0, 0, 0.2, 1);
-    --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-base: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: 400ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
     
     /* ====================================
-       BORDERS
+       GRADIENTS - PREMIUM
        ==================================== */
+    --gradient-primary: linear-gradient(135deg, #A3FF8B 0%, #8DFFA9 50%, #B8FFCA 100%);
+    --gradient-accent: linear-gradient(135deg, #9EB3A8 0%, #ADBAB6 50%, #C4CFCB 100%);
+    --gradient-subtle: linear-gradient(135deg, rgba(163, 255, 139, 0.1) 0%, rgba(207, 253, 218, 0.05) 100%);
+    --gradient-overlay: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.4) 100%);
+    --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
     
-    --border-width-thin: 1px;
-    --border-width-medium: 2px;
-    --border-width-thick: 3px;
-    --border-color-default: rgba(158, 179, 168, 0.2);
-    --border-color-hover: rgba(163, 255, 139, 0.4);
-    --border-color-active: var(--color-primary-light-green);
+    /* ====================================
+       BACKDROP BLUR
+       ==================================== */
+    --blur-sm: blur(4px);
+    --blur-md: blur(8px);
+    --blur-lg: blur(16px);
+    --blur-xl: blur(24px);
 }
 
+/* Dark Theme Overrides (if needed) */
+[data-theme="dark"] {
+    --color-text-default: #FFFFFF;
+    --color-text-negative: #000000;
+    --color-surface-default: #1A1A1A;
+    --color-surface-subtle-green: rgba(163, 255, 139, 0.1);
+    --color-grey-subtle: #2D2D2D;
+    --color-grey-subtle-darker: #404040;
+}

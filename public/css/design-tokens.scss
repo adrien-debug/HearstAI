@@ -1,0 +1,275 @@
+/* ====================================
+   DESIGN SYSTEM TOKENS - SCSS VERSION
+   HEARST AI
+   ==================================== */
+
+// ====================================
+// 🎨 1. BRAND & PRIMARY COLORS
+// ====================================
+
+// Primary Light Green
+$color-primary-light-green: #A3FF8B;
+$color-primary-light-green-1: #E5FFEB;
+$color-primary-light-green-2: #CFFFDA;
+$color-primary-light-green-3: #B8FFCA;
+$color-primary-light-green-4: #A3FFBA;
+$color-primary-light-green-5: #8DFFA9;
+
+// Accent Ash Grey
+$color-accent-ash-grey: #9EB3A8;
+$color-ash-grey-1: #D9E1DD;
+$color-ash-grey-2: #C4CFCB;
+$color-ash-grey-3: #ADBAB6;
+$color-ash-grey-4: #9EB3A8;
+$color-ash-grey-5: #75847C;
+
+// Secondary Colors - Black Series
+$color-black-100: #000000;
+$color-black-200: #0A0A0A;
+$color-black-300: #1A1A1A;
+$color-black-400: #2A2A2A;
+
+// Secondary Colors - Warm Grey Series
+$color-warm-grey-100: #F5F5F5;
+$color-warm-grey-200: #E5E5E5;
+$color-warm-grey-300: #D5D5D5;
+$color-warm-grey-400: #C5C5C5;
+$color-warm-grey-500: #B5B5B5;
+
+// Secondary Colors - Terracotta Series
+$color-terracotta-100: #E8D5C4;
+$color-terracotta-200: #D4B8A0;
+$color-terracotta-300: #C09B7C;
+$color-terracotta-400: #AC7E58;
+$color-terracotta-500: #986134;
+
+// Neutrals
+$color-neutral-white: #FFFFFF;
+$color-neutral-grey-subtle: #F8F8F8;
+$color-neutral-grey-subtle-darker: #E8E8E8;
+
+// System Colors
+$color-system-error: #E74C3C;
+$color-system-warning: #F39C12;
+$color-system-success: #27AE60;
+$color-system-info: #3498DB;
+
+// ====================================
+// 🧷 COLOR TOKENS - TEXT COLORS
+// ====================================
+
+$color-text-default: #000000;
+$color-text-negative: #FFFFFF;
+$color-text-unrestricted: $color-accent-ash-grey;
+$color-text-accent: $color-primary-light-green;
+$color-text-accent-lighter: $color-primary-light-green-2;
+$color-text-accent-darker: $color-primary-light-green-5;
+$color-text-secondary-1: $color-ash-grey-5;
+$color-text-secondary-2: $color-ash-grey-4;
+$color-text-secondary-3: $color-ash-grey-3;
+$color-text-tertiary: $color-ash-grey-2;
+$color-text-auxiliary: $color-ash-grey-1;
+$color-text-error: $color-system-error;
+$color-text-warning: $color-system-warning;
+$color-text-success: $color-system-success;
+
+// ====================================
+// 🧷 COLOR TOKENS - SURFACES
+// ====================================
+
+$color-surface-default: #FFFFFF;
+$color-surface-subtle-green: $color-primary-light-green-1;
+$color-surface-green-light: $color-primary-light-green-2;
+$color-surface-accent: $color-primary-light-green;
+$color-surface-brown: $color-terracotta-100;
+$color-surface-grey: $color-neutral-grey-subtle;
+$color-surface-overlay-0: rgba(0, 0, 0, 0);
+$color-surface-overlay-1: rgba(0, 0, 0, 0.1);
+$color-surface-overlay-2: rgba(0, 0, 0, 0.2);
+$color-surface-overlay-3: rgba(0, 0, 0, 0.3);
+$color-surface-overlay-4: rgba(0, 0, 0, 0.5);
+
+// ====================================
+// 🧷 COLOR TOKENS - GRAPHICS PALETTE
+// ====================================
+
+$color-graphic-1: $color-primary-light-green;
+$color-graphic-2: $color-accent-ash-grey;
+$color-graphic-3: $color-terracotta-100;
+$color-graphic-4: $color-terracotta-200;
+$color-graphic-5: $color-terracotta-300;
+$color-graphic-6: $color-terracotta-400;
+$color-graphic-7: $color-terracotta-500;
+$color-graphic-8: $color-ash-grey-5;
+$color-graphic-9: $color-ash-grey-3;
+$color-graphic-10: $color-ash-grey-2;
+$color-graphic-11: $color-ash-grey-1;
+$color-graphic-12: $color-primary-light-green-1;
+$color-graphic-13: $color-primary-light-green-2;
+$color-graphic-14: $color-primary-light-green-3;
+$color-graphic-15: $color-primary-light-green-5;
+
+// ====================================
+// 🔲 3. CORNER RADIUS
+// ====================================
+
+$radius-flat: 0px;
+$radius-small-cards: 8px;
+$radius-cards: 16px;
+$radius-sections: 20px;
+$radius-rounded: 1000px;
+$radius-default: $radius-cards;
+
+// ====================================
+// 📏 4. SPACING SYSTEM - 8px RULE
+// ====================================
+
+$spacing-0: 0px;
+$spacing-1: 2px;
+$spacing-2: 4px;
+$spacing-3: 8px;
+$spacing-4: 12px;
+$spacing-5: 16px;
+$spacing-6: 24px;
+$spacing-7: 32px;
+$spacing-8: 48px;
+$spacing-9: 64px;
+$spacing-10: 80px;
+
+// ====================================
+// 🔤 5. TYPOGRAPHY - FK Grotesk Trial
+// ====================================
+
+// Font Family
+$font-family-primary: 'FK Grotesk Trial', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+$font-family-mono: 'Fira Code', 'Consolas', 'Monaco', monospace;
+
+// Typography Maps
+$typography-display: (
+    size: 52px,
+    weight: 700,
+    line-height: 64px,
+    letter-spacing: 8px
+);
+
+$typography-page-title: (
+    size: 32px,
+    weight: 600,
+    line-height: 40px,
+    letter-spacing: 8px
+);
+
+$typography-section-title: (
+    size: 25px,
+    weight: 600,
+    line-height: 32px,
+    letter-spacing: 0px
+);
+
+$typography-subsection-title: (
+    size: 18px,
+    weight: 500,
+    line-height: 24px,
+    letter-spacing: 0px
+);
+
+$typography-body-bold: (
+    size: 16px,
+    weight: 500,
+    line-height: 24px,
+    letter-spacing: 0px
+);
+
+$typography-body: (
+    size: 16px,
+    weight: 400,
+    line-height: 24px,
+    letter-spacing: 0px
+);
+
+$typography-body-minor-bold: (
+    size: 14px,
+    weight: 500,
+    line-height: 20px,
+    letter-spacing: 0px
+);
+
+$typography-body-minor: (
+    size: 14px,
+    weight: 400,
+    line-height: 20px,
+    letter-spacing: 0px
+);
+
+$typography-caption-bold: (
+    size: 12px,
+    weight: 500,
+    line-height: 16px,
+    letter-spacing: 0px
+);
+
+$typography-caption: (
+    size: 12px,
+    weight: 400,
+    line-height: 16px,
+    letter-spacing: 0px
+);
+
+// ====================================
+// 🧭 7. ICONS
+// ====================================
+
+$icon-size-standard: 24px;
+$icon-stroke-width: 1.5px;
+$icon-color-default: currentColor;
+
+// ====================================
+// 🧱 2. GRID / LAYOUT (DESKTOP)
+// ====================================
+
+$grid-columns: 12;
+$grid-gutter: 24px;
+$grid-breakpoint-desktop: 1440px;
+$grid-container-max-width: 1440px;
+
+// ====================================
+// 🌀 8. PATTERNS & DECORATIVE
+// ====================================
+
+$pattern-spherical-mesh: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='spherical' x='0' y='0' width='40' height='40' patternUnits='userSpaceOnUse'%3E%3Ccircle cx='20' cy='20' r='2' fill='%23A3FF8B' opacity='0.1'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23spherical)'/%3E%3C/svg%3E");
+$pattern-stacked-squares: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='squares' x='0' y='0' width='40' height='40' patternUnits='userSpaceOnUse'%3E%3Crect x='0' y='0' width='20' height='20' fill='none' stroke='%239EB3A8' stroke-width='1' opacity='0.1'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23squares)'/%3E%3C/svg%3E");
+$pattern-cube-mesh: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='cube' x='0' y='0' width='60' height='60' patternUnits='userSpaceOnUse'%3E%3Cpath d='M0,0 L30,15 L30,45 L0,30 Z M30,15 L60,0 L60,30 L30,45 Z M0,30 L30,45 L30,75 L0,60 Z' fill='none' stroke='%23A3FF8B' stroke-width='1' opacity='0.08'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23cube)'/%3E%3C/svg%3E");
+
+// ====================================
+// SHADOWS & EFFECTS
+// ====================================
+
+$shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+$shadow-md: 0 4px 8px rgba(0, 0, 0, 0.15);
+$shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.2);
+$shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.25);
+$shadow-green-glow: 0 0 20px rgba(163, 255, 139, 0.3);
+$shadow-green-glow-strong: 0 0 30px rgba(163, 255, 139, 0.5);
+
+// ====================================
+// TRANSITIONS & ANIMATIONS
+// ====================================
+
+$transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+$transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+$transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+$ease-in: cubic-bezier(0.4, 0, 1, 1);
+$ease-out: cubic-bezier(0, 0, 0.2, 1);
+$ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+// ====================================
+// BORDERS
+// ====================================
+
+$border-width-thin: 1px;
+$border-width-medium: 2px;
+$border-width-thick: 3px;
+$border-color-default: rgba(158, 179, 168, 0.2);
+$border-color-hover: rgba(163, 255, 139, 0.4);
+$border-color-active: $color-primary-light-green;
+

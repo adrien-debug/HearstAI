@@ -130,3 +130,4 @@ frontend/index.html                     - Structure HTML
 
 **IMPORTANT**: Claude, concentre-toi UNIQUEMENT sur la page Projections. Ne modifie rien d'autre dans l'application. L'objectif est de VERIFIER que le code recodé s'affiche correctement.
 
+

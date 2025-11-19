@@ -14,7 +14,7 @@ export async function exportProjectsPDF(projects) {
             <title>HearstAI - Projects Report</title>
             <style>
                 body { font-family: Arial, sans-serif; padding: 40px; }
-                h1 { color: #8afd81; border-bottom: 2px solid #8afd81; padding-bottom: 10px; }
+                h1 { color: #C5FFA7; border-bottom: 2px solid #C5FFA7; padding-bottom: 10px; }
                 .project { margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
                 .project h2 { margin: 0 0 10px 0; color: #333; }
                 .meta { color: #666; font-size: 14px; }
@@ -63,7 +63,7 @@ export async function exportJobsPDF(jobs) {
             <title>HearstAI - Jobs Report</title>
             <style>
                 body { font-family: Arial, sans-serif; padding: 40px; }
-                h1 { color: #8afd81; border-bottom: 2px solid #8afd81; padding-bottom: 10px; }
+                h1 { color: #C5FFA7; border-bottom: 2px solid #C5FFA7; padding-bottom: 10px; }
                 table { width: 100%; border-collapse: collapse; margin-top: 20px; }
                 th { background: #f5f5f5; padding: 12px; text-align: left; border-bottom: 2px solid #ddd; }
                 td { padding: 10px; border-bottom: 1px solid #eee; }
@@ -123,10 +123,10 @@ export async function exportDashboardPDF(stats, projects, jobs) {
             <title>HearstAI - Dashboard Report</title>
             <style>
                 body { font-family: Arial, sans-serif; padding: 40px; }
-                h1 { color: #8afd81; border-bottom: 2px solid #8afd81; padding-bottom: 10px; }
+                h1 { color: #C5FFA7; border-bottom: 2px solid #C5FFA7; padding-bottom: 10px; }
                 .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin: 30px 0; }
                 .stat-card { padding: 20px; background: #f9f9f9; border-radius: 8px; text-align: center; }
-                .stat-value { font-size: 36px; font-weight: bold; color: #8afd81; }
+                .stat-value { font-size: 36px; font-weight: bold; color: #C5FFA7; }
                 .stat-label { font-size: 14px; color: #666; margin-top: 8px; }
                 .section { margin: 40px 0; }
             </style>

@@ -240,7 +240,7 @@ const dashboardStyles = `
     inset: 0;
     background: radial-gradient(
         circle at top right,
-        rgba(138, 253, 129, 0.05) 0%,
+        rgba(197, 255, 167, 0.05) 0%,
         transparent 50%
     );
     border-radius: inherit;
@@ -257,7 +257,7 @@ const dashboardStyles = `
     box-shadow: 
         0 12px 48px rgba(0, 0, 0, 0.5),
         0 4px 16px rgba(0, 0, 0, 0.4),
-        0 0 0 1px rgba(138, 253, 129, 0.2),
+        0 0 0 1px rgba(197, 255, 167, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
     transform: translateY(-4px) !important;
 }
@@ -292,7 +292,7 @@ const dashboardStyles = `
     color: var(--primary-green);
     letter-spacing: -0.02em;
     line-height: var(--leading-tight);
-    text-shadow: 0 0 20px rgba(138, 253, 129, 0.3);
+    text-shadow: 0 0 20px rgba(197, 255, 167, 0.3);
 }
 
 .wallet-balance-usd {
@@ -317,7 +317,7 @@ const dashboardStyles = `
 }
 
 .wallet-address:hover {
-    border-color: rgba(138, 253, 129, 0.3);
+    border-color: rgba(197, 255, 167, 0.3);
     background: rgba(10, 10, 10, 0.8);
 }
 
@@ -340,9 +340,9 @@ const dashboardStyles = `
 }
 
 .wallet-address-copy:hover {
-    background: rgba(138, 253, 129, 0.1);
+    background: rgba(197, 255, 167, 0.1);
     color: var(--primary-green);
-    box-shadow: 0 0 12px rgba(138, 253, 129, 0.2);
+    box-shadow: 0 0 12px rgba(197, 255, 167, 0.2);
 }
 
 .wallet-address-copy svg {
@@ -375,13 +375,13 @@ const dashboardStyles = `
     box-shadow: 
         0 12px 48px rgba(0, 0, 0, 0.5),
         0 4px 16px rgba(0, 0, 0, 0.4),
-        0 0 0 1px rgba(138, 253, 129, 0.2),
+        0 0 0 1px rgba(197, 255, 167, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
 }
 
 .transactions-section .table thead tr {
     background: linear-gradient(180deg, #454646 0%, #3a3a3a 100%) !important;
-    border-bottom: var(--border-medium) solid rgba(138, 253, 129, 0.3) !important;
+    border-bottom: var(--border-medium) solid rgba(197, 255, 167, 0.3) !important;
 }
 
 .transactions-section .table thead th {
@@ -406,9 +406,9 @@ const dashboardStyles = `
 .transactions-section .table tbody tr:hover {
     background: linear-gradient(
         90deg,
-        rgba(138, 253, 129, 0.05) 0%,
-        rgba(138, 253, 129, 0.1) 50%,
-        rgba(138, 253, 129, 0.05) 100%
+        rgba(197, 255, 167, 0.05) 0%,
+        rgba(197, 255, 167, 0.1) 50%,
+        rgba(197, 255, 167, 0.05) 100%
     ) !important;
     box-shadow: inset 2px 0 0 var(--primary-green) !important;
     transform: translateX(2px) !important;
@@ -425,7 +425,7 @@ const dashboardStyles = `
     color: var(--primary-green);
     font-weight: var(--font-semibold);
     font-family: var(--font-mono);
-    text-shadow: 0 0 10px rgba(138, 253, 129, 0.2);
+    text-shadow: 0 0 10px rgba(197, 255, 167, 0.2);
 }
 
 /* Transaction History Section */
@@ -518,7 +518,7 @@ const dashboardStyles = `
 
 .transaction-history-controls .date-range-select:hover,
 .transaction-history-controls .contract-select:hover {
-    border-color: rgba(138, 253, 129, 0.3) !important;
+    border-color: rgba(197, 255, 167, 0.3) !important;
     background: rgba(10, 10, 10, 0.8) !important;
 }
 
@@ -526,7 +526,7 @@ const dashboardStyles = `
 .transaction-history-controls .contract-select:focus {
     outline: none !important;
     border-color: var(--primary-green) !important;
-    box-shadow: 0 0 0 3px rgba(138, 253, 129, 0.1) !important;
+    box-shadow: 0 0 0 3px rgba(197, 255, 167, 0.1) !important;
 }
 
 .date-range-select,
@@ -557,14 +557,14 @@ const dashboardStyles = `
 .date-range-select:hover,
 .contract-select:hover {
     border-color: var(--primary-green);
-    background: rgba(138, 253, 129, 0.05);
+    background: rgba(197, 255, 167, 0.05);
 }
 
 .date-range-select:focus,
 .contract-select:focus {
     outline: none;
     border-color: var(--primary-green);
-    box-shadow: 0 0 0 1px rgba(138, 253, 129, 0.2);
+    box-shadow: 0 0 0 1px rgba(197, 255, 167, 0.2);
 }
 
 .date-range-select option,
@@ -589,14 +589,14 @@ const dashboardStyles = `
     box-sizing: border-box !important;
     letter-spacing: -0.01em !important;
     box-shadow: 
-        0 4px 16px rgba(138, 253, 129, 0.4),
+        0 4px 16px rgba(197, 255, 167, 0.4),
         inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
 }
 
 .btn-export-excel:hover:not(:disabled) {
     background: var(--accent-primary-dark) !important;
     box-shadow: 
-        0 6px 24px rgba(138, 253, 129, 0.4),
+        0 6px 24px rgba(197, 255, 167, 0.4),
         inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
     transform: translateY(-1px) scale(1.02) !important;
 }
@@ -627,7 +627,7 @@ const dashboardStyles = `
     box-shadow: 
         0 12px 48px rgba(0, 0, 0, 0.5),
         0 4px 16px rgba(0, 0, 0, 0.4),
-        0 0 0 1px rgba(138, 253, 129, 0.2),
+        0 0 0 1px rgba(197, 255, 167, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
 }
 
@@ -639,7 +639,7 @@ const dashboardStyles = `
 
 .transaction-history-table thead tr {
     background: linear-gradient(180deg, #454646 0%, #3a3a3a 100%) !important;
-    border-bottom: var(--border-medium) solid rgba(138, 253, 129, 0.3) !important;
+    border-bottom: var(--border-medium) solid rgba(197, 255, 167, 0.3) !important;
 }
 
 .transaction-history-table thead th {
@@ -664,9 +664,9 @@ const dashboardStyles = `
 .transaction-history-table tbody tr:hover {
     background: linear-gradient(
         90deg,
-        rgba(138, 253, 129, 0.05) 0%,
-        rgba(138, 253, 129, 0.1) 50%,
-        rgba(138, 253, 129, 0.05) 100%
+        rgba(197, 255, 167, 0.05) 0%,
+        rgba(197, 255, 167, 0.1) 50%,
+        rgba(197, 255, 167, 0.05) 100%
     ) !important;
     box-shadow: inset 2px 0 0 var(--primary-green) !important;
     transform: translateX(2px) !important;
@@ -684,7 +684,7 @@ const dashboardStyles = `
     color: var(--primary-green);
     font-weight: var(--font-semibold);
     font-family: var(--font-mono);
-    text-shadow: 0 0 10px rgba(138, 253, 129, 0.2);
+    text-shadow: 0 0 10px rgba(197, 255, 167, 0.2);
 }
 
 .transaction-history-total {
@@ -701,13 +701,13 @@ const dashboardStyles = `
 .transaction-history-total .total-amount {
     color: var(--primary-green);
     margin-left: var(--space-2);
-    text-shadow: 0 0 10px rgba(138, 253, 129, 0.2);
+    text-shadow: 0 0 10px rgba(197, 255, 167, 0.2);
 }
 
 /* Button Transaction History - Premium Style */
 .btn.btn-transaction-history,
 button.btn-transaction-history {
-    background-color: #8AFD81 !important;
+    background-color: #C5FFA7 !important;
     color: #000 !important;
     border-radius: 30px !important;
     font-weight: 600 !important;
@@ -721,7 +721,7 @@ button.btn-transaction-history:hover,
 .btn.btn-transaction-history:active,
 button.btn-transaction-history:active {
     background-color: #70D467 !important;
-    box-shadow: 0 0 12px rgba(138, 253, 129, 0.55) !important;
+    box-shadow: 0 0 12px rgba(197, 255, 167, 0.55) !important;
     transform: translateY(-1px) !important;
     color: #000 !important;
 }

@@ -168,7 +168,7 @@ function getElectricitySectionHTML() {
                                 <td>4.15%</td>
                                 <td>$722.95</td>
                             </tr>
-                            <tr style="background: rgba(138, 253, 129, 0.1);">
+                            <tr style="background: rgba(197, 255, 167, 0.1);">
                                 <td><strong>Total</strong></td>
                                 <td>-</td>
                                 <td><strong>166</strong></td>

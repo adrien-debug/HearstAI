@@ -1,5 +1,5 @@
 // Main Application Entry Point
-import { dashboardTemplate, dashboardStyles } from './views/dashboard.js';
+import { renderDashboard as renderDashboardView } from './views/dashboard.js';
 import { renderProjectsView, projectsStyles } from './views/projects.js';
 import { renderJobsView, jobsStyles } from './views/jobs.js';
 import { renderVersionsView, versionsStyles } from './views/versions.js';
@@ -10,7 +10,7 @@ import { initCockpit } from './cockpit.js';
 import { renderSettingsView, settingsStyles } from './views/settings.js';
 import { initSettings } from './settings.js';
 import { initProjections } from './projections.js';
-import { renderElectricityView, electricityStyles } from './views/electricity.js';
+import { renderElectricityView } from './views/electricity.js'; // Styles moved to global CSS
 import { initElectricity } from './electricity.js';
 import { renderAdminPanelView, adminPanelStyles } from './views/admin-panel.js';
 import { initAdminPanel } from './admin-panel.js';
@@ -25,8 +25,87 @@ import exportModule from './export.js';
 import { Icons } from './icons.js';
 import { showCreateProjectModal, showCreateJobModal } from './modals.js';
 
+// ========================================
+// GLOBAL FONT STYLES APPLICATION
+// ========================================
+// Apply global font styles to all content areas
+export function applyGlobalFontStyles() {
+    // Get the global font family from CSS variables
+    const globalFontFamily = getComputedStyle(document.documentElement)
+        .getPropertyValue('--font-family-primary')
+        .trim() || "'FK Grotesk Trial', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif";
+    
+    // Get mono font for code elements
+    const monoFontFamily = getComputedStyle(document.documentElement)
+        .getPropertyValue('--font-family-mono')
+        .trim() || "'Fira Code', 'Consolas', 'Monaco', monospace";
+    
+    // Apply to content area and all its children
+    const contentArea = document.getElementById('content-area') || 
+                       document.querySelector('.content-area-wrapper') ||
+                       document.querySelector('main');
+    if (!contentArea) return;
+    
+    // Apply font to content area itself
+    contentArea.style.setProperty('font-family', globalFontFamily, 'important');
+    
+    // Apply font family to all text elements in the content area
+    const textElements = contentArea.querySelectorAll('*');
+    textElements.forEach(element => {
+        // Skip script, style, and other non-text elements
+        if (element.tagName === 'SCRIPT' || element.tagName === 'STYLE') {
+            return;
+        }
+        
+        // Check if element should use mono font (code, pre, etc.)
+        const isCodeElement = element.tagName === 'CODE' || 
+                             element.tagName === 'PRE' || 
+                             element.classList.contains('code') ||
+                             element.classList.contains('mono') ||
+                             element.classList.contains('font-mono');
+        
+        // Check if element has inline font-family style that should be preserved
+        const inlineStyle = element.getAttribute('style') || '';
+        const hasInlineFont = inlineStyle.includes('font-family');
+        
+        // Apply appropriate font
+        if (isCodeElement) {
+            if (!hasInlineFont) {
+                element.style.setProperty('font-family', monoFontFamily, 'important');
+            }
+        } else {
+            // Apply global font to all other elements
+            // Override inline styles if they don't match the global font
+            const computedFont = window.getComputedStyle(element).getPropertyValue('font-family');
+            if (!computedFont.includes('FK Grotesk') && !computedFont.includes('FK Grotesk Trial')) {
+                element.style.setProperty('font-family', globalFontFamily, 'important');
+            } else if (!hasInlineFont) {
+                // Ensure it's set even if computed style shows it
+                element.style.setProperty('font-family', globalFontFamily, 'important');
+            }
+        }
+    });
+}
+
+// Make function globally available
+window.applyGlobalFontStyles = applyGlobalFontStyles;
+
 class ClaudeCockpitApp {
     constructor() {
+        // Skip initialization ONLY in Next.js context
+        // Check for Next.js indicators: #__next root or __NEXT_DATA__ global
+        // DO NOT check for .cockpit-layout or .content-area-wrapper as these exist in our static HTML
+        const isNextJS = 
+            document.querySelector('#__next') || 
+            document.querySelector('[data-nextjs-scroll-focus-boundary]') ||
+            (typeof window !== 'undefined' && window.__NEXT_DATA__);
+        
+        if (isNextJS) {
+            // Silently skip initialization in Next.js - React handles routing
+            console.log('[ClaudeCockpitApp] Skipping initialization in Next.js context');
+            return;
+        }
+        
         this.currentView = 'dashboard';
         this.contentArea = document.getElementById('content-area');
         this.pageTitle = document.getElementById('page-title');
@@ -35,7 +114,7 @@ class ClaudeCockpitApp {
         
         // Check if required elements exist
         if (!this.contentArea) {
-            console.error('❌ Content area element not found!');
+            // In legacy context, element is required - return silently to avoid console error
             return;
         }
         
@@ -76,6 +155,11 @@ class ClaudeCockpitApp {
             // Load initial view immediately (don't wait for API)
             // Render dashboard immediately with empty data
             this.renderDashboard({});
+            
+            // Apply global font styles after initial render
+            setTimeout(() => {
+                applyGlobalFontStyles();
+            }, 200);
             
             // Then try to load data in background
             this.loadView('dashboard').catch(error => {
@@ -136,7 +220,7 @@ class ClaudeCockpitApp {
                     <h3 class="text-danger mb-md"><span class="icon-inline">${Icons.error}</span> Backend Connection Failed</h3>
                     <p class="text-secondary mb-md">Cannot connect to backend server.</p>
                     <p class="text-secondary mb-md">Make sure the backend is running:</p>
-                    <pre style="background: #141414; padding: 16px; border-radius: 12px; color: #8afd81; border: 1px solid #252525;">cd backend
+                    <pre style="background: #141414; padding: 16px; border-radius: 12px; color: #C5FFA7; border: 1px solid #252525;">cd backend
 npm install
 node server.js</pre>
                     <button class="btn btn-primary mt-md" onclick="location.reload()">Retry Connection</button>
@@ -259,6 +343,16 @@ node server.js</pre>
         this.updatePageTitle(viewName);
         this.updateHeaderButton(viewName);
         
+        // Ensure contentArea exists
+        if (!this.contentArea) {
+            this.contentArea = document.getElementById('content-area');
+        }
+        
+        if (!this.contentArea) {
+            console.error('content-area element not found');
+            return;
+        }
+        
         // Show loading state only if not already rendered
         const isAlreadyRendered = viewName === 'dashboard' && 
             this.contentArea && 
@@ -318,6 +412,11 @@ node server.js</pre>
             if (this.reloadIcons) {
                 this.reloadIcons();
             }
+            
+            // Apply global font styles to all content
+            setTimeout(() => {
+                applyGlobalFontStyles();
+            }, 100);
         } catch (error) {
             console.error('Error loading view:', error);
             // Even on error, try to render with empty data
@@ -362,7 +461,7 @@ node server.js</pre>
             if (headerLeft) {
                 this.btnNewAction = document.createElement('button');
                 this.btnNewAction.id = 'btn-new-action';
-                this.btnNewAction.className = 'btn btn-primary';
+                this.btnNewAction.className = 'btn-menu-premium';
                 headerLeft.appendChild(this.btnNewAction);
                 // Réattacher l'event listener
                 this.setupHeaderButton();
@@ -670,7 +769,7 @@ node server.js</pre>
             // Créer le badge LIVE
             const liveBadge = document.createElement('div');
             liveBadge.className = 'header-cockpit-live-badge';
-            liveBadge.style.cssText = 'display: inline-flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-4); background: rgba(138, 253, 129, 0.1); border: 1px solid rgba(138, 253, 129, 0.3); border-radius: var(--radius-full); font-size: var(--text-xs); font-weight: var(--font-semibold); color: var(--primary-green); text-transform: uppercase; letter-spacing: 0.5px;';
+            liveBadge.style.cssText = 'display: inline-flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-4); background: rgba(197, 255, 167, 0.1); border: 1px solid rgba(197, 255, 167, 0.3); border-radius: var(--radius-full); font-size: var(--text-xs); font-weight: var(--font-semibold); color: var(--primary-green); text-transform: uppercase; letter-spacing: 0.5px;';
             
             const liveDot = document.createElement('span');
             liveDot.className = 'header-cockpit-live-dot';
@@ -887,12 +986,22 @@ node server.js</pre>
         navTabs.forEach(tab => {
             tab.addEventListener('click', () => {
                 const sectionId = tab.getAttribute('data-projection-section');
-                if (sectionId && window.showProjectionSection) {
-                    window.showProjectionSection(sectionId);
-                    
-                    // Update active state
-                    navTabs.forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
+                if (sectionId) {
+                    // Utiliser une fonction wrapper qui vérifie l'existence de showProjectionSection
+                    const handleSectionChange = () => {
+                        if (window.showProjectionSection) {
+                            window.showProjectionSection(sectionId);
+                            
+                            // Update active state
+                            navTabs.forEach(t => t.classList.remove('active'));
+                            tab.classList.add('active');
+                        } else {
+                            // Retry après un court délai si la fonction n'est pas encore disponible
+                            console.warn('⚠️ showProjectionSection not available yet, retrying...');
+                            setTimeout(handleSectionChange, 100);
+                        }
+                    };
+                    handleSectionChange();
                 }
             });
         });
@@ -1298,23 +1407,28 @@ node server.js</pre>
                 return;
             }
             
-            // Check if dashboardTemplate is available
-            if (typeof dashboardTemplate !== 'function') {
-                console.error('dashboardTemplate is not a function:', typeof dashboardTemplate);
+            // Check if renderDashboardView is available
+            if (typeof renderDashboardView !== 'function') {
+                console.error('renderDashboardView is not a function:', typeof renderDashboardView);
                 this.contentArea.innerHTML = `
                     <div class="card">
                         <div class="card-body">
                             <h3 class="text-danger">Dashboard Template Error</h3>
-                            <p class="text-secondary">dashboardTemplate is not available. Check console for details.</p>
+                            <p class="text-secondary">renderDashboardView is not available. Check console for details.</p>
                         </div>
                     </div>
                 `;
                 return;
             }
             
-            const template = dashboardTemplate(data || {});
-            const styles = dashboardStyles || '';
-            this.contentArea.innerHTML = styles + template;
+            const template = renderDashboardView(data || {});
+            // Styles are now in global CSS (dashboard.css), no need to inject them
+            this.contentArea.innerHTML = template;
+            
+            // Apply global font styles
+            setTimeout(() => {
+                applyGlobalFontStyles();
+            }, 100);
             
             // Update header button (will create it if needed)
             this.updateHeaderButton('dashboard');
@@ -1338,14 +1452,22 @@ node server.js</pre>
             // Initialize See More buttons
             if (window.initSeeMoreButtons) {
                 setTimeout(() => {
-                    window.initSeeMoreButtons();
+                    try {
+                        window.initSeeMoreButtons();
+                    } catch (error) {
+                        console.warn('Error initializing See More buttons:', error);
+                    }
                 }, 150);
             }
             
-            // Initialize Wallet Performance Chart
-            if (window.initWalletPerformanceChart) {
+            // Initialize Wallet Performance Chart (if exists)
+            if (window.initWalletPerformanceChart && typeof window.initWalletPerformanceChart === 'function') {
                 setTimeout(() => {
-                    window.initWalletPerformanceChart();
+                    try {
+                        window.initWalletPerformanceChart();
+                    } catch (error) {
+                        console.warn('Error initializing Wallet Performance Chart:', error);
+                    }
                 }, 200);
             }
             
@@ -1384,34 +1506,82 @@ node server.js</pre>
         const template = await renderProjectsView(data);
         this.contentArea.innerHTML = projectsStyles + template;
         
+        // Apply global font styles
+        setTimeout(() => {
+            applyGlobalFontStyles();
+        }, 100);
+        
         // Initialiser les projections après le rendu
-        // Attendre que le DOM soit complètement rendu avant d'initialiser
-        setTimeout(async () => {
-            try {
-                const { initProjections } = await import('./projections.js');
-                if (initProjections) {
-                    initProjections();
+        // Utiliser requestAnimationFrame pour s'assurer que le DOM est complètement rendu
+        requestAnimationFrame(async () => {
+            // Vérifier que le conteneur existe avant d'initialiser
+            const checkContainer = (retries = 10) => {
+                const container = document.getElementById('projections-sections-container');
+                if (container) {
+                    // Le conteneur existe, initialiser les projections
+                    import('./projections.js').then(module => {
+                        if (module.initProjections) {
+                            try {
+                                module.initProjections();
+                            } catch (error) {
+                                console.error('❌ Error initializing projections:', error);
+                            }
+                        }
+                    }).catch(error => {
+                        console.error('❌ Error importing projections module:', error);
+                    });
+                } else if (retries > 0) {
+                    // Retry après un court délai
+                    setTimeout(() => checkContainer(retries - 1), 50);
+                } else {
+                    console.warn('⚠️ Projections container not found after retries - initializing anyway');
+                    // Initialiser quand même pour exposer les fonctions globales
+                    import('./projections.js').then(module => {
+                        if (module.initProjections) {
+                            try {
+                                module.initProjections();
+                            } catch (error) {
+                                console.error('❌ Error initializing projections:', error);
+                            }
+                        }
+                    }).catch(error => {
+                        console.error('❌ Error importing projections module:', error);
+                    });
                 }
-            } catch (error) {
-                console.error('❌ Error initializing projections:', error);
-            }
-        }, 200);
+            };
+            checkContainer();
+        });
     }
     
     async renderJobs() {
         const template = await renderJobsView();
         this.contentArea.innerHTML = jobsStyles + template;
         // exportJobs est déjà défini dans renderJobsView
+        
+        // Apply global font styles
+        setTimeout(() => {
+            applyGlobalFontStyles();
+        }, 100);
     }
     
     async renderVersions() {
         const template = await renderVersionsView();
         this.contentArea.innerHTML = versionsStyles + template;
+        
+        // Apply global font styles
+        setTimeout(() => {
+            applyGlobalFontStyles();
+        }, 100);
     }
     
     async renderPrompts() {
         const template = await renderPromptsView();
         this.contentArea.innerHTML = promptsStyles + template;
+        
+        // Apply global font styles
+        setTimeout(() => {
+            applyGlobalFontStyles();
+        }, 100);
     }
     
     async renderLogs(data) {
@@ -1422,6 +1592,11 @@ node server.js</pre>
         if (this.reloadIcons) {
             this.reloadIcons();
         }
+        
+        // Apply global font styles
+        setTimeout(() => {
+            applyGlobalFontStyles();
+        }, 100);
     }
     
     async renderCockpit(data) {
@@ -1430,6 +1605,11 @@ node server.js</pre>
         
         // Initialize cockpit functionality
         initCockpit();
+        
+        // Apply global font styles
+        setTimeout(() => {
+            applyGlobalFontStyles();
+        }, 100);
     }
     
     async renderSettings(data) {
@@ -1438,14 +1618,25 @@ node server.js</pre>
         
         // Initialize settings functionality
         initSettings();
+        
+        // Apply global font styles
+        setTimeout(() => {
+            applyGlobalFontStyles();
+        }, 100);
     }
     
     async renderElectricity(data) {
         const template = await renderElectricityView();
-        this.contentArea.innerHTML = electricityStyles + template;
+        // Styles are now in global CSS (electricity.css), no need to inject them
+        this.contentArea.innerHTML = template;
         
         // Initialize electricity functionality
         initElectricity();
+        
+        // Apply global font styles
+        setTimeout(() => {
+            applyGlobalFontStyles();
+        }, 100);
     }
     
     async renderAdminPanel(data) {
@@ -1454,6 +1645,11 @@ node server.js</pre>
         
         // Initialize admin panel functionality
         initAdminPanel();
+        
+        // Apply global font styles
+        setTimeout(() => {
+            applyGlobalFontStyles();
+        }, 100);
     }
     
     async renderCollateral(data) {
@@ -1462,6 +1658,11 @@ node server.js</pre>
         
         // Initialize collateral functionality
         initCollateral();
+        
+        // Apply global font styles
+        setTimeout(() => {
+            applyGlobalFontStyles();
+        }, 100);
     }
     
     async reloadCurrentView() {
@@ -1479,6 +1680,11 @@ node server.js</pre>
             if (this.reloadIcons) {
                 this.reloadIcons();
             }
+            
+            // Apply global font styles
+            setTimeout(() => {
+                applyGlobalFontStyles();
+            }, 100);
         } catch (error) {
             console.error('Error reloading view:', error);
             notify.error('Failed to reload view: ' + error.message);
@@ -1500,8 +1706,15 @@ node server.js</pre>
     async updateStats() {
         try {
             const stats = await API.getStats();
-            document.getElementById('stat-projects').textContent = stats.total_projects || '0';
-            document.getElementById('stat-jobs').textContent = stats.active_jobs || '0';
+            const statProjects = document.getElementById('stat-projects');
+            const statJobs = document.getElementById('stat-jobs');
+            
+            if (statProjects) {
+                statProjects.textContent = stats.total_projects || '0';
+            }
+            if (statJobs) {
+                statJobs.textContent = stats.active_jobs || stats.total_jobs || '0';
+            }
         } catch (error) {
             console.error('Error updating stats:', error);
         }
@@ -1511,6 +1724,20 @@ node server.js</pre>
 // Initialize app when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     try {
+        // Skip initialization ONLY if in Next.js context
+        // Check for Next.js indicators: #__next root or __NEXT_DATA__ global
+        // DO NOT check for .cockpit-layout or .content-area-wrapper as these exist in our static HTML
+        const isNextJS = 
+            document.querySelector('#__next') || 
+            document.querySelector('[data-nextjs-scroll-focus-boundary]') ||
+            (typeof window !== 'undefined' && window.__NEXT_DATA__);
+        
+        if (isNextJS) {
+            // We're in Next.js, don't initialize legacy app
+            console.log('[ClaudeCockpitApp] Skipping initialization in Next.js context');
+            return;
+        }
+        
         console.log('🚀 Initializing app...');
         window.app = new ClaudeCockpitApp();
         

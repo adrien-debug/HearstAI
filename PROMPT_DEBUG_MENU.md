@@ -472,3 +472,4 @@ Le menu est considéré comme débogué lorsque :
 
 **Note** : Ce prompt doit être utilisé pour un débogage systématique et complet du menu. Prends le temps de vérifier chaque point et de tester toutes les fonctionnalités.
 
+

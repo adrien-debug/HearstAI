@@ -1,5 +1,5 @@
 // Cockpit Sections - Mining Operations Platform
-// Toutes les sections du cockpit avec design system HEARST (#8afd81)
+// Toutes les sections du cockpit avec design system HEARST (#C5FFA7)
 
 import { Icons } from '../icons.js';
 
@@ -47,7 +47,7 @@ function renderDashboardSection() {
                     <div style="font-size: 12px; color: #cccccc; margin-bottom: 8px; font-weight: 500;">BTC PRODUCTION (24H)</div>
                     <div style="font-size: 24px; font-weight: 700; color: #ffffff; margin-bottom: 4px;">0</div>
                     <div style="font-size: 11px; color: #888888; margin-bottom: 2px;">4% $0 USD</div>
-                    <div style="font-size: 11px; color: #8afd81;">+0% vs yesterday</div>
+                    <div style="font-size: 11px; color: #C5FFA7;">+0% vs yesterday</div>
                 </div>
                 
                 <!-- TOTAL MINERS -->
@@ -61,9 +61,9 @@ function renderDashboardSection() {
                 <!-- ONLINE MINERS -->
                 <div style="background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 12px; padding: 20px;">
                     <div style="font-size: 12px; color: #cccccc; margin-bottom: 8px; font-weight: 500;">ONLINE MINERS</div>
-                    <div style="font-size: 24px; font-weight: 700; color: #8afd81; margin-bottom: 4px;">0</div>
+                    <div style="font-size: 24px; font-weight: 700; color: #C5FFA7; margin-bottom: 4px;">0</div>
                     <div style="font-size: 11px; color: #888888; margin-bottom: 2px;">Main: 0% of fleet</div>
-                    <div style="font-size: 11px; color: #8afd81;">Optimal performance</div>
+                    <div style="font-size: 11px; color: #C5FFA7;">Optimal performance</div>
                 </div>
                 
                 <!-- DEGRADED MINERS -->
@@ -132,19 +132,19 @@ function renderDashboardSection() {
                                     <td style="padding: 12px; font-size: 13px; color: #ffffff; border-bottom: 1px solid #2a2a2a;">Enegix</td>
                                     <td style="padding: 12px; font-size: 13px; color: #cccccc; border-bottom: 1px solid #2a2a2a;">0 PH/s</td>
                                     <td style="padding: 12px; font-size: 13px; color: #cccccc; border-bottom: 1px solid #2a2a2a;">0 (0%)</td>
-                                    <td style="padding: 12px; border-bottom: 1px solid #2a2a2a;"><span style="display: inline-block; padding: 4px 12px; background: rgba(138, 253, 129, 0.15); border: 1px solid #8afd81; border-radius: 12px; font-size: 11px; font-weight: 600; color: #8afd81; text-transform: uppercase;">OPTIMAL</span></td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #2a2a2a;"><span style="display: inline-block; padding: 4px 12px; background: rgba(197, 255, 167, 0.15); border: 1px solid #C5FFA7; border-radius: 12px; font-size: 11px; font-weight: 600; color: #C5FFA7; text-transform: uppercase;">OPTIMAL</span></td>
                                 </tr>
                                 <tr>
                                     <td style="padding: 12px; font-size: 13px; color: #ffffff; border-bottom: 1px solid #2a2a2a;">GoMining</td>
                                     <td style="padding: 12px; font-size: 13px; color: #cccccc; border-bottom: 1px solid #2a2a2a;">0 PH/s</td>
                                     <td style="padding: 12px; font-size: 13px; color: #cccccc; border-bottom: 1px solid #2a2a2a;">0 (0%)</td>
-                                    <td style="padding: 12px; border-bottom: 1px solid #2a2a2a;"><span style="display: inline-block; padding: 4px 12px; background: rgba(138, 253, 129, 0.15); border: 1px solid #8afd81; border-radius: 12px; font-size: 11px; font-weight: 600; color: #8afd81; text-transform: uppercase;">OPTIMAL</span></td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #2a2a2a;"><span style="display: inline-block; padding: 4px 12px; background: rgba(197, 255, 167, 0.15); border: 1px solid #C5FFA7; border-radius: 12px; font-size: 11px; font-weight: 600; color: #C5FFA7; text-transform: uppercase;">OPTIMAL</span></td>
                                 </tr>
                                 <tr>
                                     <td style="padding: 12px; font-size: 13px; color: #ffffff; border-bottom: 1px solid #2a2a2a;">Cryptominer</td>
                                     <td style="padding: 12px; font-size: 13px; color: #cccccc; border-bottom: 1px solid #2a2a2a;">0 PH/s</td>
                                     <td style="padding: 12px; font-size: 13px; color: #cccccc; border-bottom: 1px solid #2a2a2a;">0 (0%)</td>
-                                    <td style="padding: 12px; border-bottom: 1px solid #2a2a2a;"><span style="display: inline-block; padding: 4px 12px; background: rgba(138, 253, 129, 0.15); border: 1px solid #8afd81; border-radius: 12px; font-size: 11px; font-weight: 600; color: #8afd81; text-transform: uppercase;">OPTIMAL</span></td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #2a2a2a;"><span style="display: inline-block; padding: 4px 12px; background: rgba(197, 255, 167, 0.15); border: 1px solid #C5FFA7; border-radius: 12px; font-size: 11px; font-weight: 600; color: #C5FFA7; text-transform: uppercase;">OPTIMAL</span></td>
                                 </tr>
                                 <tr>
                                     <td style="padding: 12px; font-size: 13px; color: #ffffff; border-bottom: 1px solid #2a2a2a;">50blocks</td>
@@ -156,13 +156,13 @@ function renderDashboardSection() {
                                     <td style="padding: 12px; font-size: 13px; color: #ffffff; border-bottom: 1px solid #2a2a2a;">Bitkern</td>
                                     <td style="padding: 12px; font-size: 13px; color: #cccccc; border-bottom: 1px solid #2a2a2a;">0 PH/s</td>
                                     <td style="padding: 12px; font-size: 13px; color: #cccccc; border-bottom: 1px solid #2a2a2a;">0 (0%)</td>
-                                    <td style="padding: 12px; border-bottom: 1px solid #2a2a2a;"><span style="display: inline-block; padding: 4px 12px; background: rgba(138, 253, 129, 0.15); border: 1px solid #8afd81; border-radius: 12px; font-size: 11px; font-weight: 600; color: #8afd81; text-transform: uppercase;">OPTIMAL</span></td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #2a2a2a;"><span style="display: inline-block; padding: 4px 12px; background: rgba(197, 255, 167, 0.15); border: 1px solid #C5FFA7; border-radius: 12px; font-size: 11px; font-weight: 600; color: #C5FFA7; text-transform: uppercase;">OPTIMAL</span></td>
                                 </tr>
                                 <tr>
                                     <td style="padding: 12px; font-size: 13px; color: #ffffff; border-bottom: 1px solid #2a2a2a;">Block Forge</td>
                                     <td style="padding: 12px; font-size: 13px; color: #cccccc; border-bottom: 1px solid #2a2a2a;">0 PH/s</td>
                                     <td style="padding: 12px; font-size: 13px; color: #cccccc; border-bottom: 1px solid #2a2a2a;">0 (0%)</td>
-                                    <td style="padding: 12px;"><span style="display: inline-block; padding: 4px 12px; background: rgba(138, 253, 129, 0.15); border: 1px solid #8afd81; border-radius: 12px; font-size: 11px; font-weight: 600; color: #8afd81; text-transform: uppercase;">OPTIMAL</span></td>
+                                    <td style="padding: 12px;"><span style="display: inline-block; padding: 4px 12px; background: rgba(197, 255, 167, 0.15); border: 1px solid #C5FFA7; border-radius: 12px; font-size: 11px; font-weight: 600; color: #C5FFA7; text-transform: uppercase;">OPTIMAL</span></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -176,12 +176,12 @@ function renderDashboardSection() {
                 <div style="background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 12px; padding: 24px;">
                     <h3 style="font-size: 16px; font-weight: 600; color: #ffffff; margin-bottom: 20px;">Recent Alerts</h3>
                     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; text-align: center; margin-bottom: 20px;">
-                        <div style="width: 48px; height: 48px; background: rgba(138, 253, 129, 0.1); border: 2px solid #8afd81; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
-                            <span style="font-size: 24px; color: #8afd81;">✓</span>
+                        <div style="width: 48px; height: 48px; background: rgba(197, 255, 167, 0.1); border: 2px solid #C5FFA7; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+                            <span style="font-size: 24px; color: #C5FFA7;">✓</span>
                         </div>
                         <p style="font-size: 14px; color: #cccccc; margin: 0;">No recent alerts. All systems operating normally.</p>
                     </div>
-                    <div style="background: rgba(138, 253, 129, 0.1); border: 1px solid #8afd81; border-radius: 8px; padding: 16px; display: flex; align-items: center; justify-content: space-between;">
+                    <div style="background: rgba(197, 255, 167, 0.1); border: 1px solid #C5FFA7; border-radius: 8px; padding: 16px; display: flex; align-items: center; justify-content: space-between;">
                         <div style="display: flex; align-items: center; gap: 12px;">
                             <span style="font-size: 18px;">🔔</span>
                             <div>
@@ -204,7 +204,7 @@ function renderDashboardSection() {
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                         <h3 style="font-size: 16px; font-weight: 600; color: #ffffff; margin: 0;">Live Up Time</h3>
                         <div style="display: flex; gap: 4px; background: #0a0a0a; border: 1px solid #2a2a2a; border-radius: 8px; padding: 4px;">
-                            <button class="graph-tab active" data-graph="uptime-day" style="padding: 6px 12px; font-size: 11px; background: #8afd81; color: #000000; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">Day</button>
+                            <button class="graph-tab active" data-graph="uptime-day" style="padding: 6px 12px; font-size: 11px; background: #C5FFA7; color: #000000; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">Day</button>
                             <button class="graph-tab" data-graph="uptime-week" style="padding: 6px 12px; font-size: 11px; background: transparent; color: #cccccc; border: none; border-radius: 6px; cursor: pointer;">Week</button>
                             <button class="graph-tab" data-graph="uptime-month" style="padding: 6px 12px; font-size: 11px; background: transparent; color: #cccccc; border: none; border-radius: 6px; cursor: pointer;">Month</button>
                             <button class="graph-tab" data-graph="uptime-year" style="padding: 6px 12px; font-size: 11px; background: transparent; color: #cccccc; border: none; border-radius: 6px; cursor: pointer;">Year</button>
@@ -238,7 +238,7 @@ function renderDashboardSection() {
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                         <h3 style="font-size: 16px; font-weight: 600; color: #ffffff; margin: 0;">Live Hashrate</h3>
                         <div style="display: flex; gap: 4px; background: #0a0a0a; border: 1px solid #2a2a2a; border-radius: 8px; padding: 4px;">
-                            <button class="graph-tab active" data-graph="hashrate-day" style="padding: 6px 12px; font-size: 11px; background: #8afd81; color: #000000; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">Day</button>
+                            <button class="graph-tab active" data-graph="hashrate-day" style="padding: 6px 12px; font-size: 11px; background: #C5FFA7; color: #000000; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">Day</button>
                             <button class="graph-tab" data-graph="hashrate-week" style="padding: 6px 12px; font-size: 11px; background: transparent; color: #cccccc; border: none; border-radius: 6px; cursor: pointer;">Week</button>
                             <button class="graph-tab" data-graph="hashrate-month" style="padding: 6px 12px; font-size: 11px; background: transparent; color: #cccccc; border: none; border-radius: 6px; cursor: pointer;">Month</button>
                             <button class="graph-tab" data-graph="hashrate-year" style="padding: 6px 12px; font-size: 11px; background: transparent; color: #cccccc; border: none; border-radius: 6px; cursor: pointer;">Year</button>
@@ -285,8 +285,8 @@ function renderDashboardSection() {
                             datasets: [{
                                 label: 'Live Hashrate',
                                 data: [0, 0, 0, 0, 0, 0],
-                                borderColor: '#8afd81',
-                                backgroundColor: 'rgba(138, 253, 129, 0.1)',
+                                borderColor: '#C5FFA7',
+                                backgroundColor: 'rgba(197, 255, 167, 0.1)',
                                 tension: 0.4,
                                 fill: true
                             }, {
@@ -387,7 +387,7 @@ function renderMetricCard(label, value, color, icon) {
     return `
         <div style="background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 16px; padding: 24px; transition: all 0.3s;" onmouseover="this.style.borderColor='${color}'; this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='#2a2a2a'; this.style.transform='translateY(0)'">
             <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-                <div style="width: 40px; height: 40px; background: rgba(138, 253, 129, 0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(138, 253, 129, 0.3);">
+                <div style="width: 40px; height: 40px; background: rgba(197, 255, 167, 0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(197, 255, 167, 0.3);">
                     <span class="icon-inline" style="color: ${color};">${icon}</span>
                 </div>
                 <span style="font-size: 13px; color: #888; font-weight: 500;">${label}</span>
@@ -399,7 +399,7 @@ function renderMetricCard(label, value, color, icon) {
 
 function renderActivityItem(title, description, time, type) {
     const colors = {
-        success: '#8afd81',
+        success: '#C5FFA7',
         warning: '#ffa500',
         error: '#ff4444',
         info: '#4da6ff'
@@ -407,7 +407,7 @@ function renderActivityItem(title, description, time, type) {
     const color = colors[type] || colors.info;
     
     return `
-        <div style="display: flex; gap: 12px; padding: 12px; background: rgba(138, 253, 129, 0.05); border-left: 3px solid ${color}; border-radius: 8px;">
+        <div style="display: flex; gap: 12px; padding: 12px; background: rgba(197, 255, 167, 0.05); border-left: 3px solid ${color}; border-radius: 8px;">
             <div style="flex: 1;">
                 <div style="font-size: 14px; font-weight: 600; color: #E0E0E0; margin-bottom: 4px;">${title}</div>
                 <div style="font-size: 12px; color: #888;">${description}</div>
@@ -432,19 +432,19 @@ function renderProductionSection() {
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin-bottom: 32px;">
                 <div style="background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 16px; padding: 24px;">
                     <div style="font-size: 13px; color: #888; margin-bottom: 8px;">Blocks Found (24h)</div>
-                    <div style="font-size: 36px; font-weight: 700; color: #8afd81;">12</div>
+                    <div style="font-size: 36px; font-weight: 700; color: #C5FFA7;">12</div>
                 </div>
                 <div style="background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 16px; padding: 24px;">
                     <div style="font-size: 13px; color: #888; margin-bottom: 8px;">BTC Mined (24h)</div>
-                    <div style="font-size: 36px; font-weight: 700; color: #8afd81;">37.5</div>
+                    <div style="font-size: 36px; font-weight: 700; color: #C5FFA7;">37.5</div>
                 </div>
                 <div style="background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 16px; padding: 24px;">
                     <div style="font-size: 13px; color: #888; margin-bottom: 8px;">Avg Hashrate</div>
-                    <div style="font-size: 36px; font-weight: 700; color: #8afd81;">1,245 TH/s</div>
+                    <div style="font-size: 36px; font-weight: 700; color: #C5FFA7;">1,245 TH/s</div>
                 </div>
                 <div style="background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 16px; padding: 24px;">
                     <div style="font-size: 13px; color: #888; margin-bottom: 8px;">Share Efficiency</div>
-                    <div style="font-size: 36px; font-weight: 700; color: #8afd81;">98.5%</div>
+                    <div style="font-size: 36px; font-weight: 700; color: #C5FFA7;">98.5%</div>
                 </div>
             </div>
             
@@ -466,23 +466,23 @@ function renderProductionSection() {
                             <tr>
                                 <td>2 hours ago</td>
                                 <td>#892,145</td>
-                                <td style="color: #8afd81; font-weight: 600;">3.125 BTC</td>
+                                <td style="color: #C5FFA7; font-weight: 600;">3.125 BTC</td>
                                 <td>1,248 TH/s</td>
-                                <td><span style="color: #8afd81;">Confirmed</span></td>
+                                <td><span style="color: #C5FFA7;">Confirmed</span></td>
                             </tr>
                             <tr>
                                 <td>5 hours ago</td>
                                 <td>#892,144</td>
-                                <td style="color: #8afd81; font-weight: 600;">3.125 BTC</td>
+                                <td style="color: #C5FFA7; font-weight: 600;">3.125 BTC</td>
                                 <td>1,242 TH/s</td>
-                                <td><span style="color: #8afd81;">Confirmed</span></td>
+                                <td><span style="color: #C5FFA7;">Confirmed</span></td>
                             </tr>
                             <tr>
                                 <td>8 hours ago</td>
                                 <td>#892,143</td>
-                                <td style="color: #8afd81; font-weight: 600;">3.125 BTC</td>
+                                <td style="color: #C5FFA7; font-weight: 600;">3.125 BTC</td>
                                 <td>1,251 TH/s</td>
-                                <td><span style="color: #8afd81;">Confirmed</span></td>
+                                <td><span style="color: #C5FFA7;">Confirmed</span></td>
                             </tr>
                         </tbody>
                     </table>
@@ -507,19 +507,19 @@ function renderEnergySection() {
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin-bottom: 32px;">
                 <div style="background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 16px; padding: 24px;">
                     <div style="font-size: 13px; color: #888; margin-bottom: 8px;">Total Power</div>
-                    <div style="font-size: 36px; font-weight: 700; color: #8afd81;">2.8 MW</div>
+                    <div style="font-size: 36px; font-weight: 700; color: #C5FFA7;">2.8 MW</div>
                 </div>
                 <div style="background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 16px; padding: 24px;">
                     <div style="font-size: 13px; color: #888; margin-bottom: 8px;">Cost per kWh</div>
-                    <div style="font-size: 36px; font-weight: 700; color: #8afd81;">$0.045</div>
+                    <div style="font-size: 36px; font-weight: 700; color: #C5FFA7;">$0.045</div>
                 </div>
                 <div style="background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 16px; padding: 24px;">
                     <div style="font-size: 13px; color: #888; margin-bottom: 8px;">Daily Cost</div>
-                    <div style="font-size: 36px; font-weight: 700; color: #8afd81;">$3,024</div>
+                    <div style="font-size: 36px; font-weight: 700; color: #C5FFA7;">$3,024</div>
                 </div>
                 <div style="background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 16px; padding: 24px;">
                     <div style="font-size: 13px; color: #888; margin-bottom: 8px;">PUE</div>
-                    <div style="font-size: 36px; font-weight: 700; color: #8afd81;">1.15</div>
+                    <div style="font-size: 36px; font-weight: 700; color: #C5FFA7;">1.15</div>
                 </div>
             </div>
             
@@ -543,21 +543,21 @@ function renderEnergySection() {
                                 <td>3.0 MW</td>
                                 <td>2.1 MW</td>
                                 <td>70%</td>
-                                <td><span style="color: #8afd81;">Active</span></td>
+                                <td><span style="color: #C5FFA7;">Active</span></td>
                             </tr>
                             <tr>
                                 <td style="font-weight: 600; color: #E0E0E0;">Solar</td>
                                 <td>1.5 MW</td>
                                 <td>0.5 MW</td>
                                 <td>33%</td>
-                                <td><span style="color: #8afd81;">Active</span></td>
+                                <td><span style="color: #C5FFA7;">Active</span></td>
                             </tr>
                             <tr>
                                 <td style="font-weight: 600; color: #E0E0E0;">Wind</td>
                                 <td>0.8 MW</td>
                                 <td>0.2 MW</td>
                                 <td>25%</td>
-                                <td><span style="color: #8afd81;">Active</span></td>
+                                <td><span style="color: #C5FFA7;">Active</span></td>
                             </tr>
                         </tbody>
                     </table>
@@ -615,21 +615,21 @@ function renderIncidentsSection() {
                                 <td>Temperature</td>
                                 <td>Miner #342 - High temperature</td>
                                 <td><span style="color: #ffa500;">Warning</span></td>
-                                <td><span style="color: #8afd81;">Resolved</span></td>
+                                <td><span style="color: #C5FFA7;">Resolved</span></td>
                             </tr>
                             <tr>
                                 <td>1 day ago</td>
                                 <td>Network</td>
                                 <td>Connection timeout - Pool #2</td>
                                 <td><span style="color: #ffa500;">Warning</span></td>
-                                <td><span style="color: #8afd81;">Resolved</span></td>
+                                <td><span style="color: #C5FFA7;">Resolved</span></td>
                             </tr>
                             <tr>
                                 <td>3 days ago</td>
                                 <td>Power</td>
                                 <td>Power fluctuation detected</td>
                                 <td><span style="color: #ff4444;">Critical</span></td>
-                                <td><span style="color: #8afd81;">Resolved</span></td>
+                                <td><span style="color: #C5FFA7;">Resolved</span></td>
                             </tr>
                         </tbody>
                     </table>
@@ -668,7 +668,7 @@ function renderClientsSection() {
                                 <td style="font-weight: 600; color: #E0E0E0;">Client A</td>
                                 <td>450 TH/s</td>
                                 <td>125</td>
-                                <td><span style="color: #8afd81;">Active</span></td>
+                                <td><span style="color: #C5FFA7;">Active</span></td>
                                 <td>
                                     <button class="btn btn-sm btn-secondary">View</button>
                                 </td>
@@ -677,7 +677,7 @@ function renderClientsSection() {
                                 <td style="font-weight: 600; color: #E0E0E0;">Client B</td>
                                 <td>320 TH/s</td>
                                 <td>88</td>
-                                <td><span style="color: #8afd81;">Active</span></td>
+                                <td><span style="color: #C5FFA7;">Active</span></td>
                                 <td>
                                     <button class="btn btn-sm btn-secondary">View</button>
                                 </td>
@@ -686,7 +686,7 @@ function renderClientsSection() {
                                 <td style="font-weight: 600; color: #E0E0E0;">Client C</td>
                                 <td>475 TH/s</td>
                                 <td>129</td>
-                                <td><span style="color: #8afd81;">Active</span></td>
+                                <td><span style="color: #C5FFA7;">Active</span></td>
                                 <td>
                                     <button class="btn btn-sm btn-secondary">View</button>
                                 </td>
@@ -729,14 +729,14 @@ function renderMiningAccountsSection() {
                                 <td>Foundry USA</td>
                                 <td>1,245 TH/s</td>
                                 <td>1,245</td>
-                                <td><span style="color: #8afd81;">Active</span></td>
+                                <td><span style="color: #C5FFA7;">Active</span></td>
                             </tr>
                             <tr>
                                 <td style="font-weight: 600; color: #E0E0E0;">Account 2</td>
                                 <td>Antpool</td>
                                 <td>850 TH/s</td>
                                 <td>850</td>
-                                <td><span style="color: #8afd81;">Active</span></td>
+                                <td><span style="color: #C5FFA7;">Active</span></td>
                             </tr>
                         </tbody>
                     </table>
@@ -773,14 +773,14 @@ function renderWorkersSection() {
                             <tr>
                                 <td style="font-weight: 600; color: #E0E0E0;">worker-001</td>
                                 <td>1.0 TH/s</td>
-                                <td><span style="color: #8afd81;">Online</span></td>
+                                <td><span style="color: #C5FFA7;">Online</span></td>
                                 <td>2 min ago</td>
                                 <td>99.8%</td>
                             </tr>
                             <tr>
                                 <td style="font-weight: 600; color: #E0E0E0;">worker-002</td>
                                 <td>1.0 TH/s</td>
-                                <td><span style="color: #8afd81;">Online</span></td>
+                                <td><span style="color: #C5FFA7;">Online</span></td>
                                 <td>1 min ago</td>
                                 <td>99.9%</td>
                             </tr>
@@ -828,14 +828,14 @@ function renderMinersSection() {
                                 <td>Antminer S21</td>
                                 <td>234 TH/s</td>
                                 <td>42°C</td>
-                                <td><span style="color: #8afd81;">Active</span></td>
+                                <td><span style="color: #C5FFA7;">Active</span></td>
                             </tr>
                             <tr>
                                 <td style="font-weight: 600; color: #E0E0E0;">#341</td>
                                 <td>Antminer S21</td>
                                 <td>234 TH/s</td>
                                 <td>41°C</td>
-                                <td><span style="color: #8afd81;">Active</span></td>
+                                <td><span style="color: #C5FFA7;">Active</span></td>
                             </tr>
                             <tr>
                                 <td style="font-weight: 600; color: #E0E0E0;">#340</td>
@@ -915,14 +915,14 @@ function renderHostersSection() {
                                 <td>Texas, USA</td>
                                 <td>5 MW</td>
                                 <td>342</td>
-                                <td><span style="color: #8afd81;">Active</span></td>
+                                <td><span style="color: #C5FFA7;">Active</span></td>
                             </tr>
                             <tr>
                                 <td style="font-weight: 600; color: #E0E0E0;">Hoster B</td>
                                 <td>Kazakhstan</td>
                                 <td>3 MW</td>
                                 <td>205</td>
-                                <td><span style="color: #8afd81;">Active</span></td>
+                                <td><span style="color: #C5FFA7;">Active</span></td>
                             </tr>
                         </tbody>
                     </table>

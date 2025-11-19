@@ -64,8 +64,8 @@
     align-items: center;
     gap: var(--space-2);
     padding: var(--space-2) var(--space-4);
-    background: rgba(138, 253, 129, 0.1);
-    border: var(--border-thin) solid rgba(138, 253, 129, 0.3);
+    background: rgba(197, 255, 167, 0.1);
+    border: var(--border-thin) solid rgba(197, 255, 167, 0.3);
     border-radius: var(--radius-full);
     font-size: var(--text-xs);
     font-weight: var(--font-semibold);
@@ -171,7 +171,7 @@
     height: 100%;
     background: radial-gradient(
         circle at 25% 15%,
-        rgba(138, 253, 129, 0.04) 0%,
+        rgba(197, 255, 167, 0.04) 0%,
         transparent 45%
     );
     opacity: 0;
@@ -188,8 +188,8 @@
     transform: translate(-50%, -50%);
     background: radial-gradient(
         circle,
-        rgba(138, 253, 129, 0.08) 0%,
-        rgba(138, 253, 129, 0.04) 25%,
+        rgba(197, 255, 167, 0.08) 0%,
+        rgba(197, 255, 167, 0.04) 25%,
         transparent 60%
     );
     opacity: 0;
@@ -213,12 +213,12 @@
     transform: translateY(-3px);
     border-left-color: var(--primary-green);
     border-left-width: 4px;
-    border-color: rgba(138, 253, 129, 0.2);
+    border-color: rgba(197, 255, 167, 0.2);
     box-shadow: 
         0 12px 36px rgba(0, 0, 0, 0.5),
         0 2px 8px rgba(0, 0, 0, 0.3),
-        0 0 0 0.5px rgba(138, 253, 129, 0.2),
-        0 0 16px rgba(138, 253, 129, 0.1),
+        0 0 0 0.5px rgba(197, 255, 167, 0.2),
+        0 0 16px rgba(197, 255, 167, 0.1),
         inset 0 0.5px 0 rgba(255, 255, 255, 0.08);
 }
 
@@ -301,7 +301,7 @@
     color: var(--primary-green);
     margin-bottom: var(--space-2);
     line-height: 1.2;
-    text-shadow: 0 0 12px rgba(138, 253, 129, 0.2);
+    text-shadow: 0 0 12px rgba(197, 255, 167, 0.2);
     letter-spacing: -0.04em;
     font-variant-numeric: tabular-nums;
     font-family: var(--font-primary);
@@ -513,7 +513,7 @@
 }
 
 .time-filter-btn:hover:not(.active) {
-    background: rgba(138, 253, 129, 0.1);
+    background: rgba(197, 255, 167, 0.1);
     color: var(--text-primary);
 }
 
@@ -613,7 +613,7 @@
 
 .status-dot.green {
     background: var(--primary-green);
-    box-shadow: 0 0 8px rgba(138, 253, 129, 0.5);
+    box-shadow: 0 0 8px rgba(197, 255, 167, 0.5);
 }
 
 .status-dot.blue {
@@ -669,20 +669,20 @@
 }
 
 .status-badge.green {
-    background: rgba(138, 253, 129, 0.15);
+    background: rgba(197, 255, 167, 0.15);
     color: var(--primary-green);
-    border: var(--border-thin) solid rgba(138, 253, 129, 0.3);
+    border: var(--border-thin) solid rgba(197, 255, 167, 0.3);
     box-shadow: 
         var(--shadow-sm),
-        0 0 12px rgba(138, 253, 129, 0.2);
+        0 0 12px rgba(197, 255, 167, 0.2);
 }
 
 
 .status-badge.green:hover {
-    background: rgba(138, 253, 129, 0.25);
+    background: rgba(197, 255, 167, 0.25);
     box-shadow: 
         var(--shadow-md),
-        0 0 16px rgba(138, 253, 129, 0.3);
+        0 0 16px rgba(197, 255, 167, 0.3);
     transform: translateY(-1px);
 }
 
@@ -956,4 +956,260 @@
         flex: 1;
         text-align: center;
     }
+}
+
+/* ====================================
+   🎨 DESIGN PREMIUM ULTRA PROPRE - PATCH COCKPIT
+   Date: 19 Nov 2025
+   ==================================== */
+
+/* ====================================
+   NAVIGATION TABS - PREMIUM ULTRA PROPRE
+   ==================================== */
+
+.admin-panel-nav {
+    display: flex !important;
+    gap: var(--space-2) !important;
+    margin-bottom: var(--space-6) !important;
+    overflow-x: auto !important;
+    padding-bottom: var(--space-2) !important;
+    background: rgba(14, 14, 14, 0.6) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.06) !important;
+    border-radius: var(--radius-lg) !important;
+    padding: var(--space-2) !important;
+    box-shadow: 
+        0 4px 24px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+}
+
+.admin-panel-nav-item {
+    padding: var(--space-3) var(--space-5) !important;
+    background: transparent !important;
+    border: 1px solid transparent !important;
+    border-radius: var(--radius-md) !important;
+    color: rgba(255, 255, 255, 0.7) !important;
+    font-size: var(--text-sm) !important;
+    font-weight: 500 !important;
+    letter-spacing: -0.01em !important;
+    cursor: pointer !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    white-space: nowrap !important;
+    position: relative !important;
+}
+
+.admin-panel-nav-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2px;
+    height: 0;
+    background: var(--primary-green);
+    border-radius: 2px;
+    transition: height 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+}
+
+.admin-panel-nav-item:hover {
+    background: rgba(197, 255, 167, 0.08) !important;
+    border-color: rgba(197, 255, 167, 0.2) !important;
+    color: var(--primary-green) !important;
+    transform: translateX(2px) !important;
+}
+
+.admin-panel-nav-item:hover::before {
+    height: 60%;
+    opacity: 1;
+}
+
+.admin-panel-nav-item.active {
+    background: rgba(197, 255, 167, 0.12) !important;
+    border-color: var(--primary-green) !important;
+    color: var(--primary-green) !important;
+    font-weight: 600 !important;
+    box-shadow: 
+        0 2px 12px rgba(197, 255, 167, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+.admin-panel-nav-item.active::before {
+    height: 80%;
+    opacity: 1;
+    box-shadow: 0 0 12px rgba(197, 255, 167, 0.6);
+}
+
+/* ====================================
+   SECTION HEADERS - PREMIUM ULTRA PROPRE
+   ==================================== */
+
+.section-header-home {
+    margin-bottom: var(--space-6) !important;
+    padding-bottom: var(--space-4) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+.page-title-home {
+    font-size: var(--text-2xl) !important;
+    font-weight: 600 !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    letter-spacing: -0.02em !important;
+    line-height: 1.3 !important;
+    margin-bottom: var(--space-2) !important;
+}
+
+.page-subtitle {
+    font-size: var(--text-sm) !important;
+    color: rgba(255, 255, 255, 0.6) !important;
+    letter-spacing: -0.01em !important;
+    line-height: 1.5 !important;
+}
+
+/* ====================================
+   KPI BOXES - PREMIUM ULTRA PROPRE
+   ==================================== */
+
+.kpi-box {
+    background: rgba(14, 14, 14, 0.8) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    border: 0.5px solid rgba(255, 255, 255, 0.05) !important;
+    border-left: 3px solid var(--primary-green) !important;
+    border-radius: var(--radius-lg) !important;
+    padding: var(--space-5) var(--space-5) !important;
+    box-shadow: 
+        0 8px 40px rgba(0, 0, 0, 0.5),
+        0 2px 12px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.2) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.kpi-box::before {
+    opacity: 0.5 !important;
+}
+
+.kpi-box:hover {
+    transform: translateY(-3px) !important;
+    border-left-width: 4px !important;
+    border-color: rgba(197, 255, 167, 0.25) !important;
+    box-shadow: 
+        0 16px 56px rgba(0, 0, 0, 0.6),
+        0 4px 20px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(197, 255, 167, 0.25),
+        0 0 20px rgba(197, 255, 167, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+.kpi-box-label {
+    font-size: 10px !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    font-weight: 600 !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+    margin-bottom: var(--space-3) !important;
+}
+
+.kpi-box-value {
+    font-size: 26px !important;
+    font-weight: 700 !important;
+    color: var(--primary-green) !important;
+    letter-spacing: -0.04em !important;
+    line-height: 1.2 !important;
+    text-shadow: 0 0 20px rgba(197, 255, 167, 0.25) !important;
+    margin-bottom: var(--space-3) !important;
+}
+
+.kpi-box-meta-item {
+    font-size: 10px !important;
+    color: rgba(255, 255, 255, 0.6) !important;
+    letter-spacing: 0.02em !important;
+    line-height: 1.5 !important;
+    font-weight: 500 !important;
+}
+
+.kpi-box-meta-item.positive {
+    color: var(--primary-green) !important;
+    font-weight: 600 !important;
+}
+
+/* ====================================
+   STATS GRID - PREMIUM ULTRA PROPRE
+   ==================================== */
+
+.stats-grid {
+    gap: var(--space-5) !important;
+    margin-bottom: var(--space-8) !important;
+}
+
+/* ====================================
+   FILTER SELECT - PREMIUM ULTRA PROPRE
+   ==================================== */
+
+.filter-select {
+    background: rgba(10, 10, 10, 0.8) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: var(--radius-md) !important;
+    padding: var(--space-2) var(--space-3) !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-size: var(--text-sm) !important;
+    letter-spacing: -0.01em !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.filter-select:hover {
+    border-color: rgba(197, 255, 167, 0.4) !important;
+    background: rgba(10, 10, 10, 0.9) !important;
+}
+
+.filter-select:focus {
+    border-color: var(--primary-green) !important;
+    box-shadow: 
+        0 0 0 3px rgba(197, 255, 167, 0.15),
+        0 2px 12px rgba(197, 255, 167, 0.1) !important;
+    background: rgba(10, 10, 10, 0.95) !important;
+    outline: none !important;
+}
+
+/* ====================================
+   TIME FILTER - PREMIUM ULTRA PROPRE
+   ==================================== */
+
+.time-filter-container {
+    background: rgba(14, 14, 14, 0.6) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.06) !important;
+    border-radius: var(--radius-md) !important;
+    padding: var(--space-1) !important;
+    box-shadow: 
+        0 2px 8px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
+}
+
+.time-filter-btn {
+    padding: var(--space-2) var(--space-4) !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: var(--radius-sm) !important;
+    color: rgba(255, 255, 255, 0.7) !important;
+    font-size: var(--text-xs) !important;
+    font-weight: 500 !important;
+    letter-spacing: -0.01em !important;
+    cursor: pointer !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.time-filter-btn:hover:not(.active) {
+    background: rgba(197, 255, 167, 0.08) !important;
+    color: var(--primary-green) !important;
+}
+
+.time-filter-btn.active {
+    background: var(--primary-green) !important;
+    color: var(--primary-dark) !important;
+    font-weight: 600 !important;
+    box-shadow: 
+        0 2px 8px rgba(197, 255, 167, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
 }

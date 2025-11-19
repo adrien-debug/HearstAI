@@ -132,7 +132,7 @@ class ClaudeCockpitApp {
                     <h3 class="text-danger mb-md"><span class="icon-inline">${Icons.error}</span> Backend Connection Failed</h3>
                     <p class="text-secondary mb-md">Cannot connect to backend server.</p>
                     <p class="text-secondary mb-md">Make sure the backend is running:</p>
-                    <pre style="background: #141414; padding: 16px; border-radius: 12px; color: #8afd81; border: 1px solid #252525;">cd backend
+                    <pre style="background: #141414; padding: 16px; border-radius: 12px; color: #C5FFA7; border: 1px solid #252525;">cd backend
 npm install
 node server.js</pre>
                     <button class="btn btn-primary mt-md" onclick="location.reload()">Retry Connection</button>

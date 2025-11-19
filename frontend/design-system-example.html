@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HEARST AI Design System - Examples</title>
+    <link rel="stylesheet" href="css/design-tokens.css">
+    <link rel="stylesheet" href="css/components-examples.css">
+    <style>
+        body {
+            font-family: var(--font-family-primary);
+            background: linear-gradient(135deg, var(--color-grey-subtle) 0%, var(--color-white-pure) 100%);
+            padding: var(--space-6);
+            margin: 0;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: var(--grid-dashboard-width);
+            margin: 0 auto;
+        }
+        .section {
+            margin-bottom: var(--space-8);
+        }
+        .hero {
+            text-align: center;
+            padding: var(--space-10) 0;
+            margin-bottom: var(--space-10);
+        }
+        .premium-showcase {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-6);
+            margin-top: var(--space-6);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <h1 class="text-display">HEARST AI</h1>
+            <p class="text-page-title" style="margin-top: var(--space-4); color: var(--color-text-secondary);">Design System Premium</p>
+        </div>
+        
+        <!-- Card Example -->
+        <section class="section">
+            <h2 class="text-section-title">Card Component Premium</h2>
+            <div class="premium-showcase">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Standard Card</h3>
+                        <p class="card-subtitle">Hover pour voir l'effet premium</p>
+                    </div>
+                    <div class="card-body">
+                        <p>Card avec effets de hover sophistiqués, ombres profondes et transitions fluides.</p>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-primary">Action</button>
+                    </div>
+                </div>
+                
+                <div class="card card-subtle-green">
+                    <div class="card-header">
+                        <h3 class="card-title">Subtle Green</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>Card avec fond dégradé subtil et effet glassmorphism.</p>
+                    </div>
+                </div>
+                
+                <div class="card card-premium glow-effect">
+                    <div class="card-header">
+                        <h3 class="card-title">Premium Card</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>Card premium avec bordure dégradée et effet glow au hover.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Typography Example -->
+        <section class="section">
+            <h2 class="text-section-title">Typography</h2>
+            <div class="card">
+                <h1 class="text-display">Display Text</h1>
+                <h2 class="text-page-title">Page Title</h2>
+                <h3 class="text-section-title">Section Title</h3>
+                <h4 class="text-subsection-title">Subsection Title</h4>
+                <p class="text-body-bold">Body Bold Text</p>
+                <p class="text-body">Body Regular Text</p>
+                <p class="text-body-minor-bold">Body Minor Bold</p>
+                <p class="text-body-minor">Body Minor Regular</p>
+                <p class="text-caption-bold">Caption Bold</p>
+                <p class="text-caption">Caption Regular</p>
+            </div>
+        </section>
+        
+        <!-- Buttons Example -->
+        <section class="section">
+            <h2 class="text-section-title">Buttons</h2>
+            <div class="card">
+                <div style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
+                    <button class="btn btn-primary">Primary</button>
+                    <button class="btn btn-secondary">Secondary</button>
+                    <button class="btn btn-accent">Accent</button>
+                    <button class="btn btn-success">Success</button>
+                    <button class="btn btn-warning">Warning</button>
+                    <button class="btn btn-error">Error</button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Badges Example -->
+        <section class="section">
+            <h2 class="text-section-title">Badges</h2>
+            <div class="card">
+                <div style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
+                    <span class="badge badge-primary">Primary</span>
+                    <span class="badge badge-accent">Accent</span>
+                    <span class="badge badge-success">Success</span>
+                    <span class="badge badge-warning">Warning</span>
+                    <span class="badge badge-error">Error</span>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Icons Example -->
+        <section class="section">
+            <h2 class="text-section-title">Icons</h2>
+            <div class="card">
+                <div style="display: flex; gap: var(--space-6); flex-wrap: wrap;">
+                    <span class="icon icon-outline icon-rounded icon-primary" data-icon="home"></span>
+                    <span class="icon icon-outline icon-rounded icon-accent" data-icon="dashboard"></span>
+                    <span class="icon icon-outline icon-rounded icon-success" data-icon="check"></span>
+                    <span class="icon icon-outline icon-rounded icon-warning" data-icon="alert"></span>
+                    <span class="icon icon-outline icon-rounded icon-error" data-icon="x"></span>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Input Example -->
+        <section class="section">
+            <h2 class="text-section-title">Inputs</h2>
+            <div class="card">
+                <input type="text" class="input" placeholder="Regular input" style="margin-bottom: var(--space-4);">
+                <input type="text" class="input input-error" placeholder="Error input">
+            </div>
+        </section>
+        
+        <!-- Colors Example -->
+        <section class="section">
+            <h2 class="text-section-title">Color Palette</h2>
+            <div class="card">
+                <h3 class="text-subsection-title">Light Green Variants</h3>
+                <div style="display: flex; gap: var(--space-3); flex-wrap: wrap; margin-bottom: var(--space-6);">
+                    <div style="width: 80px; height: 80px; background: var(--color-light-green-1); border-radius: var(--radius-default);"></div>
+                    <div style="width: 80px; height: 80px; background: var(--color-light-green-2); border-radius: var(--radius-default);"></div>
+                    <div style="width: 80px; height: 80px; background: var(--color-light-green-3); border-radius: var(--radius-default);"></div>
+                    <div style="width: 80px; height: 80px; background: var(--color-light-green-4); border-radius: var(--radius-default);"></div>
+                    <div style="width: 80px; height: 80px; background: var(--color-light-green-5); border-radius: var(--radius-default);"></div>
+                </div>
+                
+                <h3 class="text-subsection-title">Ash Grey Variants</h3>
+                <div style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
+                    <div style="width: 80px; height: 80px; background: var(--color-ash-grey-1); border-radius: var(--radius-default);"></div>
+                    <div style="width: 80px; height: 80px; background: var(--color-ash-grey-2); border-radius: var(--radius-default);"></div>
+                    <div style="width: 80px; height: 80px; background: var(--color-ash-grey-3); border-radius: var(--radius-default);"></div>
+                    <div style="width: 80px; height: 80px; background: var(--color-ash-grey-4); border-radius: var(--radius-default);"></div>
+                    <div style="width: 80px; height: 80px; background: var(--color-ash-grey-5); border-radius: var(--radius-default);"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <script type="module" src="js/icon-injection-example.js"></script>
+</body>
+</html>
+

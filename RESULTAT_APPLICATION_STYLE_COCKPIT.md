@@ -132,3 +132,4 @@ Le **Style Guide Home Page** a été appliqué avec succès sur la page **Cockpi
 **STATUS : ✅ APPLIQUÉ - EN ATTENTE DE VALIDATION VISUELLE**
 
 
+

@@ -8,33 +8,35 @@ export async function renderProjectsView(data = null) {
         const { renderProjectionSection } = await import('./projects-sections.js');
         const overviewContent = renderProjectionSection('overview');
         
+        // UN SEUL conteneur, toujours créé de la même manière
+        const containerId = 'projections-sections-container';
+        let content = '';
+        
         if (!overviewContent || overviewContent.trim() === '') {
-            console.error('Overview content is empty');
-            return `
-                <div class="projects-view">
-                    <div class="projects-content">
-                        <div id="projections-sections-container">
-                            <div style="padding: 40px; text-align: center; color: #fff;">
-                                <p>Error: Overview content could not be loaded</p>
-                            </div>
-                        </div>
-                    </div>
+            console.warn('⚠️ Overview content is empty, using placeholder');
+            content = `
+                <div style="padding: 40px; text-align: center; color: #fff;">
+                    <p>Error: Overview content could not be loaded</p>
                 </div>
             `;
+        } else {
+            content = overviewContent;
         }
         
         return `
             <div class="projects-view">
                 <div class="projects-content">
                     <!-- Zone de contenu dynamique pour chaque section -->
-                    <div id="projections-sections-container">
-                        ${overviewContent}
+                    <!-- UN SEUL conteneur avec cet ID -->
+                    <div id="${containerId}">
+                        ${content}
                     </div>
                 </div>
             </div>
         `;
     } catch (error) {
-        console.error('Error loading overview section:', error);
+        console.error('❌ Error loading overview section:', error);
+        // Même structure en cas d'erreur pour garantir l'existence du container
         return `
             <div class="projects-view">
                 <div class="projects-content">

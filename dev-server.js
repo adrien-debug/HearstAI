@@ -5,8 +5,33 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-const PORT = 3001;
-const FRONTEND_DIR = path.join(__dirname, 'frontend');
+const PORT = 5555;
+
+// Ensure we're using the project root, not a backup directory
+const PROJECT_ROOT = path.resolve(__dirname);
+if (PROJECT_ROOT.includes('backup') || PROJECT_ROOT.includes('backups')) {
+    console.error('');
+    console.error('❌ ERREUR: Le serveur ne doit pas être lancé depuis un dossier de backup!');
+    console.error(`   Chemin détecté: ${PROJECT_ROOT}`);
+    console.error('');
+    console.error('💡 Solution: Lancez le serveur depuis le répertoire racine du projet:');
+    console.error('   cd /Users/adrienbeyondcrypto/Desktop/DEV/HearstAI');
+    console.error('   node dev-server.js');
+    console.error('');
+    process.exit(1);
+}
+
+const FRONTEND_DIR = path.join(PROJECT_ROOT, 'frontend');
+
+// Verify frontend directory exists
+if (!fs.existsSync(FRONTEND_DIR)) {
+    console.error('');
+    console.error(`❌ ERREUR: Le dossier frontend est introuvable!`);
+    console.error(`   Chemin attendu: ${FRONTEND_DIR}`);
+    console.error(`   Répertoire actuel: ${PROJECT_ROOT}`);
+    console.error('');
+    process.exit(1);
+}
 
 const MIME_TYPES = {
     '.html': 'text/html',
@@ -69,15 +94,15 @@ server.listen(PORT, () => {
 }).on('error', (err) => {
     if (err.code === 'EADDRINUSE') {
         console.error('');
-        console.error('❌ Error: Port 3001 is already in use');
+        console.error(`❌ Error: Port ${PORT} is already in use`);
         console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
         console.error('');
         console.error('💡 Solutions:');
-        console.error('   1. Kill the process using port 3001:');
-        console.error('      lsof -ti:3001 | xargs kill -9');
+        console.error(`   1. Kill the process using port ${PORT}:`);
+        console.error(`      lsof -ti:${PORT} | xargs kill -9`);
         console.error('');
         console.error('   2. Or find and kill manually:');
-        console.error('      lsof -i:3001');
+        console.error(`      lsof -i:${PORT}`);
         console.error('');
         process.exit(1);
     } else {

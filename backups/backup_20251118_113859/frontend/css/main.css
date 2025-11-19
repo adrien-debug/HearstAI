@@ -14,7 +14,7 @@
        ==================================== */
     
     /* Couleurs principales */
-    --primary-green: #8afd81;          /* Accent principal (CTA, focus, highlights) */
+    --primary-green: #C5FFA7;          /* Accent principal (CTA, focus, highlights) */
     --primary-dark: #000000;           /* Fond principal */
     --primary-grey: #1a1a1a;          /* Fond secondaire (cards, panels) */
     
@@ -110,8 +110,8 @@
     --shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.6);
     
     /* Glow green (accent) */
-    --glow-green: 0 0 20px rgba(138, 253, 129, 0.3);
-    --glow-green-strong: 0 0 30px rgba(138, 253, 129, 0.5);
+    --glow-green: 0 0 20px rgba(197, 255, 167, 0.3);
+    --glow-green-strong: 0 0 30px rgba(197, 255, 167, 0.5);
     
     /* ====================================
        ANIMATIONS & TRANSITIONS
@@ -140,7 +140,7 @@
     --bg-secondary: #1a1a1a; /* ✅ Standard HEARST - Background secondaire */
     --bg-tertiary: #242424; /* ✅ Standard HEARST - Background tertiaire */
     --accent-primary: var(--primary-green);
-    --accent-color: var(--primary-green); /* ✅ Garde #8afd81 (pas #8AE38A) */
+    --accent-color: var(--primary-green); /* ✅ Garde #C5FFA7 (pas #8AE38A) */
     --border-color: rgba(255, 255, 255, 0.08); /* ✅ Match demande */
     --border-hover: var(--grey-200);
     --spacing-xs: var(--space-1);
@@ -288,19 +288,19 @@ body {
 }
 
 .nav-item:hover {
-    background: #8afd81 !important;
+    background: #C5FFA7 !important;
     color: #000000 !important;
     box-shadow: 
-        0 4px 12px rgba(138, 253, 129, 0.2),
+        0 4px 12px rgba(197, 255, 167, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
 }
 
 .nav-item.active {
-    background: #8afd81 !important;
+    background: #C5FFA7 !important;
     color: #000000 !important;
     font-weight: 600 !important;
     box-shadow: 
-        0 4px 16px rgba(138, 253, 129, 0.3),
+        0 4px 16px rgba(197, 255, 167, 0.3),
         inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
 }
 
@@ -506,7 +506,7 @@ body {
 
 .user-badge:hover {
     background: rgba(42, 42, 42, 0.8) !important;
-    border-color: rgba(138, 253, 129, 0.3) !important;
+    border-color: rgba(197, 255, 167, 0.3) !important;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4) !important;
 }
 
@@ -519,7 +519,7 @@ body {
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    box-shadow: 0 2px 8px rgba(138, 253, 129, 0.3) !important;
+    box-shadow: 0 2px 8px rgba(197, 255, 167, 0.3) !important;
 }
 
 .user-avatar-initials {
@@ -686,6 +686,6 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, #8afd81 0%, #7bed9f 100%) !important;
-    box-shadow: 0 0 10px rgba(138, 253, 129, 0.5) !important;
+    background: linear-gradient(180deg, #C5FFA7 0%, #7bed9f 100%) !important;
+    box-shadow: 0 0 10px rgba(197, 255, 167, 0.5) !important;
 }
