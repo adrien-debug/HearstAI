@@ -1,6 +1,0 @@
-Tue Nov 18 08:50:57 +04 2025
-Fichiers sauvegardés:
-- frontend/css/main.css
-- frontend/index.html
-- frontend/js/views/dashboard.js
-Commit: Design: Application standards HEARST - Sidebar compacte, hover vert, filtres alignés
