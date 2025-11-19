@@ -11,10 +11,9 @@
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/cockpit.css">
-    <link rel="stylesheet" href="css/projections.css">
     <link rel="stylesheet" href="css/override-cockpit.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <!-- Layout principal -->
@@ -36,10 +35,6 @@
                 <a href="javascript:void(0)" class="nav-item" data-view="cockpit">
                     <span class="nav-icon" data-icon="dashboard"></span>
                     <span class="nav-label">Cockpit</span>
-                </a>
-                <a href="javascript:void(0)" class="nav-item" data-view="projects">
-                    <span class="nav-icon" data-icon="projects"></span>
-                    <span class="nav-label">Projestions</span>
                 </a>
                 <a href="javascript:void(0)" class="nav-item" data-view="electricity">
                     <span class="nav-icon" data-icon="energy"></span>
@@ -107,17 +102,54 @@
         // Debug: Log when scripts start loading
         console.log('📄 HTML loaded, starting scripts...');
         
+        // Track script loading for all scripts (including external)
+        const allScripts = document.querySelectorAll('script');
+        allScripts.forEach((script, index) => {
+            script.addEventListener('load', () => {
+                console.log(`✅ Script ${index + 1} loaded: ${script.src || 'inline'}`);
+            });
+            script.addEventListener('error', (e) => {
+                console.error(`❌ Script ${index + 1} failed to load: ${script.src || 'inline'}`, e);
+            });
+        });
+        
         // Error handler for unhandled errors
         window.addEventListener('error', (event) => {
-            console.error('❌ Global error:', event.error);
+            // Ignore generic "Script error." from cross-origin scripts (CORS)
+            if (event.message === 'Script error.' && !event.filename) {
+                console.warn('⚠️ Generic script error (likely CORS). Check console for details.');
+                return;
+            }
+            
+            console.error('❌ Global error:', {
+                message: event.message,
+                filename: event.filename,
+                lineno: event.lineno,
+                colno: event.colno,
+                error: event.error,
+                stack: event.error?.stack
+            });
+            
             const contentArea = document.getElementById('content-area');
-            if (contentArea && !contentArea.querySelector('.dashboard-view')) {
+            // Only show error if dashboard is not already rendered
+            if (contentArea && !contentArea.querySelector('.dashboard-view') && !contentArea.querySelector('.card')) {
+                const errorMessage = event.error?.message || event.message || 'Unknown error';
+                const errorStack = event.error?.stack || '';
+                const errorFile = event.filename ? `File: ${event.filename}:${event.lineno}:${event.colno}` : '';
+                
+                // Don't show generic "Script error." to user
+                if (errorMessage === 'Script error.' && !errorFile) {
+                    console.warn('⚠️ Suppressing generic script error display');
+                    return;
+                }
+                
                 contentArea.innerHTML = `
                     <div class="card">
                         <div class="card-body">
                             <h3 class="text-danger">JavaScript Error</h3>
-                            <p class="text-secondary">${event.error?.message || 'Unknown error'}</p>
-                            <pre style="background: var(--primary-grey); padding: var(--space-4); border-radius: var(--radius-md); color: var(--text-secondary); font-size: var(--text-sm); overflow: auto;">${event.error?.stack || ''}</pre>
+                            <p class="text-secondary"><strong>${errorMessage}</strong></p>
+                            ${errorFile ? `<p class="text-secondary" style="font-size: 0.875rem; color: var(--text-tertiary);">${errorFile}</p>` : ''}
+                            ${errorStack ? `<pre style="background: var(--primary-grey); padding: var(--space-4); border-radius: var(--radius-md); color: var(--text-secondary); font-size: var(--text-sm); overflow: auto; margin-top: var(--space-3);">${errorStack}</pre>` : ''}
                             <button class="btn btn-primary mt-md" onclick="location.reload()">Reload Page</button>
                         </div>
                     </div>
@@ -128,6 +160,23 @@
         // Handle unhandled promise rejections
         window.addEventListener('unhandledrejection', (event) => {
             console.error('❌ Unhandled promise rejection:', event.reason);
+            
+            const contentArea = document.getElementById('content-area');
+            if (contentArea && !contentArea.querySelector('.dashboard-view')) {
+                const errorMessage = event.reason?.message || String(event.reason) || 'Promise rejection error';
+                const errorStack = event.reason?.stack || '';
+                
+                contentArea.innerHTML = `
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="text-danger">Promise Rejection Error</h3>
+                            <p class="text-secondary"><strong>${errorMessage}</strong></p>
+                            ${errorStack ? `<pre style="background: var(--primary-grey); padding: var(--space-4); border-radius: var(--radius-md); color: var(--text-secondary); font-size: var(--text-sm); overflow: auto; margin-top: var(--space-3);">${errorStack}</pre>` : ''}
+                            <button class="btn btn-primary mt-md" onclick="location.reload()">Reload Page</button>
+                        </div>
+                    </div>
+                `;
+            }
         });
     </script>
     <script type="module" src="js/icons.js"></script>

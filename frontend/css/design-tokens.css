@@ -2,18 +2,22 @@
    DESIGN SYSTEM TOKENS - HEARST AI
    ==================================== */
 
+/* FK Grotesk Trial Font Import */
+/* Note: Ajouter l'URL de la police FK Grotesk Trial ici si disponible */
+/* @import url('https://fonts.googleapis.com/css2?family=FK+Grotesk+Trial:wght@400;500;600;700&display=swap'); */
+
 :root {
     /* ====================================
        🎨 1. BRAND & PRIMARY COLORS
        ==================================== */
     
-    /* Primary Light Green */
-    --color-primary-light-green: #A3FF8B;
+    /* Primary Light Green - HEARST Signature Color */
+    --color-primary-light-green: #8afd81;
     --color-primary-light-green-1: #E5FFEB;
     --color-primary-light-green-2: #CFFFDA;
     --color-primary-light-green-3: #B8FFCA;
-    --color-primary-light-green-4: #A3FFBA;
-    --color-primary-light-green-5: #8DFFA9;
+    --color-primary-light-green-4: #7bed9f;
+    --color-primary-light-green-5: #6fdc66;
     
     /* Accent Ash Grey */
     --color-accent-ash-grey: #9EB3A8;
@@ -61,7 +65,7 @@
     --color-text-default: #000000;
     --color-text-negative: #FFFFFF;
     --color-text-unrestricted: #9EB3A8;
-    --color-text-accent: #A3FF8B;
+    --color-text-accent: var(--color-primary-light-green);
     --color-text-accent-lighter: #CFFFDA;
     --color-text-accent-darker: #8DFFA9;
     --color-text-secondary-1: #75847C;
@@ -80,7 +84,7 @@
     --color-surface-default: #FFFFFF;
     --color-surface-subtle-green: #E5FFEB;
     --color-surface-green-light: #CFFFDA;
-    --color-surface-accent: #A3FF8B;
+    --color-surface-accent: var(--color-primary-light-green);
     --color-surface-brown: #E8D5C4;
     --color-surface-grey: #F8F8F8;
     --color-surface-overlay-0: rgba(0, 0, 0, 0);
@@ -93,7 +97,7 @@
        🧷 COLOR TOKENS - GRAPHICS PALETTE
        ==================================== */
     
-    --color-graphic-1: #A3FF8B;
+    --color-graphic-1: var(--color-primary-light-green);
     --color-graphic-2: #9EB3A8;
     --color-graphic-3: #E8D5C4;
     --color-graphic-4: #D4B8A0;
@@ -239,8 +243,8 @@
     --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.15);
     --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.2);
     --shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.25);
-    --shadow-green-glow: 0 0 20px rgba(163, 255, 139, 0.3);
-    --shadow-green-glow-strong: 0 0 30px rgba(163, 255, 139, 0.5);
+    --shadow-green-glow: 0 0 20px rgba(138, 253, 129, 0.3);
+    --shadow-green-glow-strong: 0 0 30px rgba(138, 253, 129, 0.5);
     
     /* ====================================
        TRANSITIONS & ANIMATIONS
@@ -261,7 +265,35 @@
     --border-width-medium: 2px;
     --border-width-thick: 3px;
     --border-color-default: rgba(158, 179, 168, 0.2);
-    --border-color-hover: rgba(163, 255, 139, 0.4);
+    --border-color-hover: rgba(138, 253, 129, 0.4);
     --border-color-active: var(--color-primary-light-green);
+    
+    /* ====================================
+       🌓 DARK MODE (Default)
+       ==================================== */
+    
+    --theme-bg-primary: var(--color-black-200); /* #0A0A0A */
+    --theme-bg-secondary: var(--color-black-300); /* #1A1A1A */
+    --theme-bg-tertiary: var(--color-black-400); /* #2A2A2A */
+    --theme-text-primary: var(--color-text-negative); /* #FFFFFF */
+    --theme-text-secondary: rgba(255, 255, 255, 0.7);
+    --theme-text-tertiary: var(--color-text-secondary-1); /* #75847C */
+    --theme-border: rgba(255, 255, 255, 0.05);
+    --theme-border-hover: rgba(255, 255, 255, 0.1);
+}
+
+/* ====================================
+   ☀️ LIGHT MODE
+   ==================================== */
+
+[data-theme="light"] {
+    --theme-bg-primary: var(--color-neutral-white); /* #FFFFFF */
+    --theme-bg-secondary: var(--color-neutral-grey-subtle); /* #F8F8F8 */
+    --theme-bg-tertiary: var(--color-neutral-grey-subtle-darker); /* #E8E8E8 */
+    --theme-text-primary: var(--color-text-default); /* #000000 */
+    --theme-text-secondary: rgba(0, 0, 0, 0.7);
+    --theme-text-tertiary: var(--color-text-secondary-1); /* #75847C */
+    --theme-border: rgba(0, 0, 0, 0.1);
+    --theme-border-hover: rgba(0, 0, 0, 0.2);
 }
 

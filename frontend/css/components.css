@@ -53,8 +53,8 @@
 .btn-primary,
 .btn,
 button[type="submit"] {
-    background: linear-gradient(135deg, #8afd81 0%, #7bed9f 100%) !important;
-    color: var(--primary-dark);
+    background: linear-gradient(135deg, var(--color-primary-light-green) 0%, var(--color-primary-light-green-4) 100%) !important;
+    color: var(--color-text-default) !important;
     padding: var(--space-3) var(--space-6);
     border-radius: var(--radius-md);
     font-weight: var(--font-semibold);
@@ -110,7 +110,7 @@ button[type="submit"]:hover:not(:disabled)::before {
 .btn-primary:hover:not(:disabled),
 .btn:hover:not(:disabled),
 button[type="submit"]:hover:not(:disabled) {
-    background: linear-gradient(135deg, #75fc6c 0%, #6ae88f 100%) !important;
+    background: linear-gradient(135deg, var(--color-primary-light-green-5) 0%, var(--color-primary-light-green) 100%) !important;
     box-shadow: 
         0 6px 24px rgba(138, 253, 129, 0.4),
         inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
@@ -135,12 +135,12 @@ button[type="submit"]:disabled {
 /* Button Transaction History - Premium Style */
 .btn.btn-transaction-history,
 button.btn-transaction-history {
-    background-color: #8AFD81 !important;
-    color: #000 !important;
+    background-color: var(--color-primary-light-green) !important;
+    color: var(--color-text-default) !important;
     border-radius: 30px !important;
     font-weight: 600 !important;
     padding: 10px 24px !important;
-    transition: all 0.25s ease-in-out !important;
+    transition: all var(--transition-normal) !important;
     border: none !important;
 }
 
@@ -148,17 +148,17 @@ button.btn-transaction-history {
 button.btn-transaction-history:hover,
 .btn.btn-transaction-history:active,
 button.btn-transaction-history:active {
-    background-color: #70D467 !important;
-    box-shadow: 0 0 12px rgba(138, 253, 129, 0.55) !important;
+    background-color: var(--color-primary-light-green-5) !important;
+    box-shadow: var(--shadow-green-glow-strong) !important;
     transform: translateY(-1px) !important;
-    color: #000 !important;
+    color: var(--color-text-default) !important;
 }
 
 /* Bouton secondaire */
 .btn-secondary {
     background: transparent;
-    color: var(--primary-green);
-    border: var(--border-medium) solid var(--primary-green);
+    color: var(--color-primary-light-green);
+    border: var(--border-medium) solid var(--color-primary-light-green);
     padding: var(--space-3) var(--space-6);
     border-radius: var(--radius-md);
     font-weight: var(--font-semibold);
@@ -174,7 +174,7 @@ button.btn-transaction-history:active {
 
 .btn-secondary:hover:not(:disabled) {
     background: rgba(138, 253, 129, 0.1);
-    box-shadow: var(--glow-green);
+    box-shadow: var(--shadow-green-glow);
     transform: translateY(-1px);
 }
 
@@ -197,8 +197,8 @@ button.btn-transaction-history:active {
 .btn-premium,
 .btn-luxe {
     position: relative;
-    background: linear-gradient(135deg, #8afd81 0%, #7bed9f 50%, #6fdc66 100%) !important;
-    color: #000000 !important;
+    background: linear-gradient(135deg, var(--color-primary-light-green) 0%, var(--color-primary-light-green-4) 50%, var(--color-primary-light-green-5) 100%) !important;
+    color: var(--color-text-default) !important;
     padding: 16px 32px !important;
     border-radius: 12px !important;
     font-weight: 700 !important;
@@ -249,6 +249,7 @@ button.btn-transaction-history:active {
     border-radius: 12px;
     padding: 2px;
     background: linear-gradient(135deg, rgba(138, 253, 129, 0.6), rgba(111, 220, 102, 0.4));
+    /* Note: Utilise rgba direct pour compatibilité avec mask, mais correspond à var(--color-primary-light-green) */
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -266,7 +267,7 @@ button.btn-transaction-history:active {
 
 .btn-premium:hover:not(:disabled),
 .btn-luxe:hover:not(:disabled) {
-    background: linear-gradient(135deg, #9aff91 0%, #8afd81 50%, #7bed9f 100%) !important;
+    background: linear-gradient(135deg, var(--color-primary-light-green-2) 0%, var(--color-primary-light-green) 50%, var(--color-primary-light-green-4) 100%) !important;
     box-shadow: 
         0 12px 48px rgba(138, 253, 129, 0.5),
         0 6px 24px rgba(138, 253, 129, 0.4),
@@ -554,7 +555,7 @@ button.btn-transaction-history:active {
     left: 0;
     width: 4px;
     height: 100%;
-    background: linear-gradient(180deg, #8afd81 0%, transparent 100%);
+    background: linear-gradient(180deg, var(--color-primary-light-green) 0%, transparent 100%);
     opacity: 0;
     transition: opacity 0.3s;
     z-index: 0;
@@ -707,7 +708,7 @@ button.btn-transaction-history:active {
         rgba(138, 253, 129, 0.1) 50%,
         rgba(138, 253, 129, 0.05) 100%
     ) !important;
-    box-shadow: inset 2px 0 0 #8afd81 !important;
+    box-shadow: inset 2px 0 0 var(--color-primary-light-green) !important;
     transform: translateX(2px) !important;
 }
 
@@ -1602,4 +1603,104 @@ textarea::placeholder {
     background: rgba(231, 76, 60, 0.15) !important;
     border: 1px solid rgba(231, 76, 60, 0.3) !important;
     color: var(--cockpit-red) !important;
+}
+
+/* ====================================
+   🎨 DESIGN SYSTEM INTEGRATION
+   Améliorations pour appliquer les tokens
+   ==================================== */
+
+/* Typography Hierarchy - Utilisation des tokens */
+.page-title {
+    font-size: var(--typography-page-title-size);
+    font-weight: var(--typography-page-title-weight);
+    line-height: var(--typography-page-title-line-height);
+    letter-spacing: var(--typography-page-title-letter-spacing);
+    font-family: var(--font-family-primary);
+    color: var(--theme-text-primary);
+}
+
+.section-title {
+    font-size: var(--typography-section-title-size);
+    font-weight: var(--typography-section-title-weight);
+    line-height: var(--typography-section-title-line-height);
+    letter-spacing: var(--typography-section-title-letter-spacing);
+    font-family: var(--font-family-primary);
+    color: var(--theme-text-primary);
+}
+
+.subsection-title {
+    font-size: var(--typography-subsection-title-size);
+    font-weight: var(--typography-subsection-title-weight);
+    line-height: var(--typography-subsection-title-line-height);
+    letter-spacing: var(--typography-subsection-title-letter-spacing);
+    font-family: var(--font-family-primary);
+    color: var(--theme-text-primary);
+}
+
+/* Note: Les styles de boutons sont définis plus haut avec les tokens du design system */
+
+/* Cards - Utilisation des tokens de surface */
+.card,
+.panel,
+.widget,
+.box {
+    background: var(--theme-bg-secondary) !important;
+    border: var(--border-width-thin) solid var(--theme-border) !important;
+    border-radius: var(--radius-cards);
+    padding: var(--spacing-6);
+    box-shadow: var(--shadow-lg);
+    transition: var(--transition-normal);
+}
+
+.card:hover,
+.panel:hover,
+.widget:hover,
+.box:hover {
+    border-color: var(--border-color-hover);
+    box-shadow: var(--shadow-xl);
+}
+
+/* Sidebar - Utilisation des tokens de thème */
+.sidebar {
+    background: var(--theme-bg-primary) !important;
+    border-right: var(--border-width-thin) solid var(--theme-border) !important;
+}
+
+.nav-item {
+    color: var(--theme-text-secondary);
+    border-radius: var(--radius-small-cards);
+    padding: var(--spacing-2) var(--spacing-3);
+    font-family: var(--font-family-primary);
+    font-size: var(--typography-body-minor-size);
+    transition: var(--transition-fast);
+}
+
+.nav-item.active {
+    background: var(--color-primary-light-green) !important;
+    color: var(--color-text-default) !important;
+}
+
+.nav-item:hover {
+    background: var(--color-primary-light-green) !important;
+    color: var(--color-text-default) !important;
+}
+
+/* Header - Utilisation des tokens de thème */
+.header {
+    background: var(--theme-bg-secondary) !important;
+    border-bottom: var(--border-width-thin) solid var(--theme-border) !important;
+}
+
+/* Text Colors - Utilisation des tokens */
+.text-primary {
+    color: var(--theme-text-primary) !important;
+}
+
+.text-secondary {
+    color: var(--theme-text-secondary) !important;
+}
+
+.text-tertiary {
+    color: var(--theme-text-tertiary) !important;
 }

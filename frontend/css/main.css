@@ -15,7 +15,7 @@
        ==================================== */
     
     /* Couleurs principales - Alias vers nouveaux tokens */
-    --primary-green: var(--color-primary-light-green); /* #A3FF8B */
+    --primary-green: var(--color-primary-light-green); /* #8afd81 */
     --primary-dark: var(--color-black-100); /* #000000 */
     --primary-grey: var(--color-black-300); /* #1A1A1A */
     
@@ -223,7 +223,7 @@ body {
     margin-top: -40px;
     border-bottom: none;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     width: auto;
     min-width: auto;
@@ -234,7 +234,7 @@ body {
 .sidebar-header .logo {
     margin: 0;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     width: auto;
     min-width: auto;
@@ -245,7 +245,7 @@ body {
 .logo {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: var(--space-2);
     font-size: var(--text-lg);
     font-weight: var(--font-bold);
@@ -258,13 +258,11 @@ body {
 }
 
 .logo-img {
-    width: 250px;
-    min-width: 250px;
-    height: auto;
+    height: 24px;
+    width: auto;
     object-fit: contain;
-    object-position: center;
+    object-position: left center;
     display: block;
-    transform: scale(1);
 }
 
 .logo-icon {
@@ -319,7 +317,7 @@ body {
     background: var(--color-primary-light-green) !important;
     color: var(--color-text-default) !important;
     box-shadow: 
-        0 4px 12px rgba(163, 255, 139, 0.2),
+        0 4px 12px rgba(138, 253, 129, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
 }
 
@@ -328,7 +326,7 @@ body {
     color: var(--color-text-default) !important;
     font-weight: 600 !important;
     box-shadow: 
-        0 4px 16px rgba(163, 255, 139, 0.3),
+        0 4px 16px rgba(138, 253, 129, 0.3),
         inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
 }
 

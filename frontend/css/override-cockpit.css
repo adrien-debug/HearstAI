@@ -56,7 +56,6 @@
 }
 
 .header.has-cockpit-nav,
-.header.has-projections-nav,
 .header.has-settings-nav,
 .header.has-electricity-nav,
 .header.has-admin-panel-nav,
@@ -315,7 +314,7 @@
 }
 
 /* ====================================
-   PAGE PROJECTIONS - CHARTE GRAPHIQUE PREMIUM
+   STYLES GÉNÉRIQUES - CHARTE GRAPHIQUE PREMIUM
    ==================================== */
 
 /* Accordion Section - Aligné avec style premium */

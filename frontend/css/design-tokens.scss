@@ -7,8 +7,8 @@
 // 🎨 1. BRAND & PRIMARY COLORS
 // ====================================
 
-// Primary Light Green
-$color-primary-light-green: #A3FF8B;
+// Primary Light Green - HEARST Signature Color
+$color-primary-light-green: #8afd81;
 $color-primary-light-green-1: #E5FFEB;
 $color-primary-light-green-2: #CFFFDA;
 $color-primary-light-green-3: #B8FFCA;
@@ -248,8 +248,8 @@ $shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
 $shadow-md: 0 4px 8px rgba(0, 0, 0, 0.15);
 $shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.2);
 $shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.25);
-$shadow-green-glow: 0 0 20px rgba(163, 255, 139, 0.3);
-$shadow-green-glow-strong: 0 0 30px rgba(163, 255, 139, 0.5);
+$shadow-green-glow: 0 0 20px rgba(138, 253, 129, 0.3);
+$shadow-green-glow-strong: 0 0 30px rgba(138, 253, 129, 0.5);
 
 // ====================================
 // TRANSITIONS & ANIMATIONS
@@ -270,6 +270,6 @@ $border-width-thin: 1px;
 $border-width-medium: 2px;
 $border-width-thick: 3px;
 $border-color-default: rgba(158, 179, 168, 0.2);
-$border-color-hover: rgba(163, 255, 139, 0.4);
+$border-color-hover: rgba(138, 253, 129, 0.4);
 $border-color-active: $color-primary-light-green;
 

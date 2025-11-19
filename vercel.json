@@ -4,12 +4,32 @@
   "outputDirectory": "frontend",
   "rewrites": [
     {
-      "source": "/api/:path*",
-      "destination": "/backend/server.js"
+      "source": "/(.*)",
+      "destination": "/$1"
     },
     {
+      "source": "/",
+      "destination": "/index.html"
+    }
+  ],
+  "headers": [
+    {
       "source": "/(.*)",
-      "destination": "/frontend/$1"
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/(.*\\.(js|css|svg|png|jpg|jpeg|gif|ico|woff|woff2|ttf|eot))",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
     }
   ]
 }

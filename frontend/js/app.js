@@ -9,7 +9,6 @@ import { renderCockpitView, cockpitStyles } from './views/cockpit.js';
 import { initCockpit } from './cockpit.js';
 import { renderSettingsView, settingsStyles } from './views/settings.js';
 import { initSettings } from './settings.js';
-import { initProjections } from './projections.js';
 import { renderElectricityView, electricityStyles } from './views/electricity.js';
 import { initElectricity } from './electricity.js';
 import { renderAdminPanelView, adminPanelStyles } from './views/admin-panel.js';
@@ -385,8 +384,6 @@ node server.js</pre>
                 headerLeft.style.display = 'flex';
             }
             // Supprimer TOUTES les autres navigations pour éviter les doublons
-            const projectionsNav = document.getElementById('projections-header-nav');
-            if (projectionsNav) projectionsNav.remove();
             const settingsNav = document.getElementById('settings-header-nav');
             if (settingsNav) settingsNav.remove();
             const electricityNav = document.getElementById('electricity-header-nav');
@@ -400,63 +397,11 @@ node server.js</pre>
             allCockpitNavs.forEach(nav => nav.remove());
             const header = document.querySelector('.header');
             if (header) {
-                header.classList.remove('has-projections-nav', 'has-settings-nav', 'has-electricity-nav', 'has-admin-panel-nav', 'has-collateral-nav');
+                header.classList.remove('has-settings-nav', 'has-electricity-nav', 'has-admin-panel-nav', 'has-collateral-nav');
                 header.classList.add('has-cockpit-nav');
             }
             // Créer la navigation cockpit (une seule fois)
             this.setupCockpitHeaderNav();
-        } else if (view === 'projects') {
-            // Supprimer TOUTES les navigations existantes
-            this.cleanupAllHeaderNavs();
-            
-            // Pour projects, on cache le bouton et on affiche la navigation
-            if (this.btnNewAction) {
-                this.btnNewAction.style.display = 'none';
-                this.btnNewAction.style.visibility = 'hidden';
-            }
-            // Afficher le header-right (horloge et login restent visibles)
-            const headerRight = document.querySelector('.header-right');
-            if (headerRight) {
-                headerRight.style.display = 'flex';
-                // Masquer aussi le bouton dans header-right s'il existe
-                const btnInHeader = headerRight.querySelector('#btn-new-action');
-                if (btnInHeader) {
-                    btnInHeader.style.display = 'none';
-                    btnInHeader.style.visibility = 'hidden';
-                }
-            }
-            // Afficher le header-left pour le titre "Projections"
-            const headerLeft = document.querySelector('.header-left');
-            if (headerLeft) {
-                headerLeft.style.display = 'flex';
-            }
-            // Supprimer le bouton Export PDF s'il existe (créé dans la section else)
-            const existingExportBtn = document.getElementById('header-export-btn');
-            if (existingExportBtn) {
-                existingExportBtn.remove();
-            }
-            const header = document.querySelector('.header');
-            if (header) {
-                header.classList.add('has-projections-nav');
-            }
-            // Créer la navigation projections (une seule fois)
-            this.setupProjectionsHeaderNav();
-            
-            // Mettre à jour l'onglet actif et le titre directement (overview est déjà chargé dans le template)
-            setTimeout(() => {
-                const overviewTab = document.querySelector('[data-projection-section="overview"]');
-                if (overviewTab) {
-                    // Mettre à jour l'état actif sans déclencher le clic (pour éviter le rechargement)
-                    const navTabs = document.querySelectorAll('.cockpit-nav-tab[data-projection-section]');
-                    navTabs.forEach(tab => tab.classList.remove('active'));
-                    overviewTab.classList.add('active');
-                    
-                    const pageTitle = document.getElementById('page-title');
-                    if (pageTitle) {
-                        pageTitle.innerText = 'Overview';
-                    }
-                }
-            }, 100);
         } else if (view === 'settings') {
             // Pour settings, on cache le bouton et on affiche la navigation
             if (this.btnNewAction) this.btnNewAction.style.display = 'none';
@@ -471,13 +416,11 @@ node server.js</pre>
                 headerLeft.style.display = 'flex';
             }
             // Supprimer les autres navigations
-            const projectionsNav = document.getElementById('projections-header-nav');
-            if (projectionsNav) projectionsNav.remove();
             const electricityNav = document.getElementById('electricity-header-nav');
             if (electricityNav) electricityNav.remove();
             const header = document.querySelector('.header');
             if (header) {
-                header.classList.remove('has-projections-nav', 'has-electricity-nav');
+                header.classList.remove('has-electricity-nav');
                 header.classList.add('has-settings-nav');
             }
             this.setupSettingsHeaderNav();
@@ -495,8 +438,6 @@ node server.js</pre>
                 headerLeft.style.display = 'flex';
             }
             // Supprimer TOUTES les autres navigations pour éviter les doublons
-            const projectionsNav = document.getElementById('projections-header-nav');
-            if (projectionsNav) projectionsNav.remove();
             const settingsNav = document.getElementById('settings-header-nav');
             if (settingsNav) settingsNav.remove();
             const adminPanelNav = document.getElementById('admin-panel-header-nav');
@@ -510,7 +451,7 @@ node server.js</pre>
             allElectricityNavs.forEach(nav => nav.remove());
             const header = document.querySelector('.header');
             if (header) {
-                header.classList.remove('has-projections-nav', 'has-settings-nav', 'has-admin-panel-nav', 'has-cockpit-nav', 'has-collateral-nav');
+                header.classList.remove('has-settings-nav', 'has-admin-panel-nav', 'has-cockpit-nav', 'has-collateral-nav');
             }
             // Créer la navigation electricity (une seule fois)
             this.setupElectricityHeaderNav();
@@ -528,8 +469,6 @@ node server.js</pre>
                 headerLeft.style.display = 'flex';
             }
             // Supprimer les autres navigations
-            const projectionsNav = document.getElementById('projections-header-nav');
-            if (projectionsNav) projectionsNav.remove();
             const settingsNav = document.getElementById('settings-header-nav');
             if (settingsNav) settingsNav.remove();
             const electricityNav = document.getElementById('electricity-header-nav');
@@ -538,7 +477,7 @@ node server.js</pre>
             if (collateralNav) collateralNav.remove();
             const header = document.querySelector('.header');
             if (header) {
-                header.classList.remove('has-projections-nav', 'has-settings-nav', 'has-electricity-nav', 'has-collateral-nav');
+                header.classList.remove('has-settings-nav', 'has-electricity-nav', 'has-collateral-nav');
                 header.classList.add('has-admin-panel-nav');
             }
             this.setupAdminPanelHeaderNav();
@@ -556,8 +495,6 @@ node server.js</pre>
                 headerLeft.style.display = 'flex';
             }
             // Supprimer TOUTES les autres navigations pour éviter les doublons
-            const projectionsNav = document.getElementById('projections-header-nav');
-            if (projectionsNav) projectionsNav.remove();
             const settingsNav = document.getElementById('settings-header-nav');
             if (settingsNav) settingsNav.remove();
             const electricityNav = document.getElementById('electricity-header-nav');
@@ -571,7 +508,7 @@ node server.js</pre>
             allCollateralNavs.forEach(nav => nav.remove());
             const header = document.querySelector('.header');
             if (header) {
-                header.classList.remove('has-projections-nav', 'has-settings-nav', 'has-electricity-nav', 'has-admin-panel-nav', 'has-cockpit-nav');
+                header.classList.remove('has-settings-nav', 'has-electricity-nav', 'has-admin-panel-nav', 'has-cockpit-nav');
             }
             // Créer la navigation collateral (une seule fois)
             this.setupCollateralHeaderNav();
@@ -627,7 +564,7 @@ node server.js</pre>
             // Retirer toutes les classes du header
             const header = document.querySelector('.header');
             if (header) {
-                header.classList.remove('has-settings-nav', 'has-projections-nav', 'has-electricity-nav', 'has-admin-panel-nav', 'has-cockpit-nav', 'has-collateral-nav');
+                header.classList.remove('has-settings-nav', 'has-electricity-nav', 'has-admin-panel-nav', 'has-cockpit-nav', 'has-collateral-nav');
             }
             
             // Ne plus nettoyer l'horloge - elle reste visible sur toutes les pages
@@ -747,11 +684,11 @@ node server.js</pre>
         allHeaderNavs.forEach(nav => nav.remove());
         
         // Supprimer aussi par ID spécifique
-        const existingNavs = document.querySelectorAll('#cockpit-header-nav, #projections-header-nav, #settings-header-nav, #electricity-header-nav, #admin-panel-header-nav, #collateral-header-nav');
+        const existingNavs = document.querySelectorAll('#cockpit-header-nav, #settings-header-nav, #electricity-header-nav, #admin-panel-header-nav, #collateral-header-nav');
         existingNavs.forEach(nav => nav.remove());
         
         // Retirer toutes les classes de navigation
-        header.classList.remove('has-cockpit-nav', 'has-projections-nav', 'has-settings-nav', 'has-electricity-nav', 'has-admin-panel-nav', 'has-collateral-nav');
+        header.classList.remove('has-cockpit-nav', 'has-settings-nav', 'has-electricity-nav', 'has-admin-panel-nav', 'has-collateral-nav');
     }
     
     setupCockpitHeaderNav() {
@@ -815,85 +752,6 @@ node server.js</pre>
                 // Update active state
                 navTabs.forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
-            });
-        });
-        
-        // Recharger les icônes après insertion
-        if (this.reloadIcons) {
-            this.reloadIcons();
-        }
-    }
-    
-    setupProjectionsHeaderNav() {
-        // Supprimer TOUTES les navigations existantes
-        this.cleanupAllHeaderNavs();
-        
-        const header = document.querySelector('.header');
-        if (!header) return;
-        
-        // Ajouter la classe au header pour le positionnement
-        header.classList.add('has-projections-nav');
-        
-        // Créer un conteneur centré pour les onglets
-        const projectionsNav = document.createElement('div');
-        projectionsNav.id = 'projections-header-nav';
-        projectionsNav.className = 'cockpit-header-nav'; // Réutiliser les styles cockpit
-        projectionsNav.innerHTML = `
-            <div class="cockpit-nav-tabs">
-                <button class="cockpit-nav-tab active" data-projection-section="overview">
-                    <span class="cockpit-nav-icon">${Icons.overview}</span>
-                    <span class="cockpit-nav-label">Overview</span>
-                </button>
-                <button class="cockpit-nav-tab" data-projection-section="calculator">
-                    <span class="cockpit-nav-icon">${Icons.calculator}</span>
-                    <span class="cockpit-nav-label">Calculator</span>
-                </button>
-                <button class="cockpit-nav-tab" data-projection-section="results">
-                    <span class="cockpit-nav-icon">${Icons.results}</span>
-                    <span class="cockpit-nav-label">Results</span>
-                </button>
-                <button class="cockpit-nav-tab" data-projection-section="charts">
-                    <span class="cockpit-nav-icon">${Icons.charts}</span>
-                    <span class="cockpit-nav-label">Charts</span>
-                </button>
-                <button class="cockpit-nav-tab" data-projection-section="monte-carlo">
-                    <span class="cockpit-nav-icon">${Icons.monteCarlo}</span>
-                    <span class="cockpit-nav-label">Monte Carlo</span>
-                </button>
-                <button class="cockpit-nav-tab" data-projection-section="projects">
-                    <span class="cockpit-nav-icon">${Icons.projects}</span>
-                    <span class="cockpit-nav-label">Projects</span>
-                </button>
-                <button class="cockpit-nav-tab" data-projection-section="hardware">
-                    <span class="cockpit-nav-icon">${Icons.hardware}</span>
-                    <span class="cockpit-nav-label">Hardware</span>
-                </button>
-                <button class="cockpit-nav-tab" data-projection-section="energy">
-                    <span class="cockpit-nav-icon">${Icons.energy}</span>
-                    <span class="cockpit-nav-label">Energy</span>
-                </button>
-                <button class="cockpit-nav-tab" data-projection-section="infrastructure">
-                    <span class="cockpit-nav-icon">${Icons.infrastructure}</span>
-                    <span class="cockpit-nav-label">Infrastructure</span>
-                </button>
-            </div>
-        `;
-        
-        // Insérer la navigation au centre du header
-        header.appendChild(projectionsNav);
-        
-        // Setup event listeners
-        const navTabs = projectionsNav.querySelectorAll('.cockpit-nav-tab');
-        navTabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                const sectionId = tab.getAttribute('data-projection-section');
-                if (sectionId && window.showProjectionSection) {
-                    window.showProjectionSection(sectionId);
-                    
-                    // Update active state
-                    navTabs.forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
-                }
             });
         });
         
@@ -1383,19 +1241,6 @@ node server.js</pre>
         // Rendre la vue Projects (Projestions)
         const template = await renderProjectsView(data);
         this.contentArea.innerHTML = projectsStyles + template;
-        
-        // Initialiser les projections après le rendu
-        // Attendre que le DOM soit complètement rendu avant d'initialiser
-        setTimeout(async () => {
-            try {
-                const { initProjections } = await import('./projections.js');
-                if (initProjections) {
-                    initProjections();
-                }
-            } catch (error) {
-                console.error('❌ Error initializing projections:', error);
-            }
-        }, 200);
     }
     
     async renderJobs() {
