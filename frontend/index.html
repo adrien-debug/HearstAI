@@ -34,10 +34,6 @@
                     <span class="nav-icon" data-icon="dashboard"></span>
                     <span class="nav-label">Cockpit</span>
                 </a>
-                <a href="javascript:void(0)" class="nav-item" data-view="admin-panel">
-                    <span class="nav-icon" data-icon="dashboard"></span>
-                    <span class="nav-label">Admin Panel</span>
-                </a>
                 <a href="javascript:void(0)" class="nav-item" data-view="projects">
                     <span class="nav-icon" data-icon="projects"></span>
                     <span class="nav-label">Projestions</span>
@@ -52,7 +48,13 @@
                 </a>
             </nav>
             <div class="sidebar-version">
-                HearstAI Version 1.0
+                <a href="javascript:void(0)" class="nav-item" data-view="admin-panel" style="display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3); border-radius: var(--radius-md); text-decoration: none; color: var(--text-secondary); transition: all var(--duration-fast) var(--ease-in-out);">
+                    <span class="nav-icon" data-icon="admin"></span>
+                    <span class="nav-label">Admin</span>
+                </a>
+                <div style="margin-top: var(--space-2); padding-top: var(--space-2); border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                    HearstAI Version 1.0
+                </div>
             </div>
         </aside>
         
@@ -65,13 +67,13 @@
                     <h2 class="page-title" id="page-title">Dashboard</h2>
                 </div>
                 <div class="header-right">
-                    <button class="btn btn-primary" id="btn-new-action">
-                        <span>+ New Project</span>
+                    <button class="btn btn-primary" id="btn-new-action" style="display: none;">
+                        <span>+ New</span>
                     </button>
-                    <div class="user-badge">
+                    <button class="user-badge" id="admin-btn" data-view="admin-panel" style="background: transparent; border: none; cursor: pointer;">
                         <span class="user-avatar" data-icon="user"></span>
                         <span class="user-name">Admin</span>
-                    </div>
+                    </button>
                 </div>
             </header>
             

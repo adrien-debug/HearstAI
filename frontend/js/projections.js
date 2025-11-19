@@ -117,7 +117,7 @@ export function initProjections() {
     window.showProjectionSection = showProjectionSection;
     
     // Set default section
-    const defaultSection = 'overview';
+    const defaultSection = 'calculator';
     showProjectionSection(defaultSection);
     
     // Fix responsive au chargement

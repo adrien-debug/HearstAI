@@ -21,6 +21,8 @@ export function showCollateralSection(sectionId) {
             // Initialize charts and interactions
             if (sectionId === 'dashboard') {
                 initDashboardCharts();
+            } else if (sectionId === 'collateral') {
+                initCollateralSection();
             } else if (sectionId === 'customers') {
                 initCustomersSection();
             } else if (sectionId === 'api-management') {
@@ -82,9 +84,9 @@ function initMiningChart() {
     btcGradient.addColorStop(1, 'rgba(255, 149, 0, 0)');
 
     const vancelianGradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 400);
-    vancelianGradient.addColorStop(0, 'rgba(123, 237, 159, 0.25)');
-    vancelianGradient.addColorStop(0.5, 'rgba(123, 237, 159, 0.08)');
-    vancelianGradient.addColorStop(1, 'rgba(123, 237, 159, 0)');
+    vancelianGradient.addColorStop(0, 'rgba(138, 253, 129, 0.25)');
+    vancelianGradient.addColorStop(0.5, 'rgba(138, 253, 129, 0.08)');
+    vancelianGradient.addColorStop(1, 'rgba(138, 253, 129, 0)');
 
     const morphoGradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 400);
     morphoGradient.addColorStop(0, 'rgba(39, 117, 202, 0.25)');
@@ -119,14 +121,14 @@ function initMiningChart() {
                 {
                     label: 'Vancelian',
                     data: [53550, 55125, 58320, 62496, 64630, 67338, 65488, 63270, 66573, 68782, 68970, 70093],
-                    borderColor: '#7bed9f',
+                    borderColor: 'var(--primary-green)',
                     backgroundColor: vancelianGradient,
                     borderWidth: 3,
                     fill: true,
                     tension: 0.4,
                     pointRadius: 0,
                     pointHoverRadius: 7,
-                    pointHoverBackgroundColor: '#7bed9f',
+                    pointHoverBackgroundColor: 'var(--primary-green)',
                     pointHoverBorderColor: '#FFFFFF',
                     pointHoverBorderWidth: 2,
                     yAxisID: 'y'
@@ -287,8 +289,8 @@ function initExpositionChart() {
             labels: ['Healthy', 'Unhealthy', 'Exposed'],
             datasets: [{
                 data: [198, 37, 12],
-                backgroundColor: ['#7bed9f', '#45D483', '#2D8A5A'],
-                borderColor: ['#7bed9f', '#45D483', '#2D8A5A'],
+                backgroundColor: ['var(--primary-green)', 'var(--cockpit-orange)', 'var(--cockpit-red)'],
+                borderColor: ['var(--primary-green)', 'var(--cockpit-orange)', 'var(--cockpit-red)'],
                 borderWidth: 3
             }]
         },
@@ -302,9 +304,9 @@ function initExpositionChart() {
                 },
                 tooltip: {
                     backgroundColor: 'rgba(0, 0, 0, 0.9)',
-                    titleColor: '#7bed9f',
+                    titleColor: 'var(--primary-green)',
                     bodyColor: '#CCCCCC',
-                    borderColor: 'rgba(123, 237, 159, 0.3)',
+                    borderColor: 'rgba(138, 253, 129, 0.3)',
                     borderWidth: 1,
                     callbacks: {
                         label: function(context) {
@@ -363,12 +365,16 @@ function initCustomersSection() {
 // Load customers data
 function loadCustomersData() {
     const customersData = [
-        { id: 1, name: 'Alpha Capital', email: 'contact@alphacapital.com', btcWallet: 'bc1q...xyz123', erc20Wallet: '0x742d...abc456', positionValue: 809400, status: 'b2b' },
-        { id: 2, name: 'Beta Ventures', email: 'info@betaventures.com', btcWallet: 'bc1q...abc456', erc20Wallet: '0x8a3f...def789', positionValue: 442800, status: 'b2c' },
-        { id: 3, name: 'Gamma Holdings', email: 'team@gammahold.io', btcWallet: 'bc1q...ghi789', erc20Wallet: '0x5c2e...ghi012', positionValue: 261200, status: 'other' },
-        { id: 4, name: 'Delta Partners', email: 'hello@deltapart.co', btcWallet: 'bc1q...jkl012', erc20Wallet: '0x9d7b...jkl345', positionValue: 136200, status: 'other' },
-        { id: 5, name: 'Epsilon Fund', email: 'invest@epsilonfund.com', btcWallet: 'bc1q...mno345', erc20Wallet: '0x1a4c...mno678', positionValue: 885600, status: 'b2b' },
-        { id: 6, name: 'Zeta Investments', email: 'deals@zetainvest.net', btcWallet: 'bc1q...pqr678', erc20Wallet: '0x6f8e...pqr901', positionValue: 505200, status: 'b2c' }
+        { id: 1, name: 'Alpha Capital', email: 'contact@alphacapital.com', btcWallet: 'bc1qxy7z8w9v0u1t2s3r4q5p6o7n8m9l0k1j2i3h4g5f6', erc20Wallet: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb', positionValue: 4285600, status: 'b2b' },
+        { id: 2, name: 'Beta Ventures', email: 'info@betaventures.com', btcWallet: 'bc1qab8c9d0e1f2g3h4i5j6k7l8m9n0o1p2q3r4s5t6u7v', erc20Wallet: '0x8a3f5E7B9C1D2F4A6B8C0D1E3F5A7B9C1D2E4F6A8B', positionValue: 2703300, status: 'b2c' },
+        { id: 3, name: 'Gamma Holdings', email: 'team@gammahold.io', btcWallet: 'bc1qgh9i0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z7a8b', erc20Wallet: '0x5c2e4F6A8B0C2D4E6F8A0B2C4D6E8F0A2B4C6D8E0F', positionValue: 3395840, status: 'b2b' },
+        { id: 4, name: 'Delta Partners', email: 'hello@deltapart.co', btcWallet: 'bc1qjk0l1m2n3o4p5q6r7s8t9u0v1w2x3y4z5a6b7c8d9e', erc20Wallet: '0x9d7b3E5F7A9C1D3E5F7A9B1C3D5E7F9A1B3C5D7E9F', positionValue: 1166670, status: 'other' },
+        { id: 5, name: 'Epsilon Fund', email: 'invest@epsilonfund.com', btcWallet: 'bc1qmn1o2p3q4r5s6t7u8v9w0x1y2z3a4b5c6d7e8f9g0', erc20Wallet: '0x1a4c6E8F0A2B4C6E8F0A2B4C6E8F0A2B4C6E8F0A2B', positionValue: 825330, status: 'b2b' },
+        { id: 6, name: 'Zeta Investments', email: 'deals@zetainvest.net', btcWallet: 'bc1qpq2r3s4t5u6v7w8x9y0z1a2b3c4d5e6f7g8h9i0j1', erc20Wallet: '0x6f8e0A2C4E6F8A0B2C4D6E8F0A2B4C6D8E0F2A4B', positionValue: 1432490, status: 'b2c' },
+        { id: 7, name: 'Theta Group', email: 'info@thetagroup.io', btcWallet: 'bc1qrs3t4u5v6w7x8y9z0a1b2c3d4e5f6g7h8i9j0k1l2', erc20Wallet: '0x3b5d7F9A1C3E5F7A9B1C3D5E7F9A1B3C5D7E9F1A3', positionValue: 2156800, status: 'b2b' },
+        { id: 8, name: 'Iota Capital', email: 'contact@iotacapital.com', btcWallet: 'bc1qst4u5v6w7x8y9z0a1b2c3d4e5f6g7h8i9j0k1l2m3', erc20Wallet: '0x7c9e1B3D5F7A9C1E3F5A7B9C1D3E5F7A9B1C3D5E7F', positionValue: 1892400, status: 'b2c' },
+        { id: 9, name: 'Kappa Holdings', email: 'team@kappahold.io', btcWallet: 'bc1qtu5v6w7x8y9z0a1b2c3d4e5f6g7h8i9j0k1l2m3n4', erc20Wallet: '0x4d0f2A4C6E8F0A2B4C6D8E0F2A4B6C8D0E2F4A6B8', positionValue: 3125600, status: 'b2b' },
+        { id: 10, name: 'Lambda Ventures', email: 'hello@lambdaventures.net', btcWallet: 'bc1quv6w7x8y9z0a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5', erc20Wallet: '0x8e1A3C5F7A9B1D3E5F7A9B1C3D5E7F9A1B3C5D7E9F', positionValue: 1678900, status: 'other' }
     ];
     
     window.customersData = customersData;
@@ -388,9 +394,9 @@ function loadCustomersData() {
                 </div>
             </td>
             <td style="color: var(--text-muted); font-size: 11px;">${customer.email}</td>
-            <td style="font-family: Monaco, monospace; font-size: 10px; color: var(--text-secondary);">${customer.btcWallet}</td>
-            <td style="font-family: Monaco, monospace; font-size: 10px; color: var(--text-secondary);">${customer.erc20Wallet}</td>
-            <td style="color: #7bed9f; font-weight: 600; font-size: 12px;">$${customer.positionValue.toLocaleString()}</td>
+            <td style="font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-secondary);">${customer.btcWallet.substring(0, 12)}...${customer.btcWallet.substring(customer.btcWallet.length - 6)}</td>
+            <td style="font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-secondary);">${customer.erc20Wallet.substring(0, 8)}...${customer.erc20Wallet.substring(customer.erc20Wallet.length - 6)}</td>
+            <td style="color: var(--primary-green); font-weight: 600; font-size: 12px;">$${customer.positionValue.toLocaleString()}</td>
             <td>
                 <button class="btn btn-primary" style="padding: 6px 12px; font-size: 10px;" 
                     onclick="event.stopPropagation(); showCustomerDetails(window.customersData[${customer.id - 1}])">
@@ -400,6 +406,178 @@ function loadCustomersData() {
         `;
         tbody.appendChild(tr);
     });
+}
+
+// Initialize collateral section
+function initCollateralSection() {
+    // Load collateral positions data
+    loadCollateralPositions();
+    
+    // Setup filter functionality
+    document.querySelectorAll('.filter-btn[data-filter]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.filter-btn[data-filter]').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const filter = btn.dataset.filter;
+            filterCollateralPositions(filter);
+        });
+    });
+}
+
+// Load collateral positions data
+function loadCollateralPositions() {
+    const positionsData = [
+        {
+            id: 1,
+            customer: 'Alpha Capital',
+            protocol: 'Vancelian',
+            collateral: '45.2 BTC',
+            collateralValue: '$4,285,600',
+            borrowed: '$2,850,000 USDT',
+            healthFactor: '1.85',
+            status: 'safe',
+            ltv: '66.5%'
+        },
+        {
+            id: 2,
+            customer: 'Beta Ventures',
+            protocol: 'Morpho',
+            collateral: '28.5 BTC',
+            collateralValue: '$2,703,300',
+            borrowed: '$1,650,000 USDC',
+            healthFactor: '1.64',
+            status: 'safe',
+            ltv: '61.0%'
+        },
+        {
+            id: 3,
+            customer: 'Epsilon Fund',
+            protocol: 'Compound',
+            collateral: '35.8 BTC',
+            collateralValue: '$3,395,840',
+            borrowed: '$2,200,000 USDT',
+            healthFactor: '1.54',
+            status: 'safe',
+            ltv: '64.8%'
+        },
+        {
+            id: 4,
+            customer: 'Gamma Holdings',
+            protocol: 'Vancelian',
+            collateral: '12.3 BTC',
+            collateralValue: '$1,166,670',
+            borrowed: '$850,000 USDC',
+            healthFactor: '1.37',
+            status: 'at-risk',
+            ltv: '72.9%'
+        },
+        {
+            id: 5,
+            customer: 'Delta Partners',
+            protocol: 'Morpho',
+            collateral: '8.7 BTC',
+            collateralValue: '$825,330',
+            borrowed: '$720,000 USDT',
+            healthFactor: '1.15',
+            status: 'at-risk',
+            ltv: '87.2%'
+        },
+        {
+            id: 6,
+            customer: 'Zeta Investments',
+            protocol: 'Compound',
+            collateral: '15.1 BTC',
+            collateralValue: '$1,432,490',
+            borrowed: '$1,350,000 USDC',
+            healthFactor: '1.06',
+            status: 'exposed',
+            ltv: '94.2%'
+        }
+    ];
+    
+    window.collateralPositionsData = positionsData;
+    renderCollateralPositions(positionsData);
+}
+
+// Render collateral positions
+function renderCollateralPositions(positions) {
+    const container = document.getElementById('collateralPositions');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    if (positions.length === 0) {
+        container.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: var(--space-8);">No positions found</p>';
+        return;
+    }
+    
+    positions.forEach(position => {
+        const positionCard = document.createElement('div');
+        positionCard.className = 'position-card';
+        positionCard.style.cssText = `
+            background: var(--primary-grey);
+            border: 1px solid var(--grey-100);
+            border-radius: var(--radius-md);
+            padding: var(--space-5);
+            margin-bottom: var(--space-3);
+            transition: all var(--duration-fast) var(--ease-in-out);
+            cursor: pointer;
+        `;
+        
+        positionCard.onmouseenter = () => {
+            positionCard.style.borderColor = 'var(--primary-green)';
+            positionCard.style.transform = 'translateX(4px)';
+        };
+        
+        positionCard.onmouseleave = () => {
+            positionCard.style.borderColor = 'var(--grey-100)';
+            positionCard.style.transform = 'translateX(0)';
+        };
+        
+        const statusBadgeClass = position.status === 'safe' ? 'healthy' : position.status === 'at-risk' ? 'unhealthy' : 'at-risk';
+        const statusLabel = position.status === 'safe' ? 'SAFE' : position.status === 'at-risk' ? 'AT RISK' : 'EXPOSED';
+        
+        positionCard.innerHTML = `
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4); align-items: center;">
+                <div>
+                    <div style="font-size: var(--text-xs); color: var(--text-secondary); margin-bottom: var(--space-1);">CUSTOMER</div>
+                    <div style="font-size: var(--text-base); font-weight: var(--font-semibold); color: var(--text-primary);">${position.customer}</div>
+                    <div style="font-size: var(--text-xs); color: var(--text-muted); margin-top: var(--space-1);">${position.protocol}</div>
+                </div>
+                <div>
+                    <div style="font-size: var(--text-xs); color: var(--text-secondary); margin-bottom: var(--space-1);">COLLATERAL</div>
+                    <div style="font-size: var(--text-base); font-weight: var(--font-semibold); color: var(--primary-green);">${position.collateral}</div>
+                    <div style="font-size: var(--text-xs); color: var(--text-muted);">${position.collateralValue}</div>
+                </div>
+                <div>
+                    <div style="font-size: var(--text-xs); color: var(--text-secondary); margin-bottom: var(--space-1);">BORROWED</div>
+                    <div style="font-size: var(--text-base); font-weight: var(--font-semibold); color: var(--text-primary);">${position.borrowed}</div>
+                    <div style="font-size: var(--text-xs); color: var(--text-muted);">LTV: ${position.ltv}</div>
+                </div>
+                <div>
+                    <div style="font-size: var(--text-xs); color: var(--text-secondary); margin-bottom: var(--space-1);">HEALTH FACTOR</div>
+                    <div style="font-size: var(--text-xl); font-weight: var(--font-bold); color: ${position.status === 'safe' ? 'var(--primary-green)' : position.status === 'at-risk' ? 'var(--cockpit-orange)' : 'var(--cockpit-red)'};">${position.healthFactor}</div>
+                </div>
+                <div style="text-align: right;">
+                    <span class="badge ${statusBadgeClass}">${statusLabel}</span>
+                </div>
+            </div>
+        `;
+        
+        container.appendChild(positionCard);
+    });
+}
+
+// Filter collateral positions
+function filterCollateralPositions(filter) {
+    const allPositions = window.collateralPositionsData || [];
+    
+    if (filter === 'all') {
+        renderCollateralPositions(allPositions);
+    } else {
+        const filtered = allPositions.filter(pos => pos.status === filter);
+        renderCollateralPositions(filtered);
+    }
 }
 
 // Initialize API management section

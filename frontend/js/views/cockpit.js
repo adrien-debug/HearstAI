@@ -7,25 +7,6 @@ export function renderCockpitView() {
             
             <!-- Top Bar -->
             <div class="cockpit-top-bar">
-                <div class="cockpit-header">
-                    <h1 class="cockpit-title">Claude CI/CD Cockpit</h1>
-                    <div class="cockpit-header-meta">
-                        <div class="cockpit-clock-container">
-                            <div class="cockpit-clock" id="cockpitClock">00:00:00</div>
-                            <div class="cockpit-live-badge">
-                                <span class="cockpit-live-dot"></span>
-                                <span>LIVE</span>
-                            </div>
-                        </div>
-                        <p class="cockpit-subtitle">Real-time overview of all mining operations</p>
-                    </div>
-                </div>
-                <div class="cockpit-actions">
-                    <button class="btn btn-secondary cockpit-refresh-btn">
-                        <span class="icon-inline" data-icon="refresh"></span>
-                        Refresh
-                    </button>
-                </div>
             </div>
 
             <!-- KPI Grid - Ultra Premium Boxes -->
@@ -41,7 +22,7 @@ export function renderCockpitView() {
                         </div>
                     </div>
                 </div>
-
+                
                 <div class="kpi-box">
                     <div class="kpi-box-glow"></div>
                     <div class="kpi-box-content">
@@ -50,8 +31,8 @@ export function renderCockpitView() {
                         <div class="kpi-box-meta">
                             <span class="kpi-box-meta-item">≈ $0 USD</span>
                             <span class="kpi-box-meta-item positive">+0% vs yesterday</span>
-                        </div>
-                    </div>
+                </div>
+            </div>
                 </div>
 
                 <div class="kpi-box">
@@ -78,7 +59,7 @@ export function renderCockpitView() {
                     </div>
                 </div>
 
-                <div class="kpi-box">
+                <div class="kpi-box kpi-box-orange">
                     <div class="kpi-box-glow"></div>
                     <div class="kpi-box-content">
                         <div class="kpi-box-label">Degraded Miners</div>
@@ -90,7 +71,7 @@ export function renderCockpitView() {
                     </div>
                 </div>
 
-                <div class="kpi-box">
+                <div class="kpi-box kpi-box-red">
                     <div class="kpi-box-glow"></div>
                     <div class="kpi-box-content">
                         <div class="kpi-box-label">Offline Miners</div>
@@ -99,7 +80,7 @@ export function renderCockpitView() {
                             <span class="kpi-box-meta-item positive">0% of fleet</span>
                             <span class="kpi-box-meta-item">Under maintenance</span>
                         </div>
-                    </div>
+                </div>
                 </div>
             </div>
 
@@ -362,11 +343,11 @@ export function renderCockpitView() {
                                 <div class="chart-legend-item">
                                     <div class="chart-legend-dot green"></div>
                                     <span class="chart-legend-label">Live Hashrate</span>
-                                </div>
+                        </div>
                                 <div class="chart-legend-item">
                                     <div class="chart-legend-dot blue"></div>
                                     <span class="chart-legend-label">Theoretical</span>
-                                </div>
+                            </div>
                             </div>
                         </div>
                     </div>
@@ -379,7 +360,7 @@ export function renderCockpitView() {
                                 <polyline points="0,100 14.28,100 28.57,100 42.85,100 57.14,100 71.42,100 85.71,100 100,100" 
                                     fill="none" stroke="var(--primary-green)" stroke-width="0.8" 
                                     stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"></polyline>
-                            </svg>
+                        </svg>
                         </div>
                         <div class="chart-stats-grid">
                             <div class="chart-stat-item">
@@ -393,11 +374,11 @@ export function renderCockpitView() {
                             <div class="chart-stat-item">
                                 <div class="chart-stat-label">Peak</div>
                                 <div class="chart-stat-value">0.0 PH/s</div>
-                            </div>
+                        </div>
                             <div class="chart-stat-item">
                                 <div class="chart-stat-label">Efficiency</div>
                                 <div class="chart-stat-value green">0%</div>
-                            </div>
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -417,11 +398,11 @@ export function renderCockpitView() {
                                 <div class="chart-legend-item">
                                     <div class="chart-legend-dot orange"></div>
                                     <span class="chart-legend-label">BTC Mined</span>
-                                </div>
+                        </div>
                                 <div class="chart-legend-item">
                                     <div class="chart-legend-dot orange-dark"></div>
                                     <span class="chart-legend-label">Target</span>
-                                </div>
+                            </div>
                             </div>
                         </div>
                     </div>
@@ -434,7 +415,7 @@ export function renderCockpitView() {
                                 <polyline points="0,100 14.28,100 28.57,100 42.85,100 57.14,100 71.42,100 85.71,100 100,100" 
                                     fill="none" stroke="var(--cockpit-orange, #ffa500)" stroke-width="0.8" 
                                     stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"></polyline>
-                            </svg>
+                        </svg>
                         </div>
                         <div class="chart-stats-grid">
                             <div class="chart-stat-item">
@@ -448,11 +429,11 @@ export function renderCockpitView() {
                             <div class="chart-stat-item">
                                 <div class="chart-stat-label">USD Value</div>
                                 <div class="chart-stat-value">$0</div>
-                            </div>
+                        </div>
                             <div class="chart-stat-item">
                                 <div class="chart-stat-label">vs Target</div>
                                 <div class="chart-stat-value green">0%</div>
-                            </div>
+                        </div>
                         </div>
                     </div>
                 </div>

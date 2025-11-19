@@ -139,7 +139,7 @@
        LAYOUT
        ==================================== */
     --sidebar-width: 200px;
-    --header-height: 90px;
+    --header-height: 70px;
     
     /* ====================================
        COMPATIBILITÉ (aliases pour migration)
@@ -213,8 +213,6 @@ body {
 .sidebar {
     width: var(--sidebar-width); /* 200px */
     background: rgba(0, 0, 0, 0.9) !important;
-    backdrop-filter: blur(20px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
     border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
     box-shadow: 4px 0 24px rgba(0, 0, 0, 0.5) !important;
     display: flex;
@@ -280,7 +278,7 @@ body {
 }
 
 .logo-icon {
-    font-size: 20px;
+    font-size: var(--text-xl);
 }
 
 .sidebar-nav {
@@ -315,7 +313,7 @@ body {
     background: transparent !important;
     color: #ffffff !important;
     font-weight: 500 !important;
-    font-size: 13px !important;
+    font-size: var(--text-sm) !important;
     text-decoration: none !important;
     transition: all 0.2s ease !important;
     border: none !important;
@@ -390,7 +388,7 @@ body {
 .nav-label {
     flex: 1 !important;
     white-space: nowrap !important;
-    font-size: 13px;
+    font-size: var(--text-sm);
     letter-spacing: -0.01em;
 }
 
@@ -456,18 +454,17 @@ body {
 .header {
     height: var(--header-height);
     background: rgba(26, 26, 26, 0.8) !important;
-    backdrop-filter: blur(20px) !important;
-    -webkit-backdrop-filter: blur(20px) !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4) !important;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0;
+    padding: 0 var(--space-8);
     position: sticky;
     top: 0;
     z-index: 50;
     width: 100%;
+    overflow: visible !important;
 }
 
 .header-left {
@@ -485,13 +482,15 @@ body {
     -webkit-text-fill-color: transparent !important;
     background-clip: text !important;
     letter-spacing: -0.02em;
+    margin: 0;
 }
 
 .header-right {
-    display: flex;
+    display: flex !important;
     align-items: center;
     gap: var(--space-4);
     padding-right: var(--space-8);
+    margin-left: auto;
 }
 
 .notification-btn {
@@ -548,8 +547,6 @@ body {
     padding: var(--space-2) var(--space-4);
     border-radius: var(--radius-full);
     background: rgba(42, 42, 42, 0.6) !important;
-    backdrop-filter: blur(10px) !important;
-    -webkit-backdrop-filter: blur(10px) !important;
     border: 1px solid rgba(255, 255, 255, 0.05) !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
     cursor: pointer;
@@ -618,7 +615,7 @@ body {
     min-height: 0;
     position: relative;
     display: grid; /* ✅ Match demande */
-    gap: var(--space-5); /* 20px - ✅ Match demande */
+    gap: var(--space-6); /* 24px - Standard grid gap */
     grid-template-columns: 1fr; /* ✅ Match demande */
 }
 
@@ -714,8 +711,9 @@ body {
     min-height: 0 !important;
     overflow-y: auto !important;
     overflow-x: hidden !important;
-    padding: var(--space-4) var(--space-8) 0 var(--space-8) !important;
+    padding: 0 !important;
     position: relative !important;
+    gap: 0 !important;
 }
 
 /* ====================================
@@ -754,8 +752,6 @@ body {
 
 .sidebar {
     background: rgba(0, 0, 0, 0.95) !important;
-    backdrop-filter: blur(24px) saturate(200%) !important;
-    -webkit-backdrop-filter: blur(24px) saturate(200%) !important;
     border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
     box-shadow: 4px 0 32px rgba(0, 0, 0, 0.6) !important;
 }
@@ -803,17 +799,29 @@ body {
     letter-spacing: 0.2px !important;
 }
 
+.sidebar-version .nav-item {
+    margin-bottom: var(--space-2) !important;
+}
+
+.sidebar-version .nav-item:hover {
+    background: rgba(138, 253, 129, 0.1) !important;
+    color: var(--primary-green) !important;
+}
+
+.sidebar-version .nav-item.active {
+    background: rgba(138, 253, 129, 0.15) !important;
+    color: var(--primary-green) !important;
+}
+
 /* ====================================
    AMÉLIORATION HEADER - PREMIUM
    ==================================== */
 
 .header {
     background: rgba(10, 10, 10, 0.85) !important;
-    backdrop-filter: blur(24px) saturate(200%) !important;
-    -webkit-backdrop-filter: blur(24px) saturate(200%) !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
     box-shadow: 0 2px 16px rgba(0, 0, 0, 0.5) !important;
-    height: 80px !important;
+    height: var(--header-height) !important;
 }
 
 .page-title {
@@ -875,7 +883,7 @@ body {
    ==================================== */
 
 body {
-    font-size: 15px !important;
+    font-size: var(--text-sm) !important;
     letter-spacing: -0.01em !important;
     -webkit-font-smoothing: antialiased !important;
     -moz-osx-font-smoothing: grayscale !important;
@@ -943,8 +951,6 @@ body {
 
 .footer-premium {
     background: linear-gradient(180deg, rgba(10, 10, 10, 0.95) 0%, rgba(0, 0, 0, 1) 100%) !important;
-    backdrop-filter: blur(24px) saturate(200%) !important;
-    -webkit-backdrop-filter: blur(24px) saturate(200%) !important;
     border-top: 1px solid rgba(138, 253, 129, 0.1) !important;
     box-shadow: 
         0 -4px 32px rgba(0, 0, 0, 0.6),
@@ -1138,5 +1144,17 @@ body {
         flex-direction: column;
         gap: var(--space-1);
         align-items: flex-start;
+    }
+}
+
+/* Animation pulse pour le badge LIVE */
+@keyframes pulse {
+    0%, 100% { 
+        opacity: 1; 
+        box-shadow: 0 0 8px var(--primary-green);
+    }
+    50% { 
+        opacity: 0.5; 
+        box-shadow: 0 0 16px var(--primary-green);
     }
 }

@@ -42,21 +42,28 @@
     padding: 0 var(--space-4) !important;
     position: absolute !important;
     left: 50% !important;
-    transform: translateX(-50%) !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
     z-index: 10 !important;
+    width: auto !important;
+    max-width: calc(100% - 400px) !important;
+    pointer-events: auto !important;
+}
+
+/* S'assurer qu'une seule navigation est visible - mais toujours afficher la dernière */
+.header > .cockpit-header-nav {
+    display: flex !important;
 }
 
 .header.has-cockpit-nav,
+.header.has-projections-nav,
+.header.has-settings-nav,
+.header.has-electricity-nav,
+.header.has-admin-panel-nav,
 .header.has-collateral-nav {
     position: relative !important;
 }
 
-/* Force l'affichage de la navigation collateral */
-#collateral-header-nav {
-    display: flex !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-}
 
 /* Tabs container */
 .cockpit-nav-tabs {
@@ -64,8 +71,6 @@
     align-items: center !important;
     gap: var(--space-1) !important;
     background: rgba(26, 26, 26, 0.6) !important;
-    backdrop-filter: blur(10px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(10px) saturate(180%) !important;
     border: 1px solid rgba(138, 253, 129, 0.1) !important;
     border-radius: var(--radius-md) !important;
     padding: var(--space-1) !important;
@@ -143,14 +148,179 @@
 }
 
 /* ====================================
+   COCKPIT NAVIGATION - EN HAUT
+   ==================================== */
+
+/* Container de navigation - Positionné en haut */
+.cockpit-nav-container {
+    display: flex !important;
+    align-items: center !important;
+    width: 100% !important;
+    margin-bottom: var(--space-6) !important;
+}
+
+/* Tabs container premium - Style ultra premium - Horizontal */
+.cockpit-nav-tabs-premium {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: var(--space-2) !important;
+    background: rgba(14, 14, 14, 0.75) !important;
+    border: 0.5px solid rgba(255, 255, 255, 0.04) !important;
+    border-left: 3px solid var(--primary-green) !important;
+    border-radius: var(--radius-lg) !important;
+    padding: var(--space-3) !important;
+    box-shadow: 
+        0 4px 24px rgba(0, 0, 0, 0.4),
+        0 1px 4px rgba(0, 0, 0, 0.2),
+        inset 0 0.5px 0 rgba(255, 255, 255, 0.06) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.cockpit-nav-tabs-premium::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent 0%,
+        var(--primary-green) 40%,
+        var(--primary-green) 60%,
+        transparent 100%);
+    opacity: 0.6;
+}
+
+/* Tab button premium - Style ultra premium */
+.cockpit-nav-tab-premium {
+    display: flex !important;
+    align-items: center !important;
+    gap: var(--space-3) !important;
+    padding: var(--space-3) var(--space-5) !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: var(--radius-md) !important;
+    color: var(--text-secondary) !important;
+    font-size: var(--text-sm) !important;
+    font-weight: var(--font-medium) !important;
+    cursor: pointer !important;
+    transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+    white-space: nowrap !important;
+    font-family: var(--font-primary) !important;
+    letter-spacing: -0.01em !important;
+    position: relative !important;
+    width: auto !important;
+    min-width: auto !important;
+    overflow: hidden !important;
+}
+
+.cockpit-nav-tab-premium::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--primary-green);
+    opacity: 0;
+    transition: opacity 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.cockpit-nav-tab-premium:hover {
+    background: rgba(138, 253, 129, 0.08) !important;
+    color: var(--primary-green) !important;
+    transform: translateX(4px) !important;
+}
+
+.cockpit-nav-tab-premium:hover::before {
+    opacity: 1;
+}
+
+.cockpit-nav-tab-premium.active {
+    background: linear-gradient(135deg, 
+        rgba(138, 253, 129, 0.15) 0%,
+        rgba(138, 253, 129, 0.08) 100%) !important;
+    color: var(--primary-green) !important;
+    font-weight: var(--font-semibold) !important;
+    box-shadow: 
+        0 2px 12px rgba(138, 253, 129, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        inset 0 -1px 0 rgba(138, 253, 129, 0.1) !important;
+    border-left: 2px solid var(--primary-green) !important;
+    padding-left: calc(var(--space-5) - 2px) !important;
+}
+
+.cockpit-nav-tab-premium.active::before {
+    opacity: 1;
+    width: 3px;
+    box-shadow: 0 0 12px rgba(138, 253, 129, 0.6);
+}
+
+.cockpit-nav-tab-premium.active:hover {
+    background: linear-gradient(135deg, 
+        rgba(138, 253, 129, 0.2) 0%,
+        rgba(138, 253, 129, 0.12) 100%) !important;
+    box-shadow: 
+        0 4px 16px rgba(138, 253, 129, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15),
+        inset 0 -1px 0 rgba(138, 253, 129, 0.15) !important;
+}
+
+/* Icon dans les tabs premium */
+.cockpit-nav-tab-premium .cockpit-nav-icon {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 20px !important;
+    height: 20px !important;
+    flex-shrink: 0 !important;
+    transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+}
+
+.cockpit-nav-tab-premium .cockpit-nav-icon svg {
+    width: 20px !important;
+    height: 20px !important;
+    stroke: currentColor !important;
+    fill: none !important;
+    transition: stroke 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+}
+
+.cockpit-nav-tab-premium:hover .cockpit-nav-icon {
+    transform: scale(1.1) !important;
+}
+
+.cockpit-nav-tab-premium.active .cockpit-nav-icon svg {
+    stroke: var(--primary-green) !important;
+    filter: drop-shadow(0 0 4px rgba(138, 253, 129, 0.4)) !important;
+}
+
+/* Label dans les tabs premium */
+.cockpit-nav-tab-premium .cockpit-nav-label {
+    font-size: var(--text-sm) !important;
+    letter-spacing: -0.01em !important;
+    line-height: 1.4 !important;
+    transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+}
+
+/* Ajuster le KPI grid pour qu'il soit à côté de la nav */
+.cockpit-view .cockpit-kpi-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: var(--space-4);
+    margin-bottom: var(--space-8);
+    margin-top: 0;
+}
+
+/* ====================================
    PAGE PROJECTIONS - CHARTE GRAPHIQUE PREMIUM
    ==================================== */
 
 /* Accordion Section - Aligné avec style premium */
 .accordion-section {
     background: rgba(26, 26, 26, 0.7) !important;
-    backdrop-filter: blur(20px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
     border: 1px solid rgba(255, 255, 255, 0.05) !important;
     border-radius: var(--radius-lg) !important;
     box-shadow: 
@@ -228,8 +398,6 @@
 /* Metric Cards - Aligné avec stat-card premium */
 .metric-card {
     background: rgba(26, 26, 26, 0.7) !important;
-    backdrop-filter: blur(20px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
     border: 1px solid rgba(255, 255, 255, 0.05) !important;
     border-radius: var(--radius-lg) !important;
     padding: var(--space-6) !important;
@@ -312,8 +480,6 @@
 /* Radio Cards - Aligné avec style premium */
 .radio-card {
     background: rgba(26, 26, 26, 0.7) !important;
-    backdrop-filter: blur(20px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
     border: 1px solid rgba(255, 255, 255, 0.05) !important;
     border-radius: var(--radius-md) !important;
     padding: var(--space-4) !important;
@@ -356,8 +522,6 @@
 /* Machine Cards - Aligné avec style premium */
 .machine-card {
     background: rgba(26, 26, 26, 0.7) !important;
-    backdrop-filter: blur(20px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
     border: 1px solid rgba(255, 255, 255, 0.05) !important;
     border-radius: var(--radius-lg) !important;
     padding: var(--space-5) !important;
@@ -395,8 +559,6 @@
 /* Project Cards - Aligné avec style premium */
 .project-card {
     background: rgba(26, 26, 26, 0.7) !important;
-    backdrop-filter: blur(20px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
     border: 1px solid rgba(255, 255, 255, 0.05) !important;
     border-radius: var(--radius-lg) !important;
     padding: var(--space-6) !important;
@@ -497,8 +659,6 @@
 /* Summary Card - Aligné avec style premium */
 .summary-card {
     background: rgba(26, 26, 26, 0.7) !important;
-    backdrop-filter: blur(20px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
     border: 1px solid rgba(255, 255, 255, 0.05) !important;
     border-radius: var(--radius-lg) !important;
     padding: var(--space-6) !important;
@@ -564,8 +724,6 @@
 /* Stepper Container - Aligné avec style premium */
 .stepper-container {
     background: rgba(26, 26, 26, 0.7) !important;
-    backdrop-filter: blur(20px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
     border: 1px solid rgba(255, 255, 255, 0.05) !important;
     border-radius: var(--radius-xl) !important;
     padding: var(--space-8) var(--space-10) !important;
@@ -667,8 +825,6 @@
 /* Param Card - Aligné avec style premium */
 .param-card {
     background: rgba(26, 26, 26, 0.7) !important;
-    backdrop-filter: blur(20px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
     border: 1px solid rgba(255, 255, 255, 0.05) !important;
     border-radius: var(--radius-lg) !important;
     padding: var(--space-6) !important;
@@ -750,7 +906,6 @@ select {
     font-size: var(--text-base) !important;
     font-family: var(--font-primary) !important;
     letter-spacing: -0.01em !important;
-    backdrop-filter: blur(12px) !important;
     transition: all var(--duration-fast) var(--ease-in-out) !important;
     width: 100% !important;
 }
@@ -788,7 +943,6 @@ button[class*="button"],
 .btn,
 .button {
     background: rgba(26, 26, 26, 0.7) !important;
-    backdrop-filter: blur(10px) !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
     border-radius: var(--radius-md) !important;
     padding: var(--space-2) var(--space-4) !important;
@@ -833,38 +987,7 @@ button[class*="button"]:active {
     gap: var(--space-5) !important;
 }
 
-/* ====================================
-   MASQUER BOUTON REFRESH COCKPIT
-   ==================================== */
-.cockpit-refresh-btn {
-    display: none !important;
-}
 
-/* Masquer le conteneur actions si vide après masquage du bouton refresh */
-.cockpit-actions:empty {
-    display: none !important;
-}
-
-/* Masquer aussi le bouton refresh dans le header pour la vue cockpit */
-#btn-new-action:has(.icon-inline[data-icon="refresh"]),
-.header-left #btn-new-action:has(span[data-icon="refresh"]) {
-    display: none !important;
-}
-
-/* ====================================
-   MASQUER SOUS-MENUS COCKPIT
-   ==================================== */
-/* Masquer les sous-menus Production, Energy et Incidents */
-.cockpit-nav-tab[data-cockpit-section="production"],
-.cockpit-nav-tab[data-cockpit-section="energy"],
-.cockpit-nav-tab[data-cockpit-section="incidents"] {
-    display: none !important;
-}
-
-/* Masquer aussi dans les projections si présent */
-.cockpit-nav-tab[data-projection-section="energy"] {
-    display: none !important;
-}
 
 /* ====================================
    PAGE COLLATERAL - CHARTE GRAPHIQUE PREMIUM
@@ -889,8 +1012,6 @@ button[class*="button"]:active {
 .collateral-view .stat-card,
 .collateral-view .kpi-card {
     background: rgba(26, 26, 26, 0.7) !important;
-    backdrop-filter: blur(20px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
     border: 1px solid rgba(255, 255, 255, 0.05) !important;
     border-radius: var(--radius-lg) !important;
     padding: var(--space-6) !important;
@@ -982,8 +1103,6 @@ button[class*="button"]:active {
 /* Chart Section - Aligné avec style premium */
 .collateral-view .chart-section {
     background: rgba(26, 26, 26, 0.7) !important;
-    backdrop-filter: blur(20px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
     border: 1px solid rgba(255, 255, 255, 0.05) !important;
     border-radius: var(--radius-lg) !important;
     padding: var(--space-6) !important;
@@ -1031,8 +1150,6 @@ button[class*="button"]:active {
 /* Table Section - Aligné avec style premium */
 .collateral-view .table-section {
     background: rgba(26, 26, 26, 0.7) !important;
-    backdrop-filter: blur(20px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
     border: 1px solid rgba(255, 255, 255, 0.05) !important;
     border-radius: var(--radius-lg) !important;
     padding: var(--space-6) !important;
@@ -1086,7 +1203,7 @@ button[class*="button"]:active {
 .collateral-view .data-table th {
     padding: var(--space-4) var(--space-5) !important;
     text-align: left !important;
-    font-size: 13px !important;
+    font-size: var(--text-xs) !important;
     font-weight: 500 !important;
     letter-spacing: 0.5px !important;
     text-transform: uppercase !important;
@@ -1115,7 +1232,7 @@ button[class*="button"]:active {
 
 .collateral-view .data-table td {
     padding: var(--space-4) var(--space-5) !important;
-    font-size: 15px !important;
+    font-size: var(--text-sm) !important;
     border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
     color: var(--text-secondary) !important;
     letter-spacing: -0.01em !important;
@@ -1130,7 +1247,6 @@ button[class*="button"]:active {
 /* Filter Buttons - Aligné avec style premium */
 .collateral-view .filter-btn {
     background: rgba(26, 26, 26, 0.7) !important;
-    backdrop-filter: blur(10px) !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
     border-radius: var(--radius-md) !important;
     padding: var(--space-2) var(--space-4) !important;
@@ -1254,8 +1370,6 @@ button[class*="button"]:active {
 .collateral-view [style*="background: linear-gradient(135deg, #121212"],
 .collateral-view [style*="background: var(--bg-secondary)"] {
     background: rgba(26, 26, 26, 0.7) !important;
-    backdrop-filter: blur(20px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
 }
 
 .collateral-view [style*="border: 1px solid rgba(255,255,255,0.05)"] {
@@ -1291,8 +1405,6 @@ button[class*="button"]:active {
 .collateral-view [style*="background: linear-gradient(135deg, var(--bg-panel)"],
 .collateral-view [style*="background: linear-gradient(135deg, #121212"] {
     background: rgba(26, 26, 26, 0.7) !important;
-    backdrop-filter: blur(20px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
     border: 1px solid rgba(255, 255, 255, 0.05) !important;
     border-radius: var(--radius-lg) !important;
     box-shadow: 
@@ -1321,8 +1433,6 @@ button[class*="button"]:active {
 /* API Blocks - Harmonisation premium */
 .collateral-view .api-block {
     background: rgba(26, 26, 26, 0.7) !important;
-    backdrop-filter: blur(20px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
     border: 1px solid rgba(255, 255, 255, 0.05) !important;
     border-radius: var(--radius-lg) !important;
     padding: var(--space-6) !important;
@@ -1375,7 +1485,6 @@ button[class*="button"]:active {
     font-size: var(--text-sm) !important;
     font-family: var(--font-primary) !important;
     letter-spacing: -0.01em !important;
-    backdrop-filter: blur(12px) !important;
     transition: all var(--duration-fast) var(--ease-in-out) !important;
 }
 
@@ -1423,7 +1532,6 @@ button[class*="button"]:active {
 
 .collateral-view .btn.btn-secondary {
     background: rgba(26, 26, 26, 0.7) !important;
-    backdrop-filter: blur(10px) !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
     color: var(--text-primary) !important;
     transition: all var(--duration-fast) var(--ease-in-out) !important;
@@ -1439,13 +1547,10 @@ button[class*="button"]:active {
 /* Modal - Harmonisation premium */
 .collateral-view #customerModal {
     background: rgba(0, 0, 0, 0.85) !important;
-    backdrop-filter: blur(8px) !important;
 }
 
 .collateral-view #customerModal > div {
     background: rgba(26, 26, 26, 0.95) !important;
-    backdrop-filter: blur(20px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
     border-radius: var(--radius-xl) !important;
     box-shadow: 
@@ -1499,7 +1604,6 @@ button[class*="button"]:active {
     border: 1px solid rgba(255, 255, 255, 0.05) !important;
     border-radius: var(--radius-md) !important;
     padding: var(--space-4) !important;
-    backdrop-filter: blur(10px) !important;
 }
 
 /* Logs text - Harmonisation */
@@ -1557,8 +1661,6 @@ button[class*="button"]:active {
 .collateral-view .stat-card[style*="background: linear-gradient(135deg, #121212"],
 .collateral-view .stat-card[style*="background:linear-gradient(135deg, #121212"] {
     background: rgba(26, 26, 26, 0.7) !important;
-    backdrop-filter: blur(20px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
     border: 1px solid rgba(255, 255, 255, 0.05) !important;
     border-radius: var(--radius-lg) !important;
     box-shadow: 
@@ -1616,8 +1718,6 @@ button[class*="button"]:active {
 /* Conteneur Collateral Positions avec styles inline - Force override */
 .collateral-view [style*="background: linear-gradient(135deg, var(--bg-panel) 0%, var(--bg-panel-hover) 100%)"] {
     background: rgba(26, 26, 26, 0.7) !important;
-    backdrop-filter: blur(20px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
     border: 1px solid rgba(255, 255, 255, 0.05) !important;
     border-radius: var(--radius-lg) !important;
     padding: var(--space-6) !important;

@@ -30,13 +30,120 @@ export function renderProjectionSection(sectionId) {
 // Overview Section
 function renderOverviewSection() {
     return `
-        <div class="projection-tab-content active" id="overview">
-            ${renderMarketMetrics()}
-            ${renderLiveNewsFeed()}
-            ${renderMiningEquipment()}
-            ${renderMiningPools()}
-            ${renderEnergyCosts()}
-            ${renderNetworkStats()}
+        <div id="overview">
+            <h2 style="font-size: 24px; font-weight: 700; color: #ffffff; margin-bottom: 32px;">Lasts Projections</h2>
+            <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; margin-bottom: 48px;">
+                <div style="background: rgba(26, 26, 26, 0.9); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 24px; cursor: pointer;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+                        <div>
+                            <div style="font-size: 11px; color: #888; text-transform: uppercase; margin-bottom: 4px;">Projection Alpha</div>
+                            <div style="font-size: 11px; color: #aaa;">2024-01-15</div>
+                        </div>
+                        <div style="width: 32px; height: 32px; background: rgba(138, 253, 129, 0.2); border: 1px solid #8afd81; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #8afd81; font-weight: 600;">1</div>
+                    </div>
+                    <div style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 16px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <span style="font-size: 11px; color: #aaa;">Hashrate</span>
+                            <span style="font-size: 14px; font-weight: 600; color: #8afd81;">2.5 PH/s</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="font-size: 11px; color: #aaa;">BTC</span>
+                            <span style="font-size: 14px; font-weight: 600; color: #fff;">125 BTC</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="background: rgba(26, 26, 26, 0.9); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 24px; cursor: pointer;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+                        <div>
+                            <div style="font-size: 11px; color: #888; text-transform: uppercase; margin-bottom: 4px;">Projection Beta</div>
+                            <div style="font-size: 11px; color: #aaa;">2024-01-20</div>
+                        </div>
+                        <div style="width: 32px; height: 32px; background: rgba(138, 253, 129, 0.2); border: 1px solid #8afd81; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #8afd81; font-weight: 600;">2</div>
+                    </div>
+                    <div style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 16px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <span style="font-size: 11px; color: #aaa;">Hashrate</span>
+                            <span style="font-size: 14px; font-weight: 600; color: #8afd81;">3.2 PH/s</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="font-size: 11px; color: #aaa;">BTC</span>
+                            <span style="font-size: 14px; font-weight: 600; color: #fff;">158 BTC</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="background: rgba(26, 26, 26, 0.9); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 24px; cursor: pointer;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+                        <div>
+                            <div style="font-size: 11px; color: #888; text-transform: uppercase; margin-bottom: 4px;">Projection Gamma</div>
+                            <div style="font-size: 11px; color: #aaa;">2024-01-25</div>
+                        </div>
+                        <div style="width: 32px; height: 32px; background: rgba(138, 253, 129, 0.2); border: 1px solid #8afd81; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #8afd81; font-weight: 600;">3</div>
+                    </div>
+                    <div style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 16px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <span style="font-size: 11px; color: #aaa;">Hashrate</span>
+                            <span style="font-size: 14px; font-weight: 600; color: #8afd81;">1.8 PH/s</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="font-size: 11px; color: #aaa;">BTC</span>
+                            <span style="font-size: 14px; font-weight: 600; color: #fff;">92 BTC</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="background: rgba(26, 26, 26, 0.9); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 24px; cursor: pointer;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+                        <div>
+                            <div style="font-size: 11px; color: #888; text-transform: uppercase; margin-bottom: 4px;">Projection Delta</div>
+                            <div style="font-size: 11px; color: #aaa;">2024-02-01</div>
+                        </div>
+                        <div style="width: 32px; height: 32px; background: rgba(138, 253, 129, 0.2); border: 1px solid #8afd81; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #8afd81; font-weight: 600;">4</div>
+                    </div>
+                    <div style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 16px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <span style="font-size: 11px; color: #aaa;">Hashrate</span>
+                            <span style="font-size: 14px; font-weight: 600; color: #8afd81;">4.1 PH/s</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="font-size: 11px; color: #aaa;">BTC</span>
+                            <span style="font-size: 14px; font-weight: 600; color: #fff;">203 BTC</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="background: rgba(26, 26, 26, 0.9); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 24px; cursor: pointer;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+                        <div>
+                            <div style="font-size: 11px; color: #888; text-transform: uppercase; margin-bottom: 4px;">Projection Epsilon</div>
+                            <div style="font-size: 11px; color: #aaa;">2024-02-10</div>
+                        </div>
+                        <div style="width: 32px; height: 32px; background: rgba(138, 253, 129, 0.2); border: 1px solid #8afd81; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #8afd81; font-weight: 600;">5</div>
+                    </div>
+                    <div style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 16px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <span style="font-size: 11px; color: #aaa;">Hashrate</span>
+                            <span style="font-size: 14px; font-weight: 600; color: #8afd81;">2.9 PH/s</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="font-size: 11px; color: #aaa;">BTC</span>
+                            <span style="font-size: 14px; font-weight: 600; color: #fff;">145 BTC</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div>
+                <label style="display: block; font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 12px;">Projection History</label>
+                <select id="projection-history-select" style="width: 100%; padding: 12px 16px; background: rgba(26, 26, 26, 0.9); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: #fff; font-size: 14px; cursor: pointer;">
+                    <option value="">Select a projection from history...</option>
+                    <option value="proj-2024-01-15">Projection Alpha - 2024-01-15 (2.5 PH/s, 125 BTC)</option>
+                    <option value="proj-2024-01-20">Projection Beta - 2024-01-20 (3.2 PH/s, 158 BTC)</option>
+                    <option value="proj-2024-01-25">Projection Gamma - 2024-01-25 (1.8 PH/s, 92 BTC)</option>
+                    <option value="proj-2024-02-01">Projection Delta - 2024-02-01 (4.1 PH/s, 203 BTC)</option>
+                    <option value="proj-2024-02-10">Projection Epsilon - 2024-02-10 (2.9 PH/s, 145 BTC)</option>
+                    <option value="proj-2024-02-15">Projection Zeta - 2024-02-15 (3.5 PH/s, 172 BTC)</option>
+                    <option value="proj-2024-02-20">Projection Eta - 2024-02-20 (2.1 PH/s, 105 BTC)</option>
+                    <option value="proj-2024-03-01">Projection Theta - 2024-03-01 (4.8 PH/s, 238 BTC)</option>
+                </select>
+            </div>
         </div>
     `;
 }
@@ -45,11 +152,7 @@ function renderOverviewSection() {
 function renderMarketMetrics() {
     return `
         <div class="section-premium">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
-                <div>
-                    <h2 style="font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; letter-spacing: -0.5px;">Market Metrics</h2>
-                    <p style="font-size: 13px; color: var(--text-muted); font-weight: 500;">Real-time Bitcoin network statistics</p>
-                </div>
+            <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 40px;">
                 <div style="display: flex; align-items: center; gap: 6px; padding: 6px 12px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 20px;">
                     <div style="width: 6px; height: 6px; background: #8afd81; border-radius: 50%; animation: pulse 2s infinite;"></div>
                     <span style="font-size: 11px; color: var(--text-muted); font-weight: 600;">Updated: <span id="lastUpdate" style="color: var(--text-primary);">Just now</span></span>
@@ -414,49 +517,49 @@ function renderCalculatorSection() {
                         
                         <div class="step active" data-step="0" onclick="goToStep(0)">
                             <div class="step-circle">1</div>
-                            <div class="step-label">Context &<br>Scenario</div>
+                            <div class="step-label">CONTEXT &<br>SCENARIO</div>
                         </div>
                         
                         <div class="step" data-step="1" onclick="goToStep(1)">
                             <div class="step-circle">2</div>
-                            <div class="step-label">Machine<br>Selection</div>
+                            <div class="step-label">MACHINE<br>SELECTION</div>
                         </div>
                         
                         <div class="step" data-step="2" onclick="goToStep(2)">
                             <div class="step-circle">3</div>
-                            <div class="step-label">Energy & Site</div>
+                            <div class="step-label">ENERGY & SITE</div>
                         </div>
                         
                         <div class="step" data-step="3" onclick="goToStep(3)">
                             <div class="step-circle">4</div>
-                            <div class="step-label">Scale &<br>Schedule</div>
+                            <div class="step-label">SCALE &<br>SCHEDULE</div>
                         </div>
                         
                         <div class="step" data-step="4" onclick="goToStep(4)">
                             <div class="step-circle">5</div>
-                            <div class="step-label">Revenue</div>
+                            <div class="step-label">REVENUE</div>
                         </div>
                         
                         <div class="step" data-step="5" onclick="goToStep(5)">
                             <div class="step-circle">6</div>
-                            <div class="step-label">OPEX & Fees</div>
+                            <div class="step-label">OPEX & FEES</div>
                         </div>
                         
                         <div class="step" data-step="6" onclick="goToStep(6)">
                             <div class="step-circle">7</div>
-                            <div class="step-label">Financing</div>
+                            <div class="step-label">FINANCING</div>
                         </div>
                         
                         <div class="step" data-step="7" onclick="goToStep(7)">
                             <div class="step-circle">8</div>
-                            <div class="step-label">Outputs</div>
+                            <div class="step-label">OUTPUTS</div>
                         </div>
                     </div>
                 </div>
                 
                 <!-- CONTENT AREA WITH GRID -->
-                <div style="display: grid; grid-template-columns: 1fr 350px; gap: 24px;">
-                    <div class="main-content">
+                <div class="calculator-content">
+                    <div class="calculator-steps">
                         ${renderCalculatorStep0()}
                         ${renderCalculatorStep1()}
                         ${renderCalculatorStep2()}
@@ -481,8 +584,8 @@ function renderCalculatorStep0() {
         <div class="step-content active" id="step-0">
             <div class="param-card">
                 <div class="param-card-title">
-                    Project Information
-                    <span class="badge">All Editable</span>
+                    PROJECT INFORMATION
+                    <span class="badge badge-green">ALL EDITABLE</span>
                 </div>
                 
                 <div class="grid-2">
@@ -516,7 +619,7 @@ function renderCalculatorStep0() {
             </div>
 
             <div class="param-card">
-                <div class="param-card-title">Operation Type</div>
+                <div class="param-card-title">OPERATION TYPE</div>
                 
                 <div class="radio-cards">
                     <label class="radio-card">
@@ -546,7 +649,7 @@ function renderCalculatorStep0() {
             </div>
 
             <div class="param-card">
-                <div class="param-card-title">Projection Horizon</div>
+                <div class="param-card-title">PROJECTION HORIZON</div>
                 
                 <div class="grid-2" style="margin-bottom: 16px;">
                     <div>
@@ -1285,7 +1388,7 @@ function renderResultsSection() {
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
                     <div>
                         <h2 style="font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; letter-spacing: -0.5px;">Revenue & Profitability Projection</h2>
-                        <p style="font-size: 12px; color: var(--text-muted); font-weight: 500;">48-month forecast</p>
+                        <p style="font-size: 12px; color: var(--text-muted); font-weight: 500;">12-month forecast</p>
                     </div>
                 </div>
                 <div style="background: var(--gray-900); border: 1px solid var(--gray-700); border-radius: 12px; padding: 24px;">
@@ -1327,7 +1430,7 @@ function renderResultsSection() {
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
                     <div>
                         <h2 style="font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; letter-spacing: -0.5px;">Financial Metrics</h2>
-                        <p style="font-size: 12px; color: var(--text-muted); font-weight: 500;">4-year projection summary</p>
+                        <p style="font-size: 12px; color: var(--text-muted); font-weight: 500;">12-month projection summary</p>
                     </div>
                 </div>
                 <div class="table-container">
@@ -1388,7 +1491,7 @@ function renderChartsSection() {
                 </div>
                 <div id="chartsContent">
                     <div class="chart-container" style="background: var(--gray-900); border: 1px solid var(--gray-700); border-radius: 12px; padding: 24px; margin-bottom: 24px;">
-                        <h3 style="font-size: 15px; font-weight: 700; color: var(--text-primary); margin-bottom: 16px;">Cumulative Cash Flow (36 Months)</h3>
+                        <h3 style="font-size: 15px; font-weight: 700; color: var(--text-primary); margin-bottom: 16px;">Cumulative Cash Flow (12 Months)</h3>
                         <div style="position: relative; height: 400px;">
                             <canvas id="cashflowChart"></canvas>
                         </div>
@@ -1824,6 +1927,21 @@ function renderInfrastructureSection() {
 
 // Initialize Overview
 export function initOverview() {
+    console.log('Initializing Overview Section');
+    
+    // Setup projection history select
+    const historySelect = document.getElementById('projection-history-select');
+    if (historySelect) {
+        historySelect.addEventListener('change', (e) => {
+            const selectedValue = e.target.value;
+            if (selectedValue) {
+                console.log('Selected projection:', selectedValue);
+                // TODO: Load projection details based on selected value
+                // You can implement the logic to load and display the selected projection
+            }
+        });
+    }
+    
     // Fetch BTC price
     async function fetchBTC() {
         try {
@@ -1979,8 +2097,223 @@ window.refreshNewsFeed = function() {
 // Initialize Results
 export function initResults() {
     console.log('Initializing Results Section');
-    // Placeholder for chart initialization
-    // Charts would be initialized here using Chart.js or similar library
+    
+    // Initialize charts with 12 months of data
+    setTimeout(() => {
+        if (typeof Chart !== 'undefined') {
+            initRevenueChartAnalysis();
+            initCashflowChartAnalysis();
+            initCostChartAnalysis();
+        } else {
+            console.warn('Chart.js not loaded yet');
+            setTimeout(() => {
+                initResults();
+            }, 500);
+        }
+    }, 200);
+}
+
+// Initialize Revenue & Profitability Chart (12 months)
+function initRevenueChartAnalysis() {
+    const ctx = document.getElementById('revenueChartAnalysis');
+    if (!ctx) return;
+
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    
+    // Create gradients
+    const revenueGradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 400);
+    revenueGradient.addColorStop(0, 'rgba(138, 253, 129, 0.3)');
+    revenueGradient.addColorStop(0.5, 'rgba(138, 253, 129, 0.1)');
+    revenueGradient.addColorStop(1, 'rgba(138, 253, 129, 0)');
+
+    const profitGradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 400);
+    profitGradient.addColorStop(0, 'rgba(255, 149, 0, 0.3)');
+    profitGradient.addColorStop(0.5, 'rgba(255, 149, 0, 0.1)');
+    profitGradient.addColorStop(1, 'rgba(255, 149, 0, 0)');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: months,
+            datasets: [
+                {
+                    label: 'Revenue',
+                    data: [842600, 856200, 869800, 883400, 897000, 910600, 924200, 937800, 951400, 965000, 978600, 992200],
+                    borderColor: '#8afd81',
+                    backgroundColor: revenueGradient,
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 0,
+                    pointHoverRadius: 8
+                },
+                {
+                    label: 'Profit',
+                    data: [468000, 475200, 482400, 489600, 496800, 504000, 511200, 518400, 525600, 532800, 540000, 547200],
+                    borderColor: '#FF9500',
+                    backgroundColor: profitGradient,
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 0,
+                    pointHoverRadius: 8
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                    labels: {
+                        color: '#E8E8E8',
+                        font: { size: 13, weight: '600' },
+                        usePointStyle: true
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.95)',
+                    titleColor: '#8afd81',
+                    bodyColor: '#E8E8E8',
+                    borderColor: 'rgba(138, 253, 129, 0.3)',
+                    borderWidth: 1,
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': $' + context.parsed.y.toLocaleString();
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: { display: true, color: 'rgba(255, 255, 255, 0.02)' },
+                    ticks: { color: '#A3A3A3', font: { size: 11 } }
+                },
+                y: {
+                    grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                    ticks: { 
+                        color: '#CCCCCC',
+                        callback: function(value) {
+                            return '$' + (value / 1000) + 'k';
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Initialize Cash Flow Chart (12 months)
+function initCashflowChartAnalysis() {
+    const ctx = document.getElementById('cashflowChartAnalysis');
+    if (!ctx) return;
+
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    
+    const cashflowGradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 300);
+    cashflowGradient.addColorStop(0, 'rgba(138, 253, 129, 0.3)');
+    cashflowGradient.addColorStop(1, 'rgba(138, 253, 129, 0)');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: months,
+            datasets: [{
+                label: 'Cumulative Cash Flow',
+                data: [-2500000, -2031400, -1562800, -1094200, -625600, -157000, 311600, 780200, 1248800, 1717400, 2186000, 2654600],
+                borderColor: '#8afd81',
+                backgroundColor: cashflowGradient,
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                pointRadius: 0,
+                pointHoverRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.95)',
+                    titleColor: '#8afd81',
+                    bodyColor: '#E8E8E8',
+                    borderColor: 'rgba(138, 253, 129, 0.3)',
+                    callbacks: {
+                        label: function(context) {
+                            return '$' + context.parsed.y.toLocaleString();
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: { display: true, color: 'rgba(255, 255, 255, 0.02)' },
+                    ticks: { color: '#A3A3A3', font: { size: 10 } }
+                },
+                y: {
+                    grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                    ticks: { 
+                        color: '#CCCCCC',
+                        callback: function(value) {
+                            return '$' + (value / 1000) + 'k';
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Initialize Cost Breakdown Chart
+function initCostChartAnalysis() {
+    const ctx = document.getElementById('costChartAnalysis');
+    if (!ctx) return;
+
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['CAPEX', 'OPEX'],
+            datasets: [{
+                data: [2500000, 4644000],
+                backgroundColor: ['#8afd81', '#FF9500'],
+                borderColor: ['#8afd81', '#FF9500'],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '65%',
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        color: '#E8E8E8',
+                        font: { size: 12 },
+                        padding: 15
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.95)',
+                    titleColor: '#8afd81',
+                    bodyColor: '#E8E8E8',
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.label || '';
+                            const value = context.parsed || 0;
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = ((value / total) * 100).toFixed(1);
+                            return label + ': $' + (value / 1000000).toFixed(2) + 'M (' + percentage + '%)';
+                        }
+                    }
+                }
+            }
+        }
+    });
 }
 
 // Initialize Charts

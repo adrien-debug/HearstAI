@@ -226,7 +226,7 @@ const dashboardStyles = `
 <style>
 .dashboard-view {
     padding: 0;
-    padding-top: 10px;
+    padding-top: 14px;
     width: 100%;
     margin: 0;
 }
@@ -589,8 +589,8 @@ const dashboardStyles = `
 }
 
 .transactions-section .table thead th {
-    padding: var(--space-3) var(--space-4) !important;
-    text-align: left !important;
+    padding: var(--space-3) var(--space-4);
+    text-align: left;
     font-size: var(--text-xs);
     font-weight: var(--font-normal);
     color: var(--text-primary);
@@ -619,86 +619,12 @@ const dashboardStyles = `
 }
 
 .transactions-section .table tbody td {
-    padding: var(--space-4) !important;
+    padding: var(--space-4);
     font-size: var(--text-base);
     color: var(--text-secondary);
     border-bottom: var(--border-thin) solid var(--border-color);
 }
 
-/* Alignement parfait des colonnes - Grille unifiée */
-.transactions-section .table.table-unified-grid,
-.transaction-history-table.table-unified-grid {
-    table-layout: fixed !important;
-    width: 100% !important;
-}
-
-/* Colonne 1 : DATE - 20% - FORCE ALIGNMENT */
-.transactions-section .table.table-unified-grid th:nth-child(1),
-.transactions-section .table.table-unified-grid td:nth-child(1),
-.transaction-history-table.table-unified-grid th:nth-child(1),
-.transaction-history-table.table-unified-grid td:nth-child(1) {
-    width: 20% !important;
-    min-width: 20% !important;
-    max-width: 20% !important;
-    box-sizing: border-box !important;
-}
-
-/* Colonne 2 : BTC TRANSACTION / ACCOUNT - 25% - FORCE ALIGNMENT */
-.transactions-section .table.table-unified-grid th:nth-child(2),
-.transactions-section .table.table-unified-grid td:nth-child(2),
-.transaction-history-table.table-unified-grid th:nth-child(2),
-.transaction-history-table.table-unified-grid td:nth-child(2) {
-    width: 25% !important;
-    min-width: 25% !important;
-    max-width: 25% !important;
-    box-sizing: border-box !important;
-}
-
-/* Colonne 3 : WALLET ADDRESS / TOTAL REWARD - 35% - FORCE ALIGNMENT */
-.transactions-section .table.table-unified-grid th:nth-child(3),
-.transactions-section .table.table-unified-grid td:nth-child(3),
-.transaction-history-table.table-unified-grid th:nth-child(3),
-.transaction-history-table.table-unified-grid td:nth-child(3) {
-    width: 35% !important;
-    min-width: 35% !important;
-    max-width: 35% !important;
-    box-sizing: border-box !important;
-}
-
-/* Colonne 4 : TRX ID / HASHRATE - 20% - FORCE ALIGNMENT */
-.transactions-section .table.table-unified-grid th:nth-child(4),
-.transactions-section .table.table-unified-grid td:nth-child(4),
-.transaction-history-table.table-unified-grid th:nth-child(4),
-.transaction-history-table.table-unified-grid td:nth-child(4) {
-    width: 20% !important;
-    min-width: 20% !important;
-    max-width: 20% !important;
-    box-sizing: border-box !important;
-}
-
-/* Paddings harmonisés pour les headers */
-.transactions-section .table.table-unified-grid thead th,
-.transaction-history-table.table-unified-grid thead th {
-    padding: var(--space-3) var(--space-4) !important;
-}
-
-/* Paddings harmonisés pour les cellules */
-.transactions-section .table.table-unified-grid tbody td,
-.transaction-history-table.table-unified-grid tbody td {
-    padding: var(--space-4) var(--space-4) !important;
-}
-
-/* Alignement BTC Transaction : header et valeurs à droite */
-.transactions-section .table.table-unified-grid th:nth-child(2),
-.transactions-section .table.table-unified-grid td:nth-child(2).transaction-amount {
-    text-align: right !important;
-}
-
-/* Alignement Total Reward : header et valeurs à droite */
-.transaction-history-table.table-unified-grid th:nth-child(3),
-.transaction-history-table.table-unified-grid td:nth-child(3).transaction-reward {
-    text-align: right !important;
-}
 
 
 .transaction-amount {
@@ -983,7 +909,6 @@ const dashboardStyles = `
     width: 100%;
     border-collapse: collapse;
     margin: 0;
-    table-layout: fixed !important;
 }
 
 .transaction-history-table thead tr {
@@ -992,8 +917,8 @@ const dashboardStyles = `
 }
 
 .transaction-history-table thead th {
-    padding: var(--space-3) var(--space-4) !important;
-    text-align: left !important;
+    padding: var(--space-3) var(--space-4);
+    text-align: left;
     font-size: var(--text-xs);
     font-weight: var(--font-normal);
     color: var(--text-primary);
@@ -1022,7 +947,7 @@ const dashboardStyles = `
 }
 
 .transaction-history-table tbody td {
-    padding: var(--space-4) !important;
+    padding: var(--space-4);
     font-size: var(--text-base);
     color: var(--text-secondary);
     border-bottom: var(--border-thin) solid var(--border-color);
