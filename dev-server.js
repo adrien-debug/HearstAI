@@ -5,7 +5,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-const PORT = 3000;
+const PORT = 3001;
 const FRONTEND_DIR = path.join(__dirname, 'frontend');
 
 const MIME_TYPES = {
@@ -66,4 +66,22 @@ server.listen(PORT, () => {
     console.log('');
     console.log('Press Ctrl+C to stop');
     console.log('');
+}).on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+        console.error('');
+        console.error('❌ Error: Port 3001 is already in use');
+        console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        console.error('');
+        console.error('💡 Solutions:');
+        console.error('   1. Kill the process using port 3001:');
+        console.error('      lsof -ti:3001 | xargs kill -9');
+        console.error('');
+        console.error('   2. Or find and kill manually:');
+        console.error('      lsof -i:3001');
+        console.error('');
+        process.exit(1);
+    } else {
+        console.error('❌ Server error:', err);
+        process.exit(1);
+    }
 });

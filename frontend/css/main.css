@@ -10,70 +10,68 @@
 
 :root {
     /* ====================================
-       COULEURS PRINCIPALES - HEARST
+       ALIAS DE COMPATIBILITÉ
+       Utilise les tokens du design system
        ==================================== */
     
-    /* Couleurs principales */
-    --primary-green: #8afd81;          /* Accent principal (CTA, focus, highlights) */
-    --primary-dark: #000000;           /* Fond principal */
-    --primary-grey: #1a1a1a;          /* Fond secondaire (cards, panels) */
+    /* Couleurs principales - Alias vers nouveaux tokens */
+    --primary-green: var(--color-primary-light-green); /* #A3FF8B */
+    --primary-dark: var(--color-black-100); /* #000000 */
+    --primary-grey: var(--color-black-300); /* #1A1A1A */
     
-    /* Variables supplémentaires (sans changer les couleurs existantes) */
-    /* Note: --bg-primary et --bg-secondary définis plus bas dans compatibilité */
+    /* Nuances de gris - Alias vers nouveaux tokens */
+    --grey-100: var(--color-black-400); /* #2A2A2A */
+    --grey-200: #3a3a3a; /* Hover backgrounds - conservé pour compatibilité */
+    --grey-300: #4a4a4a; /* Disabled states - conservé pour compatibilité */
+    --grey-400: var(--color-text-secondary-1); /* #666666 */
+    --grey-500: var(--color-text-tertiary); /* #999999 */
     
-    /* Nuances de gris */
-    --grey-100: #2a2a2a;              /* Bordures, séparateurs */
-    --grey-200: #3a3a3a;              /* Hover backgrounds */
-    --grey-300: #4a4a4a;              /* Disabled states */
-    --grey-400: #666666;              /* Texte secondaire */
-    --grey-500: #999999;              /* Texte tertiaire, placeholders */
+    /* Texte - Alias vers nouveaux tokens */
+    --text-primary: var(--color-text-negative); /* #FFFFFF */
+    --text-secondary: rgba(255, 255, 255, 0.7); /* Conservé pour compatibilité */
+    --text-muted: var(--color-text-secondary-1); /* #999999 */
     
-    /* Texte */
-    --text-primary: #fff;              /* Texte principal - ✅ Match demande */
-    --text-secondary: rgba(255, 255, 255, 0.7); /* ✅ Match demande */
-    --text-muted: #999999;            /* Texte désactivé/tertiaire */
+    /* États et feedback - Alias vers nouveaux tokens */
+    --success: var(--color-system-success); /* #27AE60 */
+    --warning: var(--color-system-warning); /* #F39C12 */
+    --error: var(--color-system-error); /* #E74C3C */
+    --info: var(--color-system-info); /* #3498DB */
     
-    /* États et feedback */
-    --success: #27ae60;               /* Succès, validation */
-    --warning: #f39c12;               /* Avertissement */
-    --error: #e74c3c;                 /* Erreur, danger */
-    --info: #3498db;                  /* Information */
-    
-    /* Couleurs spécifiques Cockpit (alignées avec Home) */
-    --cockpit-blue: #4a9eff;          /* Bleu pour indicateurs */
-    --cockpit-orange: #ffa500;        /* Orange pour indicateurs */
-    --cockpit-orange-dark: #f39c12;   /* Orange foncé */
-    --cockpit-pink: #ff6b9d;          /* Rose pour indicateurs */
-    --cockpit-purple: #9b59b6;        /* Violet pour indicateurs */
-    --cockpit-red: #e74c3c;           /* Rouge (alias error) */
+    /* Couleurs spécifiques Cockpit (conservées pour compatibilité) */
+    --cockpit-blue: #4a9eff;
+    --cockpit-orange: #ffa500;
+    --cockpit-orange-dark: #f39c12;
+    --cockpit-pink: #ff6b9d;
+    --cockpit-purple: #9b59b6;
+    --cockpit-red: var(--color-system-error);
     
     /* Modes */
-    --bg-light: #ffffff;              /* Fond mode clair */
-    --text-light: #000000;            /* Texte mode clair */
+    --bg-light: var(--color-surface-default); /* #FFFFFF */
+    --text-light: var(--color-text-default); /* #000000 */
     
     /* ====================================
-       TYPOGRAPHIE
+       TYPOGRAPHIE - FK Grotesk Trial
        ==================================== */
     
-    /* Familles */
-    --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    --font-mono: 'Fira Code', 'Consolas', 'Monaco', monospace;
+    /* Familles - Utilise FK Grotesk Trial du design system */
+    --font-primary: var(--font-family-primary);
+    --font-mono: var(--font-family-mono);
     
-    /* Tailles */
-    --text-xs: 0.75rem;    /* 12px */
-    --text-sm: 0.875rem;   /* 14px */
-    --text-base: 1rem;      /* 16px */
-    --text-lg: 1.125rem;    /* 18px */
-    --text-xl: 1.25rem;     /* 20px */
-    --text-2xl: 1.5rem;     /* 24px */
-    --text-3xl: 2rem;       /* 32px */
-    --text-4xl: 2.5rem;     /* 40px */
+    /* Tailles - Alias vers tokens typographie */
+    --text-xs: var(--typography-caption-size); /* 12px */
+    --text-sm: var(--typography-body-minor-size); /* 14px */
+    --text-base: var(--typography-body-size); /* 16px */
+    --text-lg: var(--typography-subsection-title-size); /* 18px */
+    --text-xl: 1.25rem; /* 20px - conservé */
+    --text-2xl: 1.5rem; /* 24px - conservé */
+    --text-3xl: var(--typography-page-title-size); /* 32px */
+    --text-4xl: 2.5rem; /* 40px - conservé */
     
-    /* Poids */
-    --font-normal: 400;
-    --font-medium: 500;
-    --font-semibold: 600;
-    --font-bold: 700;
+    /* Poids - Alias vers tokens typographie */
+    --font-normal: var(--typography-body-weight); /* 400 */
+    --font-medium: var(--typography-body-bold-weight); /* 500 */
+    --font-semibold: var(--typography-section-title-weight); /* 600 */
+    --font-bold: var(--typography-display-weight); /* 700 */
     
     /* Line heights */
     --leading-tight: 1.25;
@@ -81,59 +79,52 @@
     --leading-relaxed: 1.75;
     
     /* ====================================
-       ESPACEMENTS (multiples de 4px)
+       ESPACEMENTS - Système 8px
        ==================================== */
-    --space-1: 0.25rem;   /* 4px */
-    --space-2: 0.5rem;    /* 8px */
-    --space-3: 0.75rem;   /* 12px */
-    --space-4: 1rem;      /* 16px */
-    --space-5: 1.25rem;   /* 20px */
-    --space-6: 1.5rem;    /* 24px */
-    --space-8: 2rem;      /* 32px */
-    --space-10: 2.5rem;   /* 40px */
-    --space-12: 3rem;     /* 48px */
-    --space-16: 4rem;     /* 64px */
-    --space-20: 5rem;     /* 80px */
+    --space-1: var(--spacing-1); /* 2px */
+    --space-2: var(--spacing-2); /* 4px */
+    --space-3: var(--spacing-3); /* 8px */
+    --space-4: var(--spacing-4); /* 12px */
+    --space-5: var(--spacing-5); /* 16px */
+    --space-6: var(--spacing-6); /* 24px */
+    --space-8: var(--spacing-7); /* 32px */
+    --space-10: 2.5rem; /* 40px - conservé */
+    --space-12: var(--spacing-8); /* 48px */
+    --space-16: var(--spacing-9); /* 64px */
+    --space-20: var(--spacing-10); /* 80px */
     
     /* ====================================
        BORDURES & OMBRES
        ==================================== */
     
-    /* Rayons de bordure */
-    --radius-sm: 4px;
-    --radius-md: 8px;
-    --radius-lg: 12px;
-    --radius-xl: 16px;
-    --radius-full: 9999px;
+    /* Rayons de bordure - Alias vers nouveaux tokens */
+    --radius-sm: var(--radius-small-cards); /* 8px */
+    --radius-md: var(--radius-small-cards); /* 8px */
+    --radius-lg: 12px; /* Conservé */
+    --radius-xl: var(--radius-cards); /* 16px */
+    --radius-full: var(--radius-rounded); /* 1000px */
     
-    /* Épaisseurs de bordure */
-    --border-thin: 1px;
-    --border-medium: 2px;
-    --border-thick: 3px;
+    /* Épaisseurs de bordure - Alias vers nouveaux tokens */
+    --border-thin: var(--border-width-thin); /* 1px */
+    --border-medium: var(--border-width-medium); /* 2px */
+    --border-thick: var(--border-width-thick); /* 3px */
     
-    /* Ombres */
-    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
-    --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.5);
-    --shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.6);
+    /* Ombres - Déjà définies dans design-tokens.css, pas besoin de redéfinir */
     
-    /* Glow green (accent) */
-    --glow-green: 0 0 20px rgba(138, 253, 129, 0.3);
-    --glow-green-strong: 0 0 30px rgba(138, 253, 129, 0.5);
+    /* Glow green (accent) - Utilise nouveaux tokens */
+    --glow-green: var(--shadow-green-glow);
+    --glow-green-strong: var(--shadow-green-glow-strong);
     
     /* ====================================
        ANIMATIONS & TRANSITIONS
        ==================================== */
     
-    /* Durées */
+    /* Durées - Alias vers nouveaux tokens */
     --duration-fast: 150ms;
     --duration-normal: 250ms;
     --duration-slow: 350ms;
     
-    /* Easings */
-    --ease-in: cubic-bezier(0.4, 0, 1, 1);
-    --ease-out: cubic-bezier(0, 0, 0.2, 1);
-    --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+    /* Easings - Déjà définis dans design-tokens.css, pas besoin de redéfinir */
     
     /* ====================================
        LAYOUT
@@ -144,20 +135,19 @@
     /* ====================================
        COMPATIBILITÉ (aliases pour migration)
        ==================================== */
-    --bg-primary: #0a0a0a; /* ✅ Standard HEARST - Background principal */
-    --bg-secondary: #1a1a1a; /* ✅ Standard HEARST - Background secondaire */
-    --bg-tertiary: #242424; /* ✅ Standard HEARST - Background tertiaire */
-    --accent-primary: var(--primary-green);
-    --accent-color: var(--primary-green); /* ✅ Garde #8afd81 (pas #8AE38A) */
-    --border-color: rgba(255, 255, 255, 0.08); /* ✅ Match demande */
-    --border-hover: var(--grey-200);
-    --spacing-xs: var(--space-1);
-    --spacing-sm: var(--space-2);
-    --spacing-md: var(--space-4);
-    --spacing-lg: var(--space-6);
-    --spacing-xl: var(--space-8);
-    --transition-fast: var(--duration-fast) var(--ease-in-out);
-    --transition-normal: var(--duration-normal) var(--ease-in-out);
+    --bg-primary: var(--color-black-200); /* #0A0A0A */
+    --bg-secondary: var(--color-black-300); /* #1A1A1A */
+    --bg-tertiary: #242424; /* Conservé */
+    --accent-primary: var(--color-primary-light-green);
+    --accent-color: var(--color-primary-light-green);
+    --border-color: var(--border-color-default);
+    --border-hover: var(--border-color-hover);
+    --spacing-xs: var(--spacing-1);
+    --spacing-sm: var(--spacing-2);
+    --spacing-md: var(--spacing-4);
+    --spacing-lg: var(--spacing-6);
+    --spacing-xl: var(--spacing-7);
+    /* Transitions déjà définies dans design-tokens.css */
 }
 
 html {
@@ -177,20 +167,20 @@ body::before {
 }
 
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif; /* ✅ Match demande */
-    background: linear-gradient(135deg, #000000 0%, #0a0a0a 50%, #000000 100%) !important;
-    color: #fff; /* ✅ Match demande */
-    line-height: 1.5; /* ✅ Match demande */
+    font-family: var(--font-family-primary); /* FK Grotesk Trial */
+    background: linear-gradient(135deg, var(--color-black-100) 0%, var(--color-black-200) 50%, var(--color-black-100) 100%) !important;
+    color: var(--color-text-negative); /* #FFFFFF */
+    line-height: var(--typography-body-line-height); /* 24px / 16px = 1.5 */
     overflow-x: hidden;
     overflow-y: hidden;
     font-weight: var(--font-normal);
-    font-size: 14px; /* ✅ Match demande */
+    font-size: var(--typography-body-minor-size); /* 14px */
     letter-spacing: -0.01em;
     height: 100%;
     width: calc(100% + 20px);
     margin: 20px 0 0 0;
     padding: 0;
-    box-sizing: border-box; /* ✅ Match demande */
+    box-sizing: border-box;
     position: relative;
 }
 
@@ -223,7 +213,7 @@ body {
     height: 100vh;
     z-index: 100;
     color: var(--text-primary);
-    padding: 24px 16px;
+    padding: var(--spacing-6) var(--spacing-5);
     overflow: visible;
 }
 
@@ -288,7 +278,7 @@ body {
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: var(--spacing-3);
     justify-content: flex-start;
 }
 
@@ -309,7 +299,7 @@ body {
     gap: 10px !important;
     padding: 2px 6px !important;
     margin-bottom: 2px !important;
-    border-radius: 6px !important;
+    border-radius: var(--radius-small-cards) !important;
     background: transparent !important;
     color: #ffffff !important;
     font-weight: 500 !important;
@@ -326,24 +316,24 @@ body {
 }
 
 .nav-item:hover {
-    background: #8afd81 !important;
-    color: #000000 !important;
+    background: var(--color-primary-light-green) !important;
+    color: var(--color-text-default) !important;
     box-shadow: 
-        0 4px 12px rgba(138, 253, 129, 0.2),
+        0 4px 12px rgba(163, 255, 139, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
 }
 
 .nav-item.active {
-    background: #8afd81 !important;
-    color: #000000 !important;
+    background: var(--color-primary-light-green) !important;
+    color: var(--color-text-default) !important;
     font-weight: 600 !important;
     box-shadow: 
-        0 4px 16px rgba(138, 253, 129, 0.3),
+        0 4px 16px rgba(163, 255, 139, 0.3),
         inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
 }
 
 .nav-item.active:hover {
-    background: #75fc6c !important;
+    background: var(--color-primary-light-green-5) !important;
     color: #000000 !important;
 }
 
@@ -555,7 +545,7 @@ body {
 
 .user-badge:hover {
     background: rgba(42, 42, 42, 0.8) !important;
-    border-color: rgba(138, 253, 129, 0.3) !important;
+    border-color: rgba(163, 255, 139, 0.3) !important;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4) !important;
 }
 
@@ -563,12 +553,12 @@ body {
     width: 32px;
     height: 32px;
     border-radius: var(--radius-full);
-    background: var(--primary-green);
+    background: var(--color-primary-light-green);
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    box-shadow: 0 2px 8px rgba(138, 253, 129, 0.3) !important;
+    box-shadow: 0 2px 8px rgba(163, 255, 139, 0.3) !important;
 }
 
 .user-avatar-initials {
@@ -727,18 +717,18 @@ body {
 
 ::-webkit-scrollbar-track {
     background: #0a0a0a !important;
-    border-radius: 6px !important;
+    border-radius: var(--radius-small-cards) !important;
 }
 
 ::-webkit-scrollbar-thumb {
     background: linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 100%) !important;
-    border-radius: 6px !important;
+    border-radius: var(--radius-small-cards) !important;
     border: 2px solid #0a0a0a !important;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, #8afd81 0%, #7bed9f 100%) !important;
-    box-shadow: 0 0 10px rgba(138, 253, 129, 0.5) !important;
+    background: linear-gradient(180deg, var(--color-primary-light-green) 0%, var(--color-primary-light-green-5) 100%) !important;
+    box-shadow: 0 0 10px rgba(163, 255, 139, 0.5) !important;
 }
 
 /* ====================================
@@ -760,36 +750,7 @@ body {
     gap: var(--space-1) !important;
 }
 
-.nav-item {
-    padding: var(--space-2) var(--space-3) !important;
-    margin-bottom: var(--space-1) !important;
-    border-radius: var(--radius-md) !important;
-    min-height: 40px !important;
-    font-size: 14px !important;
-    letter-spacing: -0.01em !important;
-}
-
-.nav-item:hover {
-    background: rgba(138, 253, 129, 0.15) !important;
-    color: var(--primary-green) !important;
-    box-shadow: 
-        0 2px 8px rgba(138, 253, 129, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
-    transform: translateX(2px) !important;
-}
-
-.nav-item.active {
-    background: var(--primary-green) !important;
-    color: var(--primary-dark) !important;
-    box-shadow: 
-        0 4px 16px rgba(138, 253, 129, 0.4),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
-}
-
-.nav-item.active:hover {
-    background: #75fc6c !important;
-    transform: translateX(0) !important;
-}
+/* Styles .nav-item déjà définis plus haut, pas de redéfinition ici */
 
 .sidebar-version {
     padding: var(--space-4) 0 0 0 !important;
@@ -804,13 +765,13 @@ body {
 }
 
 .sidebar-version .nav-item:hover {
-    background: rgba(138, 253, 129, 0.1) !important;
-    color: var(--primary-green) !important;
+    background: rgba(163, 255, 139, 0.1) !important;
+    color: var(--color-primary-light-green) !important;
 }
 
 .sidebar-version .nav-item.active {
-    background: rgba(138, 253, 129, 0.15) !important;
-    color: var(--primary-green) !important;
+    background: rgba(163, 255, 139, 0.15) !important;
+    color: var(--color-primary-light-green) !important;
 }
 
 /* ====================================
@@ -845,7 +806,7 @@ body {
 }
 
 .notification-btn:hover {
-    background: rgba(138, 253, 129, 0.1) !important;
+    background: rgba(163, 255, 139, 0.1) !important;
     color: var(--primary-green) !important;
 }
 
@@ -858,14 +819,14 @@ body {
 
 .user-badge:hover {
     background: rgba(26, 26, 26, 0.95) !important;
-    border-color: rgba(138, 253, 129, 0.3) !important;
+    border-color: rgba(163, 255, 139, 0.3) !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
 }
 
 .user-avatar-circle {
     width: 28px !important;
     height: 28px !important;
-    box-shadow: 0 2px 8px rgba(138, 253, 129, 0.4) !important;
+    box-shadow: 0 2px 8px rgba(163, 255, 139, 0.4) !important;
 }
 
 /* ====================================
@@ -951,10 +912,10 @@ body {
 
 .footer-premium {
     background: linear-gradient(180deg, rgba(10, 10, 10, 0.95) 0%, rgba(0, 0, 0, 1) 100%) !important;
-    border-top: 1px solid rgba(138, 253, 129, 0.1) !important;
+    border-top: 1px solid rgba(163, 255, 139, 0.1) !important;
     box-shadow: 
         0 -4px 32px rgba(0, 0, 0, 0.6),
-        inset 0 1px 0 rgba(138, 253, 129, 0.05) !important;
+        inset 0 1px 0 rgba(163, 255, 139, 0.05) !important;
     padding: 40px var(--space-8) 40px var(--space-8) !important;
     margin-top: auto;
     position: relative;
@@ -971,9 +932,9 @@ body {
     background: linear-gradient(
         90deg,
         transparent,
-        rgba(138, 253, 129, 0.3) 20%,
-        rgba(138, 253, 129, 0.5) 50%,
-        rgba(138, 253, 129, 0.3) 80%,
+        rgba(163, 255, 139, 0.3) 20%,
+        rgba(163, 255, 139, 0.5) 50%,
+        rgba(163, 255, 139, 0.3) 80%,
         transparent
     );
     opacity: 0.6;
@@ -989,7 +950,7 @@ body {
     background: linear-gradient(
         90deg,
         transparent,
-        rgba(138, 253, 129, 0.1) 50%,
+        rgba(163, 255, 139, 0.1) 50%,
         transparent
     );
 }
@@ -1020,7 +981,7 @@ body {
 .footer-logo {
     font-size: var(--text-lg);
     font-weight: var(--font-bold);
-    background: linear-gradient(135deg, #ffffff 0%, #8afd81 100%) !important;
+    background: linear-gradient(135deg, #ffffff 0%, var(--color-primary-light-green) 100%) !important;
     -webkit-background-clip: text !important;
     -webkit-text-fill-color: transparent !important;
     background-clip: text !important;
@@ -1083,7 +1044,7 @@ body {
     bottom: 0;
     width: 0;
     height: 1px;
-    background: var(--primary-green);
+    background: var(--color-primary-light-green);
     transition: width var(--duration-normal) var(--ease-in-out);
 }
 
@@ -1107,18 +1068,18 @@ body {
 
 .footer-copyright {
     font-size: var(--text-xs);
-    color: #8AFD81;
+    color: var(--color-primary-light-green);
     letter-spacing: 0.1px;
 }
 
 .footer-version {
     font-size: var(--text-xs);
-    color: #8AFD81;
+    color: var(--color-primary-light-green);
     font-weight: var(--font-semibold);
     letter-spacing: 0.2px;
     padding: var(--space-1) var(--space-3);
-    background: rgba(138, 253, 129, 0.1);
-    border: 1px solid rgba(138, 253, 129, 0.2);
+    background: rgba(163, 255, 139, 0.1);
+    border: 1px solid rgba(163, 255, 139, 0.2);
     border-radius: var(--radius-sm);
     transform: translateY(-10px);
 }
@@ -1151,10 +1112,10 @@ body {
 @keyframes pulse {
     0%, 100% { 
         opacity: 1; 
-        box-shadow: 0 0 8px var(--primary-green);
+        box-shadow: 0 0 8px var(--color-primary-light-green);
     }
     50% { 
         opacity: 0.5; 
-        box-shadow: 0 0 16px var(--primary-green);
+        box-shadow: 0 0 16px var(--color-primary-light-green);
     }
 }
