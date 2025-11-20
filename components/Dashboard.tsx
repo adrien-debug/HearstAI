@@ -51,9 +51,11 @@ export default function Dashboard({ data }: DashboardProps) {
     if (typeof window !== 'undefined' && (window as any).Icons) {
       document.querySelectorAll('[data-icon]').forEach(el => {
         const iconName = el.getAttribute('data-icon')
-        const iconSvg = (window as any).Icons[iconName]
-        if (iconSvg) {
-          el.innerHTML = iconSvg
+        if (iconName) {
+          const iconSvg = (window as any).Icons[iconName]
+          if (iconSvg) {
+            el.innerHTML = iconSvg
+          }
         }
       })
     }
