@@ -85,5 +85,16 @@ vercel logs
 
 - `NEXT_PUBLIC_API_URL` est accessible côté client (préfixe `NEXT_PUBLIC_`)
 - Les autres variables sont uniquement côté serveur
-- Le backend Railway doit avoir CORS configuré pour accepter les requêtes depuis votre domaine Vercel
+- Le backend Railway a CORS configuré pour accepter toutes les origines (`app.use(cors())`)
+- Si vous avez besoin de restreindre CORS, modifiez `HearstAI-Backend/server.js`
+
+## 🚀 Script de configuration automatique
+
+Un script est disponible pour faciliter la configuration :
+
+```bash
+./scripts/setup-vercel-env.sh
+```
+
+Ce script vous guidera pour configurer toutes les variables d'environnement nécessaires.
 
