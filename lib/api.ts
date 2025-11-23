@@ -1,18 +1,33 @@
 // API Client for Next.js API Routes
 // Replaces the old frontend/js/api.js
 
-// Use Railway backend in production, fallback to local Next.js API routes in development
-// In production on Vercel, NEXT_PUBLIC_API_URL should be set to Railway backend URL
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api'
-
-// Ensure API_BASE_URL ends with /api if it's a full URL
+// Helper pour obtenir l'URL de base de l'API
+// Next.js injecte NEXT_PUBLIC_* dans le code au moment du build
 const getBaseUrl = () => {
-  const base = API_BASE_URL
-  if (base.startsWith('http')) {
-    // If it's a full URL, ensure it ends with /api
-    return base.endsWith('/api') ? base : `${base}/api`
+  // process.env.NEXT_PUBLIC_API_URL est disponible côté client et serveur
+  // car Next.js l'injecte au moment du build
+  const envUrl = process.env.NEXT_PUBLIC_API_URL
+  
+  // Si une URL complète est fournie (http://... ou https://...), l'utiliser
+  if (envUrl && (envUrl.startsWith('http://') || envUrl.startsWith('https://'))) {
+    // Si l'URL se termine déjà par /api, l'utiliser telle quelle
+    // Sinon, ajouter /api
+    return envUrl.endsWith('/api') ? envUrl : `${envUrl}/api`
   }
-  return base
+  
+  // Sinon, utiliser '/api' (route relative Next.js)
+  // En client-side, construire l'URL absolue pour éviter les problèmes
+  if (typeof window !== 'undefined') {
+    // Si envUrl est défini mais pas http, l'utiliser quand même
+    if (envUrl) {
+      return envUrl.endsWith('/api') ? envUrl : `${envUrl}/api`
+    }
+    // Sinon, utiliser l'URL absolue basée sur l'origine actuelle
+    return `${window.location.origin}/api`
+  }
+  
+  // Côté serveur, utiliser la route relative ou envUrl
+  return envUrl || '/api'
 }
 
 export async function fetchAPI<T>(
@@ -22,20 +37,51 @@ export async function fetchAPI<T>(
   const baseUrl = getBaseUrl()
   const url = `${baseUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`
   
-  const response = await fetch(url, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-  })
+  try {
+    const response = await fetch(url, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers,
+      },
+    })
 
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({ message: 'Unknown error' }))
-    throw new Error(error.message || `API Error: ${response.statusText}`)
+    if (!response.ok) {
+      let errorMessage = `API Error: ${response.status} ${response.statusText}`
+      
+      try {
+        const text = await response.text()
+        try {
+          const errorData = JSON.parse(text)
+          errorMessage = errorData.error || errorData.message || errorMessage
+        } catch {
+          errorMessage = text || errorMessage
+        }
+      } catch (e) {
+        // Ignore parsing errors
+      }
+      
+      throw new Error(errorMessage)
+    }
+
+    const jsonData = await response.json()
+    return jsonData
+  } catch (error) {
+    // Gérer les erreurs de réseau (Failed to fetch, CORS, etc.)
+    if (error instanceof TypeError && (
+      error.message === 'Failed to fetch' || 
+      error.message.includes('fetch') ||
+      error.message.includes('NetworkError') ||
+      error.message.includes('Network request failed')
+    )) {
+      throw new Error(
+        `Impossible de se connecter au serveur à ${url}. Vérifiez que le serveur est démarré et accessible.`
+      )
+    }
+    
+    // Re-lancer les autres erreurs telles quelles
+    throw error
   }
-
-  return response.json()
 }
 
 // Projects API
@@ -86,8 +132,6 @@ export async function getElectricity() {
   try {
     return await fetchAPI<any>('/electricity')
   } catch (error) {
-    // Si la route n'existe pas, retourner des données par défaut
-    console.warn('Electricity API not available, returning empty data')
     return {
       data: null,
       message: 'Electricity API not implemented yet',
@@ -129,4 +173,3 @@ export const customersAPI = {
 export const cockpitAPI = {
   getData: () => fetchAPI<any>('/cockpit'),
 }
-
