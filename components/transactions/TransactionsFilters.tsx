@@ -190,7 +190,7 @@ export default function TransactionsFilters() {
               Last 30 Days
             </button>
             <button className="transactions-btn-secondary" style={{ fontSize: 'var(--text-sm)', padding: 'var(--space-2) var(--space-4)' }}>
-              Large Transactions (>1 BTC)
+              Large Transactions (&gt;1 BTC)
             </button>
             <button className="transactions-btn-secondary" style={{ fontSize: 'var(--text-sm)', padding: 'var(--space-2) var(--space-4)' }}>
               Pending Only
