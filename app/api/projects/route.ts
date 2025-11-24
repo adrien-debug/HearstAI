@@ -274,8 +274,31 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Créer un userId par défaut si pas de session
-    const defaultUserId = 'dev-user-id'
+    // Créer ou récupérer un utilisateur par défaut pour le développement
+    let defaultUser
+    try {
+      // Chercher un utilisateur par défaut
+      defaultUser = await prisma.user.findFirst({
+        where: {
+          email: 'dev@hearstai.local'
+        }
+      })
+      
+      // Si pas d'utilisateur, en créer un
+      if (!defaultUser) {
+        defaultUser = await prisma.user.create({
+          data: {
+            email: 'dev@hearstai.local',
+            name: 'Dev User',
+          }
+        })
+      }
+    } catch (error: any) {
+      console.error('Error creating/finding default user:', error)
+      // Si erreur (table User n'existe pas), utiliser un ID mock
+      const defaultUserId = 'dev-user-id'
+      defaultUser = { id: defaultUserId }
+    }
     
     const project = await prisma.project.create({
       data: {
@@ -286,7 +309,7 @@ export async function POST(request: NextRequest) {
         repoUrl: repo_url || null,
         repoBranch: repo_branch || 'main',
         localPath: local_path || null,
-        userId: defaultUserId, // session?.user?.id || defaultUserId,
+        userId: defaultUser.id,
         status: 'ACTIVE',
         metadata: body.metadata || '{}',
       },
