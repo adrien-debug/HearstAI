@@ -66,7 +66,7 @@ export async function GET(
     const file = await googleDriveClient.getFile(params.fileId);
     const mimeType = file.mimeType || 'application/octet-stream';
 
-    return new NextResponse(fileBuffer, {
+    return new NextResponse(fileBuffer as any, {
       headers: {
         'Content-Type': mimeType,
         'Content-Disposition': `attachment; filename="${file.name}"`,
