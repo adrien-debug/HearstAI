@@ -9,6 +9,8 @@ import { fireblocksClient } from '@/lib/fireblocks/fireblocks-client';
  * GET /api/fireblocks/vaults?id=xxx - Récupère un compte vault spécifique
  */
 
+export const dynamic = 'force-dynamic'
+
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const vaultId = searchParams.get('id');

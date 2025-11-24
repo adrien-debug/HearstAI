@@ -15,6 +15,8 @@ import { prisma } from '@/lib/db'
  */
 
 // GET - Liste tous les customers avec leurs données DeBank en temps réel
+export const dynamic = 'force-dynamic'
+
 export async function GET(request: NextRequest) {
   try {
     // Ne pas exiger l'authentification pour permettre le développement

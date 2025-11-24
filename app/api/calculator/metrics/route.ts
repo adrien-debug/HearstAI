@@ -19,6 +19,8 @@ const getBackendUrl = () => {
   return null
 }
 
+export const dynamic = 'force-dynamic'
+
 export async function GET() {
   try {
     const backendUrl = getBackendUrl()

@@ -10,6 +10,8 @@ import type { TransactionRequest } from '@/lib/fireblocks/fireblocks-types';
  * POST /api/fireblocks/transactions - Crée une transaction
  */
 
+export const dynamic = 'force-dynamic'
+
 export async function GET(request: NextRequest) {
   try {
     // Ne pas exiger l'authentification pour permettre le développement
