@@ -13,24 +13,35 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
+        try {
+          console.log('[NextAuth] Tentative de connexion:', { email: credentials?.email })
+          
+          if (!credentials?.email || !credentials?.password) {
+            console.log('[NextAuth] Credentials manquants')
+            return null
+          }
+
+          const user = await prisma.user.findUnique({
+            where: { email: credentials.email },
+          })
+
+          if (!user) {
+            console.log('[NextAuth] Utilisateur non trouvé:', credentials.email)
+            return null
+          }
+
+          console.log('[NextAuth] Utilisateur trouvé:', { id: user.id, email: user.email })
+
+          // Pour l'instant, on accepte n'importe quel mot de passe si l'utilisateur existe
+          // TODO: Implémenter la vérification du mot de passe avec bcrypt
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+          }
+        } catch (error) {
+          console.error('[NextAuth] Erreur lors de l\'autorisation:', error)
           return null
-        }
-
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email },
-        })
-
-        if (!user) {
-          return null
-        }
-
-        // Pour l'instant, on accepte n'importe quel mot de passe si l'utilisateur existe
-        // TODO: Implémenter la vérification du mot de passe avec bcrypt
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
         }
       },
     }),
