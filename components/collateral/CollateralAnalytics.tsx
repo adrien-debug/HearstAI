@@ -106,10 +106,10 @@ export default function CollateralAnalytics() {
   const totalWithdrawals = 0 // Pas de données de retrait disponibles
   const totalInterestEarned = 0 // Pas de données d'intérêt disponibles pour l'instant
   const avgUtilizationRate = allMetrics.length > 0 
-    ? allMetrics.reduce((sum, m) => sum + m.utilizationRate, 0) / allMetrics.length 
+    ? allMetrics.reduce((sum: number, m: any) => sum + m.utilizationRate, 0) / allMetrics.length 
     : 0
   const avgHealthFactor = allMetrics.length > 0 
-    ? allMetrics.filter(m => m.totalDebtUsd > 0).reduce((sum, m) => sum + m.healthFactor, 0) / allMetrics.filter(m => m.totalDebtUsd > 0).length 
+    ? allMetrics.filter((m: any) => m.totalDebtUsd > 0).reduce((sum: number, m: any) => sum + m.healthFactor, 0) / allMetrics.filter((m: any) => m.totalDebtUsd > 0).length 
     : 0
 
   // Répartition par protocole
