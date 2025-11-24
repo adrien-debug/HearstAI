@@ -146,15 +146,10 @@ export class FireblocksClient {
    */
   isConfigured(): boolean {
     try {
-      // Essayer d'initialiser la config si elle n'existe pas
+      // La config est déjà initialisée à l'import
+      // Si elle n'existe pas, c'est qu'elle n'est pas configurée
       if (!this.config) {
-        try {
-          // Initialiser la config depuis .env si nécessaire
-          const { fireblocksConfig } = await import('./fireblocks-config');
-          this.config = fireblocksConfig;
-        } catch (e) {
-          return false;
-        }
+        return false;
       }
       return this.config.isValid();
     } catch {
