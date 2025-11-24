@@ -72,7 +72,7 @@ export class GoogleDriveClient {
     
     return {
       access_token: tokens.access_token!,
-      refresh_token: tokens.refresh_token,
+      refresh_token: tokens.refresh_token || undefined,
       expires_in: tokens.expiry_date ? Math.floor((tokens.expiry_date - Date.now()) / 1000) : undefined,
       scope: tokens.scope,
       token_type: tokens.token_type,
