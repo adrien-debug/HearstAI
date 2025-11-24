@@ -152,3 +152,4 @@ La page MyEarthAI affiche exactement :
 
 La page MyEarthAI est **100% conforme** au style guide de la Home Page.
 
+

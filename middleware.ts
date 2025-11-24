@@ -6,11 +6,11 @@ export async function middleware(request: NextRequest) {
   try {
     const { pathname } = request.nextUrl
 
-    // Allow access to auth pages and public assets
+    // Allow access to auth pages, API routes, and public assets
     if (
       pathname.startsWith('/auth') ||
       pathname.startsWith('/_next') ||
-      pathname.startsWith('/api/auth') ||
+      pathname.startsWith('/api') || // Allow all API routes
       pathname === '/favicon.ico' ||
       pathname.startsWith('/js/') ||
       pathname.startsWith('/css/') ||
@@ -70,7 +70,8 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
+     * - api/* (all API routes - handled in middleware logic above)
      */
-    '/((?!_next/static|_next/image|favicon.ico).*)',
+    '/((?!_next/static|_next/image|favicon.ico|api).*)',
   ],
 }

@@ -3,6 +3,7 @@
 /* Import design tokens and variables */
 @import '../frontend/css/main.css';
 @import './dashboard.css';
+@import './sidebar-new.css';
 
 /* Additional global styles */
 :root {
@@ -122,196 +123,51 @@ body {
   color: #ffffff !important;
 }
 
-.menu-submenu-item,
-.menu-submenu-item:link,
-.menu-submenu-item:visited,
-.menu-submenu-item:hover,
-.menu-submenu-item:active {
-  color: #ffffff !important;
-  text-decoration: none !important;
-}
-
-.menu-submenu-item .nav-label {
-  color: #ffffff !important;
-}
-
-.admin-submenu-item,
-.admin-submenu-item:link,
-.admin-submenu-item:visited,
-.admin-submenu-item:hover,
-.admin-submenu-item:active {
-  color: #ffffff !important;
-  text-decoration: none !important;
-}
-
-.admin-submenu-item .nav-label {
-  color: #ffffff !important;
-}
+/* Styles de menu déroulant supprimés - sidebar simple sans menus déroulants */
 
 /* ====================================
-   SIDEBAR - Structure propre et cohérente
+   SIDEBAR - Styles supprimés, gérés dans sidebar-new.css
    ==================================== */
 
-/* Sidebar container */
-.sidebar {
-  display: flex;
-  flex-direction: column;
-  width: 260px;
-  min-height: 100vh;
-  box-sizing: border-box;
-  padding: var(--space-4, 12px);
+:root {
+  --sidebar-width: 260px;
 }
 
-/* Nav list (vertical) */
-.sidebar-nav {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2, 6px);
-  width: 100%;
-}
+/* Tous les styles sidebar sont maintenant dans sidebar-new.css */
 
-/* Items simples (top-level links) */
-.nav-item {
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  gap: var(--space-3, 10px);
-  width: 100%;
-  padding: var(--space-2, 8px) var(--space-3, 12px);
-  border-radius: var(--radius-md, 8px);
-  text-decoration: none;
-  color: inherit;
-  box-sizing: border-box;
-}
-
-/* label + icon */
-.nav-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 22px;
-}
-
-/* Force label to wrap under conditions and take remaining space */
-.nav-label {
-  display: inline-block;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  flex: 1 1 auto;
-  line-height: 1.5;
-  vertical-align: middle;
-}
-
-/* Section wrapper */
-.menu-section {
-  display: block;
-  width: 100%;
-}
-
-/* Toggle button that opens a section */
-.menu-section-toggle {
-  display: flex !important;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3, 10px);
-  width: 100% !important;
-  padding: var(--space-3, 10px) !important;
-  border-radius: var(--radius-md, 8px);
-  background: transparent !important;
-  border: none !important;
-  cursor: pointer;
-  box-sizing: border-box;
-  color: #ffffff !important;
-  transition: all var(--duration-fast, 160ms) var(--ease-in-out, ease);
-}
-
-/* Visual active state */
-.menu-section-toggle.active,
-.nav-item.active {
-  background: rgb(138, 253, 129) !important;
-  color: #000 !important;
-  font-weight: 600;
-}
-
-.menu-section-toggle.active .nav-label,
-.menu-section-toggle.active .nav-icon,
-.nav-item.active .nav-label,
-.nav-item.active .nav-icon {
-  color: #000 !important;
-}
-
-/* Arrow icon rotation (chevron) */
-.menu-section-toggle svg.chev {
-  transition: transform var(--duration-fast, 160ms) var(--ease-in-out, ease);
-  transform: rotate(0deg);
-}
-
-.menu-section-toggle.active svg.chev {
-  transform: rotate(90deg);
-}
-
-/* ---- Submenu (vertical) ---- */
-.menu-submenu {
-  display: none;
-  flex-direction: column;
-  gap: var(--space-2, 6px);
-  padding-left: calc(var(--space-4, 12px) + 6px);
-  margin-top: var(--space-2, 6px);
-}
-
-.menu-submenu.show {
-  display: flex;
-}
-
-/* Submenu items */
-.menu-submenu-item {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2, 8px);
-  padding: var(--space-2, 6px) var(--space-3, 10px);
-  width: 100%;
-  border-radius: calc(var(--radius-sm, 6px));
-  text-decoration: none;
-  color: #ffffff !important;
-  background: transparent !important;
-  transition: all var(--duration-fast, 160ms) var(--ease-in-out, ease);
-}
-
-.menu-submenu-item:hover {
-  background: rgba(255, 255, 255, 0.04);
-}
-
-.menu-submenu-item.active {
-  background: transparent !important;
-  color: rgb(138, 253, 129) !important;
-  font-weight: 600;
-}
-
-/* Force block-level anchors to avoid inline behaviour */
-.sidebar a,
-.menu-submenu a {
-  display: block !important;
-  width: 100% !important;
-}
+/* Styles de menu déroulant supprimés - sidebar simple sans menus déroulants */
 
 /* Layout styles */
 .cockpit-layout {
-  display: grid;
-  grid-template-columns: var(--sidebar-width, 200px) 1fr;
+  display: flex;
   min-height: 100vh;
+  width: 100%;
+  position: relative;
 }
 
 .main-content {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  flex: 1;
+  margin-left: var(--sidebar-width, 260px); /* Compense la sidebar fixe */
+  width: calc(100% - var(--sidebar-width, 260px));
+  min-width: 0;
+  z-index: 1; /* Au-dessus de l'overlay mais sous la sidebar */
+}
+
+@media (max-width: 767px) {
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+  }
 }
 
 .content-area {
   flex: 1;
   overflow-y: auto;
   padding: var(--space-6);
+  width: 100%;
 }
 
 /* Dashboard view */

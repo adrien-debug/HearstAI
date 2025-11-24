@@ -200,33 +200,9 @@ body {
    SIDEBAR - HEARST STYLE
    ==================================== */
 
-.sidebar {
-    width: var(--sidebar-width); /* 200px */
-    background: rgba(0, 0, 0, 0.9) !important;
-    border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
-    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.5) !important;
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    left: 0;
-    top: 0;
-    height: 100vh;
-    z-index: 100;
-    color: var(--text-primary);
-    padding: var(--spacing-6) var(--spacing-5);
-    overflow: visible;
-}
+/* .sidebar styles supprimés - gérés inline dans Sidebar.tsx pour éviter les conflits */
 
-.sidebar-header {
-    padding: var(--space-6) var(--space-4);
-    margin-bottom: var(--space-8);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    width: 100%;
-    overflow: visible;
-}
+/* .sidebar-header styles supprimés - gérés inline dans Sidebar.tsx */
 
 .logo-container {
     display: flex;
@@ -275,33 +251,9 @@ body {
     transform: scale(1);
 }
 
-.sidebar-nav {
-    flex: 1;
-    padding: 0;
-    margin-top: -10px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-3);
-    justify-content: flex-start;
-}
+/* .sidebar-nav styles supprimés - gérés inline dans Sidebar.tsx pour éviter les conflits */
 
-/* Force TOUS les textes et liens dans la sidebar à être blancs */
-.sidebar-nav .nav-label,
-.sidebar-nav .nav-item .nav-label,
-.menu-submenu .nav-label,
-.menu-submenu-item .nav-label,
-.admin-submenu .nav-label,
-.admin-submenu-item .nav-label {
-    color: #ffffff !important;
-}
-
-.sidebar-nav a,
-.menu-submenu a,
-.admin-submenu a {
-    color: #ffffff !important;
-    text-decoration: none !important;
-}
+/* Styles de menu déroulant supprimés - sidebar simple sans menus déroulants */
 
 /* Force tous les liens dans la sidebar à être blancs */
 .sidebar a,
@@ -332,64 +284,7 @@ body {
 }
 
 /* Force tous les liens dans les sous-menus à être blancs */
-.menu-submenu a,
-.menu-submenu a:link,
-.menu-submenu a:visited,
-.menu-submenu a:hover,
-.menu-submenu a:active {
-    color: #ffffff !important;
-    text-decoration: none !important;
-}
-
-.menu-submenu a * {
-    color: #ffffff !important;
-}
-
-.menu-submenu-item,
-.menu-submenu-item:link,
-.menu-submenu-item:visited,
-.menu-submenu-item:hover,
-.menu-submenu-item:active,
-.menu-submenu-item:focus {
-    color: #ffffff !important;
-    text-decoration: none !important;
-}
-
-.menu-submenu-item span,
-.menu-submenu-item .nav-label,
-.menu-submenu-item .nav-icon {
-    color: #ffffff !important;
-}
-
-/* Force tous les liens dans admin-submenu à être blancs */
-.admin-submenu a,
-.admin-submenu a:link,
-.admin-submenu a:visited,
-.admin-submenu a:hover,
-.admin-submenu a:active {
-    color: #ffffff !important;
-    text-decoration: none !important;
-}
-
-.admin-submenu a * {
-    color: #ffffff !important;
-}
-
-.admin-submenu-item,
-.admin-submenu-item:link,
-.admin-submenu-item:visited,
-.admin-submenu-item:hover,
-.admin-submenu-item:active,
-.admin-submenu-item:focus {
-    color: #ffffff !important;
-    text-decoration: none !important;
-}
-
-.admin-submenu-item span,
-.admin-submenu-item .nav-label,
-.admin-submenu-item .nav-icon {
-    color: #ffffff !important;
-}
+/* Styles de menu déroulant supprimés - sidebar simple sans menus déroulants */
 
 @keyframes slideInLeft {
     from {
@@ -402,31 +297,43 @@ body {
     }
 }
 
+/* ====================================
+   NAVIGATION MENU ITEMS - PROPRE ET SIMPLE
+   Une seule ligne : logo à gauche, texte à droite
+   ==================================== */
+
 .nav-item {
+    /* Layout horizontal : logo + texte sur une seule ligne */
     display: flex !important;
     align-items: center !important;
-    gap: 10px !important;
-    padding: 2px 6px !important;
+    justify-content: flex-start !important;
+    gap: 8px !important;
+    
+    /* Empêcher tout retour à la ligne */
+    flex-wrap: nowrap !important;
+    white-space: nowrap !important;
+    
+    /* Style et espacement */
+    padding: 8px 12px !important;
     margin-bottom: 2px !important;
     border-radius: var(--radius-small-cards) !important;
     background: transparent !important;
-    color: #ffffff !important; /* Blanc par défaut */
+    color: #ffffff !important;
     font-weight: 500 !important;
     font-size: var(--text-sm) !important;
     text-decoration: none !important;
     transition: all 0.2s ease !important;
     border: none !important;
     min-height: 38px !important;
-    width: 100%;
-    justify-content: flex-start;
-    position: relative;
-    text-transform: none;
+    width: 100% !important;
+    position: relative !important;
+    text-transform: none !important;
     animation: slideInLeft 0.3s ease-out !important;
 }
 
 .nav-item,
 .nav-item * {
-    color: #ffffff !important; /* Force blanc sur tous les enfants */
+    color: #ffffff !important;
 }
 
 .nav-item a {
@@ -434,19 +341,7 @@ body {
     text-decoration: none !important;
 }
 
-.nav-item .nav-icon {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    flex-shrink: 0 !important;
-}
-
-.nav-item .nav-label {
-    display: flex !important;
-    align-items: center !important;
-    flex: 1 !important;
-}
-
+/* État hover */
 .nav-item:hover {
     background: var(--color-primary-light-green) !important;
     color: var(--color-text-default) !important;
@@ -455,6 +350,17 @@ body {
         inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
 }
 
+.nav-item:hover .nav-icon,
+.nav-item:hover .nav-label {
+    color: #000000 !important;
+}
+
+.nav-item:hover .nav-icon svg {
+    color: #000000 !important;
+    stroke: #000000 !important;
+}
+
+/* État active */
 .nav-item.active {
     background: var(--color-primary-light-green) !important;
     color: var(--color-text-default) !important;
@@ -469,41 +375,6 @@ body {
     color: #000000 !important;
 }
 
-.nav-icon {
-    width: 18px !important;
-    height: 18px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    flex-shrink: 0 !important;
-    opacity: 1 !important; /* Icônes toujours visibles */
-    color: #ffffff !important; /* Blanc par défaut */
-}
-
-.nav-icon svg {
-    width: 18px;
-    height: 18px;
-    stroke: currentColor;
-    fill: none;
-    color: #ffffff !important; /* Blanc par défaut */
-    display: block;
-}
-
-.nav-item:hover .nav-icon {
-    opacity: 1;
-    color: #000000 !important;
-}
-
-.nav-item.active .nav-icon {
-    opacity: 1;
-    color: #000000 !important;
-}
-
-.nav-item:hover .nav-icon,
-.nav-item:hover .nav-label {
-    color: #000000 !important;
-}
-
 .nav-item.active .nav-icon,
 .nav-item.active .nav-label {
     color: #000000 !important;
@@ -514,14 +385,58 @@ body {
     stroke: #000000 !important;
 }
 
-.nav-label {
-    flex: 1 !important;
-    white-space: nowrap !important;
-    font-size: var(--text-sm) !important;
-    letter-spacing: -0.01em !important;
-    color: #ffffff !important; /* Blanc par défaut */
+/* ====================================
+   NAV ICON - Logo à gauche, fixe
+   ==================================== */
+
+.nav-icon {
+    /* Logo ne doit jamais se compresser ni sauter de ligne */
     display: flex !important;
     align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+    
+    /* Taille fixe */
+    width: 18px !important;
+    height: 18px !important;
+    min-width: 18px !important;
+    
+    /* Style */
+    opacity: 1 !important;
+    color: #ffffff !important;
+}
+
+.nav-icon svg {
+    width: 18px !important;
+    height: 18px !important;
+    min-width: 18px !important;
+    stroke: currentColor !important;
+    fill: none !important;
+    color: #ffffff !important;
+    display: block !important;
+}
+
+/* ====================================
+   NAV LABEL - Texte à droite, une seule ligne
+   ==================================== */
+
+.nav-label {
+    /* Texte ne doit jamais passer sur deux lignes */
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    
+    /* Alignement horizontal */
+    display: flex !important;
+    align-items: center !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    
+    /* Style */
+    font-size: var(--text-sm) !important;
+    letter-spacing: -0.01em !important;
+    color: #ffffff !important;
     line-height: 1.5 !important;
 }
 
@@ -1348,35 +1263,7 @@ body {
     padding: var(--space-2) 0 !important;
 }
 
-.nav-item {
-    padding: var(--space-3) var(--space-4) !important;
-    margin-bottom: var(--space-1) !important;
-    border-radius: var(--radius-md) !important;
-    font-size: var(--text-sm) !important;
-    font-weight: 500 !important;
-    letter-spacing: -0.01em !important;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    min-height: 40px !important;
-}
-
-.nav-item:hover {
-    background: rgba(138, 253, 129, 0.08) !important;
-    transform: translateX(2px) !important;
-    box-shadow: 
-        0 2px 8px rgba(138, 253, 129, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
-}
-
-.nav-item.active {
-    background: var(--color-primary-light-green) !important;
-    color: var(--color-text-default) !important;
-    font-weight: 600 !important;
-    box-shadow: 
-        0 4px 16px rgba(138, 253, 129, 0.35),
-        inset 0 1px 0 rgba(255, 255, 255, 0.25),
-        0 0 0 1px rgba(138, 253, 129, 0.2) !important;
-    transform: translateX(0) !important;
-}
+/* Redéfinition supprimée - styles définis plus haut dans la section principale */
 
 .sidebar-version {
     padding: var(--space-5) 0 0 0 !important;
@@ -1391,30 +1278,105 @@ body {
    ADMIN SUBMENU - CHARTE GRAPHIQUE
    ==================================== */
 
-.admin-menu-container {
-    margin-bottom: var(--space-4) !important;
+/* Styles de menu déroulant supprimés - sidebar simple sans menus déroulants */
+
+/* ====================================
+   HEADER - PREMIUM ULTRA PROPRE
+   ==================================== */
+
+.header {
+    background: rgba(10, 10, 10, 0.9) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+    box-shadow: 
+        0 2px 20px rgba(0, 0, 0, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.02) !important;
+    height: 72px !important;
+    padding: 0 var(--space-8) !important;
 }
 
-.admin-menu-toggle {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    width: 100% !important;
-    padding: var(--space-3) var(--space-4) !important;
+.header-left {
+    padding-left: calc(var(--space-8) + var(--space-5)) !important;
+}
+
+.header-right {
+    padding-right: var(--space-8) !important;
+    gap: var(--space-3) !important;
+}
+
+.notification-btn {
+    width: 38px !important;
+    height: 38px !important;
     border-radius: var(--radius-md) !important;
-    background: transparent !important;
-    border: none !important;
-    color: #ffffff !important; /* Blanc par défaut */
-    cursor: pointer !important;
+    background: rgba(26, 26, 26, 0.6) !important;
+    border: 1px solid rgba(255, 255, 255, 0.06) !important;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    font-size: var(--text-sm) !important;
-    font-weight: 500 !important;
-    letter-spacing: -0.01em !important;
-    min-height: 40px !important;
-    font-family: var(--font-primary) !important;
 }
 
-.admin-menu-toggle .nav-icon {
+.notification-btn:hover {
+    background: rgba(138, 253, 129, 0.1) !important;
+    border-color: rgba(138, 253, 129, 0.3) !important;
+    color: var(--primary-green) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(138, 253, 129, 0.2) !important;
+}
+
+.user-badge {
+    padding: var(--space-2) var(--space-4) !important;
+    background: rgba(26, 26, 26, 0.7) !important;
+    border: 1px solid rgba(255, 255, 255, 0.06) !important;
+    box-shadow: 
+        0 2px 12px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.user-badge:hover {
+    background: rgba(26, 26, 26, 0.9) !important;
+    border-color: rgba(138, 253, 129, 0.3) !important;
+    box-shadow: 
+        0 4px 16px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(138, 253, 129, 0.15) !important;
+    transform: translateY(-1px) !important;
+}
+
+.user-avatar-circle {
+    width: 30px !important;
+    height: 30px !important;
+    box-shadow: 
+        0 2px 8px rgba(138, 253, 129, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+/* ====================================
+   CONTENT AREA - PREMIUM ULTRA PROPRE
+   ==================================== */
+
+.content-area {
+    padding: var(--space-6) var(--space-8) var(--space-10) var(--space-8) !important;
+    gap: var(--space-6) !important;
+    background: linear-gradient(180deg, #000000 0%, #0a0a0a 50%, #000000 100%) !important;
+}
+
+/* ====================================
+   TYPOGRAPHIE - PREMIUM ULTRA PROPRE
+   ==================================== */
+
+body {
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    text-rendering: optimizeLegibility !important;
+    font-feature-settings: "kern" 1, "liga" 1 !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    letter-spacing: -0.02em !important;
+    font-weight: 600 !important;
+}
+
+/* ====================================
+   RESPONSIVE - PREMIUM ULTRA PROPRE
+   ==================================== */
     color: #ffffff !important; /* Icônes en blanc */
     opacity: 1 !important;
 }
@@ -1750,46 +1712,7 @@ body {
     width: 100% !important;
 }
 
-/* Force les liens Next.js dans le sous-menu à être en block */
-.menu-submenu a {
-    display: block !important;
-    margin-bottom: 5px !important;
-}
-
-.menu-submenu-item .nav-icon {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    flex-shrink: 0 !important;
-}
-
-.menu-submenu-item .nav-icon {
-    color: #ffffff !important; /* Icônes en blanc */
-    opacity: 1 !important;
-}
-
-.menu-submenu-item .nav-icon svg {
-    color: #ffffff !important;
-    stroke: #ffffff !important;
-}
-
-.menu-submenu-item .nav-label {
-    color: #ffffff !important; /* Labels en blanc */
-    display: block !important;
-    line-height: 1.5 !important;
-    text-decoration: none !important;
-    width: 100% !important;
-    padding: 0 !important;
-}
-
-.menu-submenu-item,
-.menu-submenu-item:link,
-.menu-submenu-item:visited,
-.menu-submenu-item:hover,
-.menu-submenu-item:active {
-    color: #ffffff !important;
-    text-decoration: none !important;
-}
+/* Styles de menu déroulant supprimés - sidebar simple sans menus déroulants */
 
 .menu-submenu-item::before {
     content: '' !important;
@@ -1994,20 +1917,265 @@ h1, h2, h3, h4, h5, h6 {
 /* ====================================
    SIDEBAR - FORCE BLANC ABSOLU
    ==================================== */
-.sidebar .nav-label,
-.sidebar-nav .nav-label,
-.menu-submenu-item .nav-label,
-.admin-submenu-item .nav-label {
-    color: #ffffff !important;
-}
-
 .sidebar a,
-.sidebar-nav a,
-.menu-submenu a,
-.admin-submenu a,
-.menu-submenu-item,
-.admin-submenu-item {
+.sidebar-nav a {
     color: #ffffff !important;
     text-decoration: none !important;
 }
 
+/* ====================================
+   🔧 DEBUG MENU - VERSION SIMPLE
+   Objectif : une entrée = une ligne
+   Logo à gauche, texte à droite
+   PRIORITÉ MAXIMALE - Écrase tous les styles précédents
+   ==================================== */
+
+/* ====================================
+   FORCE .sidebar-nav - PRIORITÉ MAXIMALE
+   ==================================== */
+.sidebar .sidebar-nav,
+#sidebar .sidebar-nav,
+aside.sidebar .sidebar-nav,
+.sidebar-nav {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    margin-top: 0 !important;
+    overflow-y: auto !important;
+    flex: 1 !important;
+    justify-content: flex-start !important;
+}
+
+/* ====================================
+   FORCE .nav-item - PRIORITÉ MAXIMALE
+   Tous les sélecteurs possibles pour couvrir tous les cas
+   ==================================== */
+.sidebar .sidebar-nav a.nav-item,
+.sidebar .sidebar-nav .nav-item,
+.sidebar .sidebar-nav > a.nav-item,
+.sidebar .sidebar-nav > .nav-item,
+.sidebar .sidebar-nav li > a.nav-item,
+.sidebar .sidebar-nav li.nav-item > a,
+.sidebar-nav a.nav-item,
+.sidebar-nav .nav-item,
+.sidebar-nav > a.nav-item,
+.sidebar-nav > .nav-item,
+.sidebar-nav li > a.nav-item,
+.sidebar-nav li.nav-item > a,
+a.nav-item,
+.nav-item {
+    /* Layout horizontal : logo + texte sur une seule ligne */
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 8px !important;
+    
+    /* Empêcher tout retour à la ligne */
+    flex-wrap: nowrap !important;
+    white-space: nowrap !important;
+    
+    /* Style et espacement */
+    padding: 8px 12px !important;
+    margin-bottom: 2px !important;
+    border-radius: 6px !important;
+    background: transparent !important;
+    text-decoration: none !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    position: relative !important;
+    min-height: 38px !important;
+    
+    /* Texte */
+    color: #ffffff !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    text-transform: none !important;
+    
+    /* Pas d'animation pour le debug */
+    animation: none !important;
+    transition: background 0.2s ease !important;
+}
+
+/* ====================================
+   FORCE .nav-icon - PRIORITÉ MAXIMALE
+   ==================================== */
+.sidebar .sidebar-nav .nav-icon,
+.sidebar .sidebar-nav a.nav-item .nav-icon,
+.sidebar .sidebar-nav .nav-item .nav-icon,
+.sidebar-nav .nav-icon,
+.sidebar-nav a.nav-item .nav-icon,
+.sidebar-nav .nav-item .nav-icon,
+a.nav-item .nav-icon,
+.nav-item .nav-icon,
+.nav-icon {
+    /* Logo ne doit jamais se compresser ni sauter de ligne */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+    
+    /* Taille fixe - JAMAIS compressée */
+    width: 18px !important;
+    height: 18px !important;
+    min-width: 18px !important;
+    min-height: 18px !important;
+    max-width: 18px !important;
+    max-height: 18px !important;
+    
+    /* Style */
+    opacity: 1 !important;
+    color: #ffffff !important;
+}
+
+.sidebar .sidebar-nav .nav-icon svg,
+.sidebar .sidebar-nav a.nav-item .nav-icon svg,
+.sidebar .sidebar-nav .nav-item .nav-icon svg,
+.sidebar-nav .nav-icon svg,
+.sidebar-nav a.nav-item .nav-icon svg,
+.sidebar-nav .nav-item .nav-icon svg,
+a.nav-item .nav-icon svg,
+.nav-item .nav-icon svg,
+.nav-icon svg {
+    width: 18px !important;
+    height: 18px !important;
+    min-width: 18px !important;
+    min-height: 18px !important;
+    max-width: 18px !important;
+    max-height: 18px !important;
+    display: block !important;
+    stroke: currentColor !important;
+    fill: none !important;
+    color: #ffffff !important;
+}
+
+/* ====================================
+   FORCE .nav-label - PRIORITÉ MAXIMALE
+   ==================================== */
+.sidebar .sidebar-nav .nav-label,
+.sidebar .sidebar-nav a.nav-item .nav-label,
+.sidebar .sidebar-nav .nav-item .nav-label,
+.sidebar-nav .nav-label,
+.sidebar-nav a.nav-item .nav-label,
+.sidebar-nav .nav-item .nav-label,
+a.nav-item .nav-label,
+.nav-item .nav-label,
+.nav-label {
+    /* Texte ne doit jamais passer sur deux lignes */
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    
+    /* Alignement horizontal */
+    display: block !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    align-items: center !important;
+    
+    /* Style */
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+    color: #ffffff !important;
+    letter-spacing: -0.01em !important;
+    text-decoration: none !important;
+    padding: 0 !important;
+    width: auto !important;
+}
+
+/* ====================================
+   FORCE HOVER - PRIORITÉ MAXIMALE
+   ==================================== */
+.sidebar .sidebar-nav a.nav-item:hover,
+.sidebar .sidebar-nav .nav-item:hover,
+.sidebar .sidebar-nav > a.nav-item:hover,
+.sidebar .sidebar-nav > .nav-item:hover,
+.sidebar-nav a.nav-item:hover,
+.sidebar-nav .nav-item:hover,
+.sidebar-nav > a.nav-item:hover,
+.sidebar-nav > .nav-item:hover,
+a.nav-item:hover,
+.nav-item:hover {
+    background: rgba(138, 253, 129, 0.12) !important;
+    color: #ffffff !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+.sidebar .sidebar-nav a.nav-item:hover .nav-icon,
+.sidebar .sidebar-nav .nav-item:hover .nav-icon,
+.sidebar-nav a.nav-item:hover .nav-icon,
+.sidebar-nav .nav-item:hover .nav-icon,
+a.nav-item:hover .nav-icon,
+.nav-item:hover .nav-icon {
+    color: #ffffff !important;
+}
+
+.sidebar .sidebar-nav a.nav-item:hover .nav-icon svg,
+.sidebar .sidebar-nav .nav-item:hover .nav-icon svg,
+.sidebar-nav a.nav-item:hover .nav-icon svg,
+.sidebar-nav .nav-item:hover .nav-icon svg,
+a.nav-item:hover .nav-icon svg,
+.nav-item:hover .nav-icon svg {
+    color: #ffffff !important;
+    stroke: #ffffff !important;
+}
+
+.sidebar .sidebar-nav a.nav-item:hover .nav-label,
+.sidebar .sidebar-nav .nav-item:hover .nav-label,
+.sidebar-nav a.nav-item:hover .nav-label,
+.sidebar-nav .nav-item:hover .nav-label,
+a.nav-item:hover .nav-label,
+.nav-item:hover .nav-label {
+    color: #ffffff !important;
+}
+
+/* ====================================
+   FORCE ACTIVE - PRIORITÉ MAXIMALE
+   ==================================== */
+.sidebar .sidebar-nav a.nav-item.active,
+.sidebar .sidebar-nav .nav-item.active,
+.sidebar-nav a.nav-item.active,
+.sidebar-nav .nav-item.active,
+a.nav-item.active,
+.nav-item.active {
+    background: rgba(138, 253, 129, 0.2) !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    box-shadow: none !important;
+}
+
+.sidebar .sidebar-nav a.nav-item.active .nav-icon,
+.sidebar .sidebar-nav .nav-item.active .nav-icon,
+.sidebar-nav a.nav-item.active .nav-icon,
+.sidebar-nav .nav-item.active .nav-icon,
+a.nav-item.active .nav-icon,
+.nav-item.active .nav-icon {
+    color: #ffffff !important;
+}
+
+.sidebar .sidebar-nav a.nav-item.active .nav-icon svg,
+.sidebar .sidebar-nav .nav-item.active .nav-icon svg,
+.sidebar-nav a.nav-item.active .nav-icon svg,
+.sidebar-nav .nav-item.active .nav-icon svg,
+a.nav-item.active .nav-icon svg,
+.nav-item.active .nav-icon svg {
+    color: #ffffff !important;
+    stroke: #ffffff !important;
+}
+
+.sidebar .sidebar-nav a.nav-item.active .nav-label,
+.sidebar .sidebar-nav .nav-item.active .nav-label,
+.sidebar-nav a.nav-item.active .nav-label,
+.sidebar-nav .nav-item.active .nav-label,
+a.nav-item.active .nav-label,
+.nav-item.active .nav-label {
+    color: #ffffff !important;
+}
+
+/* ====================================
+   CACHE SOUS-MENUS - SUPPRIMÉ
+   Plus nécessaire car on utilise la version simple sans menus déroulants
+   ==================================== */

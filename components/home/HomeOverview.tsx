@@ -195,30 +195,6 @@ export default function HomeOverview() {
               <span className="premium-stat-description">Currently running</span>
             </div>
           </div>
-
-          <div className="premium-stat-box">
-            <div className="premium-stat-box-header">
-              <div className="premium-stat-icon" data-icon="success"></div>
-              <div className="premium-stat-label">Success Rate</div>
-            </div>
-            <div className="premium-stat-value" style={{ color: '#C5FFA7' }}>
-              98.5%
-            </div>
-            <div className="premium-stat-footer">
-              <span className="premium-stat-description">Job success rate</span>
-            </div>
-          </div>
-
-          <div className="premium-stat-box">
-            <div className="premium-stat-box-header">
-              <div className="premium-stat-icon" data-icon="storage"></div>
-              <div className="premium-stat-label">Storage Used</div>
-            </div>
-            <div className="premium-stat-value">1.00 GB</div>
-            <div className="premium-stat-footer">
-              <span className="premium-stat-description">Total storage</span>
-            </div>
-          </div>
         </div>
       </div>
 
