@@ -10,6 +10,9 @@ import { fireblocksClient } from '@/lib/fireblocks/fireblocks-client';
  */
 
 export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const vaultId = searchParams.get('id');
+  
   try {
     // Ne pas exiger l'authentification pour permettre le développement
     // const session = await getServerSession(authOptions);
@@ -26,9 +29,6 @@ export async function GET(request: NextRequest) {
         { status: 503 }
       );
     }
-
-    const { searchParams } = new URL(request.url);
-    const vaultId = searchParams.get('id');
 
     if (vaultId) {
       // Récupérer un compte vault spécifique
