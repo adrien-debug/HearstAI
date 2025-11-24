@@ -158,3 +158,23 @@ model LogEntry {
   project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }
 
+model Customer {
+  id                String   @id @default(cuid())
+  name              String
+  erc20Address      String   @unique
+  tag               String   @default("Client")
+  chains            String   @default("[\"eth\"]") // JSON array
+  protocols         String   @default("[]") // JSON array
+  email             String?
+  btcWallet         String?
+  totalValue        Float    @default(0)
+  totalDebt         Float    @default(0)
+  healthFactor      Float    @default(0)
+  status            String   @default("unknown")
+  fireblocksVaultId String? // ID du vault Fireblocks associé
+  fireblocksWalletId String? // ID du wallet Fireblocks associé
+  lastUpdate        DateTime @default(now())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+

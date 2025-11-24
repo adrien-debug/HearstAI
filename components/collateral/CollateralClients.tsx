@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { collateralAPI, customersAPI } from '@/lib/api'
+import AddClientModal from './AddClientModal'
+import ClientDetailModal from './ClientDetailModal'
 import './Collateral.css'
 
 // Fonction pour calculer les métriques d'un client
@@ -44,81 +46,74 @@ export default function CollateralClients() {
   const [customers, setCustomers] = useState<any[]>([])
   const [collateralData, setCollateralData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [refreshing, setRefreshing] = useState(false)
+  const [selectedCustomer, setSelectedCustomer] = useState<any>(null)
+  const [showDetailModal, setShowDetailModal] = useState(false)
 
-  useEffect(() => {
-    const loadData = async () => {
-      try {
+  const loadData = async (refresh = false) => {
+    try {
+      if (refresh) {
+        setRefreshing(true)
+      } else {
         setLoading(true)
-        
-        // Charger les clients depuis la base de données
-        let customersResponse
-        try {
-          customersResponse = await customersAPI.getAll()
-          setCustomers(customersResponse.customers || [])
-        } catch (customerErr) {
-          console.error('Error loading customers:', customerErr)
-          // Fallback sur données mockées
-          setCustomers([
-            {
-              id: '1',
-              name: 'Client Principal',
-              tag: 'Client',
-              erc20Address: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
-              chains: '["eth"]',
-              protocols: '["morpho", "aave"]',
-              createdAt: new Date().toISOString(),
-            },
-            {
-              id: '2',
-              name: 'Client Secondaire',
-              tag: 'VIP',
-              erc20Address: '0x8ba1f109551bD432803012645Hac136c22C9',
-              chains: '["eth"]',
-              protocols: '["morpho"]',
-              createdAt: new Date().toISOString(),
-            },
-          ])
-        }
+      }
+      
+      // Charger les clients depuis la base de données avec refresh DeBank
+      let customersResponse
+      try {
+        customersResponse = await customersAPI.getAll()
+        const loadedCustomers = customersResponse.customers || []
+        setCustomers(loadedCustomers)
         
         // Charger les données collatérales depuis DeBank
+        // Utiliser les wallets des customers chargés
         try {
-          const collateralResponse = await collateralAPI.getAll()
-          setCollateralData(collateralResponse)
+          const customerWallets = loadedCustomers.map((c: any) => c.erc20Address).filter(Boolean)
+          if (customerWallets.length > 0) {
+            const collateralResponse = await collateralAPI.getAll(
+              customerWallets,
+              loadedCustomers.map((c: any) => {
+                try {
+                  return JSON.parse(c.chains || '["eth"]')
+                } catch {
+                  return ['eth']
+                }
+              }).flat(),
+              loadedCustomers.map((c: any) => {
+                try {
+                  return JSON.parse(c.protocols || '[]')
+                } catch {
+                  return []
+                }
+              }).flat()
+            )
+            setCollateralData(collateralResponse)
+          } else {
+            setCollateralData({ clients: [] })
+          }
         } catch (collateralErr) {
           console.error('Error loading collateral data:', collateralErr)
-          // Fallback sur données mockées
-          setCollateralData({
-            clients: [
-              {
-                id: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
-                name: 'Client Principal',
-                positions: [
-                  { protocol: 'Morpho', asset: 'ETH', collateralAmount: 500, collateralPriceUsd: 3800, debtToken: 'USDC', debtAmount: 200000, borrowApr: 0.065, chain: 'ethereum' },
-                  { protocol: 'Aave', asset: 'BTC', collateralAmount: 300, collateralPriceUsd: 71000, debtToken: 'USDC', debtAmount: 150000, borrowApr: 0.072, chain: 'ethereum' },
-                ],
-                lastUpdate: new Date().toISOString(),
-              },
-              {
-                id: '0x8ba1f109551bD432803012645Hac136c22C9',
-                name: 'Client Secondaire',
-                positions: [
-                  { protocol: 'Morpho', asset: 'USDC', collateralAmount: 400000, collateralPriceUsd: 1, debtToken: 'USDC', debtAmount: 180000, borrowApr: 0.062, chain: 'ethereum' },
-                ],
-                lastUpdate: new Date().toISOString(),
-              },
-            ],
-          })
+          setCollateralData({ clients: [] })
         }
-      } catch (err) {
-        console.error('Error loading data:', err)
-      } finally {
-        setLoading(false)
+      } catch (customerErr) {
+        console.error('Error loading customers:', customerErr)
+        setCustomers([])
+        setCollateralData({ clients: [] })
       }
+    } catch (err) {
+      console.error('Error loading data:', err)
+    } finally {
+      setLoading(false)
+      setRefreshing(false)
     }
+  }
+
+  useEffect(() => {
     loadData()
     
-    // Auto-refresh every 30 seconds
-    const interval = setInterval(loadData, 30000)
+    // Auto-refresh every 60 seconds
+    const interval = setInterval(() => loadData(true), 60000)
     return () => clearInterval(interval)
   }, [])
 
@@ -147,8 +142,8 @@ export default function CollateralClients() {
 
   // Calculer les totaux
   const allMetrics = collateralData?.clients?.map((client: any) => computeClientMetrics(client)) || []
-  const totalCollateral = allMetrics.reduce((sum, m) => sum + m.totalCollateralUsd, 0)
-  const totalDebt = allMetrics.reduce((sum, m) => sum + m.totalDebtUsd, 0)
+  const totalCollateral = allMetrics.reduce((sum: number, m: any) => sum + m.totalCollateralUsd, 0)
+  const totalDebt = allMetrics.reduce((sum: number, m: any) => sum + m.totalDebtUsd, 0)
 
   return (
     <div>
@@ -178,8 +173,23 @@ export default function CollateralClients() {
 
       {/* Clients Table */}
       <div className="collateral-card">
-        <div className="collateral-card-header">
+        <div className="collateral-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h3 className="collateral-card-title">Clients List</h3>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button 
+              className="collateral-btn-secondary" 
+              onClick={() => loadData(true)}
+              disabled={refreshing}
+            >
+              {refreshing ? '🔄 Actualisation...' : '🔄 Actualiser'}
+            </button>
+            <button 
+              className="collateral-btn-primary" 
+              onClick={() => setShowAddModal(true)}
+            >
+              + Ajouter un client
+            </button>
+          </div>
         </div>
         <div className="collateral-card-body">
           <div className="collateral-table-container">
@@ -311,7 +321,15 @@ export default function CollateralClients() {
                           </span>
                         </td>
                         <td>
-                          <button className="collateral-btn-secondary">View</button>
+                          <button 
+                            className="collateral-btn-secondary"
+                            onClick={() => {
+                              setSelectedCustomer(customer)
+                              setShowDetailModal(true)
+                            }}
+                          >
+                            View
+                          </button>
                         </td>
                       </tr>
                     )
@@ -328,6 +346,25 @@ export default function CollateralClients() {
           </div>
         </div>
       </div>
+
+      {/* Modal pour ajouter un client */}
+      <AddClientModal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        onSuccess={() => {
+          loadData(true)
+        }}
+      />
+
+      {/* Modal pour voir les détails d'un client */}
+      <ClientDetailModal
+        isOpen={showDetailModal}
+        onClose={() => {
+          setShowDetailModal(false)
+          setSelectedCustomer(null)
+        }}
+        customer={selectedCustomer}
+      />
     </div>
   )
 }

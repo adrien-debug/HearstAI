@@ -17,6 +17,12 @@
   overflow-y: auto;
   overflow-x: hidden;
   box-sizing: border-box;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.sidebar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
 
 .sidebar-header {
@@ -34,6 +40,13 @@
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
+  margin-top: -10px;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.sidebar-nav::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
 
 .nav-item {

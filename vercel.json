@@ -1,23 +1,26 @@
 {
+  "version": 2,
+  "buildCommand": "prisma generate && next build",
+  "devCommand": "next dev",
   "installCommand": "npm install",
-  "buildCommand": "npm run build",
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "DENY"
-        },
-        {
-          "key": "X-XSS-Protection",
-          "value": "1; mode=block"
-        }
-      ]
+  "framework": "nextjs",
+  "regions": [
+    "iad1"
+  ],
+  "env": {
+    "DATABASE_URL": "@database_url",
+    "NEXTAUTH_URL": "@nextauth_url",
+    "NEXTAUTH_SECRET": "@nextauth_secret",
+    "DEBANK_ACCESS_KEY": "@debank_access_key",
+    "ANTHROPIC_API_KEY": "@anthropic_api_key",
+    "FIREBLOCKS_API_KEY": "@fireblocks_api_key",
+    "FIREBLOCKS_SECRET_KEY": "@fireblocks_secret_key",
+    "LUXOR_API_KEY": "@luxor_api_key"
+  },
+  "build": {
+    "env": {
+      "DATABASE_URL": "@database_url",
+      "NEXT_PUBLIC_API_URL": ""
     }
-  ]
+  }
 }

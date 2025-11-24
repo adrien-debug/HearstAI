@@ -21,8 +21,8 @@ export const CONFIG = {
     
     // API
     API_BASE_URL: isDevelopment 
-        ? 'http://localhost:4000/api'  // Dev: backend local
-        : '/api',                       // Prod: routing Vercel
+        ? 'http://localhost:4000/api'  // Dev: backend Express local
+        : '/api',                       // Prod: routing Next.js
     
     // Timeouts
     API_TIMEOUT: 30000, // 30 secondes

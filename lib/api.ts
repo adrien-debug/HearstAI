@@ -173,3 +173,20 @@ export const customersAPI = {
 export const cockpitAPI = {
   getData: () => fetchAPI<any>('/cockpit'),
 }
+
+// Fireblocks API
+export const fireblocksAPI = {
+  getVaults: (vaultId?: string) => {
+    const url = vaultId ? `/fireblocks/vaults?id=${vaultId}` : '/fireblocks/vaults'
+    return fetchAPI<{ success: boolean; data: any }>(url)
+  },
+  getTransaction: (txId: string) => {
+    return fetchAPI<{ success: boolean; data: any }>(`/fireblocks/transactions?id=${txId}`)
+  },
+  createTransaction: (transactionRequest: any) => {
+    return fetchAPI<{ success: boolean; data: any }>('/fireblocks/transactions', {
+      method: 'POST',
+      body: JSON.stringify(transactionRequest),
+    })
+  },
+}

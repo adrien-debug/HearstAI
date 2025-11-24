@@ -12,39 +12,20 @@ export default function CollateralTransactions() {
     const loadData = async () => {
       try {
         setLoading(true)
+        // Récupérer les données depuis DeBank en temps réel
         const response = await collateralAPI.getAll()
         setData(response)
       } catch (err) {
         console.error('Error loading collateral data:', err)
-        // Fallback to mock data
-        setData({
-          clients: [
-            {
-              id: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
-              name: 'Client Principal',
-              positions: [
-                { protocol: 'Morpho', asset: 'ETH', collateralAmount: 500, collateralPriceUsd: 3800, debtToken: 'USDC', debtAmount: 200000, borrowApr: 0.065, chain: 'ethereum' },
-                { protocol: 'Aave', asset: 'BTC', collateralAmount: 300, collateralPriceUsd: 71000, debtToken: 'USDC', debtAmount: 150000, borrowApr: 0.072, chain: 'ethereum' },
-              ],
-              lastUpdate: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
-            },
-            {
-              id: '0x8ba1f109551bD432803012645Hac136c22C9',
-              name: 'Client Secondaire',
-              positions: [
-                { protocol: 'Morpho', asset: 'USDC', collateralAmount: 400000, collateralPriceUsd: 1, debtToken: 'USDC', debtAmount: 180000, borrowApr: 0.062, chain: 'ethereum' },
-              ],
-              lastUpdate: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
-            },
-          ],
-        })
+        // Fallback sur données vides si erreur
+        setData({ clients: [] })
       } finally {
         setLoading(false)
       }
     }
     loadData()
     
-    // Auto-refresh every 30 seconds
+    // Auto-refresh every 30 seconds pour données en temps réel
     const interval = setInterval(loadData, 30000)
     return () => clearInterval(interval)
   }, [])

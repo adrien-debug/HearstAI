@@ -1,0 +1,5 @@
+# Fireblocks keys - NE JAMAIS COMMITER
+fireblocks-private-key.pem
+fireblocks-private-key-generated.pem
+fireblocks-csr.pem
+*.pem

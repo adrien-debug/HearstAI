@@ -5,17 +5,18 @@ import { authOptions } from '@/lib/auth'
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    // Désactiver l'authentification pour le développement
+    // const session = await getServerSession(authOptions)
+    // if (!session?.user?.id) {
+    //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    // }
 
     const searchParams = request.nextUrl.searchParams
     const status = searchParams.get('status')
     const type = searchParams.get('type')
 
     const where: any = {
-      userId: session.user.id,
+      // userId: session?.user?.id, // Désactivé pour le développement
     }
 
     if (status) {
@@ -30,6 +31,14 @@ export async function GET(request: NextRequest) {
       where,
       orderBy: { updatedAt: 'desc' },
       include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            image: true,
+          },
+        },
         stableVersion: true,
         _count: {
           select: {
@@ -39,9 +48,24 @@ export async function GET(request: NextRequest) {
         },
       },
     })
+    
+    // Extract imageUrl from metadata for each project
+    const projectsWithImages = projects.map(project => {
+      let imageUrl = null
+      try {
+        const metadata = typeof project.metadata === 'string' ? JSON.parse(project.metadata) : project.metadata
+        imageUrl = metadata?.imageUrl || null
+      } catch (e) {
+        // Ignore parsing errors
+      }
+      return {
+        ...project,
+        imageUrl,
+      }
+    })
 
     // Si pas de projets, retourner des données mockées
-    if (projects.length === 0) {
+    if (projectsWithImages.length === 0) {
       const mockProjects = [
         {
           id: '1',
@@ -52,12 +76,19 @@ export async function GET(request: NextRequest) {
           status: 'ACTIVE',
           createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
           updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-          userId: session.user.id,
+          userId: 'mock-user-id',
           repoUrl: 'https://github.com/hearstai/dashboard',
           repoBranch: 'main',
           localPath: null,
-          metadata: '{}',
+          metadata: JSON.stringify({ imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800' }),
+          imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800',
           stableVersion: null,
+          user: {
+            id: 'mock-user-id',
+            name: 'John Doe',
+            email: 'john@hearstai.com',
+            image: 'https://ui-avatars.com/api/?name=John+Doe&background=C5FFA7&color=000',
+          },
           _count: { versions: 8, jobs: 45 },
         },
         {
@@ -69,12 +100,19 @@ export async function GET(request: NextRequest) {
           status: 'ACTIVE',
           createdAt: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000).toISOString(),
           updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-          userId: session.user.id,
+          userId: 'mock-user-id',
           repoUrl: 'https://github.com/hearstai/mining-analytics',
           repoBranch: 'main',
           localPath: null,
-          metadata: '{}',
+          metadata: JSON.stringify({ imageUrl: 'https://images.unsplash.com/photo-1639322537504-6427a16b0a28?w=800' }),
+          imageUrl: 'https://images.unsplash.com/photo-1639322537504-6427a16b0a28?w=800',
           stableVersion: null,
+          user: {
+            id: 'mock-user-id',
+            name: 'Jane Smith',
+            email: 'jane@hearstai.com',
+            image: 'https://ui-avatars.com/api/?name=Jane+Smith&background=C5FFA7&color=000',
+          },
           _count: { versions: 12, jobs: 78 },
         },
         {
@@ -86,12 +124,19 @@ export async function GET(request: NextRequest) {
           status: 'ACTIVE',
           createdAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString(),
           updatedAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
-          userId: session.user.id,
+          userId: 'mock-user-id',
           repoUrl: null,
           repoBranch: 'main',
           localPath: '/apps/electricity-monitor',
-          metadata: '{}',
+          metadata: JSON.stringify({ imageUrl: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800' }),
+          imageUrl: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800',
           stableVersion: null,
+          user: {
+            id: 'mock-user-id',
+            name: 'Bob Wilson',
+            email: 'bob@hearstai.com',
+            image: 'https://ui-avatars.com/api/?name=Bob+Wilson&background=C5FFA7&color=000',
+          },
           _count: { versions: 6, jobs: 34 },
         },
         {
@@ -103,12 +148,19 @@ export async function GET(request: NextRequest) {
           status: 'ACTIVE',
           createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
           updatedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-          userId: session.user.id,
+          userId: 'mock-user-id',
           repoUrl: 'https://github.com/hearstai/collateral-tracker',
           repoBranch: 'main',
           localPath: null,
-          metadata: '{}',
+          metadata: JSON.stringify({ imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800' }),
+          imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800',
           stableVersion: null,
+          user: {
+            id: 'mock-user-id',
+            name: 'Alice Brown',
+            email: 'alice@hearstai.com',
+            image: 'https://ui-avatars.com/api/?name=Alice+Brown&background=C5FFA7&color=000',
+          },
           _count: { versions: 9, jobs: 56 },
         },
         {
@@ -120,19 +172,26 @@ export async function GET(request: NextRequest) {
           status: 'ACTIVE',
           createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
           updatedAt: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
-          userId: session.user.id,
+          userId: 'mock-user-id',
           repoUrl: 'https://github.com/hearstai/cockpit',
           repoBranch: 'main',
           localPath: null,
-          metadata: '{}',
+          metadata: JSON.stringify({ imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800' }),
+          imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800',
           stableVersion: null,
+          user: {
+            id: 'mock-user-id',
+            name: 'Charlie Davis',
+            email: 'charlie@hearstai.com',
+            image: 'https://ui-avatars.com/api/?name=Charlie+Davis&background=C5FFA7&color=000',
+          },
           _count: { versions: 15, jobs: 21 },
         },
       ]
       return NextResponse.json({ projects: mockProjects })
     }
 
-    return NextResponse.json({ projects })
+    return NextResponse.json({ projects: projectsWithImages })
   } catch (error) {
     console.error('Error getting projects:', error)
     return NextResponse.json(
@@ -144,12 +203,43 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    // Désactiver l'authentification pour le développement
+    // const session = await getServerSession(authOptions)
+    // if (!session?.user?.id) {
+    //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    // }
 
-    const body = await request.json()
+    // Handle FormData (for image upload) or JSON
+    const contentType = request.headers.get('content-type') || ''
+    let body: any = {}
+    
+    if (contentType.includes('multipart/form-data')) {
+      const formData = await request.formData()
+      body = {
+        name: formData.get('name'),
+        description: formData.get('description'),
+        type: formData.get('type'),
+        repo_type: formData.get('repo_type'),
+        repo_url: formData.get('repo_url'),
+        repo_branch: formData.get('repo_branch') || 'main',
+        local_path: formData.get('local_path'),
+      }
+      
+      // Handle image upload
+      const imageFile = formData.get('image') as File | null
+      if (imageFile) {
+        // For now, we'll store the image URL in metadata
+        // In production, you'd upload to a storage service
+        const imageUrl = URL.createObjectURL(imageFile)
+        body.metadata = JSON.stringify({ imageUrl })
+      }
+    } else {
+      try {
+        body = await request.json()
+      } catch (e) {
+        return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
+      }
+    }
     const {
       name,
       description,
@@ -184,6 +274,9 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Créer un userId par défaut si pas de session
+    const defaultUserId = 'dev-user-id'
+    
     const project = await prisma.project.create({
       data: {
         name,
@@ -193,13 +286,37 @@ export async function POST(request: NextRequest) {
         repoUrl: repo_url || null,
         repoBranch: repo_branch || 'main',
         localPath: local_path || null,
-        userId: session.user.id,
+        userId: defaultUserId, // session?.user?.id || defaultUserId,
         status: 'ACTIVE',
-        metadata: '{}',
+        metadata: body.metadata || '{}',
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            image: true,
+          },
+        },
       },
     })
 
-    return NextResponse.json({ project }, { status: 201 })
+    // Extract imageUrl from metadata if present
+    let imageUrl = null
+    try {
+      const metadata = typeof project.metadata === 'string' ? JSON.parse(project.metadata) : project.metadata
+      imageUrl = metadata?.imageUrl || null
+    } catch (e) {
+      // Ignore parsing errors
+    }
+
+    return NextResponse.json({ 
+      project: {
+        ...project,
+        imageUrl,
+      }
+    }, { status: 201 })
   } catch (error) {
     console.error('Error creating project:', error)
     return NextResponse.json(

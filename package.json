@@ -5,8 +5,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 6001",
+    "dev:local": "./start-local-all.sh",
     "build": "prisma generate && next build",
     "start": "next start",
+    "start:backend": "cd backend && PORT=4000 node server.js",
+    "start:frontend": "next dev -p 6001",
     "lint": "next lint",
     "postinstall": "prisma generate",
     "db:generate": "prisma generate",
@@ -39,7 +42,8 @@
   "devDependencies": {
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.2.0",
-    "prisma": "^5.19.0"
+    "prisma": "^5.19.0",
+    "xlsx": "^0.18.5"
   },
   "engines": {
     "node": ">=18.x"

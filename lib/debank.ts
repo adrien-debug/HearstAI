@@ -65,6 +65,9 @@ export interface CollateralClient {
   tag: string;
   wallets: string[];
   positions: CollateralPosition[];
+  totalValue: number;
+  totalDebt: number;
+  healthFactor: number;
   lastUpdate: string;
 }
 
@@ -251,6 +254,26 @@ export async function buildCollateralClientFromDeBank(
     name ||
     `${wallet.slice(0, 6)}...${wallet.slice(wallet.length - 4, wallet.length)}`;
 
+  // Calculer totalValue et totalDebt depuis les positions
+  let totalValue = 0;
+  let totalDebt = 0;
+
+  for (const position of positions) {
+    const collateralValue = position.collateralAmount * position.collateralPriceUsd;
+    totalValue += collateralValue;
+    totalDebt += position.debtAmount;
+  }
+
+  // Calculer healthFactor (ratio collatéral/dette)
+  // Health factor = totalValue / totalDebt (si totalDebt > 0)
+  let healthFactor = 0;
+  if (totalDebt > 0) {
+    healthFactor = totalValue / totalDebt;
+  } else if (totalValue > 0) {
+    // Si pas de dette mais du collatéral, health factor très élevé
+    healthFactor = 999;
+  }
+
   const now = new Date().toISOString();
 
   return {
@@ -259,6 +282,9 @@ export async function buildCollateralClientFromDeBank(
     tag,
     wallets: [wallet],
     positions,
+    totalValue,
+    totalDebt,
+    healthFactor,
     lastUpdate: now,
   };
 }

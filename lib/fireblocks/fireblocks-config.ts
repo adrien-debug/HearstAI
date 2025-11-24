@@ -77,10 +77,19 @@ export class FireblocksConfigManager {
    * Vérifie si la configuration est valide
    */
   isValid(): boolean {
-    if (!this.config) {
+    try {
+      // Si pas de config, essayer d'initialiser depuis .env
+      if (!this.config) {
+        try {
+          this.initializeFromEnv();
+        } catch (e) {
+          return false;
+        }
+      }
+      return !!(this.config && this.config.apiKey && this.config.privateKey);
+    } catch {
       return false;
     }
-    return !!(this.config.apiKey && this.config.privateKey);
   }
 }
 

@@ -19,12 +19,12 @@ export class FireblocksClient {
   /**
    * Crée une signature pour l'authentification Fireblocks
    * Fireblocks utilise une signature RSA-SHA256 avec un format spécifique
+   * Documentation: https://developers.fireblocks.com/reference/authentication
    */
-  private createSignature(path: string, body: string = '', method: string = 'GET'): string {
+  private createSignature(path: string, body: string = '', method: string = 'GET', timestamp: string, nonce: string): string {
     const config = this.config.getConfig();
-    const timestamp = Date.now().toString();
-    const nonce = crypto.randomBytes(16).toString('hex');
     
+    // Calculer le hash SHA256 du body
     const bodyHash = body ? crypto.createHash('sha256').update(body).digest('hex') : '';
     
     // Format du message pour Fireblocks: timestamp + nonce + method + path + bodyHash
@@ -36,8 +36,8 @@ export class FireblocksClient {
       const signature = sign.sign(config.privateKey, 'base64');
       
       return signature;
-    } catch (error) {
-      throw new Error(`Erreur lors de la création de la signature: ${error}`);
+    } catch (error: any) {
+      throw new Error(`Erreur lors de la création de la signature: ${error.message}`);
     }
   }
 
@@ -57,7 +57,7 @@ export class FireblocksClient {
     const timestamp = Date.now().toString();
     const nonce = crypto.randomBytes(16).toString('hex');
     
-    const signature = this.createSignature(path, bodyString, method);
+    const signature = this.createSignature(path, bodyString, method, timestamp, nonce);
     
     const url = `${config.baseUrl}${path}`;
     
@@ -74,8 +74,29 @@ export class FireblocksClient {
     });
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ message: response.statusText }));
-      throw new Error(`Fireblocks API Error: ${response.status} - ${errorData.message || response.statusText}`);
+      const errorText = await response.text().catch(() => response.statusText);
+      let errorData: any;
+      try {
+        errorData = JSON.parse(errorText);
+      } catch {
+        errorData = { message: errorText };
+      }
+      
+      // Log détaillé pour debug
+      console.error('[Fireblocks API] Erreur détaillée:', {
+        status: response.status,
+        statusText: response.statusText,
+        error: errorData,
+        url,
+        method,
+        headers: {
+          'X-API-Key': config.apiKey.substring(0, 8) + '...',
+          'X-Timestamp': timestamp,
+          'X-Nonce': nonce.substring(0, 8) + '...',
+        }
+      });
+      
+      throw new Error(`Fireblocks API Error: ${response.status} - ${errorData.message || errorData.error || response.statusText}`);
     }
 
     return response.json();
@@ -125,6 +146,14 @@ export class FireblocksClient {
    */
   isConfigured(): boolean {
     try {
+      // Essayer d'initialiser la config si elle n'existe pas
+      if (!this.config) {
+        try {
+          this.config.getConfig(); // Cela va initialiser depuis .env si nécessaire
+        } catch (e) {
+          return false;
+        }
+      }
       return this.config.isValid();
     } catch {
       return false;

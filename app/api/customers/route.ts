@@ -2,10 +2,11 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { buildCollateralClientFromDeBank } from '@/lib/debank'
+import { prisma } from '@/lib/db'
 
 /**
  * API Route pour gérer les customers (clients avec adresses ERC20)
- * Utilise l'API DeBank pour récupérer les données réelles
+ * Utilise l'API DeBank pour récupérer les données réelles en temps réel
  * 
  * GET /api/customers - Liste tous les customers avec leurs données DeBank
  * POST /api/customers - Crée un nouveau customer
@@ -13,74 +14,96 @@ import { buildCollateralClientFromDeBank } from '@/lib/debank'
  * DELETE /api/customers/:id - Supprime un customer
  */
 
-// Wallets par défaut pour les tests (peuvent être remplacés par une base de données)
-const DEFAULT_WALLETS = [
-  '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
-  '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
-]
-
-// GET - Liste tous les customers avec leurs données DeBank
+// GET - Liste tous les customers avec leurs données DeBank en temps réel
 export async function GET(request: NextRequest) {
   try {
     // Ne pas exiger l'authentification pour permettre le développement
     // const session = await getServerSession(authOptions)
     
-    // Récupérer les wallets depuis les query params ou utiliser les defaults
     const { searchParams } = new URL(request.url)
-    const walletsParam = searchParams.get('wallets')
-    const wallets = walletsParam 
-      ? walletsParam.split(',').map(w => w.trim()).filter(Boolean)
-      : DEFAULT_WALLETS
+    const refresh = searchParams.get('refresh') === 'true' // Force refresh depuis DeBank
+    
+    // Récupérer tous les customers depuis la base de données
+    const dbCustomers = await prisma.customer.findMany({
+      orderBy: { createdAt: 'desc' }
+    })
 
-    if (wallets.length === 0) {
-      return NextResponse.json({ customers: [] })
+    if (dbCustomers.length === 0) {
+      return NextResponse.json({ customers: [], count: 0, source: 'database' })
     }
 
-    // Récupérer les données DeBank pour chaque wallet
+    // Récupérer les données DeBank en temps réel pour chaque customer
     const customersData = await Promise.all(
-      wallets.map(async (wallet, index) => {
+      dbCustomers.map(async (dbCustomer) => {
         try {
           // Récupérer les données collatérales depuis DeBank
-          const collateralClient = await buildCollateralClientFromDeBank(wallet, {
-            tag: 'Client',
-            chains: ['eth'],
-            allowedProtocols: [],
-          })
+          const chains = JSON.parse(dbCustomer.chains || '["eth"]')
+          const protocols = JSON.parse(dbCustomer.protocols || '[]')
+          
+          const collateralClient = await buildCollateralClientFromDeBank(
+            dbCustomer.erc20Address,
+            {
+              name: dbCustomer.name,
+              tag: dbCustomer.tag,
+              chains,
+              allowedProtocols: protocols,
+            }
+          )
+
+          // Mettre à jour la base de données avec les nouvelles données DeBank
+          if (refresh || !dbCustomer.lastUpdate || 
+              (new Date().getTime() - new Date(dbCustomer.lastUpdate).getTime()) > 5 * 60 * 1000) {
+            await prisma.customer.update({
+              where: { id: dbCustomer.id },
+              data: {
+                totalValue: collateralClient.totalValue,
+                totalDebt: collateralClient.totalDebt,
+                healthFactor: collateralClient.healthFactor,
+                status: collateralClient.healthFactor > 1.5 ? 'active' : 
+                        collateralClient.healthFactor > 1.0 ? 'warning' : 'critical',
+                lastUpdate: new Date(),
+              }
+            })
+          }
 
           // Construire l'objet customer avec les données DeBank
           return {
-            id: index + 1,
-            name: collateralClient.name || `Client ${wallet.substring(0, 8)}...`,
-            erc20Address: wallet,
-            tag: collateralClient.tag || 'Client',
-            totalValue: collateralClient.totalValue || 0,
-            totalDebt: collateralClient.totalDebt || 0,
-            healthFactor: collateralClient.healthFactor || 0,
+            id: dbCustomer.id,
+            name: collateralClient.name || dbCustomer.name,
+            erc20Address: dbCustomer.erc20Address,
+            tag: collateralClient.tag || dbCustomer.tag,
+            totalValue: collateralClient.totalValue,
+            totalDebt: collateralClient.totalDebt,
+            healthFactor: collateralClient.healthFactor,
             positions: collateralClient.positions || [],
-            lastUpdate: collateralClient.lastUpdate || new Date().toISOString(),
-            // Données supplémentaires pour compatibilité
-            email: null,
-            btcWallet: null,
-            positionValue: collateralClient.totalValue || 0,
-            status: collateralClient.healthFactor > 1.5 ? 'active' : 'warning',
+            lastUpdate: collateralClient.lastUpdate,
+            email: dbCustomer.email,
+            btcWallet: dbCustomer.btcWallet,
+            positionValue: collateralClient.totalValue,
+            status: collateralClient.healthFactor > 1.5 ? 'active' : 
+                    collateralClient.healthFactor > 1.0 ? 'warning' : 'critical',
+            chains: chains,
+            protocols: protocols,
           }
         } catch (error: any) {
-          console.warn(`[API Customers] Erreur pour wallet ${wallet}:`, error.message)
-          // Retourner un customer avec données minimales en cas d'erreur
+          console.warn(`[API Customers] Erreur pour wallet ${dbCustomer.erc20Address}:`, error.message)
+          // Retourner les données de la base de données en cas d'erreur DeBank
           return {
-            id: index + 1,
-            name: `Client ${wallet.substring(0, 8)}...`,
-            erc20Address: wallet,
-            tag: 'Client',
-            totalValue: 0,
-            totalDebt: 0,
-            healthFactor: 0,
+            id: dbCustomer.id,
+            name: dbCustomer.name,
+            erc20Address: dbCustomer.erc20Address,
+            tag: dbCustomer.tag,
+            totalValue: dbCustomer.totalValue,
+            totalDebt: dbCustomer.totalDebt,
+            healthFactor: dbCustomer.healthFactor,
             positions: [],
-            lastUpdate: new Date().toISOString(),
-            email: null,
-            btcWallet: null,
-            positionValue: 0,
-            status: 'unknown',
+            lastUpdate: dbCustomer.lastUpdate.toISOString(),
+            email: dbCustomer.email,
+            btcWallet: dbCustomer.btcWallet,
+            positionValue: dbCustomer.totalValue,
+            status: dbCustomer.status,
+            chains: JSON.parse(dbCustomer.chains || '["eth"]'),
+            protocols: JSON.parse(dbCustomer.protocols || '[]'),
             error: error.message,
           }
         }
@@ -91,6 +114,7 @@ export async function GET(request: NextRequest) {
       customers: customersData,
       count: customersData.length,
       source: 'debank',
+      timestamp: new Date().toISOString(),
     })
   } catch (error: any) {
     console.error('[API Customers] Erreur GET:', error)
@@ -108,32 +132,20 @@ export async function GET(request: NextRequest) {
 // POST - Crée un nouveau customer
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
-    if (!session?.user?.id) {
-      // Retourner une erreur soft si pas de session (ne pas bloquer l'UI)
-      return NextResponse.json({ 
-        error: 'Authentification requise',
-        message: 'Vous devez être connecté pour créer un customer'
-      }, { status: 401 })
-    }
+    // Ne pas exiger l'authentification pour permettre le développement
+    // const session = await getServerSession(authOptions)
+    // if (!session?.user?.id) {
+    //   return NextResponse.json({ 
+    //     error: 'Authentification requise',
+    //     message: 'Vous devez être connecté pour créer un customer'
+    //   }, { status: 401 })
+    // }
 
     // Vérifier que Prisma est disponible
     if (!prisma) {
       console.error('[API Customers] Prisma client est undefined')
       return NextResponse.json(
         { error: 'Erreur de configuration serveur', details: 'Prisma client non disponible' },
-        { status: 500 }
-      )
-    }
-
-    // Vérifier que le modèle Customer existe (vérification dynamique pour éviter les erreurs TypeScript)
-    const prismaAny = prisma as any
-    if (!prismaAny.customer) {
-      console.error('[API Customers] Prisma.customer est undefined - le modèle Customer n\'existe pas dans le client généré')
-      console.error('[API Customers] Modèles disponibles:', Object.keys(prisma).filter(key => !key.startsWith('_') && !key.startsWith('$')))
-      console.error('[API Customers] Type de prisma:', typeof prisma)
-      return NextResponse.json(
-        { error: 'Erreur de configuration serveur', details: 'Le modèle Customer n\'est pas disponible. Veuillez redémarrer le serveur après avoir exécuté: npx prisma generate' },
         { status: 500 }
       )
     }
@@ -159,7 +171,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Vérifier si l'adresse existe déjà
-    const existing = await (prisma as any).customer.findFirst({
+    const existing = await prisma.customer.findFirst({
       where: { erc20Address: erc20Address.toLowerCase() }
     })
 
@@ -170,14 +182,34 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Créer le customer
-    const customer = await (prisma as any).customer.create({
-      data: {
+    // Récupérer les données DeBank pour le nouveau customer
+    let debankData = null
+    try {
+      debankData = await buildCollateralClientFromDeBank(erc20Address.toLowerCase(), {
         name,
-        erc20Address: erc20Address.toLowerCase(),
         tag: tag || 'Client',
+        chains: chains || ['eth'],
+        allowedProtocols: protocols || [],
+      })
+    } catch (error: any) {
+      console.warn(`[API Customers] Erreur DeBank lors de la création:`, error.message)
+      // Continuer même si DeBank échoue
+    }
+
+    // Créer le customer avec les données DeBank si disponibles
+    const customer = await prisma.customer.create({
+      data: {
+        name: debankData?.name || name,
+        erc20Address: erc20Address.toLowerCase(),
+        tag: debankData?.tag || tag || 'Client',
         chains: JSON.stringify(chains || ['eth']),
         protocols: JSON.stringify(protocols || []),
+        totalValue: debankData?.totalValue || 0,
+        totalDebt: debankData?.totalDebt || 0,
+        healthFactor: debankData?.healthFactor || 0,
+        status: debankData?.healthFactor && debankData.healthFactor > 1.5 ? 'active' : 
+                debankData?.healthFactor && debankData.healthFactor > 1.0 ? 'warning' : 'unknown',
+        lastUpdate: new Date(),
       }
     })
 
@@ -185,8 +217,6 @@ export async function POST(request: NextRequest) {
   } catch (error: any) {
     console.error('[API Customers] Erreur POST:', error)
     console.error('[API Customers] Stack:', error.stack)
-    console.error('[API Customers] Prisma disponible:', !!prisma)
-    console.error('[API Customers] Prisma.customer disponible:', !!(prisma && 'customer' in prisma))
     
     // Messages d'erreur plus détaillés selon le type d'erreur
     let errorMessage = 'Erreur lors de la création du customer'

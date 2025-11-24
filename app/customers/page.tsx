@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { customersAPI } from '@/lib/api'
 
 export default function CustomersPage() {
@@ -13,10 +14,10 @@ export default function CustomersPage() {
     loadCustomers()
   }, [])
 
-  const loadCustomers = async () => {
+  const loadCustomers = async (refresh = false) => {
     try {
       setLoading(true)
-      const response = await customersAPI.getAll()
+      const response = await customersAPI.getAll(refresh)
       setCustomers(response.customers || [])
     } catch (error) {
       console.error('Error loading customers:', error)
@@ -25,6 +26,15 @@ export default function CustomersPage() {
       setLoading(false)
     }
   }
+
+  // Auto-refresh toutes les 30 secondes
+  useEffect(() => {
+    const interval = setInterval(() => {
+      loadCustomers(true) // Refresh depuis DeBank
+    }, 30000) // 30 secondes
+
+    return () => clearInterval(interval)
+  }, [])
 
   const filteredCustomers = customers.filter(customer => {
     const search = searchTerm.toLowerCase()
@@ -53,7 +63,45 @@ export default function CustomersPage() {
               letterSpacing: '-0.02em',
               lineHeight: '1.3'
             }}>Customers</h1>
-            <button
+            <div style={{ display: 'flex', gap: 'var(--space-3)', alignItems: 'center' }}>
+              <button
+                type="button"
+                onClick={() => loadCustomers(true)}
+                disabled={loading}
+                style={{
+                  padding: 'var(--space-3) var(--space-6)',
+                  background: 'transparent',
+                  border: '1px solid rgba(197, 255, 167, 0.3)',
+                  borderRadius: 'var(--radius-full)',
+                  fontSize: 'var(--text-sm)',
+                  fontWeight: 500,
+                  color: '#C5FFA7',
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                  transition: 'all var(--duration-fast) var(--ease-in-out)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 'var(--space-2)',
+                  opacity: loading ? 0.5 : 1,
+                }}
+                onMouseEnter={(e) => {
+                  if (!loading) {
+                    e.currentTarget.style.borderColor = '#C5FFA7'
+                    e.currentTarget.style.background = 'rgba(197, 255, 167, 0.1)'
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!loading) {
+                    e.currentTarget.style.borderColor = 'rgba(197, 255, 167, 0.3)'
+                    e.currentTarget.style.background = 'transparent'
+                  }
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M8 2 L8 14 M2 8 L14 8" />
+                </svg>
+                Refresh
+              </button>
+              <button
               type="button"
               onClick={(e) => {
                 e.preventDefault()
@@ -100,6 +148,7 @@ export default function CustomersPage() {
               </svg>
               Add Customer
             </button>
+            </div>
           </div>
 
           {/* Search bar */}
@@ -283,7 +332,8 @@ export default function CustomersPage() {
                           </span>
                         </td>
                         <td>
-                          <button
+                          <Link
+                            href={`/customers/${customer.id}`}
                             style={{
                               padding: 'var(--space-2) var(--space-4)',
                               background: 'transparent',
@@ -293,6 +343,8 @@ export default function CustomersPage() {
                               fontSize: 'var(--text-xs)',
                               cursor: 'pointer',
                               transition: 'all var(--duration-fast) var(--ease-in-out)',
+                              textDecoration: 'none',
+                              display: 'inline-block',
                             }}
                             onMouseEnter={(e) => {
                               e.currentTarget.style.borderColor = '#C5FFA7'
@@ -304,7 +356,7 @@ export default function CustomersPage() {
                             }}
                           >
                             View
-                          </button>
+                          </Link>
                         </td>
                       </tr>
                     ))

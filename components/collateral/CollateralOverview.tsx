@@ -60,40 +60,8 @@ export default function CollateralOverview() {
         setData(response)
       } catch (err) {
         console.error('Error loading collateral data:', err)
-        // Fallback to mock data
-        setData({
-          clients: [
-            {
-              id: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
-              name: 'Client Principal',
-              tag: 'Client',
-              wallets: ['0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb'],
-              totalValue: 1250000,
-              totalDebt: 450000,
-              healthFactor: 2.78,
-              positions: [
-                { protocol: 'Morpho', asset: 'ETH', collateralAmount: 500, collateralPriceUsd: 3800, debtToken: 'USDC', debtAmount: 200000, borrowApr: 0.065, chain: 'ethereum' },
-                { protocol: 'Aave', asset: 'BTC', collateralAmount: 300, collateralPriceUsd: 71000, debtToken: 'USDC', debtAmount: 150000, borrowApr: 0.072, chain: 'ethereum' },
-                { protocol: 'Morpho', asset: 'USDC', collateralAmount: 400000, collateralPriceUsd: 1, debtToken: 'USDT', debtAmount: 100000, borrowApr: 0.055, chain: 'ethereum' },
-              ],
-              lastUpdate: new Date().toISOString(),
-            },
-            {
-              id: '0x8ba1f109551bD432803012645Hac136c22C9',
-              name: 'Client Secondaire',
-              tag: 'VIP',
-              wallets: ['0x8ba1f109551bD432803012645Hac136c22C9'],
-              totalValue: 850000,
-              totalDebt: 320000,
-              healthFactor: 2.66,
-              positions: [
-                { protocol: 'Morpho', asset: 'USDC', collateralAmount: 400000, collateralPriceUsd: 1, debtToken: 'USDC', debtAmount: 180000, borrowApr: 0.062, chain: 'ethereum' },
-                { protocol: 'Aave', asset: 'ETH', collateralAmount: 120, collateralPriceUsd: 3800, debtToken: 'USDC', debtAmount: 140000, borrowApr: 0.068, chain: 'ethereum' },
-              ],
-              lastUpdate: new Date().toISOString(),
-            },
-          ],
-        })
+        // Fallback sur données vides si erreur
+        setData({ clients: [] })
       } finally {
         setLoading(false)
       }
