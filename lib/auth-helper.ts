@@ -34,7 +34,7 @@ export async function getSessionFromRequest(request: NextRequest) {
         email: user.email,
         name: user.name,
       },
-      expires: token.exp ? new Date(token.exp * 1000).toISOString() : undefined,
+      expires: token.exp && typeof token.exp === 'number' ? new Date(token.exp * 1000).toISOString() : undefined,
     }
   } catch (error) {
     console.error('Error getting session:', error)
