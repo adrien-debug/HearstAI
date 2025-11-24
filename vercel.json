@@ -17,6 +17,7 @@
     "FIREBLOCKS_SECRET_KEY": "@fireblocks_secret_key",
     "LUXOR_API_KEY": "@luxor_api_key"
   },
+  "buildCommand": "prisma generate && next build",
   "build": {
     "env": {
       "DATABASE_URL": "@database_url",
