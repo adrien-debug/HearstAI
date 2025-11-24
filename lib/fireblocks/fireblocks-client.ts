@@ -149,7 +149,9 @@ export class FireblocksClient {
       // Essayer d'initialiser la config si elle n'existe pas
       if (!this.config) {
         try {
-          this.config.getConfig(); // Cela va initialiser depuis .env si nécessaire
+          // Initialiser la config depuis .env si nécessaire
+          const { fireblocksConfig } = await import('./fireblocks-config');
+          this.config = fireblocksConfig;
         } catch (e) {
           return false;
         }
