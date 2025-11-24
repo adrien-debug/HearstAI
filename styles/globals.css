@@ -6,9 +6,9 @@
 
 /* Additional global styles */
 :root {
-  /* HEARST specific colors */
-  --hearst-green: #a5ff9c;
-  --hearst-green-dark: #a5ff9c;
+  /* HEARST specific colors - Charte graphique complète */
+  --hearst-green: #8afd81; /* Vert HEARST principal selon charte */
+  --hearst-green-dark: #6fdc66; /* Hover, états actifs */
   
   /* Text colors */
   --text-primary: #ffffff;
@@ -102,6 +102,199 @@ body {
   overflow-x: hidden;
 }
 
+/* Force tous les liens dans la sidebar à être blancs */
+.sidebar a,
+.sidebar a:link,
+.sidebar a:visited,
+.sidebar a:hover,
+.sidebar a:active,
+.sidebar-nav a,
+.sidebar-nav a:link,
+.sidebar-nav a:visited,
+.sidebar-nav a:hover,
+.sidebar-nav a:active {
+  color: #ffffff !important;
+  text-decoration: none !important;
+}
+
+.sidebar .nav-label,
+.sidebar-nav .nav-label {
+  color: #ffffff !important;
+}
+
+.menu-submenu-item,
+.menu-submenu-item:link,
+.menu-submenu-item:visited,
+.menu-submenu-item:hover,
+.menu-submenu-item:active {
+  color: #ffffff !important;
+  text-decoration: none !important;
+}
+
+.menu-submenu-item .nav-label {
+  color: #ffffff !important;
+}
+
+.admin-submenu-item,
+.admin-submenu-item:link,
+.admin-submenu-item:visited,
+.admin-submenu-item:hover,
+.admin-submenu-item:active {
+  color: #ffffff !important;
+  text-decoration: none !important;
+}
+
+.admin-submenu-item .nav-label {
+  color: #ffffff !important;
+}
+
+/* ====================================
+   SIDEBAR - Structure propre et cohérente
+   ==================================== */
+
+/* Sidebar container */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 260px;
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: var(--space-4, 12px);
+}
+
+/* Nav list (vertical) */
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 6px);
+  width: 100%;
+}
+
+/* Items simples (top-level links) */
+.nav-item {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: var(--space-3, 10px);
+  width: 100%;
+  padding: var(--space-2, 8px) var(--space-3, 12px);
+  border-radius: var(--radius-md, 8px);
+  text-decoration: none;
+  color: inherit;
+  box-sizing: border-box;
+}
+
+/* label + icon */
+.nav-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+}
+
+/* Force label to wrap under conditions and take remaining space */
+.nav-label {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1 1 auto;
+  line-height: 1.5;
+  vertical-align: middle;
+}
+
+/* Section wrapper */
+.menu-section {
+  display: block;
+  width: 100%;
+}
+
+/* Toggle button that opens a section */
+.menu-section-toggle {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3, 10px);
+  width: 100% !important;
+  padding: var(--space-3, 10px) !important;
+  border-radius: var(--radius-md, 8px);
+  background: transparent !important;
+  border: none !important;
+  cursor: pointer;
+  box-sizing: border-box;
+  color: #ffffff !important;
+  transition: all var(--duration-fast, 160ms) var(--ease-in-out, ease);
+}
+
+/* Visual active state */
+.menu-section-toggle.active,
+.nav-item.active {
+  background: rgb(138, 253, 129) !important;
+  color: #000 !important;
+  font-weight: 600;
+}
+
+.menu-section-toggle.active .nav-label,
+.menu-section-toggle.active .nav-icon,
+.nav-item.active .nav-label,
+.nav-item.active .nav-icon {
+  color: #000 !important;
+}
+
+/* Arrow icon rotation (chevron) */
+.menu-section-toggle svg.chev {
+  transition: transform var(--duration-fast, 160ms) var(--ease-in-out, ease);
+  transform: rotate(0deg);
+}
+
+.menu-section-toggle.active svg.chev {
+  transform: rotate(90deg);
+}
+
+/* ---- Submenu (vertical) ---- */
+.menu-submenu {
+  display: none;
+  flex-direction: column;
+  gap: var(--space-2, 6px);
+  padding-left: calc(var(--space-4, 12px) + 6px);
+  margin-top: var(--space-2, 6px);
+}
+
+.menu-submenu.show {
+  display: flex;
+}
+
+/* Submenu items */
+.menu-submenu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 8px);
+  padding: var(--space-2, 6px) var(--space-3, 10px);
+  width: 100%;
+  border-radius: calc(var(--radius-sm, 6px));
+  text-decoration: none;
+  color: #ffffff !important;
+  background: transparent !important;
+  transition: all var(--duration-fast, 160ms) var(--ease-in-out, ease);
+}
+
+.menu-submenu-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.menu-submenu-item.active {
+  background: transparent !important;
+  color: rgb(138, 253, 129) !important;
+  font-weight: 600;
+}
+
+/* Force block-level anchors to avoid inline behaviour */
+.sidebar a,
+.menu-submenu a {
+  display: block !important;
+  width: 100% !important;
+}
+
 /* Layout styles */
 .cockpit-layout {
   display: grid;
@@ -187,11 +380,11 @@ body {
 @keyframes pulse {
   0%, 100% {
     opacity: 1;
-    box-shadow: 0 0 6px rgba(165, 255, 156, 0.5);
+    box-shadow: 0 0 6px rgba(138, 253, 129, 0.5);
   }
   50% {
     opacity: 0.5;
-    box-shadow: 0 0 12px rgba(165, 255, 156, 0.8);
+    box-shadow: 0 0 12px rgba(138, 253, 129, 0.8);
   }
 }
 
