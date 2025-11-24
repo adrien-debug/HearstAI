@@ -28,7 +28,7 @@ if [ ! -f .env.local ]; then
   exit 1
 fi
 
-# URL Vercel (à mettre à jour avec l'URL réelle)
+# URL Vercel (mise à jour avec l'URL réelle)
 VERCEL_URL="https://hearstai-6dnhm44p9-adrien-nejkovics-projects.vercel.app"
 
 # Charger les variables depuis .env.local
@@ -49,11 +49,23 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
 fi
 
 # Configurer DATABASE_URL
+# ⚠️ IMPORTANT: SQLite ne fonctionne pas sur Vercel (système de fichiers en lecture seule)
+# Il faut utiliser PostgreSQL (Vercel Postgres, Supabase, Neon, etc.)
 if [ -n "$DATABASE_URL" ]; then
   echo "🔧 Configuration de DATABASE_URL..."
-  vercel env add DATABASE_URL production <<< "$DATABASE_URL" || echo "⚠️  DATABASE_URL existe déjà ou erreur"
-  vercel env add DATABASE_URL preview <<< "$DATABASE_URL" || echo "⚠️  DATABASE_URL existe déjà ou erreur"
-  vercel env add DATABASE_URL development <<< "$DATABASE_URL" || echo "⚠️  DATABASE_URL existe déjà ou erreur"
+  echo "⚠️  ATTENTION: SQLite ne fonctionne pas sur Vercel !"
+  echo "   Tu dois utiliser PostgreSQL pour la production."
+  echo "   Options: Vercel Postgres, Supabase, Neon, etc."
+  echo ""
+  read -p "Continuer quand même ? (y/n) " -n 1 -r
+  echo
+  if [[ $REPLY =~ ^[Yy]$ ]]; then
+    vercel env add DATABASE_URL production <<< "$DATABASE_URL" || echo "⚠️  DATABASE_URL existe déjà ou erreur"
+    vercel env add DATABASE_URL preview <<< "$DATABASE_URL" || echo "⚠️  DATABASE_URL existe déjà ou erreur"
+    vercel env add DATABASE_URL development <<< "$DATABASE_URL" || echo "⚠️  DATABASE_URL existe déjà ou erreur"
+  else
+    echo "⏭️  DATABASE_URL ignoré. Configure-le manuellement avec une base PostgreSQL."
+  fi
 fi
 
 # Configurer NEXTAUTH_SECRET
