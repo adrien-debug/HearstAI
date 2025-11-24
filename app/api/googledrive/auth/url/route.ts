@@ -7,6 +7,8 @@ import { googleDriveClient } from '@/lib/googledrive/googledrive-client';
  * Route API Google Drive - URL d'autorisation
  * GET /api/googledrive/auth/url - Génère l'URL d'autorisation OAuth2
  */
+export const dynamic = 'force-dynamic'
+
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
