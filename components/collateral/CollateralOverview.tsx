@@ -85,9 +85,9 @@ export default function CollateralOverview() {
   
   // Calculer les totaux globaux
   const allMetrics = clients.map((client: any) => computeClientMetrics(client))
-  const totalCollateral = allMetrics.reduce((sum, m) => sum + m.totalCollateralUsd, 0)
-  const totalDebt = allMetrics.reduce((sum, m) => sum + m.totalDebtUsd, 0)
-  const totalAvailable = allMetrics.reduce((sum, m) => sum + m.availableCredit, 0)
+  const totalCollateral = allMetrics.reduce((sum: number, m: any) => sum + m.totalCollateralUsd, 0)
+  const totalDebt = allMetrics.reduce((sum: number, m: any) => sum + m.totalDebtUsd, 0)
+  const totalAvailable = allMetrics.reduce((sum: number, m: any) => sum + m.availableCredit, 0)
   const utilizationRate = totalCollateral > 0 ? ((totalDebt / totalCollateral) * 100).toFixed(1) : '0'
 
   // Générer les activités récentes depuis les positions
