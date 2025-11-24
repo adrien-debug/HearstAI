@@ -100,8 +100,8 @@ export default function CollateralAnalytics() {
   
   // Calculer les métriques globales
   const allMetrics = clients.map((client: any) => computeClientMetrics(client))
-  const totalCollateral = allMetrics.reduce((sum, m) => sum + m.totalCollateralUsd, 0)
-  const totalDebt = allMetrics.reduce((sum, m) => sum + m.totalDebtUsd, 0)
+  const totalCollateral = allMetrics.reduce((sum: number, m: any) => sum + m.totalCollateralUsd, 0)
+  const totalDebt = allMetrics.reduce((sum: number, m: any) => sum + m.totalDebtUsd, 0)
   const totalDeposits = totalCollateral // Pour simplifier, on considère que le collatéral = dépôts
   const totalWithdrawals = 0 // Pas de données de retrait disponibles
   const totalInterestEarned = 0 // Pas de données d'intérêt disponibles pour l'instant
