@@ -8,6 +8,8 @@ import { prisma } from '@/lib/db';
  * Route API Google Drive - Callback OAuth2
  * GET /api/googledrive/auth/callback?code=... - Échange le code d'autorisation contre des tokens
  */
+export const dynamic = 'force-dynamic'
+
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);

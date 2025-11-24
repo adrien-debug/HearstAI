@@ -10,6 +10,8 @@ import type { CreateFileRequest, ListFilesRequest } from '@/lib/googledrive/goog
  * GET /api/googledrive/files - Liste les fichiers
  * POST /api/googledrive/files - Crée un fichier
  */
+export const dynamic = 'force-dynamic'
+
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);

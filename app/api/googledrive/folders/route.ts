@@ -8,6 +8,8 @@ import { prisma } from '@/lib/db';
  * Route API Google Drive - Dossiers
  * POST /api/googledrive/folders - Crée un dossier
  */
+export const dynamic = 'force-dynamic'
+
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);

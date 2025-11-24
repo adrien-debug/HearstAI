@@ -11,6 +11,7 @@ import type { UpdateFileRequest } from '@/lib/googledrive/googledrive-types';
  * PATCH /api/googledrive/files/[fileId] - Met à jour un fichier
  * DELETE /api/googledrive/files/[fileId] - Supprime un fichier
  */
+export const dynamic = 'force-dynamic'
 
 async function getAuthenticatedClient(userId: string) {
   const account = await prisma.account.findUnique({

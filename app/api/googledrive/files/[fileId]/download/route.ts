@@ -9,6 +9,8 @@ import type { DownloadFileRequest } from '@/lib/googledrive/googledrive-types';
  * Route API Google Drive - Téléchargement de fichier
  * GET /api/googledrive/files/[fileId]/download - Télécharge le contenu d'un fichier
  */
+export const dynamic = 'force-dynamic'
+
 export async function GET(
   request: NextRequest,
   { params }: { params: { fileId: string } }
