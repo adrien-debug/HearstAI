@@ -819,6 +819,7 @@
 .project-roadmap {
     width: 100%;
     padding: var(--space-2);
+    min-height: 400px;
 }
 
 .project-roadmap-content {
@@ -979,6 +980,7 @@
 .photo-gallery {
     width: 100%;
     padding: var(--space-2);
+    min-height: 400px;
 }
 
 .photo-gallery-item {
@@ -1212,6 +1214,7 @@
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     border: 1px solid rgba(255, 255, 255, 0.05) !important;
     border-radius: var(--radius-xl) !important;
+    min-height: 500px;
     box-shadow: 
         0 8px 32px rgba(0, 0, 0, 0.4),
         0 2px 8px rgba(0, 0, 0, 0.3),

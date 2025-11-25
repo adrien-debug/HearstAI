@@ -11,6 +11,23 @@ export default function CollateralAnalytics() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    // Load icons
+    const loadIcons = () => {
+      if (typeof window !== 'undefined' && (window as any).Icons) {
+        document.querySelectorAll('[data-icon]').forEach(el => {
+          const iconName = el.getAttribute('data-icon')
+          if (iconName) {
+            const iconSvg = (window as any).Icons[iconName]
+            if (iconSvg) {
+              el.innerHTML = iconSvg
+            }
+          }
+        })
+      }
+    }
+    loadIcons()
+    const timeout = setTimeout(loadIcons, 500)
+    
     const loadData = async () => {
       try {
         setLoading(true)
@@ -62,7 +79,10 @@ export default function CollateralAnalytics() {
     
     // Auto-refresh every 30 seconds pour données en temps réel
     const interval = setInterval(loadData, 30000)
-    return () => clearInterval(interval)
+    return () => {
+      clearInterval(interval)
+      clearTimeout(timeout)
+    }
   }, [])
 
   if (loading) {
@@ -94,7 +114,7 @@ export default function CollateralAnalytics() {
         <div className="premium-stats-grid">
           <div className="premium-stat-box premium-stat-box-highlight">
             <div className="premium-stat-box-header">
-              <div className="premium-stat-icon" style={{ fontSize: '20px' }}>💰</div>
+              <div className="premium-stat-icon" data-icon="collateral"></div>
               <div className="premium-stat-label">Total Deposits</div>
             </div>
             <div className="premium-stat-value premium-stat-value-green">${(totalDeposits / 1000000).toFixed(2)}M</div>
@@ -104,7 +124,7 @@ export default function CollateralAnalytics() {
           </div>
           <div className="premium-stat-box">
             <div className="premium-stat-box-header">
-              <div className="premium-stat-icon" style={{ fontSize: '20px' }}>💸</div>
+              <div className="premium-stat-icon" data-icon="spending"></div>
               <div className="premium-stat-label">Total Withdrawals</div>
             </div>
             <div className="premium-stat-value">${(totalWithdrawals / 1000).toFixed(0)}K</div>
@@ -114,7 +134,7 @@ export default function CollateralAnalytics() {
           </div>
           <div className="premium-stat-box">
             <div className="premium-stat-box-header">
-              <div className="premium-stat-icon" style={{ fontSize: '20px' }}>💹</div>
+              <div className="premium-stat-icon" data-icon="profit"></div>
               <div className="premium-stat-label">Interest Earned</div>
             </div>
             <div className="premium-stat-value">${(totalInterestEarned / 1000).toFixed(0)}K</div>
@@ -124,7 +144,7 @@ export default function CollateralAnalytics() {
           </div>
           <div className="premium-stat-box">
             <div className="premium-stat-box-header">
-              <div className="premium-stat-icon" style={{ fontSize: '20px' }}>📊</div>
+              <div className="premium-stat-icon" data-icon="chart"></div>
               <div className="premium-stat-label">Avg Utilization</div>
             </div>
             <div className="premium-stat-value" style={{ color: avgUtilizationRate < 50 ? '#C5FFA7' : avgUtilizationRate < 80 ? 'rgba(197, 255, 167, 0.7)' : 'rgba(255, 255, 255, 0.5)' }}>
@@ -225,7 +245,7 @@ export default function CollateralAnalytics() {
             {Object.entries(assetBreakdown).map(([asset, data]) => (
               <div className="premium-stat-box" key={asset}>
                 <div className="premium-stat-box-header">
-                  <div className="premium-stat-icon" style={{ fontSize: '16px' }}>🔷</div>
+                  <div className="premium-stat-icon" data-icon="protocol"></div>
                   <div className="premium-stat-label">{asset}</div>
                 </div>
                 <div className="premium-stat-value">{data.amount.toLocaleString('en-US', { maximumFractionDigits: asset === 'USDC' || asset === 'USDT' ? 0 : 2 })}</div>

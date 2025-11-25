@@ -76,7 +76,25 @@ export default function CollateralClients() {
   }
 
   useEffect(() => {
+    // Load icons
+    const loadIcons = () => {
+      if (typeof window !== 'undefined' && (window as any).Icons) {
+        document.querySelectorAll('[data-icon]').forEach(el => {
+          const iconName = el.getAttribute('data-icon')
+          if (iconName) {
+            const iconSvg = (window as any).Icons[iconName]
+            if (iconSvg) {
+              el.innerHTML = iconSvg
+            }
+          }
+        })
+      }
+    }
+    loadIcons()
+    const timeout = setTimeout(loadIcons, 500)
+    
     loadData()
+    return () => clearTimeout(timeout)
     
     // Auto-refresh every 60 seconds
     const interval = setInterval(() => loadData(true), 60000)
@@ -117,7 +135,7 @@ export default function CollateralClients() {
         <div className="premium-stats-grid">
           <div className="premium-stat-box">
             <div className="premium-stat-box-header">
-              <div className="premium-stat-icon" style={{ fontSize: '20px' }}>👥</div>
+              <div className="premium-stat-icon" data-icon="users"></div>
               <div className="premium-stat-label">Total Clients</div>
             </div>
             <div className="premium-stat-value">{totalClients}</div>
@@ -127,7 +145,7 @@ export default function CollateralClients() {
           </div>
           <div className="premium-stat-box">
             <div className="premium-stat-box-header">
-              <div className="premium-stat-icon" style={{ fontSize: '20px' }}>✅</div>
+              <div className="premium-stat-icon" data-icon="check"></div>
               <div className="premium-stat-label">Active Clients</div>
             </div>
             <div className="premium-stat-value">{clientsWithPositions}</div>
@@ -137,7 +155,7 @@ export default function CollateralClients() {
           </div>
           <div className="premium-stat-box premium-stat-box-highlight">
             <div className="premium-stat-box-header">
-              <div className="premium-stat-icon" style={{ fontSize: '20px' }}>💰</div>
+              <div className="premium-stat-icon" data-icon="collateral"></div>
               <div className="premium-stat-label">Total Collateral</div>
             </div>
             <div className="premium-stat-value premium-stat-value-green">${(totalCollateral / 1000000).toFixed(2)}M</div>
@@ -147,7 +165,7 @@ export default function CollateralClients() {
           </div>
           <div className="premium-stat-box">
             <div className="premium-stat-box-header">
-              <div className="premium-stat-icon" style={{ fontSize: '20px' }}>📉</div>
+              <div className="premium-stat-icon" data-icon="trend-up"></div>
               <div className="premium-stat-label">Total Debt</div>
             </div>
             <div className="premium-stat-value">${(totalDebt / 1000).toFixed(0)}K</div>

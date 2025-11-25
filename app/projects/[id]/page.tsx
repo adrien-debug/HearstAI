@@ -347,30 +347,6 @@ export default function ProjectDetailPage() {
                 >
                   Edit Project
                 </button>
-                <button
-                  onClick={() => setShowDeleteConfirm(true)}
-                  style={{
-                    padding: 'var(--space-3) var(--space-6)',
-                    background: 'transparent',
-                    border: '1px solid rgba(255, 77, 77, 0.3)',
-                    borderRadius: 'var(--radius-full)',
-                    color: '#FF4D4D',
-                    fontSize: 'var(--text-sm)',
-                    fontWeight: 500,
-                    cursor: 'pointer',
-                    transition: 'all var(--duration-normal) var(--ease-in-out)',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = 'rgba(255, 77, 77, 0.5)'
-                    e.currentTarget.style.background = 'rgba(255, 77, 77, 0.1)'
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = 'rgba(255, 77, 77, 0.3)'
-                    e.currentTarget.style.background = 'transparent'
-                  }}
-                >
-                  Delete Project
-                </button>
                 <button className="home-btn">
                   New Job
                 </button>
@@ -380,75 +356,30 @@ export default function ProjectDetailPage() {
         </div>
 
         {/* KPI Cards */}
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
-          gap: 'var(--space-4)', 
-          marginBottom: 'var(--space-6)' 
-        }}>
-          <Card style={{
-            background: '#1a1a1a',
-            border: '2px solid rgba(138, 253, 129, 0.3)',
-            boxShadow: '0 4px 16px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(138, 253, 129, 0.1)'
-          }}>
-            <CardContent style={{ padding: 'var(--space-5)' }}>
-              <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-secondary)', marginBottom: 'var(--space-2)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                Total Versions
-              </div>
-              <div style={{ fontSize: 'var(--text-3xl)', fontWeight: 'bold', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums' }}>
-                {project.versions?.length || 0}
-              </div>
-            </CardContent>
-          </Card>
+        <div className="kpi-grid">
+          <div className="kpi-card">
+            <div className="kpi-label">Total Versions</div>
+            <div className="kpi-value">{project.versions?.length || 0}</div>
+            <div className="kpi-description">All project versions</div>
+          </div>
 
-          <Card style={{
-            background: '#1a1a1a',
-            border: '2px solid rgba(138, 253, 129, 0.3)',
-            boxShadow: '0 4px 16px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(138, 253, 129, 0.1)'
-          }}>
-            <CardContent style={{ padding: 'var(--space-5)' }}>
-              <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-secondary)', marginBottom: 'var(--space-2)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                Total Jobs
-              </div>
-              <div style={{ fontSize: 'var(--text-3xl)', fontWeight: 'bold', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums' }}>
-                {project.jobs?.length || 0}
-              </div>
-            </CardContent>
-          </Card>
+          <div className="kpi-card">
+            <div className="kpi-label">Total Jobs</div>
+            <div className="kpi-value">{project.jobs?.length || 0}</div>
+            <div className="kpi-description">All project jobs</div>
+          </div>
 
-          <Card style={{
-            background: 'rgba(26, 26, 26, 0.7)',
-            backdropFilter: 'blur(20px) saturate(180%)',
-            WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-            border: '1px solid rgba(255, 255, 255, 0.05)',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
-          }}>
-            <CardContent style={{ padding: 'var(--space-5)' }}>
-              <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-secondary)', marginBottom: 'var(--space-2)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                Project Type
-              </div>
-              <div style={{ fontSize: 'var(--text-lg)', fontWeight: 'var(--font-semibold)', color: 'var(--text-primary)' }}>
-                {project.type}
-              </div>
-            </CardContent>
-          </Card>
+          <div className="kpi-card">
+            <div className="kpi-label">Project Type</div>
+            <div className="kpi-value">{project.type}</div>
+            <div className="kpi-description">Project category</div>
+          </div>
 
-          <Card style={{
-            background: 'rgba(26, 26, 26, 0.7)',
-            backdropFilter: 'blur(20px) saturate(180%)',
-            WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-            border: '1px solid rgba(255, 255, 255, 0.05)',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
-          }}>
-            <CardContent style={{ padding: 'var(--space-5)' }}>
-              <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-secondary)', marginBottom: 'var(--space-2)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                Repository
-              </div>
-              <div style={{ fontSize: 'var(--text-lg)', fontWeight: 'var(--font-semibold)', color: 'var(--text-primary)' }}>
-                {project.repoType}
-              </div>
-            </CardContent>
-          </Card>
+          <div className="kpi-card">
+            <div className="kpi-label">Repository</div>
+            <div className="kpi-value">{project.repoType}</div>
+            <div className="kpi-description">Repository type</div>
+          </div>
         </div>
 
         {/* Roadmap & Gallery Section */}

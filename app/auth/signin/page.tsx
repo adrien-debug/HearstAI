@@ -36,13 +36,27 @@ export default function SignInPage() {
         
         // Récupérer le callbackUrl depuis l'URL ou utiliser '/' par défaut
         const urlParams = new URLSearchParams(window.location.search)
-        let callbackUrl = urlParams.get('callbackUrl') || '/'
+        let callbackUrl = urlParams.get('callbackUrl')
         
-        // Décoder l'URL si elle est encodée (%2F -> /)
-        try {
-          callbackUrl = decodeURIComponent(callbackUrl)
-        } catch (e) {
+        // Si callbackUrl est null ou vide, utiliser '/'
+        if (!callbackUrl || callbackUrl.trim() === '') {
           callbackUrl = '/'
+        } else {
+          // Décoder l'URL si elle est encodée (%2F -> /)
+          // URLSearchParams.get() peut retourner une valeur déjà partiellement décodée
+          // On doit donc décoder manuellement si nécessaire
+          try {
+            // Si ça commence par % c'est encore encodé
+            if (callbackUrl.startsWith('%')) {
+              callbackUrl = decodeURIComponent(callbackUrl)
+            } else {
+              // Sinon, essayer quand même de décoder (au cas où)
+              callbackUrl = decodeURIComponent(callbackUrl)
+            }
+          } catch (e) {
+            console.warn('[SignIn] Erreur décodage callbackUrl, utilisation de /:', e)
+            callbackUrl = '/'
+          }
         }
         
         // FORCER '/' si callbackUrl pointe vers /auth/signin (éviter les boucles)
@@ -53,32 +67,51 @@ export default function SignInPage() {
         
         // S'assurer que callbackUrl est une URL relative valide
         if (!callbackUrl.startsWith('/')) {
+          console.warn('[SignIn] ⚠️ CallbackUrl invalide (ne commence pas par /), forcer vers /')
           callbackUrl = '/'
         }
         
         console.log('[SignIn] Redirection vers:', callbackUrl)
         
-        // Attendre que le cookie soit défini (2 secondes pour être sûr)
-        console.log('[SignIn] Attente de 2 secondes pour que le cookie soit défini...')
-        await new Promise(resolve => setTimeout(resolve, 2000))
-        
-        // Vérifier la session une fois
+        // Vérifier la session plusieurs fois pour s'assurer qu'elle est bien définie
         let session = null
-        try {
-          const sessionCheck = await fetch('/api/auth/session', { 
-            cache: 'no-store',
-            credentials: 'include',
-          })
-          session = await sessionCheck.json()
-          console.log('[SignIn] Session vérifiée:', session)
-        } catch (e) {
-          console.warn('[SignIn] Erreur vérification session:', e)
+        let attempts = 0
+        const maxAttempts = 5
+        
+        while (attempts < maxAttempts && !session?.user) {
+          attempts++
+          console.log(`[SignIn] Vérification session (tentative ${attempts}/${maxAttempts})...`)
+          
+          try {
+            const sessionCheck = await fetch('/api/auth/session', { 
+              cache: 'no-store',
+              credentials: 'include',
+            })
+            session = await sessionCheck.json()
+            console.log('[SignIn] Session vérifiée:', session)
+            
+            if (session?.user) {
+              console.log('[SignIn] ✅ Session confirmée, redirection...')
+              break
+            }
+          } catch (e) {
+            console.warn('[SignIn] Erreur vérification session:', e)
+          }
+          
+          // Attendre un peu avant la prochaine tentative
+          if (attempts < maxAttempts) {
+            await new Promise(resolve => setTimeout(resolve, 500))
+          }
+        }
+        
+        if (!session?.user) {
+          console.warn('[SignIn] ⚠️ Session non confirmée après', maxAttempts, 'tentatives, redirection quand même...')
         }
         
         // Rediriger vers la page d'accueil
         // Utiliser window.location.href avec un rechargement complet
         // pour que le middleware voie le cookie
-        console.log('[SignIn] 🔄 Redirection vers:', callbackUrl)
+        console.log('[SignIn] 🔄 Redirection finale vers:', callbackUrl)
         window.location.href = callbackUrl
       } else {
         console.warn('[SignIn] Résultat inattendu:', result)

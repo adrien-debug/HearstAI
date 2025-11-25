@@ -62,26 +62,41 @@ export async function middleware(request: NextRequest) {
 
     // If token exists and trying to access login page, redirect to home or callbackUrl
     if (token && pathname === '/auth/signin') {
-      const callbackUrl = request.nextUrl.searchParams.get('callbackUrl') || '/'
-      // Décoder le callbackUrl si encodé
-      let decodedCallbackUrl = callbackUrl
-      try {
-        decodedCallbackUrl = decodeURIComponent(callbackUrl)
-      } catch (e) {
-        decodedCallbackUrl = callbackUrl
+      let callbackUrl = request.nextUrl.searchParams.get('callbackUrl')
+      
+      // Si callbackUrl est null ou vide, utiliser '/'
+      if (!callbackUrl || callbackUrl.trim() === '') {
+        callbackUrl = '/'
+      } else {
+        // Décoder le callbackUrl si encodé (%2F -> /)
+        try {
+          // Si ça commence par % c'est encore encodé
+          if (callbackUrl.startsWith('%')) {
+            callbackUrl = decodeURIComponent(callbackUrl)
+          } else {
+            // Sinon, essayer quand même de décoder (au cas où)
+            callbackUrl = decodeURIComponent(callbackUrl)
+          }
+        } catch (e) {
+          console.warn('[Middleware] Erreur décodage callbackUrl, utilisation de /:', e)
+          callbackUrl = '/'
+        }
       }
       
-      // S'assurer qu'on ne redirige pas vers /auth/signin
-      if (decodedCallbackUrl === '/auth/signin' || decodedCallbackUrl.startsWith('/auth/signin?')) {
-        decodedCallbackUrl = '/'
+      // S'assurer qu'on ne redirige pas vers /auth/signin (éviter les boucles)
+      if (callbackUrl === '/auth/signin' || callbackUrl.startsWith('/auth/signin?') || callbackUrl.includes('/auth/signin')) {
+        console.warn('[Middleware] ⚠️ CallbackUrl pointe vers /auth/signin, forcer vers /')
+        callbackUrl = '/'
       }
       
       // Vérifier que callbackUrl est une URL relative valide (sécurité)
-      if (decodedCallbackUrl.startsWith('/') && !decodedCallbackUrl.startsWith('//')) {
-        console.log('[Middleware] Redirection depuis /auth/signin vers:', decodedCallbackUrl)
-        return NextResponse.redirect(new URL(decodedCallbackUrl, request.url))
+      if (!callbackUrl.startsWith('/') || callbackUrl.startsWith('//')) {
+        console.warn('[Middleware] ⚠️ CallbackUrl invalide, forcer vers /')
+        callbackUrl = '/'
       }
-      return NextResponse.redirect(new URL('/', request.url))
+      
+      console.log('[Middleware] Redirection depuis /auth/signin vers:', callbackUrl)
+      return NextResponse.redirect(new URL(callbackUrl, request.url))
     }
 
     return NextResponse.next()

@@ -12,6 +12,23 @@ export default function CollateralTransactions() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    // Load icons
+    const loadIcons = () => {
+      if (typeof window !== 'undefined' && (window as any).Icons) {
+        document.querySelectorAll('[data-icon]').forEach(el => {
+          const iconName = el.getAttribute('data-icon')
+          if (iconName) {
+            const iconSvg = (window as any).Icons[iconName]
+            if (iconSvg) {
+              el.innerHTML = iconSvg
+            }
+          }
+        })
+      }
+    }
+    loadIcons()
+    const timeout = setTimeout(loadIcons, 500)
+    
     const loadData = async () => {
       try {
         setLoading(true)
@@ -64,7 +81,10 @@ export default function CollateralTransactions() {
     
     // Auto-refresh every 30 seconds pour données en temps réel
     const interval = setInterval(loadData, 30000)
-    return () => clearInterval(interval)
+    return () => {
+      clearInterval(interval)
+      clearTimeout(timeout)
+    }
   }, [])
 
   if (loading) {
@@ -100,7 +120,7 @@ export default function CollateralTransactions() {
         <div className="premium-stats-grid">
           <div className="premium-stat-box">
             <div className="premium-stat-box-header">
-              <div className="premium-stat-icon" style={{ fontSize: '20px' }}>📝</div>
+              <div className="premium-stat-icon" data-icon="transaction"></div>
               <div className="premium-stat-label">Total Transactions</div>
             </div>
             <div className="premium-stat-value">{allTransactions.length}</div>
@@ -110,7 +130,7 @@ export default function CollateralTransactions() {
           </div>
           <div className="premium-stat-box premium-stat-box-highlight">
             <div className="premium-stat-box-header">
-              <div className="premium-stat-icon" style={{ fontSize: '20px' }}>⬆️</div>
+              <div className="premium-stat-icon" data-icon="arrow-up"></div>
               <div className="premium-stat-label">Total Supply</div>
             </div>
             <div className="premium-stat-value premium-stat-value-green">${(totalSupply / 1000000).toFixed(2)}M</div>
@@ -120,7 +140,7 @@ export default function CollateralTransactions() {
           </div>
           <div className="premium-stat-box">
             <div className="premium-stat-box-header">
-              <div className="premium-stat-icon" style={{ fontSize: '20px' }}>⬇️</div>
+              <div className="premium-stat-icon" data-icon="arrow-down"></div>
               <div className="premium-stat-label">Total Borrow</div>
             </div>
             <div className="premium-stat-value">${(totalBorrow / 1000).toFixed(0)}K</div>
@@ -130,7 +150,7 @@ export default function CollateralTransactions() {
           </div>
           <div className="premium-stat-box">
             <div className="premium-stat-box-header">
-              <div className="premium-stat-icon" style={{ fontSize: '20px' }}>✅</div>
+              <div className="premium-stat-icon" data-icon="check"></div>
               <div className="premium-stat-label">Completed</div>
             </div>
             <div className="premium-stat-value">{completedCount}</div>
