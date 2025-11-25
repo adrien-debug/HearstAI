@@ -396,7 +396,7 @@ export default function MyEarthAI() {
     <div className="dashboard-view">
       <div className="dashboard-content">
         <div style={{ marginBottom: 'var(--space-6)' }}>
-          <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700 }}>My Earth AI</h1>
+          <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700, color: '#ffffff', position: 'relative', zIndex: 10 }}>My Earth AI</h1>
           
           {/* Navigation horizontale - Style Dashboard */}
           <nav className="ai-nav-tabs">

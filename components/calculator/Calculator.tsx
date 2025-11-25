@@ -165,7 +165,7 @@ export default function Calculator() {
     <div className="dashboard-view">
       <div className="dashboard-content">
         <div style={{ marginBottom: 'var(--space-6)' }}>
-          <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700 }}>Projection</h1>
+          <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700, color: '#ffffff', position: 'relative', zIndex: 10 }}>Projection</h1>
         </div>
 
         {/* Stepper Navigation */}

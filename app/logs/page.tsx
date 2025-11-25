@@ -101,7 +101,7 @@ export default function LogsPage() {
       <div className="dashboard-content">
         <div style={{ marginBottom: 'var(--space-6)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-4)' }}>
-            <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700 }}>Activity Logs</h1>
+            <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700, color: '#ffffff', position: 'relative', zIndex: 10 }}>Activity Logs</h1>
             <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
               <select
                 value={levelFilter}

@@ -216,7 +216,7 @@ export default function ClientViewPage() {
             >
               ← Retour
             </button>
-            <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700, marginTop: 'var(--space-2)' }}>
+            <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700, marginTop: 'var(--space-2)', color: '#ffffff', position: 'relative', zIndex: 10 }}>
               {customer.name || 'Client'}
             </h1>
             <div style={{ 

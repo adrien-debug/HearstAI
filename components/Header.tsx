@@ -2,6 +2,7 @@
 
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import React from 'react'
 import ProfileDropdown from './ProfileDropdown'
 import { statsAPI } from '@/lib/api'
 import Icon from './Icon'
@@ -25,12 +26,20 @@ interface DashboardStats {
   jobs_success_rate?: number
 }
 
+interface CryptoPrice {
+  symbol: string
+  name: string
+  price: number
+  change24h: number
+}
+
 export default function Header() {
   const pathname = usePathname()
   const [pageTitle, setPageTitle] = useState('Dashboard')
   const [stats, setStats] = useState<DashboardStats | null>(null)
   const [currentTime, setCurrentTime] = useState<Date | null>(null)
   const [mounted, setMounted] = useState(false)
+  const [cryptoPrices, setCryptoPrices] = useState<CryptoPrice[]>([])
   const isDashboard = pathname === '/'
 
   useEffect(() => {
@@ -92,6 +101,47 @@ export default function Header() {
     return () => clearInterval(timer)
   }, [])
 
+  // Load crypto prices (BTC and ETH)
+  useEffect(() => {
+    const loadCryptoPrices = async () => {
+      try {
+        const response = await fetch(
+          'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd&include_24hr_change=true'
+        )
+        const data = await response.json()
+        
+        if (data.bitcoin && data.ethereum) {
+          setCryptoPrices([
+            {
+              symbol: 'BTC',
+              name: 'Bitcoin',
+              price: data.bitcoin.usd,
+              change24h: data.bitcoin.usd_24h_change || 0,
+            },
+            {
+              symbol: 'ETH',
+              name: 'Ethereum',
+              price: data.ethereum.usd,
+              change24h: data.ethereum.usd_24h_change || 0,
+            },
+          ])
+        }
+      } catch (err) {
+        console.error('[Header] Erreur chargement prix crypto:', err)
+        // Fallback avec données mockées
+        setCryptoPrices([
+          { symbol: 'BTC', name: 'Bitcoin', price: 85000, change24h: 2.5 },
+          { symbol: 'ETH', name: 'Ethereum', price: 3200, change24h: 1.8 },
+        ])
+      }
+    }
+
+    loadCryptoPrices()
+    // Rafraîchir toutes les 60 secondes
+    const interval = setInterval(loadCryptoPrices, 60000)
+    return () => clearInterval(interval)
+  }, [])
+
   const formatTime = (date: Date | null) => {
     if (!date) return '--:--:--'
     return date.toLocaleTimeString('fr-FR', {
@@ -102,11 +152,27 @@ export default function Header() {
     })
   }
 
+  const formatPrice = (price: number) => {
+    if (price >= 1000) {
+      return new Intl.NumberFormat('fr-FR', {
+        maximumFractionDigits: 0,
+      }).format(price)
+    }
+    return new Intl.NumberFormat('fr-FR', {
+      maximumFractionDigits: 2,
+    }).format(price)
+  }
+
+  const formatChange = (change: number) => {
+    const sign = change >= 0 ? '+' : ''
+    return `${sign}${change.toFixed(2)}%`
+  }
+
   return (
-    <header className="header" id="header" style={isDashboard ? { position: 'relative' } : {}}>
+    <header className="header" id="header" style={{ position: 'fixed', top: 0, left: 0, right: 0 }}>
       <div className="header-left">
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
-          <h2 className="page-title" id="page-title" style={{ margin: 0 }}>
+          <h2 className="page-title" id="page-title" style={{ margin: 0, color: '#ffffff', position: 'relative', zIndex: 101 }}>
             {pageTitle}
           </h2>
           {isDashboard && (
@@ -154,108 +220,33 @@ export default function Header() {
         </div>
       </div>
 
-      {isDashboard && stats && (
-        <div className="header-stats" style={{
+      {/* Crypto Prices Section */}
+      {cryptoPrices.length > 0 && (
+        <div className="header-crypto" style={{
           display: 'flex',
           alignItems: 'center',
-          gap: 'var(--space-6)',
-          margin: '0 auto',
-          padding: '0 var(--space-4)',
+          gap: 'var(--space-4)',
+          margin: '0',
+          padding: '0',
+          flex: 1,
+          justifyContent: 'flex-end',
+          maxWidth: 'none',
+          marginRight: 'var(--space-8)',
         }}>
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: 'var(--space-1)',
-          }}>
-            <div style={{
-              fontSize: 'var(--text-xs)',
-              color: 'var(--text-secondary)',
-              textTransform: 'uppercase',
-              letterSpacing: '0.5px',
-              fontWeight: 600,
-            }}>
-              Projects
-            </div>
-            <div style={{
-              fontSize: 'var(--text-lg)',
-              fontWeight: 700,
-              color: 'var(--text-primary)',
-              fontVariantNumeric: 'tabular-nums',
-            }}>
-              {stats.total_projects || 0}
-            </div>
-          </div>
-          <div style={{
-            width: '1px',
-            height: '32px',
-            background: 'rgba(255, 255, 255, 0.1)',
-          }}></div>
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: 'var(--space-1)',
-          }}>
-            <div style={{
-              fontSize: 'var(--text-xs)',
-              color: 'var(--text-secondary)',
-              textTransform: 'uppercase',
-              letterSpacing: '0.5px',
-              fontWeight: 600,
-            }}>
-              Jobs
-            </div>
-            <div style={{
-              fontSize: 'var(--text-lg)',
-              fontWeight: 700,
-              color: 'var(--text-primary)',
-              fontVariantNumeric: 'tabular-nums',
-            }}>
-              {stats.total_jobs || 0}
-            </div>
-          </div>
-          <div style={{
-            width: '1px',
-            height: '32px',
-            background: 'rgba(255, 255, 255, 0.1)',
-          }}></div>
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: 'var(--space-1)',
-          }}>
-            <div style={{
-              fontSize: 'var(--text-xs)',
-              color: 'var(--text-secondary)',
-              textTransform: 'uppercase',
-              letterSpacing: '0.5px',
-              fontWeight: 600,
-            }}>
-              Running
-            </div>
-            <div style={{
-              fontSize: 'var(--text-lg)',
-              fontWeight: 700,
-              color: 'var(--hearst-green)',
-              fontVariantNumeric: 'tabular-nums',
-            }}>
-              {stats.jobs_running || 0}
-            </div>
-          </div>
-          {stats.jobs_success_rate !== undefined && (
-            <>
-              <div style={{
-                width: '1px',
-                height: '32px',
-                background: 'rgba(255, 255, 255, 0.1)',
-              }}></div>
+          {cryptoPrices.map((crypto, index) => (
+            <React.Fragment key={crypto.symbol}>
+              {index > 0 && (
+                <div style={{
+                  width: '1px',
+                  height: '24px',
+                  background: 'rgba(255, 255, 255, 0.1)',
+                }}></div>
+              )}
               <div style={{
                 display: 'flex',
-                flexDirection: 'column',
+                flexDirection: 'row',
                 alignItems: 'center',
-                gap: 'var(--space-1)',
+                gap: 'var(--space-3)',
               }}>
                 <div style={{
                   fontSize: 'var(--text-xs)',
@@ -263,20 +254,33 @@ export default function Header() {
                   textTransform: 'uppercase',
                   letterSpacing: '0.5px',
                   fontWeight: 600,
+                  minWidth: '40px',
                 }}>
-                  Success Rate
+                  {crypto.symbol}
                 </div>
                 <div style={{
                   fontSize: 'var(--text-lg)',
                   fontWeight: 700,
-                  color: stats.jobs_success_rate >= 90 ? 'var(--hearst-green)' : stats.jobs_success_rate >= 70 ? '#FFA500' : 'var(--text-error)',
+                  color: 'var(--text-primary)',
                   fontVariantNumeric: 'tabular-nums',
+                  minWidth: '100px',
+                  textAlign: 'right',
                 }}>
-                  {stats.jobs_success_rate.toFixed(1)}%
+                  ${formatPrice(crypto.price)}
+                </div>
+                <div style={{
+                  fontSize: 'var(--text-xs)',
+                  fontWeight: 600,
+                  color: crypto.change24h >= 0 ? 'var(--hearst-green)' : '#ff4d4d',
+                  fontVariantNumeric: 'tabular-nums',
+                  minWidth: '60px',
+                  textAlign: 'right',
+                }}>
+                  {formatChange(crypto.change24h)}
                 </div>
               </div>
-            </>
-          )}
+            </React.Fragment>
+          ))}
         </div>
       )}
 
@@ -299,4 +303,5 @@ export default function Header() {
     </header>
   )
 }
+
 

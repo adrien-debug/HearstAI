@@ -118,7 +118,7 @@ export default function CustomerDetailPage() {
         {/* Header */}
         <div style={{ marginBottom: 'var(--space-6)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-4)' }}>
-            <h1 style={{ fontSize: 'var(--text-3xl)', fontWeight: 700, color: 'var(--text-primary)' }}>
+            <h1 style={{ fontSize: 'var(--text-3xl)', fontWeight: 700, color: '#ffffff', position: 'relative', zIndex: 10 }}>
               {customer.name}
             </h1>
             <Link

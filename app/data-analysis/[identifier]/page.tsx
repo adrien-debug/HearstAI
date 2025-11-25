@@ -75,7 +75,7 @@ export default function DataAnalysisResultPage() {
             >
               ← Retour
             </button>
-            <h1 style={{ fontSize: 'var(--text-3xl)', fontWeight: 700, marginBottom: 'var(--space-2)' }}>
+            <h1 style={{ fontSize: 'var(--text-3xl)', fontWeight: 700, marginBottom: 'var(--space-2)', color: '#ffffff', position: 'relative', zIndex: 10 }}>
               Erreur
             </h1>
           </div>
@@ -117,7 +117,9 @@ export default function DataAnalysisResultPage() {
           <h1 style={{ 
             fontSize: 'var(--text-3xl)', 
             fontWeight: 700, 
-            color: 'var(--text-primary)',
+            color: '#ffffff',
+            position: 'relative',
+            zIndex: 10,
             marginBottom: 'var(--space-2)'
           }}>
             Résultats de l'analyse

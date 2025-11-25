@@ -122,7 +122,7 @@ export default function JobDetailPage() {
               <Link href="/jobs" style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontSize: 'var(--text-sm)', marginBottom: 'var(--space-2)', display: 'block' }}>
                 ← Back to Jobs
               </Link>
-              <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700 }}>
+              <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700, color: '#ffffff', position: 'relative', zIndex: 10 }}>
                 Job #{job.id.slice(0, 8)}
               </h1>
             </div>

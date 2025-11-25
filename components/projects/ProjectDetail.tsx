@@ -160,7 +160,7 @@ export default function ProjectDetail() {
           </Link>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 'var(--space-4)', marginTop: 'var(--space-4)' }}>
             <div style={{ flex: 1 }}>
-              <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700, marginBottom: 'var(--space-2)' }}>
+              <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700, marginBottom: 'var(--space-2)', color: '#ffffff', position: 'relative', zIndex: 10 }}>
                 {project.name}
               </h1>
               {project.description && (

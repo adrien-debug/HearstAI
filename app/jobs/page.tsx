@@ -65,7 +65,7 @@ export default function JobsPage() {
       <div className="dashboard-content">
         <div style={{ marginBottom: 'var(--space-6)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-4)' }}>
-            <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700 }}>Jobs</h1>
+            <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700, color: '#ffffff', position: 'relative', zIndex: 10 }}>Jobs</h1>
             <Button>+ New Job</Button>
           </div>
         </div>

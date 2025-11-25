@@ -245,6 +245,8 @@ export default function ProjectDetailPage() {
                     fontSize: 'var(--text-3xl)', 
                     fontWeight: 700, 
                     marginBottom: 'var(--space-2)',
+                    position: 'relative',
+                    zIndex: 10,
                     background: 'linear-gradient(135deg, #C5FFA7 0%, #8afd81 100%)',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',

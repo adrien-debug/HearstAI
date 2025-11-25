@@ -27,7 +27,7 @@ export default function CockpitPage() {
     <div className="dashboard-view">
       <div className="dashboard-content">
         <div style={{ marginBottom: 'var(--space-6)' }}>
-          <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700 }}>Cockpit</h1>
+          <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700, color: '#ffffff', position: 'relative', zIndex: 10 }}>Cockpit</h1>
           
           {/* Navigation tabs - Dashboard Style */}
           <nav className="cockpit-nav-tabs">

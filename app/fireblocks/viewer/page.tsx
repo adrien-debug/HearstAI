@@ -59,7 +59,9 @@ export default function FireblocksViewerPage() {
           <h1 style={{
             fontSize: 'var(--text-3xl)',
             fontWeight: 700,
-            color: 'var(--text-primary)',
+            color: '#ffffff',
+            position: 'relative',
+            zIndex: 10,
             letterSpacing: '-0.02em',
             lineHeight: '1.3',
             marginBottom: 'var(--space-4)'

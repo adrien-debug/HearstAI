@@ -137,6 +137,9 @@ export default function FundraisingPage() {
               <h1 style={{ 
                 fontSize: 'var(--text-2xl)', 
                 fontWeight: 700,
+                color: '#ffffff',
+                position: 'relative',
+                zIndex: 10,
                 marginBottom: 'var(--space-2)'
               }}>
                 Fundraising

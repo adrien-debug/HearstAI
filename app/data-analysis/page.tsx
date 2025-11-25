@@ -32,7 +32,9 @@ export default function DataAnalysisPage() {
           <h1 style={{ 
             fontSize: 'var(--text-3xl)', 
             fontWeight: 700, 
-            color: 'var(--text-primary)',
+            color: '#ffffff',
+            position: 'relative',
+            zIndex: 10,
             marginBottom: 'var(--space-2)'
           }}>
             Analyse de Données DeBank

@@ -56,7 +56,7 @@ export default function CollateralPage() {
       <IconsLoader />
       <div className="dashboard-content">
         <div style={{ marginBottom: 'var(--space-6)' }}>
-          <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700 }}>Collateral</h1>
+          <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700, color: '#ffffff', position: 'relative', zIndex: 10 }}>Collateral</h1>
           
           {/* Navigation tabs - Dashboard Style */}
           <nav className="collateral-nav-tabs">

@@ -99,7 +99,7 @@ export default function VersionDetailPage() {
               <Link href="/versions" style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontSize: 'var(--text-sm)', marginBottom: 'var(--space-2)', display: 'block' }}>
                 ← Back to Versions
               </Link>
-              <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700 }}>
+              <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700, color: '#ffffff', position: 'relative', zIndex: 10 }}>
                 Version {version.label}
               </h1>
             </div>

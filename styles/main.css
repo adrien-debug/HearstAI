@@ -501,16 +501,20 @@ body {
 
 .header {
     height: var(--header-height);
-    background: rgba(26, 26, 26, 0.8) !important;
+    background: rgba(26, 26, 26, 0.95) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4) !important;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0 var(--space-8);
-    position: sticky;
+    position: fixed !important;
     top: 0;
-    z-index: 50;
+    left: 0;
+    right: 0;
+    z-index: 100;
     width: 100%;
     overflow: visible !important;
 }
@@ -533,12 +537,11 @@ body {
 .page-title {
     font-size: var(--text-xl);
     font-weight: var(--font-semibold);
-    background: linear-gradient(135deg, #ffffff 0%, #cccccc 100%) !important;
-    -webkit-background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    background-clip: text !important;
+    color: #ffffff !important;
     letter-spacing: -0.02em;
     margin: 0;
+    position: relative;
+    z-index: 101;
 }
 
 .header-right {
@@ -566,9 +569,22 @@ body {
     text-align: center;
 }
 
-/* Responsive header stats */
+/* Crypto Prices in Header */
+.header-crypto {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+    margin: 0 auto;
+    padding: 0 var(--space-4);
+    flex: 1;
+    justify-content: center;
+    max-width: 600px;
+}
+
+/* Responsive header stats and crypto */
 @media (max-width: 1200px) {
-    .header-stats {
+    .header-stats,
+    .header-crypto {
         gap: var(--space-4);
         max-width: 500px;
     }
@@ -580,6 +596,17 @@ body {
 
 @media (max-width: 1024px) {
     .header-stats {
+        display: none;
+    }
+    
+    .header-crypto {
+        gap: var(--space-3);
+        max-width: 400px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-crypto {
         display: none;
     }
 }
@@ -815,6 +842,8 @@ body {
     overflow-y: auto !important;
     overflow-x: hidden !important;
     padding: 0 !important;
+    padding-top: var(--header-height) !important;
+    box-sizing: border-box !important;
     position: relative !important;
     gap: 0 !important;
     scroll-behavior: smooth !important;
@@ -907,6 +936,27 @@ body {
 
 .page-title {
     display: none !important;
+}
+
+/* ====================================
+   TITRES DE PAGE - BLANC ET VISIBLES
+   ==================================== */
+
+/* Style global pour tous les h1 dans les pages dashboard-view */
+.dashboard-view h1,
+.dashboard-content h1 {
+    color: #ffffff !important;
+    position: relative;
+    z-index: 10;
+    font-weight: 700;
+}
+
+/* Assurer que les titres sont toujours visibles devant */
+.dashboard-view h1:first-of-type,
+.dashboard-content h1:first-of-type {
+    color: #ffffff !important;
+    z-index: 10 !important;
+    position: relative;
 }
 
 .header-left {
@@ -1378,9 +1428,6 @@ h1, h2, h3, h4, h5, h6 {
 /* ====================================
    RESPONSIVE - PREMIUM ULTRA PROPRE
    ==================================== */
-    color: #ffffff !important; /* Icônes en blanc */
-    opacity: 1 !important;
-}
 
 .admin-menu-toggle .nav-icon svg {
     color: #ffffff !important;

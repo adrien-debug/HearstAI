@@ -25,7 +25,7 @@ export default function WalletScraperPage() {
     <div className="dashboard-view">
       <div className="dashboard-content">
         <div style={{ marginBottom: 'var(--space-6)' }}>
-          <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700 }}>Wallet Scraper</h1>
+          <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700, color: '#ffffff', position: 'relative', zIndex: 10 }}>Wallet Scraper</h1>
           
           {/* Navigation tabs - Dashboard Style */}
           <nav className="wallet-scraper-nav-tabs">

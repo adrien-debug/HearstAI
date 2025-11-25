@@ -59,7 +59,9 @@ export default function BusinessDevPage() {
                     fontWeight: 700,
                     letterSpacing: '-0.02em',
                     marginBottom: 'var(--space-1)',
-                    color: 'var(--text-primary)'
+                    color: '#ffffff',
+                    position: 'relative',
+                    zIndex: 10
                   }}>
                     Business Development
                   </h1>
