@@ -70,13 +70,28 @@ export const authOptions: NextAuthOptions = {
       return session
     },
     async redirect({ url, baseUrl }) {
+      console.log('[NextAuth] Redirect callback:', { url, baseUrl })
+      
       // Si l'URL est la page de login, rediriger vers la page d'accueil
       if (url.includes('/auth/signin')) {
+        console.log('[NextAuth] URL contient /auth/signin, redirection vers baseUrl')
+        return baseUrl
+      }
+      
+      // Si l'URL est vide ou undefined, rediriger vers la page d'accueil
+      if (!url || url === '') {
+        console.log('[NextAuth] URL vide, redirection vers baseUrl')
         return baseUrl
       }
       
       // Permettre les redirections vers des URLs relatives
       if (url.startsWith('/')) {
+        // Vérifier que ce n'est pas /auth/signin
+        if (url === '/auth/signin' || url.startsWith('/auth/signin?')) {
+          console.log('[NextAuth] URL relative pointe vers /auth/signin, redirection vers baseUrl')
+          return baseUrl
+        }
+        console.log('[NextAuth] URL relative, redirection vers:', `${baseUrl}${url}`)
         return `${baseUrl}${url}`
       }
       
@@ -84,14 +99,22 @@ export const authOptions: NextAuthOptions = {
       try {
         const urlObj = new URL(url)
         if (urlObj.origin === baseUrl) {
+          // Vérifier que ce n'est pas /auth/signin
+          if (urlObj.pathname === '/auth/signin' || urlObj.pathname.startsWith('/auth/signin')) {
+            console.log('[NextAuth] URL complète pointe vers /auth/signin, redirection vers baseUrl')
+            return baseUrl
+          }
+          console.log('[NextAuth] URL même domaine, redirection vers:', url)
           return url
         }
       } catch (e) {
         // Si l'URL n'est pas valide, rediriger vers la page d'accueil
+        console.log('[NextAuth] URL invalide, redirection vers baseUrl')
         return baseUrl
       }
       
       // Par défaut, rediriger vers la page d'accueil
+      console.log('[NextAuth] Par défaut, redirection vers baseUrl')
       return baseUrl
     },
   },

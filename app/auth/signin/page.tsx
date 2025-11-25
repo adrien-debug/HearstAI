@@ -23,6 +23,7 @@ export default function SignInPage() {
         email,
         password,
         redirect: false,
+        callbackUrl: '/',
       })
 
       console.log('[SignIn] Résultat:', result)
@@ -44,8 +45,14 @@ export default function SignInPage() {
           callbackUrl = '/'
         }
         
+        // FORCER '/' si callbackUrl pointe vers /auth/signin (éviter les boucles)
+        if (callbackUrl === '/auth/signin' || callbackUrl.startsWith('/auth/signin?') || callbackUrl.includes('/auth/signin')) {
+          console.warn('[SignIn] ⚠️ CallbackUrl pointe vers /auth/signin, forcer vers /')
+          callbackUrl = '/'
+        }
+        
         // S'assurer que callbackUrl est une URL relative valide
-        if (!callbackUrl.startsWith('/') || callbackUrl === '/auth/signin' || callbackUrl.startsWith('/auth/signin?')) {
+        if (!callbackUrl.startsWith('/')) {
           callbackUrl = '/'
         }
         
