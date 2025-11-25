@@ -187,8 +187,8 @@ body {
     font-size: 14px; /* ✅ Match demande */
     letter-spacing: -0.01em;
     height: 100%;
-    width: calc(100% + 20px);
-    margin: 20px 0 0 0;
+    width: 100%;
+    margin: 0;
     padding: 0;
     box-sizing: border-box; /* ✅ Match demande */
     position: relative;
@@ -684,13 +684,14 @@ html {
 }
 
 body {
-    width: calc(100vw + 20px) !important;
+    width: 100vw !important;
     height: 100vh !important;
-    max-width: calc(100vw + 20px) !important;
+    max-width: 100vw !important;
     overflow-x: hidden !important;
     overflow-y: hidden !important;
-    margin: 20px 0 0 0 !important;
+    margin: 0 !important;
     padding: 0 !important;
+    position: relative !important;
 }
 
 /* Force le layout à prendre toute la largeur et hauteur */
