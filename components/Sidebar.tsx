@@ -12,17 +12,19 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { href: '/', label: 'Home', icon: 'home', view: 'dashboard' },
-  { href: '/cockpit', label: 'Cockpit', icon: 'dashboard', view: 'cockpit' },
+  { href: '/', label: 'Overview', icon: 'home', view: 'dashboard' },
   { href: '/myearthai', label: 'MyEarthAI', icon: 'dashboard', view: 'myearthai' },
-  { href: '/projects', label: 'Projects', icon: 'document', view: 'projects' },
+  { href: '/cockpit', label: 'Cockpit', icon: 'dashboard', view: 'cockpit' },
   { href: '/projection', label: 'Projection', icon: 'document', view: 'projection' },
-  { href: '/transactions', label: 'Transactions', icon: 'document', view: 'transactions' },
-  { href: '/wallet-scraper', label: 'Wallet Scraper', icon: 'document', view: 'wallet-scraper' },
-  { href: '/profitability-index', label: 'Profitability Index', icon: 'document', view: 'profitability-index' },
-  { href: '/documents-vault', label: 'Documents Vault', icon: 'document', view: 'documents-vault' },
+  { href: '/transactions', label: 'Transactions', icon: 'transactions', view: 'transactions' },
   { href: '/electricity', label: 'Électricité', icon: 'energy', view: 'electricity' },
-  { href: '/collateral', label: 'Collateral', icon: 'document', view: 'collateral' },
+  { href: '/profitability-index', label: 'Profitability Index', icon: 'profitability-index', view: 'profitability-index' },
+  { href: '/collateral', label: 'Collateral', icon: 'collateral', view: 'collateral' },
+  { href: '/wallet-scraper', label: 'Wallet Scraper', icon: 'wallet-scraper', view: 'wallet-scraper' },
+  { href: '/calculator', label: 'Calculator', icon: 'calculator', view: 'calculator' },
+  { href: '/business-dev', label: 'Business Dev', icon: 'business-dev', view: 'business-dev' },
+  { href: '/fundraising', label: 'Fundraising', icon: 'fundraising', view: 'fundraising' },
+  { href: '/partnership', label: 'Partnership', icon: 'partnership', view: 'partnership' },
 ]
 
 export default function Sidebar() {
@@ -51,20 +53,49 @@ export default function Sidebar() {
       </div>
 
       <nav className="sidebar-nav">
-        {navItems.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={`nav-item ${isActive(item.href) ? 'active' : ''}`}
-            data-view={item.view}
-          >
-            <span className="nav-icon" data-icon={item.icon}></span>
-            <span className="nav-label">{item.label}</span>
-          </Link>
+        {navItems.map((item, index) => (
+          <div key={item.href}>
+            <Link
+              href={item.href}
+              className={`nav-item ${isActive(item.href) ? 'active' : ''}`}
+              data-view={item.view}
+            >
+              <span className="nav-icon" data-icon={item.icon}></span>
+              <span className="nav-label">{item.label}</span>
+            </Link>
+            {index === 1 && (
+              <div className="nav-section-separator">
+                <span className="nav-section-label">Mining</span>
+              </div>
+            )}
+            {index === 4 && (
+              <div className="nav-section-separator">
+                <span className="nav-section-label">Cost Center</span>
+              </div>
+            )}
+            {index === 6 && (
+              <div className="nav-section-separator">
+                <span className="nav-section-label">Hearst Tools</span>
+              </div>
+            )}
+            {index === 9 && (
+              <div className="nav-section-separator">
+                <span className="nav-section-label">Strategie</span>
+              </div>
+            )}
+          </div>
         ))}
       </nav>
 
       <div className="sidebar-version">
+        <Link
+          href="/documents-vault"
+          className={`nav-item ${isActive('/documents-vault') ? 'active' : ''}`}
+          data-view="documents-vault"
+        >
+          <span className="nav-icon" data-icon="document"></span>
+          <span className="nav-label">Documents Vault</span>
+        </Link>
         <Link
           href="/admin"
           className="nav-item"

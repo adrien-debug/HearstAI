@@ -106,3 +106,55 @@
   color: rgba(255, 255, 255, 0.5);
   text-align: center;
 }
+
+/* Séparateur de section premium raffiné */
+.nav-section-separator {
+  margin: 20px 0 12px 0;
+  padding: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav-section-separator::before,
+.nav-section-separator::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(138, 253, 129, 0.4) 50%,
+    transparent
+  );
+}
+
+.nav-section-separator::before {
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(138, 253, 129, 0.35)
+  );
+}
+
+.nav-section-separator::after {
+  background: linear-gradient(
+    to left,
+    transparent,
+    rgba(138, 253, 129, 0.35)
+  );
+}
+
+.nav-section-label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(138, 253, 129, 0.75);
+  padding: 0;
+  text-align: center;
+  position: relative;
+  white-space: nowrap;
+  transition: color 0.3s ease;
+}
