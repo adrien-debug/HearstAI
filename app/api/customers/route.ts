@@ -88,7 +88,11 @@ export async function GET(request: NextRequest) {
             protocols: protocols,
           }
         } catch (error: any) {
-          console.warn(`[API Customers] Erreur pour wallet ${dbCustomer.erc20Address}:`, error.message)
+          console.error(`[API Customers] ❌ Erreur DeBank pour wallet ${dbCustomer.erc20Address}:`, {
+            message: error.message,
+            stack: error.stack,
+            wallet: dbCustomer.erc20Address,
+          })
           // Retourner les données de la base de données en cas d'erreur DeBank
           return {
             id: dbCustomer.id,

@@ -88,6 +88,12 @@ async function debankFetch(
     }
   });
 
+  // Log pour debug
+  if (!DEBANK_ACCESS_KEY) {
+    console.error('[DeBank] ⚠️ DEBANK_ACCESS_KEY manquant dans les variables d\'environnement');
+    throw new Error('DEBANK_ACCESS_KEY manquant');
+  }
+
   const res = await fetch(url.toString(), {
     headers: {
       Accept: "application/json",
@@ -97,12 +103,14 @@ async function debankFetch(
 
   if (!res.ok) {
     const text = await res.text().catch(() => "");
-    throw new Error(
-      `[DeBank] ${res.status} ${res.statusText} for ${url.toString()} – ${text}`
-    );
+    const errorMsg = `[DeBank] ${res.status} ${res.statusText} for ${url.toString()} – ${text}`;
+    console.error('[DeBank] Erreur API:', errorMsg);
+    throw new Error(errorMsg);
   }
 
-  return res.json();
+  const data = await res.json();
+  console.log(`[DeBank] ✅ Succès pour ${path}, données reçues:`, Array.isArray(data) ? `${data.length} items` : 'object');
+  return data;
 }
 
 /**
@@ -225,7 +233,16 @@ export async function buildCollateralClientFromDeBank(
     allowedProtocols = [], // si vide → pas de filtre par protocole
   } = options;
 
-  const protoList = await fetchUserComplexProtocols(wallet, chains);
+  console.log(`[DeBank] 🔍 Récupération données pour wallet: ${wallet}, chains: ${chains.join(',')}`);
+  
+  let protoList: DeBankProtocol[] = [];
+  try {
+    protoList = await fetchUserComplexProtocols(wallet, chains);
+    console.log(`[DeBank] ✅ ${protoList.length} protocole(s) trouvé(s) pour ${wallet}`);
+  } catch (error: any) {
+    console.error(`[DeBank] ❌ Erreur lors de la récupération des protocoles pour ${wallet}:`, error.message);
+    throw error;
+  }
 
   const positions: CollateralPosition[] = [];
 
