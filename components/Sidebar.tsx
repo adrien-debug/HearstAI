@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
@@ -54,15 +55,15 @@ export default function Sidebar() {
 
       <nav className="sidebar-nav">
         {navItems.map((item, index) => (
-          <div key={item.href}>
-          <Link
-            href={item.href}
-            className={`nav-item ${isActive(item.href) ? 'active' : ''}`}
-            data-view={item.view}
-          >
-            <span className="nav-icon" data-icon={item.icon}></span>
-            <span className="nav-label">{item.label}</span>
-          </Link>
+          <React.Fragment key={item.href}>
+            <Link
+              href={item.href}
+              className={`nav-item ${isActive(item.href) ? 'active' : ''}`}
+              data-view={item.view}
+            >
+              <span className="nav-icon" data-icon={item.icon}></span>
+              <span className="nav-label">{item.label}</span>
+            </Link>
             {index === 1 && (
               <div className="nav-section-separator">
                 <span className="nav-section-label">Mining</span>
@@ -83,7 +84,7 @@ export default function Sidebar() {
                 <span className="nav-section-label">Strategie</span>
               </div>
             )}
-          </div>
+          </React.Fragment>
         ))}
       </nav>
 
