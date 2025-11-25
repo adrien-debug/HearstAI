@@ -23,6 +23,12 @@ export interface DeBankProtocol {
   name: string;
   chain: string;
   portfolio_item_list?: DeBankPortfolioItem[];
+  stats?: {
+    asset_usd_value?: number;
+    debt_usd_value?: number;
+    [key: string]: any;
+  };
+  [key: string]: any; // Permettre d'autres propriétés
 }
 
 export interface DeBankPortfolioItem {
