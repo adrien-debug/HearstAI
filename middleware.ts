@@ -60,8 +60,13 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(signInUrl)
     }
 
-    // If token exists and trying to access login page, redirect to home
+    // If token exists and trying to access login page, redirect to home or callbackUrl
     if (token && pathname === '/auth/signin') {
+      const callbackUrl = request.nextUrl.searchParams.get('callbackUrl') || '/'
+      // Vérifier que callbackUrl est une URL relative valide (sécurité)
+      if (callbackUrl.startsWith('/') && !callbackUrl.startsWith('//')) {
+        return NextResponse.redirect(new URL(callbackUrl, request.url))
+      }
       return NextResponse.redirect(new URL('/', request.url))
     }
 

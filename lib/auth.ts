@@ -69,5 +69,17 @@ export const authOptions: NextAuthOptions = {
       }
       return session
     },
+    async redirect({ url, baseUrl }) {
+      // Permettre les redirections vers des URLs relatives
+      if (url.startsWith('/')) {
+        return `${baseUrl}${url}`
+      }
+      // Permettre les redirections vers le même domaine
+      if (new URL(url).origin === baseUrl) {
+        return url
+      }
+      // Par défaut, rediriger vers la page d'accueil
+      return baseUrl
+    },
   },
 }

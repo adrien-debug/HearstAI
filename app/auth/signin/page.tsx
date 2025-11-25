@@ -31,27 +31,24 @@ export default function SignInPage() {
         console.error('[SignIn] Erreur:', result.error)
         setError(`Erreur: ${result.error}`)
       } else if (result?.ok) {
-        console.log('[SignIn] Connexion réussie, attente du cookie...')
-        // Attendre un peu pour que le cookie soit défini
-        await new Promise(resolve => setTimeout(resolve, 500))
+        console.log('[SignIn] Connexion réussie, redirection...')
         
-        // Vérifier la session avant de rediriger
-        const sessionResponse = await fetch('/api/auth/session')
-        const session = await sessionResponse.json()
-        console.log('[SignIn] Session après connexion:', session)
+        // Utiliser router.push au lieu de window.location pour éviter les problèmes de middleware
+        const callbackUrl = new URLSearchParams(window.location.search).get('callbackUrl') || '/'
         
-        if (session?.user) {
-          console.log('[SignIn] Session valide, redirection...')
-          const callbackUrl = new URLSearchParams(window.location.search).get('callbackUrl') || '/'
-          window.location.href = callbackUrl
-        } else {
-          console.warn('[SignIn] Session non disponible, réessai...')
-          // Réessayer après un délai
-          setTimeout(() => {
-            const callbackUrl = new URLSearchParams(window.location.search).get('callbackUrl') || '/'
+        // Forcer un refresh de la session avant de rediriger
+        await fetch('/api/auth/session', { cache: 'no-store' })
+        
+        // Utiliser router.push pour une navigation côté client
+        router.push(callbackUrl)
+        
+        // Fallback avec window.location si router.push ne fonctionne pas
+        setTimeout(() => {
+          if (window.location.pathname === '/auth/signin') {
+            console.log('[SignIn] Fallback: redirection forcée')
             window.location.href = callbackUrl
-          }, 1000)
-        }
+          }
+        }, 1000)
       } else {
         console.warn('[SignIn] Résultat inattendu:', result)
         setError('Une erreur est survenue lors de la connexion')
