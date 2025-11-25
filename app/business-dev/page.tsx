@@ -45,11 +45,11 @@ export default function BusinessDevPage() {
                   width: '48px',
                   height: '48px',
                   borderRadius: 'var(--radius-md)',
-                  background: 'linear-gradient(135deg, var(--primary-green), var(--accent-secondary))',
+                  background: '#C5FFA7',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  boxShadow: '0 4px 12px rgba(138, 253, 129, 0.3)'
+                  boxShadow: '0 4px 12px rgba(197, 255, 167, 0.3)'
                 }}>
                   <BusinessIcon size={24} color="#000" />
                 </div>
@@ -98,7 +98,7 @@ export default function BusinessDevPage() {
                   className={`business-dev-nav-tab ${activeSection === section.id ? 'active' : ''}`}
                 >
                   <span className="nav-tab-icon">
-                    <IconComponent size={18} color={activeSection === section.id ? 'var(--primary-green)' : 'currentColor'} />
+                    <IconComponent size={18} color={activeSection === section.id ? '#C5FFA7' : 'currentColor'} />
                   </span>
                   <span className="nav-tab-label">{section.label}</span>
                 </button>

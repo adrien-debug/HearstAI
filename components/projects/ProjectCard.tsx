@@ -35,7 +35,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
 
   const getStatusColor = (status: string) => {
     const statusUpper = status.toUpperCase()
-    if (statusUpper === 'ACTIVE') return { bg: 'rgba(138, 253, 129, 0.15)', color: '#8afd81', border: 'rgba(138, 253, 129, 0.3)' }
+    if (statusUpper === 'ACTIVE') return { bg: 'rgba(197, 255, 167, 0.15)', color: '#C5FFA7', border: 'rgba(197, 255, 167, 0.3)' }
     if (statusUpper === 'ARCHIVED') return { bg: 'rgba(136, 136, 136, 0.15)', color: '#888', border: 'rgba(136, 136, 136, 0.3)' }
     return { bg: 'rgba(255, 165, 0, 0.15)', color: '#FFA500', border: 'rgba(255, 165, 0, 0.3)' }
   }

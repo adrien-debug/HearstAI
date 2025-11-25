@@ -585,7 +585,7 @@ export default function Calculator() {
                           updateData('infra_budget_percent', 100 - rigPercent)
                         }}
                       />
-                      <div style={{ textAlign: 'center', marginTop: 'var(--space-2)', fontSize: 'var(--text-lg)', fontWeight: 700, color: '#8afd81' }}>
+                      <div style={{ textAlign: 'center', marginTop: 'var(--space-2)', fontSize: 'var(--text-lg)', fontWeight: 700, color: '#C5FFA7' }}>
                         {data.rig_budget_percent}% = ${((data.total_budget * data.rig_budget_percent) / 100).toLocaleString('en-US')}
                       </div>
                       <div style={{ textAlign: 'center', marginTop: 'var(--space-1)', fontSize: 'var(--text-sm)', color: 'var(--text-muted)' }}>
@@ -606,7 +606,7 @@ export default function Calculator() {
                           updateData('rig_budget_percent', 100 - infraPercent)
                         }}
                       />
-                      <div style={{ textAlign: 'center', marginTop: 'var(--space-2)', fontSize: 'var(--text-lg)', fontWeight: 700, color: '#8afd81' }}>
+                      <div style={{ textAlign: 'center', marginTop: 'var(--space-2)', fontSize: 'var(--text-lg)', fontWeight: 700, color: '#C5FFA7' }}>
                         {data.infra_budget_percent}% = ${((data.total_budget * data.infra_budget_percent) / 100).toLocaleString('en-US')}
                       </div>
                       <div style={{ textAlign: 'center', marginTop: 'var(--space-1)', fontSize: 'var(--text-sm)', color: 'var(--text-muted)' }}>
@@ -1063,7 +1063,7 @@ export default function Calculator() {
               <span className="calculator-summary-value">{totalPower.toFixed(2)} MW</span>
             </div>
             
-            <div className="calculator-summary-item" style={{ paddingTop: 'var(--space-3)', marginTop: 'var(--space-3)', borderTop: '1px solid #8afd81' }}>
+            <div className="calculator-summary-item" style={{ paddingTop: 'var(--space-3)', marginTop: 'var(--space-3)', borderTop: '1px solid rgba(197, 255, 167, 0.3)' }}>
               <span className="calculator-summary-label">Total Budget</span>
               <span className="calculator-summary-value highlight">${data.total_budget.toLocaleString('en-US')}</span>
             </div>
@@ -1073,7 +1073,7 @@ export default function Calculator() {
               <span className="calculator-summary-value">${monthlyOpex.toLocaleString('en-US')}</span>
             </div>
             
-            <div className="calculator-summary-item" style={{ paddingTop: 'var(--space-3)', marginTop: 'var(--space-3)', borderTop: '1px solid #8afd81' }}>
+            <div className="calculator-summary-item" style={{ paddingTop: 'var(--space-3)', marginTop: 'var(--space-3)', borderTop: '1px solid rgba(197, 255, 167, 0.3)' }}>
               <span className="calculator-summary-label">Projection Horizon</span>
               <span className="calculator-summary-value highlight">
                 {data.horizon_value} {data.horizon_mode === 'YEARS' ? 'Years' : 'Months'}

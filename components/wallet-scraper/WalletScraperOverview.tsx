@@ -19,12 +19,12 @@ export default function WalletScraperOverview() {
         </div>
         <div className="kpi-card">
           <div className="kpi-label">Last Scan</div>
-          <div className="kpi-value" style={{ fontSize: 'var(--text-2xl)' }}>5 min ago</div>
+          <div className="kpi-value" style={{ fontSize: 'var(--text-3xl)' }}>5 min ago</div>
           <div className="kpi-description">Most recent scan</div>
         </div>
         <div className="kpi-card">
           <div className="kpi-label">Scan Status</div>
-          <div className="kpi-value" style={{ fontSize: 'var(--text-2xl)', color: '#C5FFA7' }}>Ready</div>
+          <div className="kpi-value" style={{ fontSize: 'var(--text-3xl)', color: '#C5FFA7' }}>Ready</div>
           <div className="kpi-description">System status</div>
         </div>
       </div>

@@ -16,7 +16,7 @@ export default function BusinessDevOverview() {
       label: 'Leads totaux',
       value: '247',
       change: 12.5,
-      icon: <LeadsIcon size={20} color="var(--primary-green)" />
+      icon: <LeadsIcon size={20} color="#C5FFA7" />
     },
     {
       label: 'Pipeline valeur',
@@ -166,15 +166,15 @@ export default function BusinessDevOverview() {
                   width: '40px',
                   height: '40px',
                   borderRadius: 'var(--radius-md)',
-                  background: 'rgba(138, 253, 129, 0.15)',
+                  background: 'rgba(197, 255, 167, 0.15)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center'
                 }}>
-                  {activity.type === 'contact' && <UserIcon size={20} color="var(--primary-green)" />}
-                  {activity.type === 'deal' && <TargetIcon size={20} color="var(--primary-green)" />}
-                  {activity.type === 'meeting' && <CalendarIcon size={20} color="var(--primary-green)" />}
-                  {activity.type === 'proposal' && <DocumentIcon size={20} color="var(--primary-green)" />}
+                  {activity.type === 'contact' && <UserIcon size={20} color="#C5FFA7" />}
+                  {activity.type === 'deal' && <TargetIcon size={20} color="#C5FFA7" />}
+                  {activity.type === 'meeting' && <CalendarIcon size={20} color="#C5FFA7" />}
+                  {activity.type === 'proposal' && <DocumentIcon size={20} color="#C5FFA7" />}
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{
@@ -201,7 +201,7 @@ export default function BusinessDevOverview() {
               <div style={{
                 fontSize: 'var(--text-base)',
                 fontWeight: 700,
-                color: 'var(--primary-green)',
+                color: '#C5FFA7',
                 fontFamily: 'var(--font-mono)'
               }}>
                 {activity.value}

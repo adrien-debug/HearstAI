@@ -52,7 +52,7 @@ export default function WalletScraperAnalysis() {
             </div>
             <div style={{ marginBottom: 'var(--space-4)' }}>
               <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-secondary)', marginBottom: 'var(--space-1)' }}>Current Balance</div>
-              <div style={{ fontSize: 'var(--text-2xl)', color: '#C5FFA7', fontFamily: 'var(--font-mono)', fontWeight: 'var(--font-bold)' }}>8.563 BTC</div>
+              <div style={{ fontSize: 'var(--text-3xl)', color: '#C5FFA7', fontFamily: 'var(--font-mono)', fontWeight: 'var(--font-bold)' }}>8.563 BTC</div>
             </div>
             <div style={{ marginBottom: 'var(--space-4)' }}>
               <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-secondary)', marginBottom: 'var(--space-1)' }}>Total Received</div>

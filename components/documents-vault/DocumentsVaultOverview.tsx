@@ -55,17 +55,17 @@ export default function DocumentsVaultOverview() {
         </div>
         <div className="kpi-card">
           <div className="kpi-label">Storage Used</div>
-          <div className="kpi-value" style={{ fontSize: 'var(--text-3xl)' }}>42.8 GB</div>
+          <div className="kpi-value">42.8 GB</div>
           <div className="kpi-description">of 100 GB available</div>
         </div>
         <div className="kpi-card">
           <div className="kpi-label">Categories</div>
-          <div className="kpi-value" style={{ fontSize: 'var(--text-3xl)' }}>12</div>
+          <div className="kpi-value">12</div>
           <div className="kpi-description">Document categories</div>
         </div>
         <div className="kpi-card">
           <div className="kpi-label">Last 30 Days</div>
-          <div className="kpi-value" style={{ fontSize: 'var(--text-2xl)' }}>+89</div>
+          <div className="kpi-value" style={{ fontSize: 'var(--text-3xl)' }}>+89</div>
           <div className="kpi-description">New documents</div>
         </div>
       </div>

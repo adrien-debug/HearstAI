@@ -19,7 +19,7 @@ export default function WalletScraperScan() {
       <div className="kpi-grid">
         <div className="kpi-card">
           <div className="kpi-label">Scan Status</div>
-          <div className="kpi-value" style={{ fontSize: 'var(--text-2xl)', color: '#C5FFA7' }}>Ready</div>
+          <div className="kpi-value" style={{ fontSize: 'var(--text-3xl)', color: '#C5FFA7' }}>Ready</div>
           <div className="kpi-description">System ready for scan</div>
         </div>
         <div className="kpi-card">
@@ -29,12 +29,12 @@ export default function WalletScraperScan() {
         </div>
         <div className="kpi-card">
           <div className="kpi-label">Avg Scan Time</div>
-          <div className="kpi-value" style={{ fontSize: 'var(--text-2xl)' }}>12.5s</div>
+          <div className="kpi-value" style={{ fontSize: 'var(--text-3xl)' }}>12.5s</div>
           <div className="kpi-description">Average duration</div>
         </div>
         <div className="kpi-card">
           <div className="kpi-label">API Rate Limit</div>
-          <div className="kpi-value" style={{ fontSize: 'var(--text-2xl)', color: '#C5FFA7' }}>45/60</div>
+          <div className="kpi-value" style={{ fontSize: 'var(--text-3xl)', color: '#C5FFA7' }}>45/60</div>
           <div className="kpi-description">Requests per minute</div>
         </div>
       </div>

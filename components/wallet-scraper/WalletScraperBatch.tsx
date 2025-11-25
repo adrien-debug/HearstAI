@@ -21,7 +21,7 @@ export default function WalletScraperBatch() {
       <div className="kpi-grid">
         <div className="kpi-card">
           <div className="kpi-label">Batch Status</div>
-          <div className="kpi-value" style={{ fontSize: 'var(--text-2xl)', color: '#C5FFA7' }}>
+          <div className="kpi-value" style={{ fontSize: 'var(--text-3xl)', color: '#C5FFA7' }}>
             {batchStatus === 'ready' ? 'Ready' : batchStatus === 'processing' ? 'Processing' : 'Completed'}
           </div>
           <div className="kpi-description">Current batch status</div>
@@ -33,14 +33,14 @@ export default function WalletScraperBatch() {
         </div>
         <div className="kpi-card">
           <div className="kpi-label">Estimated Time</div>
-          <div className="kpi-value" style={{ fontSize: 'var(--text-2xl)' }}>
+          <div className="kpi-value" style={{ fontSize: 'var(--text-3xl)' }}>
             {Math.ceil((addresses.split('\n').filter(addr => addr.trim()).length || 0) * 12.5 / 60)} min
           </div>
           <div className="kpi-description">Approximate duration</div>
         </div>
         <div className="kpi-card">
           <div className="kpi-label">Rate Limit</div>
-          <div className="kpi-value" style={{ fontSize: 'var(--text-2xl)', color: '#C5FFA7' }}>45/60</div>
+          <div className="kpi-value" style={{ fontSize: 'var(--text-3xl)', color: '#C5FFA7' }}>45/60</div>
           <div className="kpi-description">API requests/min</div>
         </div>
       </div>

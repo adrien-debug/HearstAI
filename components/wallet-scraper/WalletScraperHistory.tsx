@@ -72,7 +72,7 @@ export default function WalletScraperHistory() {
         </div>
         <div className="kpi-card">
           <div className="kpi-label">Avg Duration</div>
-          <div className="kpi-value" style={{ fontSize: 'var(--text-2xl)' }}>14.2s</div>
+          <div className="kpi-value" style={{ fontSize: 'var(--text-3xl)' }}>14.2s</div>
           <div className="kpi-description">Average scan time</div>
         </div>
       </div>
