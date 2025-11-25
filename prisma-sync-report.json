@@ -1,0 +1,67 @@
+{
+  "timestamp": "2025-11-25T00:24:19.191Z",
+  "connection": true,
+  "tables": {
+    "existing": [
+      {
+        "model": "User",
+        "count": 1
+      },
+      {
+        "model": "Account",
+        "count": 0
+      },
+      {
+        "model": "Session",
+        "count": 0
+      },
+      {
+        "model": "VerificationToken",
+        "count": 0
+      },
+      {
+        "model": "Project",
+        "count": 0
+      },
+      {
+        "model": "Version",
+        "count": 0
+      },
+      {
+        "model": "File",
+        "count": 0
+      },
+      {
+        "model": "Job",
+        "count": 0
+      },
+      {
+        "model": "LogEntry",
+        "count": 0
+      },
+      {
+        "model": "Customer",
+        "count": 0
+      }
+    ],
+    "missing": [],
+    "errors": []
+  },
+  "relations": [
+    {
+      "name": "User ↔ Account",
+      "status": true,
+      "details": "1 users, 0 orphelins"
+    },
+    {
+      "name": "User ↔ Project",
+      "status": true,
+      "details": "1 users avec projets"
+    },
+    {
+      "name": "Project ↔ Version",
+      "status": true,
+      "details": "0 projets avec versions"
+    }
+  ]
+}

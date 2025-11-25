@@ -17,6 +17,10 @@ prisma/storage/*.db-shm
 .env.local.bak
 .env.production
 .env*.local
+.env.vercel.*
+.env*.tmp
+.env*.check
+.env*.final
 
 # Logs
 *.log

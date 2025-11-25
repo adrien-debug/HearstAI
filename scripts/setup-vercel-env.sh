@@ -1,92 +1,133 @@
 #!/bin/bash
 
-# Script pour configurer les variables d'environnement sur Vercel
+# Script pour configurer les variables d'environnement Vercel
 # Usage: ./scripts/setup-vercel-env.sh
 
 set -e
 
-echo "🔧 Configuration des variables d'environnement Vercel"
+echo "🚀 Configuration des variables d'environnement Vercel"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
+
+# Charger les variables locales
+if [ -f .env.local ]; then
+  export $(cat .env.local | grep -v '^#' | xargs)
+fi
 
 # Vérifier que Vercel CLI est installé
 if ! command -v vercel &> /dev/null; then
   echo "❌ Vercel CLI n'est pas installé"
-  echo "   Installe-le avec: npm install -g vercel"
+  echo ""
+  echo "Installe-le avec:"
+  echo "  npm i -g vercel"
   exit 1
 fi
 
-# Vérifier que l'utilisateur est connecté à Vercel
-if ! vercel whoami &> /dev/null; then
-  echo "❌ Tu n'es pas connecté à Vercel"
-  echo "   Connecte-toi avec: vercel login"
+echo "✅ Vercel CLI trouvé"
+echo ""
+
+# Vérifier que le projet est lié
+if [ ! -f .vercel/project.json ]; then
+  echo "⚠️  Projet Vercel non lié"
+  echo ""
+  echo "Lance: vercel link"
   exit 1
 fi
 
-# Lire les variables depuis .env.local
-if [ ! -f .env.local ]; then
-  echo "❌ Fichier .env.local non trouvé"
-  exit 1
-fi
+echo "✅ Projet Vercel lié"
+echo ""
 
-# URL Vercel (mise à jour avec l'URL réelle)
-VERCEL_URL="https://hearstai-6dnhm44p9-adrien-nejkovics-projects.vercel.app"
+# Lire le nom du projet
+PROJECT_NAME=$(cat .vercel/project.json | grep -o '"name":"[^"]*"' | head -1 | cut -d'"' -f4)
+echo "📋 Projet: $PROJECT_NAME"
+echo ""
 
-# Charger les variables depuis .env.local
-source .env.local
+# Variables à configurer
+VARS=(
+  "DATABASE_URL"
+  "NEXTAUTH_URL"
+  "NEXTAUTH_SECRET"
+)
 
-echo "📋 Variables à configurer:"
-echo "   DATABASE_URL: ${DATABASE_URL:0:30}..."
-echo "   NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:0:20}..."
-echo "   NEXTAUTH_URL: ${VERCEL_URL}"
+echo "🔑 Variables à configurer:"
+for var in "${VARS[@]}"; do
+  echo "  - $var"
+done
 echo ""
 
 # Demander confirmation
-read -p "Continuer ? (y/n) " -n 1 -r
-echo
+read -p "Continuer avec la configuration ? (y/n) " -n 1 -r
+echo ""
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-  echo "❌ Annulé"
-  exit 1
+  echo "Annulé"
+  exit 0
 fi
 
-# Configurer DATABASE_URL
-# ⚠️ IMPORTANT: SQLite ne fonctionne pas sur Vercel (système de fichiers en lecture seule)
-# Il faut utiliser PostgreSQL (Vercel Postgres, Supabase, Neon, etc.)
+# DATABASE_URL
 if [ -n "$DATABASE_URL" ]; then
-  echo "🔧 Configuration de DATABASE_URL..."
-  echo "⚠️  ATTENTION: SQLite ne fonctionne pas sur Vercel !"
-  echo "   Tu dois utiliser PostgreSQL pour la production."
-  echo "   Options: Vercel Postgres, Supabase, Neon, etc."
   echo ""
-  read -p "Continuer quand même ? (y/n) " -n 1 -r
-  echo
+  echo "📊 Configuration de DATABASE_URL..."
+  echo "   Valeur actuelle: ${DATABASE_URL:0:60}..."
+  echo ""
+  read -p "Utiliser cette valeur ? (y/n) " -n 1 -r
+  echo ""
   if [[ $REPLY =~ ^[Yy]$ ]]; then
-    vercel env add DATABASE_URL production <<< "$DATABASE_URL" || echo "⚠️  DATABASE_URL existe déjà ou erreur"
-    vercel env add DATABASE_URL preview <<< "$DATABASE_URL" || echo "⚠️  DATABASE_URL existe déjà ou erreur"
-    vercel env add DATABASE_URL development <<< "$DATABASE_URL" || echo "⚠️  DATABASE_URL existe déjà ou erreur"
-  else
-    echo "⏭️  DATABASE_URL ignoré. Configure-le manuellement avec une base PostgreSQL."
+    vercel env add DATABASE_URL production <<< "$DATABASE_URL"
+    vercel env add DATABASE_URL preview <<< "$DATABASE_URL"
+    vercel env add DATABASE_URL development <<< "$DATABASE_URL"
+    echo "✅ DATABASE_URL configuré"
   fi
+else
+  echo "⚠️  DATABASE_URL non trouvé dans .env.local"
+  echo "   Configure-le manuellement sur Vercel"
 fi
 
-# Configurer NEXTAUTH_SECRET
+# NEXTAUTH_URL
+echo ""
+echo "🔐 Configuration de NEXTAUTH_URL..."
+echo "   Format attendu: https://$PROJECT_NAME.vercel.app"
+echo ""
+read -p "Entrer l'URL (ou appuyer sur Entrée pour utiliser le format par défaut): " NEXTAUTH_URL_INPUT
+
+if [ -z "$NEXTAUTH_URL_INPUT" ]; then
+  NEXTAUTH_URL_INPUT="https://$PROJECT_NAME.vercel.app"
+fi
+
+vercel env add NEXTAUTH_URL production <<< "$NEXTAUTH_URL_INPUT"
+vercel env add NEXTAUTH_URL preview <<< "$NEXTAUTH_URL_INPUT"
+vercel env add NEXTAUTH_URL development <<< "http://localhost:6001"
+echo "✅ NEXTAUTH_URL configuré"
+
+# NEXTAUTH_SECRET
 if [ -n "$NEXTAUTH_SECRET" ]; then
-  echo "🔧 Configuration de NEXTAUTH_SECRET..."
-  vercel env add NEXTAUTH_SECRET production <<< "$NEXTAUTH_SECRET" || echo "⚠️  NEXTAUTH_SECRET existe déjà ou erreur"
-  vercel env add NEXTAUTH_SECRET preview <<< "$NEXTAUTH_SECRET" || echo "⚠️  NEXTAUTH_SECRET existe déjà ou erreur"
-  vercel env add NEXTAUTH_SECRET development <<< "$NEXTAUTH_SECRET" || echo "⚠️  NEXTAUTH_SECRET existe déjà ou erreur"
+  echo ""
+  echo "🔒 Configuration de NEXTAUTH_SECRET..."
+  echo "   Valeur trouvée dans .env.local"
+  echo ""
+  read -p "Utiliser cette valeur ? (y/n) " -n 1 -r
+  echo ""
+  if [[ $REPLY =~ ^[Yy]$ ]]; then
+    vercel env add NEXTAUTH_SECRET production <<< "$NEXTAUTH_SECRET"
+    vercel env add NEXTAUTH_SECRET preview <<< "$NEXTAUTH_SECRET"
+    vercel env add NEXTAUTH_SECRET development <<< "$NEXTAUTH_SECRET"
+    echo "✅ NEXTAUTH_SECRET configuré"
+  fi
+else
+  echo ""
+  echo "⚠️  NEXTAUTH_SECRET non trouvé"
+  echo "   Génère un secret avec: openssl rand -base64 32"
+  echo "   Puis configure-le manuellement sur Vercel"
 fi
 
-# Configurer NEXTAUTH_URL
-echo "🔧 Configuration de NEXTAUTH_URL..."
-vercel env add NEXTAUTH_URL production <<< "$VERCEL_URL" || echo "⚠️  NEXTAUTH_URL existe déjà ou erreur"
-vercel env add NEXTAUTH_URL preview <<< "$VERCEL_URL" || echo "⚠️  NEXTAUTH_URL existe déjà ou erreur"
-vercel env add NEXTAUTH_URL development <<< "http://localhost:3000" || echo "⚠️  NEXTAUTH_URL existe déjà ou erreur"
-
 echo ""
-echo "✅ Variables d'environnement configurées !"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
-echo "📝 Note: Pour SQLite sur Vercel, tu devras peut-être utiliser une base PostgreSQL"
-echo "   ou configurer un stockage persistant pour SQLite"
+echo "✅ Configuration terminée !"
 echo ""
-echo "🔄 Pour redéployer avec les nouvelles variables:"
-echo "   vercel --prod"
+echo "📋 Vérifie les variables avec:"
+echo "   vercel env ls"
+echo ""
+echo "🚀 Déploie avec:"
+echo "   git push origin main"
+echo "   (ou: vercel --prod)"
+echo ""

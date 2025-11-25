@@ -16,6 +16,14 @@
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
+    "db:sync": "node scripts/sync-prisma-supabase.js check",
+    "db:sync:force": "node scripts/sync-prisma-supabase.js sync",
+    "db:health": "node scripts/check-db-health.js",
+    "db:migrate:safe": "node scripts/migrate-safe.js dev",
+    "db:migrate:deploy": "node scripts/migrate-safe.js deploy",
+    "db:tools": "node scripts/prisma-tools.js",
+    "test:auth": "node scripts/test-auth-complete.js",
+    "test:login": "node scripts/test-login-live.js",
     "create-user": "node scripts/create-user.js"
   },
   "dependencies": {
