@@ -67,6 +67,7 @@ interface DashboardStats {
 }
 
 export default function HomeOverview() {
+  const [activeSection, setActiveSection] = useState('overview')
   const [stats, setStats] = useState<DashboardStats>({
     total_projects: 0,
     total_versions: 0,
@@ -76,6 +77,12 @@ export default function HomeOverview() {
   })
   const [loading, setLoading] = useState(true)
   const [mounted, setMounted] = useState(false)
+
+  const sections = [
+    { id: 'overview', label: 'Overview' },
+    { id: 'search', label: 'Search' },
+    { id: 'history', label: 'History' },
+  ]
 
   useEffect(() => {
     setMounted(true)
@@ -280,7 +287,36 @@ export default function HomeOverview() {
 
   return (
     <div>
-      {/* Premium Stats Boxes Section */}
+      {/* Page Title */}
+      <div style={{ marginBottom: 'var(--space-6)' }}>
+        <h1 style={{ 
+          fontSize: 'var(--text-2xl)', 
+          fontWeight: 700,
+          color: '#ffffff',
+          margin: 0,
+          marginBottom: 'var(--space-4)'
+        }}>
+          Intelligent Mining Platform
+        </h1>
+        
+        {/* Navigation tabs */}
+        <nav className="ai-nav-tabs">
+          {sections.map((section) => (
+            <button
+              key={section.id}
+              onClick={() => setActiveSection(section.id)}
+              className={`ai-nav-tab ${activeSection === section.id ? 'active' : ''}`}
+            >
+              {section.label}
+            </button>
+          ))}
+        </nav>
+      </div>
+
+      {/* Section Content */}
+      {activeSection === 'overview' && (
+        <>
+          {/* Premium Stats Boxes Section */}
       <div className="premium-stats-section">
         <div className="premium-stats-grid">
           <div className="premium-stat-box">
@@ -509,6 +545,22 @@ export default function HomeOverview() {
           </div>
         </div>
       </div>
+        </>
+      )}
+
+      {activeSection === 'search' && (
+        <div style={{ padding: 'var(--space-6)', textAlign: 'center', color: 'var(--text-secondary)' }}>
+          <h2 style={{ fontSize: 'var(--text-xl)', marginBottom: 'var(--space-4)' }}>Search</h2>
+          <p>Search section coming soon...</p>
+        </div>
+      )}
+
+      {activeSection === 'history' && (
+        <div style={{ padding: 'var(--space-6)', textAlign: 'center', color: 'var(--text-secondary)' }}>
+          <h2 style={{ fontSize: 'var(--text-xl)', marginBottom: 'var(--space-4)' }}>History</h2>
+          <p>History section coming soon...</p>
+        </div>
+      )}
     </div>
   )
 }

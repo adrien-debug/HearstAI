@@ -185,6 +185,15 @@ window.Icons = {
         <ellipse cx="12" cy="5" rx="9" ry="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         <path d="M21 12C21 12.5523 16.9706 14 12 14C7.02944 14 3 12.5523 3 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         <path d="M3 5V19C3 19.5523 7.02944 21 12 21C16.9706 21 21 19.5523 21 19V5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>`,
+    
+    brain: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2C8 2 5 5 5 9C5 10.5 5.5 11.8 6.2 12.8C6.5 13.2 6.5 13.8 6.2 14.2C5.5 15.2 5 16.5 5 18C5 20.5 7 22.5 9.5 22.5C10.2 22.5 10.8 22.3 11.3 22C11.7 21.7 12.3 21.7 12.7 22C13.2 22.3 13.8 22.5 14.5 22.5C17 22.5 19 20.5 19 18C19 16.5 18.5 15.2 17.8 14.2C17.5 13.8 17.5 13.2 17.8 12.8C18.5 11.8 19 10.5 19 9C19 5 16 2 12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M9.5 8.5C9.5 8.5 10.2 9.5 12 9.5C13.8 9.5 14.5 8.5 14.5 8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M9.5 12.5C9.5 12.5 10.2 13.5 12 13.5C13.8 13.5 14.5 12.5 14.5 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M9.5 16.5C9.5 16.5 10.2 17.5 12 17.5C13.8 17.5 14.5 16.5 14.5 16.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M8 6C8 6 8.5 7 10 7C11.5 7 12 6 12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M12 6C12 6 12.5 7 14 7C15.5 7 16 6 16 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>`
 };
 

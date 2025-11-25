@@ -1,0 +1,405 @@
+/* ===================================
+   SIDEBAR PREMIUM POLISH
+   Améliorations visuelles uniquement
+   Sans modification du layout, code ou couleurs
+   =================================== */
+
+/* Contrainte globale pour éviter les débordements */
+.sidebar-nav,
+.sidebar-nav * {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* ===================================
+   1. ESPACEMENTS & AÉRATION
+   =================================== */
+
+.sidebar-nav {
+  gap: 6px; /* Au lieu de 4px - plus d'aération */
+}
+
+.nav-section {
+  margin-bottom: 8px; /* Ajouter un margin-bottom subtil */
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.nav-section-header {
+  margin: 24px 0 14px 0; /* Au lieu de 20px 0 12px 0 - plus d'espace */
+}
+
+.nav-item {
+  padding: 11px 12px; /* Réduire le padding horizontal pour éviter le débordement */
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.nav-sub-item {
+  padding-left: 10px; /* Réduire pour éviter le débordement */
+  padding-right: 10px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* ===================================
+   2. BORDURES & ARRONDIS RAFFINÉS
+   =================================== */
+
+.nav-item {
+  border-radius: 10px; /* Au lieu de 8px - plus doux */
+}
+
+.nav-sub-item {
+  border-radius: 8px; /* Légèrement plus arrondi que l'item parent */
+}
+
+.sidebar-search-container {
+  border-radius: 10px; /* Harmoniser avec les nav-items */
+}
+
+.nav-section-header {
+  border-radius: 6px; /* Ajouter un léger arrondi au hover */
+  padding: 4px 6px; /* Réduire le padding horizontal pour éviter le débordement */
+  max-width: 100%;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* ===================================
+   3. OMBRES & PROFONDEUR SOPHISTIQUÉES
+   =================================== */
+
+.sidebar {
+  box-shadow: 
+    4px 0 32px rgba(0, 0, 0, 0.6),
+    inset -1px 0 0 rgba(255, 255, 255, 0.03); /* Au lieu de 0.06 - plus subtil */
+}
+
+.nav-item {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* Ombre très subtile par défaut */
+}
+
+.nav-item:hover {
+  box-shadow: 
+    0 2px 8px rgba(197, 255, 156, 0.15),
+    0 1px 3px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05); /* Multi-couches pour profondeur */
+}
+
+.nav-item.active {
+  box-shadow: 
+    0 4px 16px rgba(197, 255, 156, 0.25),
+    0 2px 6px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 0 0 1px rgba(197, 255, 156, 0.2); /* Bordure subtile en plus */
+}
+
+.nav-sub-item:hover {
+  box-shadow: 
+    0 1px 4px rgba(197, 255, 156, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.sidebar-search-container:focus-within {
+  box-shadow: 
+    0 0 0 2px rgba(158, 255, 0, 0.15),
+    0 2px 8px rgba(158, 255, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* ===================================
+   4. TRANSITIONS & ANIMATIONS FLUIDES
+   =================================== */
+
+.nav-item {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); /* Au lieu de 0.2s ease */
+}
+
+.nav-sub-item {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); /* Au lieu de 0.2s ease */
+}
+
+.sidebar-search-container {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); /* Au lieu de 0.2s ease */
+}
+
+.nav-item:hover {
+  transform: translateX(2px); /* Légère translation pour dynamisme */
+}
+
+.nav-item.active {
+  transform: translateX(0); /* Reset pour l'état actif */
+}
+
+/* ===================================
+   5. HIÉRARCHIE VISUELLE RENFORCÉE
+   =================================== */
+
+.nav-item {
+  letter-spacing: -0.01em; /* Ajouter pour plus de raffinement */
+}
+
+.nav-item.active {
+  letter-spacing: -0.005em; /* Légèrement moins serré pour l'actif */
+}
+
+.nav-sub-item {
+  font-size: 13.5px; /* Légèrement plus petit que les items principaux */
+  letter-spacing: -0.01em;
+}
+
+.nav-section-label {
+  letter-spacing: 1.8px; /* Au lieu de 1.5px - plus espacé */
+  font-size: 11.5px; /* Légèrement plus petit pour plus de raffinement */
+}
+
+/* ===================================
+   6. ICÔNES & MICRO-DÉTAILS
+   =================================== */
+
+.nav-section-lightning {
+  filter: drop-shadow(0 0 3px rgba(197, 255, 156, 0.4)); /* Au lieu de 0 0 2px - plus visible */
+}
+
+.nav-section-header:hover .nav-section-lightning {
+  filter: drop-shadow(0 0 5px rgba(197, 255, 156, 0.6)); /* Au lieu de 0 0 4px */
+}
+
+.nav-section-lightning.open {
+  filter: drop-shadow(0 0 8px rgba(197, 255, 156, 0.9)); /* Au lieu de 0 0 6px */
+}
+
+.sidebar-search-icon {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-search-container:focus-within .sidebar-search-icon {
+  transform: scale(1.1); /* Légère animation au focus */
+}
+
+/* ===================================
+   7. SÉPARATEURS ÉLÉGANTS
+   =================================== */
+
+.nav-section-separator {
+  margin: 24px 0 16px 0; /* Au lieu de 20px 0 12px 0 - plus d'espace */
+}
+
+.nav-section-separator::before,
+.nav-section-separator::after {
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.5) 50%, /* Au lieu de 0.6 - plus subtil */
+    transparent
+  );
+  box-shadow: 0 0 3px rgba(255, 255, 255, 0.4); /* Au lieu de 0 0 4px - plus subtil */
+}
+
+.nav-section-separator::before {
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.6) /* Au lieu de 0.7 - plus subtil */
+  );
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.5); /* Au lieu de 0 0 6px */
+}
+
+.nav-section-separator::after {
+  background: linear-gradient(
+    to left,
+    transparent,
+    rgba(255, 255, 255, 0.6) /* Au lieu de 0.7 - plus subtil */
+  );
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.5); /* Au lieu de 0 0 6px */
+}
+
+.nav-section-separator .nav-section-label {
+  padding: 0 8px; /* Ajouter un padding horizontal pour plus d'espace */
+  letter-spacing: 2px; /* Au lieu de 1.5px - plus espacé */
+}
+
+/* ===================================
+   8. BARRE DE RECHERCHE ULTRA PREMIUM
+   =================================== */
+
+.sidebar-search {
+  margin: 20px 0; /* Plus d'espace vertical pour respiration */
+  position: relative;
+}
+
+.sidebar-search-container {
+  position: relative;
+  background: rgba(255, 255, 255, 0.03); /* Encore plus subtil par défaut */
+  border: 1px solid rgba(255, 255, 255, 0.06); /* Border plus subtile */
+  border-radius: 12px; /* Arrondi plus doux (au lieu de 10px) */
+  padding: 3px; /* Padding interne pour effet de glow */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Transition premium */
+  backdrop-filter: blur(8px); /* Effet de flou subtil */
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.02); /* Ombre subtile par défaut */
+}
+
+.sidebar-search-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(158, 255, 0, 0.1), rgba(197, 255, 156, 0.05));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+.sidebar-search-container:focus-within {
+  background: rgba(255, 255, 255, 0.05); /* Légèrement plus visible au focus */
+  border-color: rgba(158, 255, 0, 0.4); /* Border verte plus visible */
+  box-shadow: 
+    0 0 0 3px rgba(158, 255, 0, 0.12), /* Glow externe premium */
+    0 4px 12px rgba(158, 255, 0, 0.15), /* Ombre verte subtile */
+    0 2px 6px rgba(0, 0, 0, 0.2), /* Ombre de profondeur */
+    inset 0 1px 0 rgba(255, 255, 255, 0.05); /* Highlight interne */
+  transform: translateY(-1px); /* Légère élévation au focus */
+}
+
+.sidebar-search-container:focus-within::before {
+  opacity: 1; /* Afficher le gradient au focus */
+}
+
+.sidebar-search-icon {
+  position: absolute;
+  left: 12px; /* Légèrement plus espacé */
+  width: 17px; /* Légèrement plus grand */
+  height: 17px;
+  color: rgba(255, 255, 255, 0.45); /* Légèrement plus visible */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Transition premium */
+  z-index: 2;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1)); /* Ombre subtile sur l'icône */
+}
+
+.sidebar-search-container:focus-within .sidebar-search-icon {
+  color: #9EFF00; /* Vert Hearst au focus */
+  transform: scale(1.1) rotate(5deg); /* Légère animation au focus */
+  filter: drop-shadow(0 0 6px rgba(158, 255, 0, 0.4)); /* Glow vert sur l'icône */
+}
+
+.sidebar-search-input {
+  padding: 12px 14px 12px 42px; /* Plus généreux (12px au lieu de 11px, 42px au lieu de 38px) */
+  font-size: 13.5px;
+  letter-spacing: -0.01em;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); /* Transition premium */
+  border-radius: 10px; /* Arrondi interne */
+}
+
+.sidebar-search-input::placeholder {
+  color: rgba(255, 255, 255, 0.35); /* Légèrement plus visible */
+  transition: color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 400;
+}
+
+.sidebar-search-input:focus {
+  color: #ffffff;
+}
+
+.sidebar-search-input:focus::placeholder {
+  color: rgba(255, 255, 255, 0.25); /* Plus discret au focus */
+}
+
+/* Animation de pulse subtile au focus */
+@keyframes search-pulse {
+  0%, 100% {
+    box-shadow: 
+      0 0 0 3px rgba(158, 255, 0, 0.12),
+      0 4px 12px rgba(158, 255, 0, 0.15);
+  }
+  50% {
+    box-shadow: 
+      0 0 0 3px rgba(158, 255, 0, 0.18),
+      0 4px 16px rgba(158, 255, 0, 0.2);
+  }
+}
+
+.sidebar-search-container:focus-within {
+  animation: search-pulse 3s ease-in-out infinite; /* Pulse subtil et lent */
+}
+
+/* Effet de hover même sans focus */
+.sidebar-search-container:hover:not(:focus-within) {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 2px 6px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+/* ===================================
+   9. VERSION & FOOTER RAFFINÉS
+   =================================== */
+
+.sidebar-version {
+  padding-top: 20px; /* Au lieu de 16px - plus d'espace */
+  border-top: 1px solid rgba(255, 255, 255, 0.08); /* Au lieu de 0.1 - plus subtil */
+  margin-top: 8px; /* Ajouter un margin-top pour séparation */
+}
+
+.sidebar-version .nav-item {
+  margin-bottom: 14px; /* Au lieu de 12px - plus d'espace */
+  padding: 10px 12px; /* Harmoniser avec les autres items */
+  border-radius: 10px; /* Harmoniser */
+}
+
+.sidebar-version-text {
+  font-size: 11px; /* Au lieu de 12px - plus petit, plus discret */
+  letter-spacing: 0.5px; /* Ajouter pour plus de raffinement */
+  color: rgba(255, 255, 255, 0.45); /* Au lieu de 0.5 - plus subtil */
+  line-height: 1.4; /* Ajouter pour meilleure lisibilité */
+}
+
+/* ===================================
+   10. MICRO-INTERACTIONS & ÉTATS
+   =================================== */
+
+.nav-item {
+  position: relative;
+  overflow: hidden; /* Pour les effets de hover */
+}
+
+.nav-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 3px;
+  height: 0;
+  background: rgba(197, 255, 156, 0.6);
+  transition: height 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 0 2px 2px 0;
+  z-index: 1;
+}
+
+.nav-item:hover::before {
+  height: 60%; /* Indicateur visuel subtil */
+}
+
+.nav-item.active::before {
+  height: 100%; /* Indicateur complet pour l'actif */
+  background: rgba(197, 255, 156, 0.8);
+}
+
+.nav-sub-item::before {
+  width: 2px; /* Plus fin pour les sous-items */
+  left: -2px; /* Ajuster la position */
+}
+
+.nav-sub-item:hover::before,
+.nav-sub-item.active::before {
+  height: 70%; /* Légèrement plus haut que l'actuel 60% */
+}
+

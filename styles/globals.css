@@ -4,6 +4,7 @@
 @import '../frontend/css/main.css';
 @import './dashboard.css';
 @import './sidebar-new.css';
+@import './sidebar-premium-polish.css';
 
 /* Additional global styles */
 :root {

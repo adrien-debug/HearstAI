@@ -48,6 +48,39 @@
 
 .home-nav-tab.active {
     color: #C5FFA7;
+}
+
+/* ====================================
+   AI NAVIGATION TABS (MyEarthAI Style)
+   ==================================== */
+.ai-nav-tabs {
+    display: flex;
+    gap: var(--space-2);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    margin-bottom: var(--space-6);
+    padding-bottom: 0;
+}
+
+.ai-nav-tab {
+    padding: var(--space-3) var(--space-4);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-secondary);
+    font-size: var(--text-base);
+    font-weight: var(--font-medium);
+    font-family: var(--font-primary);
+    cursor: pointer;
+    transition: all var(--duration-fast) var(--ease-in-out);
+    position: relative;
+}
+
+.ai-nav-tab:hover {
+    color: var(--text-primary);
+}
+
+.ai-nav-tab.active {
+    color: #C5FFA7;
     border-bottom-color: #C5FFA7;
     font-weight: var(--font-semibold);
 }
