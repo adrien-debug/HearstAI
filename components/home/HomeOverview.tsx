@@ -76,47 +76,91 @@ export default function HomeOverview() {
   const [loading, setLoading] = useState(true)
   const [mounted, setMounted] = useState(false)
 
-  // Debug: Vérifier que le composant est monté et forcer les événements
+  // Debug: Détecter les éléments qui bloquent les clics
   useEffect(() => {
     setMounted(true)
     console.log('[HomeOverview] ✅ Composant monté et hydraté')
     
     // Attendre que le DOM soit prêt
     setTimeout(() => {
-      // Vérifier que les événements fonctionnent
-      const testButton = document.querySelector('.premium-wallet-copy-btn')
-      if (testButton) {
-        console.log('[HomeOverview] ✅ Bouton trouvé:', testButton)
+      // CHERCHER LES OVERLAYS QUI BLOQUENT
+      const allElements = document.querySelectorAll('*')
+      const blockingElements: Element[] = []
+      
+      allElements.forEach((el) => {
+        const style = window.getComputedStyle(el)
+        const rect = el.getBoundingClientRect()
         
-        // FORCER l'ajout d'un event listener natif pour tester
+        // Vérifier si l'élément couvre l'écran ou bloque les interactions
+        const isFullScreen = 
+          (rect.top <= 0 && rect.bottom >= window.innerHeight) ||
+          (rect.left <= 0 && rect.right >= window.innerWidth) ||
+          (style.position === 'fixed' && (rect.width > window.innerWidth * 0.8 || rect.height > window.innerHeight * 0.8))
+        
+        const hasHighZIndex = parseInt(style.zIndex) > 1000 || style.zIndex === 'auto'
+        const isVisible = style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0'
+        const blocksPointer = style.pointerEvents === 'none' ? false : true
+        
+        if (isFullScreen && hasHighZIndex && isVisible && blocksPointer && el.tagName !== 'BODY' && el.tagName !== 'HTML') {
+          blockingElements.push(el)
+          console.warn('[HomeOverview] 🚨 ÉLÉMENT BLOQUANT DÉTECTÉ:', {
+            tag: el.tagName,
+            className: el.className,
+            id: el.id,
+            zIndex: style.zIndex,
+            position: style.position,
+            rect: { top: rect.top, left: rect.left, width: rect.width, height: rect.height },
+            pointerEvents: style.pointerEvents,
+            element: el
+          })
+        }
+      })
+      
+      if (blockingElements.length > 0) {
+        console.error('[HomeOverview] ❌ ÉLÉMENTS QUI BLOQUENT LES CLICS:', blockingElements)
+        
+        // ESSAYER DE LES DÉSACTIVER
+        blockingElements.forEach((el, idx) => {
+          const htmlEl = el as HTMLElement
+          console.log(`[HomeOverview] 🔧 Tentative de désactivation élément ${idx}:`, htmlEl.className)
+          
+          // Option 1: pointer-events: none
+          htmlEl.style.pointerEvents = 'none'
+          console.log(`[HomeOverview] ✅ pointer-events: none appliqué à`, htmlEl.className)
+          
+          // Option 2: display: none temporairement pour test
+          // htmlEl.style.display = 'none'
+        })
+      } else {
+        console.log('[HomeOverview] ✅ Aucun élément bloquant détecté')
+      }
+      
+      // Vérifier le bouton de test
+      const testButton = document.querySelector('[style*="zIndex: 99999"]') || 
+                        document.querySelector('[style*="z-index: 99999"]')
+      if (testButton) {
+        console.log('[HomeOverview] ✅ Bouton de test trouvé:', testButton)
+        
+        // FORCER l'ajout d'un event listener natif avec capture
         const nativeHandler = (e: Event) => {
           e.preventDefault()
           e.stopPropagation()
-          console.log('[HomeOverview] 🔥 CLIC NATIF DÉTECTÉ !')
+          e.stopImmediatePropagation()
+          console.log('[HomeOverview] 🔥🔥🔥 CLIC NATIF DÉTECTÉ !!!')
           alert('CLIC NATIF FONCTIONNE !')
+          return false
         }
         
-        testButton.addEventListener('click', nativeHandler, { capture: true })
-        console.log('[HomeOverview] ✅ Event listener natif ajouté')
-        
-        // Vérifier si React a attaché des handlers
-        const reactFiber = (testButton as any)._reactInternalFiber || (testButton as any)._reactInternalInstance
-        if (reactFiber) {
-          console.log('[HomeOverview] ✅ React Fiber trouvé:', reactFiber)
-        } else {
-          console.warn('[HomeOverview] ⚠️ React Fiber non trouvé - problème d\'hydratation ?')
-        }
-      } else {
-        console.warn('[HomeOverview] ⚠️ Bouton non trouvé')
+        testButton.addEventListener('click', nativeHandler, { capture: true, passive: false })
+        testButton.addEventListener('mousedown', nativeHandler, { capture: true, passive: false })
+        testButton.addEventListener('mouseup', nativeHandler, { capture: true, passive: false })
+        console.log('[HomeOverview] ✅ Event listeners natifs ajoutés avec capture')
       }
       
       // Test avec tous les boutons
       const allButtons = document.querySelectorAll('button')
       console.log('[HomeOverview] 📊 Total boutons trouvés:', allButtons.length)
-      allButtons.forEach((btn, idx) => {
-        console.log(`[HomeOverview] Bouton ${idx}:`, btn.className, btn.textContent?.substring(0, 30))
-      })
-    }, 1000)
+    }, 2000)
   }, [])
 
   useEffect(() => {
@@ -351,41 +395,61 @@ export default function HomeOverview() {
 
   return (
     <div>
-      {/* BOUTON DE TEST URGENT */}
-      <div style={{ 
-        position: 'fixed', 
-        top: '10px', 
-        right: '10px', 
-        zIndex: 99999, 
-        background: 'red', 
-        padding: '20px',
-        borderRadius: '8px',
-        cursor: 'pointer'
-      }}
-      onClick={(e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        console.log('🔥🔥🔥 BOUTON TEST CLIQUE !!!')
-        alert('BOUTON TEST FONCTIONNE !')
-      }}
-      onMouseDown={(e) => {
-        console.log('🔥 MouseDown sur bouton test')
-      }}
+      {/* BOUTON DE TEST URGENT - AVEC SCRIPT NATIF */}
+      <div 
+        id="test-button-overlay"
+        style={{ 
+          position: 'fixed', 
+          top: '10px', 
+          right: '10px', 
+          zIndex: 999999, 
+          background: 'red', 
+          padding: '20px',
+          borderRadius: '8px',
+          cursor: 'pointer',
+          pointerEvents: 'auto' as any
+        }}
+        ref={(el) => {
+          if (el) {
+            // Ajouter event listener natif directement
+            const handler = (e: MouseEvent) => {
+              e.preventDefault()
+              e.stopPropagation()
+              e.stopImmediatePropagation()
+              console.log('🔥🔥🔥 BOUTON TEST CLIQUE (NATIF) !!!')
+              alert('BOUTON TEST FONCTIONNE (NATIF) !')
+              return false
+            }
+            el.addEventListener('click', handler, { capture: true, passive: false })
+            el.addEventListener('mousedown', handler, { capture: true, passive: false })
+            console.log('[HomeOverview] ✅ Event listeners natifs ajoutés au bouton test')
+          }
+        }}
       >
         <button 
+          id="test-button-inner"
           style={{ 
             background: 'yellow', 
             padding: '10px 20px', 
             border: 'none', 
             cursor: 'pointer',
             fontSize: '16px',
-            fontWeight: 'bold'
+            fontWeight: 'bold',
+            pointerEvents: 'auto' as any
           }}
-          onClick={(e) => {
-            e.preventDefault()
-            e.stopPropagation()
-            console.log('🔥🔥🔥 BOUTON INTERNE CLIQUE !!!')
-            alert('BOUTON INTERNE FONCTIONNE !')
+          ref={(el) => {
+            if (el) {
+              const handler = (e: MouseEvent) => {
+                e.preventDefault()
+                e.stopPropagation()
+                e.stopImmediatePropagation()
+                console.log('🔥🔥🔥 BOUTON INTERNE CLIQUE (NATIF) !!!')
+                alert('BOUTON INTERNE FONCTIONNE (NATIF) !')
+                return false
+              }
+              el.addEventListener('click', handler, { capture: true, passive: false })
+              el.addEventListener('mousedown', handler, { capture: true, passive: false })
+            }
           }}
         >
           TEST CLIC ICI
