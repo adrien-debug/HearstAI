@@ -239,9 +239,9 @@ export default function Sidebar() {
           </div>
         </div>
 
-        {/* Séparateur Hearst Environement */}
+        {/* Séparateur Hearst.AI */}
         <div className="nav-section-separator">
-          <span className="nav-section-label">Hearst Environement</span>
+          <span className="nav-section-label">Hearst.AI</span>
         </div>
 
         {/* Section Mining avec menu déroulant */}

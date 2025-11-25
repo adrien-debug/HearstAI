@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import './MyEarthAI.css'
+import '@/components/home/Home.css'
 
 interface SearchHistoryItem {
   id: string
@@ -11,88 +12,47 @@ interface SearchHistoryItem {
   resultsCount: number
 }
 
+interface DashboardStats {
+  total_projects?: number
+  total_versions?: number
+  total_jobs?: number
+  jobs_running?: number
+  jobs_success_rate?: number
+  total_searches?: number
+}
+
+// Helper function to format dates consistently (client-side only)
+function formatDate(date: Date, format: 'short' | 'long' = 'short'): string {
+  if (typeof window === 'undefined') {
+    // Return ISO string during SSR to avoid hydration mismatch
+    return date.toISOString()
+  }
+  
+  if (format === 'short') {
+    return date.toLocaleString('fr-FR', { 
+      day: '2-digit', 
+      month: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
+  } else {
+    return date.toLocaleString('fr-FR', { 
+      day: '2-digit', 
+      month: '2-digit', 
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
+  }
+}
+
 export default function MyEarthAI() {
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState<any[]>([])
   const [isSearching, setIsSearching] = useState(false)
-  const [searchHistory, setSearchHistory] = useState<SearchHistoryItem[]>([
-    {
-      id: '1',
-      timestamp: new Date(Date.now() - 3600000),
-      query: 'Project Alpha',
-      results: [
-        {
-          type: 'project',
-          title: 'Project Alpha',
-          description: 'Projet de mining principal avec configuration optimisée',
-          url: '/projects/alpha',
-        },
-      ],
-      resultsCount: 1,
-    },
-    {
-      id: '2',
-      timestamp: new Date(Date.now() - 7200000),
-      query: 'Job #1234',
-      results: [
-        {
-          type: 'job',
-          title: 'Job #1234',
-          description: 'Job de mining en cours avec hash rate élevé',
-          url: '/jobs/1234',
-        },
-      ],
-      resultsCount: 1,
-    },
-    {
-      id: '3',
-      timestamp: new Date(Date.now() - 10800000),
-      query: 'Customer Beta',
-      results: [
-        {
-          type: 'customer',
-          title: 'Customer Beta',
-          description: 'Customer avec portefeuille actif sur plusieurs chaînes',
-          url: '/collateral/customers/beta',
-        },
-      ],
-      resultsCount: 1,
-    },
-    {
-      id: '4',
-      timestamp: new Date(Date.now() - 14400000),
-      query: 'mining',
-      results: [
-        {
-          type: 'project',
-          title: 'Project Alpha',
-          description: 'Projet de mining principal',
-          url: '/projects/alpha',
-        },
-        {
-          type: 'job',
-          title: 'Job #1234',
-          description: 'Job de mining en cours',
-          url: '/jobs/1234',
-        },
-      ],
-      resultsCount: 2,
-    },
-    {
-      id: '5',
-      timestamp: new Date(Date.now() - 18000000),
-      query: 'hashrate',
-      results: [
-        {
-          type: 'job',
-          title: 'Job #1234',
-          description: 'Job de mining en cours avec hash rate élevé',
-          url: '/jobs/1234',
-        },
-      ],
-      resultsCount: 1,
-    },
-  ])
+  // Initialize with empty array to avoid hydration mismatch
+  const [searchHistory, setSearchHistory] = useState<SearchHistoryItem[]>([])
+  const [isClient, setIsClient] = useState(false)
   const [historyFilter, setHistoryFilter] = useState('')
   const [searchTypeFilter, setSearchTypeFilter] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState('overview')
@@ -108,47 +68,202 @@ export default function MyEarthAI() {
     { id: 'all', label: 'Tous', icon: 'search' },
   ]
 
-  const [stats, setStats] = useState<any>(null)
+  const [stats, setStats] = useState<DashboardStats>({
+    total_projects: 0,
+    total_versions: 0,
+    total_jobs: 0,
+    jobs_running: 0,
+    jobs_success_rate: 0,
+    total_searches: 0,
+  })
   const [loadingStats, setLoadingStats] = useState(true)
+
+  // Initialize client-side only data to avoid hydration mismatch
+  useEffect(() => {
+    setIsClient(true)
+    
+    // Load search history from localStorage
+    if (typeof window !== 'undefined') {
+      try {
+        const savedHistory = localStorage.getItem('myearthai-search-history')
+        if (savedHistory) {
+          const parsed = JSON.parse(savedHistory).map((item: any) => ({
+            ...item,
+            timestamp: new Date(item.timestamp),
+          }))
+          setSearchHistory(parsed)
+        } else {
+          // Set default mock data only on client side
+          const now = Date.now()
+          setSearchHistory([
+            {
+              id: '1',
+              timestamp: new Date(now - 3600000),
+              query: 'Project Alpha',
+              results: [
+                {
+                  type: 'project',
+                  title: 'Project Alpha',
+                  description: 'Projet de mining principal avec configuration optimisée',
+                  url: '/projects/alpha',
+                },
+              ],
+              resultsCount: 1,
+            },
+            {
+              id: '2',
+              timestamp: new Date(now - 7200000),
+              query: 'Job #1234',
+              results: [
+                {
+                  type: 'job',
+                  title: 'Job #1234',
+                  description: 'Job de mining en cours avec hash rate élevé',
+                  url: '/jobs/1234',
+                },
+              ],
+              resultsCount: 1,
+            },
+            {
+              id: '3',
+              timestamp: new Date(now - 10800000),
+              query: 'Customer Beta',
+              results: [
+                {
+                  type: 'customer',
+                  title: 'Customer Beta',
+                  description: 'Customer avec portefeuille actif sur plusieurs chaînes',
+                  url: '/collateral/customers/beta',
+                },
+              ],
+              resultsCount: 1,
+            },
+            {
+              id: '4',
+              timestamp: new Date(now - 14400000),
+              query: 'mining',
+              results: [
+                {
+                  type: 'project',
+                  title: 'Project Alpha',
+                  description: 'Projet de mining principal',
+                  url: '/projects/alpha',
+                },
+                {
+                  type: 'job',
+                  title: 'Job #1234',
+                  description: 'Job de mining en cours',
+                  url: '/jobs/1234',
+                },
+              ],
+              resultsCount: 2,
+            },
+            {
+              id: '5',
+              timestamp: new Date(now - 18000000),
+              query: 'hashrate',
+              results: [
+                {
+                  type: 'job',
+                  title: 'Job #1234',
+                  description: 'Job de mining en cours avec hash rate élevé',
+                  url: '/jobs/1234',
+                },
+              ],
+              resultsCount: 1,
+            },
+          ])
+        }
+      } catch (error) {
+        console.error('Error loading search history:', error)
+      }
+    }
+  }, [])
 
   // Load stats on mount
   useEffect(() => {
+    let isMounted = true
+    
+    // MODE DEBUG LOCAL : Utiliser des données mockées pour éviter les blocages
+    const isLocal = typeof window !== 'undefined' && (
+      window.location.hostname === 'localhost' || 
+      window.location.hostname === '127.0.0.1' ||
+      window.location.port === '6001'
+    )
+    
+      if (isLocal) {
+      console.log('[MyEarthAI] 🔧 MODE LOCAL - Utilisation de données mockées')
+      // Utiliser des données mockées immédiatement
+      setStats({
+        total_projects: 12,
+        total_versions: 45,
+        total_jobs: 234,
+        jobs_running: 3,
+        jobs_success_rate: 94.5,
+        total_searches: 0,
+      })
+      setLoadingStats(false)
+      return () => {
+        isMounted = false
+      }
+    }
+    
+    // EN PRODUCTION : Charger les vraies stats
+    let abortController: AbortController | null = null
+    
     const loadStats = async () => {
+      if (!isMounted) return
+      
+      if (abortController) {
+        abortController.abort()
+      }
+      abortController = new AbortController()
+      
       try {
         setLoadingStats(true)
-        const response = await fetch('/api/stats')
-        if (response.ok) {
-          const data = await response.json()
-          setStats(data.stats || data)
-        } else {
-          // Fallback to mock data
+        
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Stats API timeout')), 3000)
+        )
+        
+        const statsPromise = fetch('/api/stats').then(res => res.json())
+        const response = await Promise.race([statsPromise, timeoutPromise]) as any
+        
+        if (!isMounted || abortController.signal.aborted) return
+        
+        if (response && response.stats) {
+          setStats({ ...response.stats, total_searches: 0 })
+        } else if (response) {
+          setStats({ ...response as DashboardStats, total_searches: 0 })
+        }
+      } catch (err: any) {
+        if (!isMounted || abortController.signal.aborted) return
+        if (err.name !== 'AbortError') {
+          console.error('Error loading stats:', err)
+          // Fallback vers données mockées en cas d'erreur
           setStats({
             total_projects: 12,
             total_versions: 45,
             total_jobs: 234,
+            jobs_running: 3,
             jobs_success_rate: 94.5,
             total_searches: searchHistory.length,
-            active_miners: 4,
           })
         }
-      } catch (err) {
-        console.error('Error loading stats:', err)
-        // Fallback to mock data
-        setStats({
-          total_projects: 12,
-          total_versions: 45,
-          total_jobs: 234,
-          jobs_success_rate: 94.5,
-          total_searches: searchHistory.length,
-          active_miners: 4,
-        })
       } finally {
-        setLoadingStats(false)
+        if (isMounted && !abortController.signal.aborted) {
+          setLoadingStats(false)
+        }
       }
     }
 
     loadStats()
-  }, [])
+    
+    return () => {
+      isMounted = false
+      if (abortController) abortController.abort()
+    }
+  }, []) // Remove searchHistory.length dependency to avoid infinite loops
 
   // Save search history to localStorage
   useEffect(() => {
@@ -178,8 +293,12 @@ export default function MyEarthAI() {
       setSearchResults(results)
       
       if (results.length > 0) {
+        // Use crypto.randomUUID if available, otherwise use timestamp + random
+        const id = typeof crypto !== 'undefined' && crypto.randomUUID 
+          ? crypto.randomUUID() 
+          : `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
         const historyItem: SearchHistoryItem = {
-          id: Date.now().toString(),
+          id,
           timestamp: new Date(),
           query: query.trim(),
           results: results,
@@ -302,7 +421,7 @@ export default function MyEarthAI() {
           </nav>
         </div>
 
-        {/* KPI Cards - Style Dashboard */}
+        {/* KPI Cards - Style Dashboard avec charte overview */}
         {activeTab === 'overview' && (
           <section className="kpi-section">
             <div className="kpi-grid">
@@ -323,7 +442,7 @@ export default function MyEarthAI() {
               </div>
               <div className="kpi-card">
                 <div className="kpi-label">Success Rate</div>
-                <div className="kpi-value" style={{ color: stats?.jobs_success_rate >= 90 ? '#C5FFA7' : stats?.jobs_success_rate >= 70 ? '#FFA500' : '#ff4d4d' }}>
+                <div className="kpi-value" style={{ color: (stats?.jobs_success_rate ?? 0) >= 90 ? '#C5FFA7' : (stats?.jobs_success_rate ?? 0) >= 70 ? '#FFA500' : '#ff4d4d' }}>
                   {stats?.jobs_success_rate ? `${stats.jobs_success_rate.toFixed(1)}%` : '94.5%'}
                 </div>
                 <div className="kpi-description">Job success rate</div>
@@ -454,12 +573,7 @@ export default function MyEarthAI() {
                       <div className="recent-activity-content">
                         <div className="recent-activity-query">"{item.query}"</div>
                         <div className="recent-activity-meta">
-                          {item.timestamp.toLocaleString('fr-FR', { 
-                            day: '2-digit', 
-                            month: '2-digit',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                          })} • {item.resultsCount} results
+                          {isClient ? formatDate(item.timestamp, 'short') : item.timestamp.toISOString()} • {item.resultsCount} results
                         </div>
                       </div>
                     </div>
@@ -523,13 +637,7 @@ export default function MyEarthAI() {
                     .map((historyItem) => (
                     <tr key={historyItem.id}>
                       <td>
-                        {historyItem.timestamp.toLocaleString('fr-FR', { 
-                          day: '2-digit', 
-                          month: '2-digit', 
-                          year: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit'
-                        })}
+                        {isClient ? formatDate(historyItem.timestamp, 'long') : historyItem.timestamp.toISOString()}
                       </td>
                       <td className="transaction-reward">"{historyItem.query}"</td>
                       <td>

@@ -1,10 +1,21 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import '@/components/trello/Trello.css'
+
+// Helper function to format dates consistently (client-side only)
+function formatDate(date: Date | string): string {
+  if (typeof window === 'undefined') {
+    // Return ISO string during SSR to avoid hydration mismatch
+    const d = typeof date === 'string' ? new Date(date) : date
+    return d.toISOString().split('T')[0]
+  }
+  const d = typeof date === 'string' ? new Date(date) : date
+  return d.toLocaleDateString('fr-FR')
+}
 
 interface Card {
   id: string
@@ -21,6 +32,12 @@ interface Column {
 }
 
 export default function TrelloPage() {
+  const [isClient, setIsClient] = useState(false)
+  
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
   const [columns, setColumns] = useState<Column[]>([
     {
       id: 'todo',
@@ -148,8 +165,12 @@ export default function TrelloPage() {
   }
 
   const handleAddCard = (columnId: string) => {
+    // Use crypto.randomUUID if available, otherwise use timestamp + random
+    const id = typeof crypto !== 'undefined' && crypto.randomUUID 
+      ? `card-${crypto.randomUUID()}` 
+      : `card-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
     const newCard: Card = {
-      id: `card-${Date.now()}`,
+      id,
       title: 'Nouvelle carte',
       description: '',
     }
@@ -188,11 +209,131 @@ export default function TrelloPage() {
         .find(card => card.id === activeId)
     : null
 
+  // Calcul des statistiques
+  const totalCards = columns.reduce((sum, col) => sum + col.cards.length, 0)
+  const todoCount = columns.find(col => col.id === 'todo')?.cards.length || 0
+  const inProgressCount = columns.find(col => col.id === 'in-progress')?.cards.length || 0
+  const doneCount = columns.find(col => col.id === 'done')?.cards.length || 0
+  const completionRate = totalCards > 0 ? Math.round((doneCount / totalCards) * 100) : 0
+  const overdueCards = columns
+    .filter(col => col.id !== 'done')
+    .flatMap(col => col.cards)
+    .filter(card => card.dueDate && new Date(card.dueDate) < new Date())
+    .length
+
   return (
     <div className="dashboard-view">
       <div className="dashboard-content">
-        <div style={{ marginBottom: 'var(--space-6)' }}>
-          <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700 }}>Trello Board</h1>
+        {/* Header Premium */}
+        <div className="trello-header-premium">
+          <div className="trello-header-main">
+            <div className="trello-header-title-section">
+              <h1 className="trello-header-title">
+                <svg className="trello-header-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M3 3H21C21.5523 3 22 3.44772 22 4V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M7 3V21M3 7H21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                Trello Board
+              </h1>
+              <p className="trello-header-subtitle">Gestion de projet & collaboration premium</p>
+            </div>
+            <div className="trello-header-actions">
+              <button className="trello-header-btn trello-header-btn-secondary">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M8 3.33333V12.6667M3.33333 8H12.6667" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                Nouvelle colonne
+              </button>
+              <button className="trello-header-btn trello-header-btn-primary">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M8 2.66667V13.3333M2.66667 8H13.3333" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                Exporter
+              </button>
+            </div>
+          </div>
+
+          {/* Statistiques Premium */}
+          <div className="trello-stats-grid">
+            <div className="trello-stat-card">
+              <div className="trello-stat-icon trello-stat-icon-total">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M10 2.5V17.5M2.5 10H17.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <div className="trello-stat-content">
+                <div className="trello-stat-value">{totalCards}</div>
+                <div className="trello-stat-label">Total Cartes</div>
+              </div>
+            </div>
+
+            <div className="trello-stat-card">
+              <div className="trello-stat-icon trello-stat-icon-todo">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M10 2.5L12.5 7.5L18.3333 8.75L14.1667 12.9167L15 18.75L10 16.25L5 18.75L5.83333 12.9167L1.66667 8.75L7.5 7.5L10 2.5Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <div className="trello-stat-content">
+                <div className="trello-stat-value">{todoCount}</div>
+                <div className="trello-stat-label">À Faire</div>
+              </div>
+            </div>
+
+            <div className="trello-stat-card">
+              <div className="trello-stat-icon trello-stat-icon-progress">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M10 2.5C14.1421 2.5 17.5 5.85786 17.5 10C17.5 14.1421 14.1421 17.5 10 17.5C5.85786 17.5 2.5 14.1421 2.5 10C2.5 5.85786 5.85786 2.5 10 2.5Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M10 5V10L13.3333 11.6667" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <div className="trello-stat-content">
+                <div className="trello-stat-value">{inProgressCount}</div>
+                <div className="trello-stat-label">En Cours</div>
+              </div>
+            </div>
+
+            <div className="trello-stat-card">
+              <div className="trello-stat-icon trello-stat-icon-done">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M16.6667 5L7.50004 14.1667L3.33337 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <div className="trello-stat-content">
+                <div className="trello-stat-value">{doneCount}</div>
+                <div className="trello-stat-label">Terminé</div>
+              </div>
+            </div>
+
+            <div className="trello-stat-card trello-stat-card-highlight">
+              <div className="trello-stat-icon trello-stat-icon-completion">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M10 2.5C14.1421 2.5 17.5 5.85786 17.5 10C17.5 14.1421 14.1421 17.5 10 17.5C5.85786 17.5 2.5 14.1421 2.5 10C2.5 5.85786 5.85786 2.5 10 2.5Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M7.5 10L9.16667 11.6667L12.5 8.33333" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <div className="trello-stat-content">
+                <div className="trello-stat-value">{completionRate}%</div>
+                <div className="trello-stat-label">Complétion</div>
+              </div>
+              <div className="trello-stat-progress">
+                <div className="trello-stat-progress-bar" style={{ width: `${completionRate}%` }}></div>
+              </div>
+            </div>
+
+            {overdueCards > 0 && (
+              <div className="trello-stat-card trello-stat-card-warning">
+                <div className="trello-stat-icon trello-stat-icon-warning">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 5V10M10 15H10.0083M18.3333 10C18.3333 14.6024 14.6024 18.3333 10 18.3333C5.39763 18.3333 1.66667 14.6024 1.66667 10C1.66667 5.39763 5.39763 1.66667 10 1.66667C14.6024 1.66667 18.3333 5.39763 18.3333 10Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <div className="trello-stat-content">
+                  <div className="trello-stat-value">{overdueCards}</div>
+                  <div className="trello-stat-label">En Retard</div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         <DndContext
@@ -321,6 +462,12 @@ function TrelloCard({
   onCancel: () => void
   onDelete: () => void
 }) {
+  const [isClient, setIsClient] = useState(false)
+  
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
   const {
     attributes,
     listeners,
@@ -369,7 +516,10 @@ function TrelloCard({
       )}
       {card.dueDate && (
         <div className="trello-card-due-date">
-          📅 {new Date(card.dueDate).toLocaleDateString('fr-FR')}
+          <svg className="trello-card-due-icon" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M11.6667 2.33333H10.5V1.16667C10.5 0.891667 10.275 0.666667 10 0.666667C9.725 0.666667 9.5 0.891667 9.5 1.16667V2.33333H4.5V1.16667C4.5 0.891667 4.275 0.666667 4 0.666667C3.725 0.666667 3.5 0.891667 3.5 1.16667V2.33333H2.33333C1.41667 2.33333 0.666667 3.08333 0.666667 4V11.6667C0.666667 12.5833 1.41667 13.3333 2.33333 13.3333H11.6667C12.5833 13.3333 13.3333 12.5833 13.3333 11.6667V4C13.3333 3.08333 12.5833 2.33333 11.6667 2.33333ZM11.6667 11.6667H2.33333V6.33333H11.6667V11.6667Z" fill="currentColor"/>
+          </svg>
+          {isClient ? formatDate(card.dueDate) : new Date(card.dueDate).toISOString().split('T')[0]}
         </div>
       )}
     </div>
