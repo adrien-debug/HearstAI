@@ -29,6 +29,8 @@ export interface DeBankPortfolioItem {
   stats?: {
     asset_usd_value?: number;
     debt_usd_value?: number;
+    liquidation_threshold?: number;
+    [key: string]: any; // Permettre d'autres propriétés
   };
   detail?: {
     supply_token_list?: DeBankToken[];
@@ -37,6 +39,7 @@ export interface DeBankPortfolioItem {
     borrow_token_list?: DeBankToken[];
     debt_token_list?: DeBankToken[];
     debt_list?: DeBankToken[];
+    [key: string]: any; // Permettre d'autres propriétés
   };
 }
 
@@ -225,7 +228,7 @@ function mapPortfolioItemToPosition(
 
   // Calculer le liquidation threshold depuis les stats si disponible
   // Par défaut 0.9 (90%) pour la plupart des protocoles
-  const liquidationThreshold = stats.liquidation_threshold || 0.9;
+  const liquidationThreshold = (stats as any).liquidation_threshold || 0.9;
 
   return {
     asset: assetSymbol, // ex: "BTC" / "ETH"
