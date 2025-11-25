@@ -33,65 +33,47 @@ export default function SignInPage() {
       } else if (result?.ok) {
         console.log('[SignIn] Connexion réussie, redirection...')
         
-        // ⚠️ PROTECTION CONTRE LES RÉGRESSIONS ⚠️
-        // NE PAS UTILISER window.location.href directement ici !
-        // Cela cause une boucle de redirection car le middleware vérifie le token
-        // avant que le cookie ne soit défini.
-        // 
-        // SOLUTION: Utiliser router.push() pour une navigation côté client
-        // qui ne déclenche pas de rechargement complet de la page.
-        
         // Récupérer le callbackUrl depuis l'URL ou utiliser '/' par défaut
         const urlParams = new URLSearchParams(window.location.search)
         let callbackUrl = urlParams.get('callbackUrl') || '/'
-        
-        // Si result.url existe et n'est pas la page de login, l'utiliser
-        if (result.url && !result.url.includes('/auth/signin')) {
-          try {
-            const urlObj = new URL(result.url)
-            callbackUrl = urlObj.pathname + urlObj.search
-          } catch (e) {
-            // Si l'URL n'est pas valide, utiliser le callbackUrl de l'URL
-          }
-        }
-        
-        // S'assurer que callbackUrl est une URL relative valide
-        if (!callbackUrl.startsWith('/')) {
-          callbackUrl = '/'
-        }
         
         // Décoder l'URL si elle est encodée (%2F -> /)
         try {
           callbackUrl = decodeURIComponent(callbackUrl)
         } catch (e) {
-          // Si le décodage échoue, utiliser '/'
           callbackUrl = '/'
         }
         
-        // S'assurer qu'on ne redirige pas vers /auth/signin
-        if (callbackUrl === '/auth/signin' || callbackUrl.startsWith('/auth/signin?')) {
+        // S'assurer que callbackUrl est une URL relative valide
+        if (!callbackUrl.startsWith('/') || callbackUrl === '/auth/signin' || callbackUrl.startsWith('/auth/signin?')) {
           callbackUrl = '/'
         }
         
         console.log('[SignIn] Redirection vers:', callbackUrl)
         
-        // Attendre un peu pour que le cookie soit défini
-        await new Promise(resolve => setTimeout(resolve, 300))
+        // Attendre que le cookie soit défini (important pour le middleware)
+        await new Promise(resolve => setTimeout(resolve, 500))
         
-        // Forcer un refresh de la session avant de rediriger
-        await fetch('/api/auth/session', { cache: 'no-store' })
+        // Vérifier que la session est bien créée
+        const sessionCheck = await fetch('/api/auth/session', { 
+          cache: 'no-store',
+          credentials: 'include'
+        })
+        const session = await sessionCheck.json()
         
-        // Utiliser router.push pour une navigation côté client (pas de rechargement)
-        router.push(callbackUrl)
-        
-        // Fallback intelligent: seulement si on est toujours sur /auth/signin après 1.5 secondes
-        // Cela évite les boucles infinies
-        setTimeout(() => {
-          if (window.location.pathname === '/auth/signin') {
-            console.log('[SignIn] Fallback: redirection forcée vers', callbackUrl)
+        if (session?.user) {
+          console.log('[SignIn] Session confirmée, redirection vers:', callbackUrl)
+          // Utiliser window.location.href pour forcer un rechargement complet
+          // Cela permet au middleware de voir le cookie
+          window.location.href = callbackUrl
+        } else {
+          console.warn('[SignIn] Session non disponible, réessai dans 1 seconde...')
+          // Réessayer après un délai plus long
+          setTimeout(() => {
+            console.log('[SignIn] Redirection forcée vers:', callbackUrl)
             window.location.href = callbackUrl
-          }
-        }, 1500)
+          }, 1000)
+        }
       } else {
         console.warn('[SignIn] Résultat inattendu:', result)
         setError('Une erreur est survenue lors de la connexion')
