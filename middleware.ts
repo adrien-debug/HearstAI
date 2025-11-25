@@ -36,9 +36,19 @@ export async function middleware(request: NextRequest) {
       token = await getToken({
         req: request,
         secret: process.env.NEXTAUTH_SECRET,
+        cookieName: process.env.NODE_ENV === 'production' 
+          ? '__Secure-next-auth.session-token'
+          : 'next-auth.session-token',
+      })
+      console.log('[Middleware] Token check:', { 
+        hasToken: !!token, 
+        pathname,
+        cookieName: process.env.NODE_ENV === 'production' 
+          ? '__Secure-next-auth.session-token'
+          : 'next-auth.session-token'
       })
     } catch (error) {
-      console.error('Error getting token:', error)
+      console.error('[Middleware] Error getting token:', error)
       // If token check fails, allow access to avoid blocking the app
       return NextResponse.next()
     }
