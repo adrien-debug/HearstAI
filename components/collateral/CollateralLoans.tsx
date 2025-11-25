@@ -38,10 +38,15 @@ export default function CollateralLoans() {
     const loadData = async () => {
       try {
         setLoading(true)
+        console.log('[CollateralLoans] Chargement des données...')
         const response = await collateralAPI.getAll()
+        console.log('[CollateralLoans] Données reçues:', {
+          clients: response?.clients?.length || 0,
+          source: response?.source
+        })
         setData(response)
-      } catch (err) {
-        console.error('Error loading collateral data:', err)
+      } catch (err: any) {
+        console.error('[CollateralLoans] Erreur lors du chargement:', err)
         // Fallback sur données vides si erreur
         setData({ clients: [] })
       } finally {

@@ -12,11 +12,16 @@ export default function CollateralTransactions() {
     const loadData = async () => {
       try {
         setLoading(true)
+        console.log('[CollateralTransactions] Chargement des données...')
         // Récupérer les données depuis DeBank en temps réel
         const response = await collateralAPI.getAll()
+        console.log('[CollateralTransactions] Données reçues:', {
+          clients: response?.clients?.length || 0,
+          source: response?.source
+        })
         setData(response)
-      } catch (err) {
-        console.error('Error loading collateral data:', err)
+      } catch (err: any) {
+        console.error('[CollateralTransactions] Erreur lors du chargement:', err)
         // Fallback sur données vides si erreur
         setData({ clients: [] })
       } finally {

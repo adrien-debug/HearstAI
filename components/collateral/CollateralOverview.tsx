@@ -56,10 +56,16 @@ export default function CollateralOverview() {
     const loadData = async () => {
       try {
         setLoading(true)
+        console.log('[CollateralOverview] Chargement des données...')
         const response = await collateralAPI.getAll()
+        console.log('[CollateralOverview] Données reçues:', {
+          clients: response?.clients?.length || 0,
+          source: response?.source,
+          count: response?.count
+        })
         setData(response)
-      } catch (err) {
-        console.error('Error loading collateral data:', err)
+      } catch (err: any) {
+        console.error('[CollateralOverview] Erreur lors du chargement:', err)
         // Fallback sur données vides si erreur
         setData({ clients: [] })
       } finally {

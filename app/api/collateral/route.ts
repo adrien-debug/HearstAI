@@ -68,8 +68,11 @@ export async function GET(request: NextRequest) {
     }
     
     if (wallets.length === 0) {
-      return NextResponse.json({ clients: [] });
+      console.log('[API Collateral] Aucun wallet trouvé, retour tableau vide');
+      return NextResponse.json({ clients: [], count: 0, source: 'database' });
     }
+
+    console.log(`[API Collateral] Récupération données pour ${wallets.length} wallet(s):`, wallets);
 
     const chainsParam = searchParams.get('chains') || 'eth';
     const protocolsParam = searchParams.get('protocols') || '';
@@ -113,6 +116,10 @@ export async function GET(request: NextRequest) {
         }
       })
     );
+
+    console.log(`[API Collateral] ✅ ${clients.length} client(s) récupéré(s) avec succès`);
+    const clientsWithPositions = clients.filter(c => c.positions && c.positions.length > 0).length;
+    console.log(`[API Collateral] 📊 ${clientsWithPositions} client(s) avec positions`);
 
     return NextResponse.json({ 
       clients,
