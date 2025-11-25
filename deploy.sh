@@ -159,3 +159,4 @@ echo -e "   ${BLUE}2.${NC} Configure les variables d'environnement sur Vercel"
 echo -e "   ${BLUE}3.${NC} Les déploiements automatiques se feront via GitHub Actions"
 echo ""
 
+

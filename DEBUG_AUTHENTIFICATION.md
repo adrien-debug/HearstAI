@@ -125,3 +125,4 @@ L'utilisateur doit exister dans Supabase :
 
 **Les logs de débogage sont maintenant actifs ! 🔍**
 
+

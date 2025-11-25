@@ -69,3 +69,4 @@ Une fois la base liée, tu devrais voir :
 - Sans Prisma Accelerate, tu dois utiliser l'URL PostgreSQL directe
 - L'URL Prisma Accelerate est différente de l'URL PostgreSQL directe
 
+

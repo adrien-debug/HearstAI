@@ -215,3 +215,4 @@ vercel env add DATABASE_URL production
 
 **Prochaine étape :** Configure les variables d'environnement sur Vercel et le déploiement se fera automatiquement.
 
+

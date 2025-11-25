@@ -78,3 +78,4 @@ Si le cookie n'est pas présent, le problème vient de NextAuth, pas de la redir
 
 **Cette solution devrait fonctionner !** ✅
 
+

@@ -34,3 +34,4 @@ jobs:
         DATABASE_URL: "file:./test.db"
         NEXT_PUBLIC_API_URL: ""
 
+

@@ -45,3 +45,4 @@ fi
 echo -e "\n${GREEN}✅ Vérification terminée${NC}"
 echo -e "${CYAN}💡 Note: setup.sh sera mis à jour par l'IA lors des modifications importantes${NC}\n"
 
+

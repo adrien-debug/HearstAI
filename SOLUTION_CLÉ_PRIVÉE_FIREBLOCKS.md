@@ -102,3 +102,4 @@ curl http://localhost:6001/api/fireblocks/vaults
 Vous devriez obtenir une liste de vaults, pas une erreur 401.
 
 
+

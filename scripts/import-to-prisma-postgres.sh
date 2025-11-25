@@ -117,3 +117,4 @@ echo "🔍 Vérification avec Prisma Studio..."
 echo "   Lance: npx prisma studio"
 echo ""
 
+

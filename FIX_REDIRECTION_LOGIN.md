@@ -91,3 +91,4 @@ Dans la console du navigateur (F12 → Application → Cookies) :
 
 **Le problème vient presque toujours de `NEXTAUTH_URL` mal configuré !**
 
+

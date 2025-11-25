@@ -178,3 +178,4 @@ Si toutes les vérifications passent :
 - ✅ Prisma peut accéder aux données
 - ✅ Tout fonctionne correctement
 
+

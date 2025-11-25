@@ -126,3 +126,4 @@ async function testDeBankOnVercel() {
 // Exécuter les tests
 testDeBankOnVercel().catch(console.error);
 
+

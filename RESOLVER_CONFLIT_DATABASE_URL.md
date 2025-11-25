@@ -80,3 +80,4 @@ vercel env rm DATABASE_URL development --yes
 - ✅ **Supprime SEULEMENT** l'ancienne `DATABASE_URL` (SQLite)
 - 🔄 Après suppression, Vercel créera automatiquement la nouvelle `DATABASE_URL` (PostgreSQL) lors de la connexion
 
+

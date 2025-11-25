@@ -63,3 +63,4 @@ echo "   ./scripts/update-database-url.sh 'prisma+postgres://accelerate...'"
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
+

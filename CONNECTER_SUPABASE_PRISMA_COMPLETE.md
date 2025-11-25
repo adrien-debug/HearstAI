@@ -154,3 +154,4 @@ Si tu rencontres des problèmes :
 2. Vérifie les logs dans Supabase
 3. Partage-moi les erreurs rencontrées
 
+

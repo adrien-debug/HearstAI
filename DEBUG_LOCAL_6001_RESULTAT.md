@@ -115,3 +115,4 @@ Le serveur local sur le port 6001 fonctionne correctement. Les corrections appor
 - Logs disponibles dans `/tmp/hearst-frontend.log`
 - Health check disponible sur `/api/health`
 
+

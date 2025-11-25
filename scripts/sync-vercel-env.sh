@@ -83,3 +83,4 @@ done
 echo -e "\n${GREEN}✅ Synchronisation terminée !${NC}"
 echo -e "${CYAN}💡 Vérifie sur https://vercel.com/adrien-nejkovics-projects/hearstai/settings/environment-variables${NC}"
 
+

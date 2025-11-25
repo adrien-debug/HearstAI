@@ -30,3 +30,4 @@ Configurer sur: https://vercel.com/adrien-nejkovics-projects/hearstai/settings/e
 - `LUXOR_API_KEY` (optionnel)
 - `NEXT_PUBLIC_API_URL` (laisser vide)
 
+

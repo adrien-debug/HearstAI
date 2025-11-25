@@ -82,3 +82,4 @@ echo -e "   ${GREEN}1.${NC} Vérifie que .env.local est correct (restauré depui
 echo -e "   ${GREEN}2.${NC} Lance: ${GREEN}./start-local-all.sh${NC}"
 echo ""
 
+

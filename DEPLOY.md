@@ -143,3 +143,4 @@ npx prisma db push
 - Vérifier que toutes les clés API sont dans `.env.local`
 - Vérifier que `NEXT_PUBLIC_API_URL` est vide (utilise les routes Next.js)
 
+

@@ -161,25 +161,28 @@
   background: linear-gradient(
     to right,
     transparent,
-    rgba(197, 255, 156, 0.4) 50%,
+    rgba(255, 255, 255, 0.6) 50%,
     transparent
   );
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.5);
 }
 
 .nav-section-separator::before {
   background: linear-gradient(
     to right,
     transparent,
-    rgba(197, 255, 156, 0.35)
+    rgba(255, 255, 255, 0.7)
   );
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
 }
 
 .nav-section-separator::after {
   background: linear-gradient(
     to left,
     transparent,
-    rgba(197, 255, 156, 0.35)
+    rgba(255, 255, 255, 0.7)
   );
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
 }
 
 /* Séparateur avec logo Bitcoin */
@@ -193,7 +196,7 @@
   justify-content: center;
   width: 20px;
   height: 20px;
-  color: rgba(197, 255, 156, 0.75);
+  color: #ffffff;
   z-index: 2;
   position: relative;
   margin: 0 auto;
@@ -210,7 +213,7 @@
   font-weight: 700;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: rgba(197, 255, 156, 0.75);
+  color: #ffffff;
   padding: 0;
   text-align: center;
   position: relative;
@@ -218,6 +221,11 @@
   transition: color 0.3s ease;
   line-height: 1.2;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* Label dans le séparateur - vert Hearst */
+.nav-section-separator .nav-section-label {
+  color: #A5FF9C;
 }
 
 /* ===================================
@@ -260,7 +268,7 @@
   font-weight: 700;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: rgba(197, 255, 156, 0.75);
+  color: #ffffff;
   padding: 0;
   text-align: center;
   position: relative;
@@ -274,11 +282,11 @@
 }
 
 .nav-section-header:hover .nav-section-label {
-  color: rgba(197, 255, 156, 0.9);
+  color: #ffffff;
 }
 
 .nav-section-header.open .nav-section-label {
-  color: rgba(197, 255, 156, 1);
+  color: #ffffff;
 }
 
 .nav-section-icon {
@@ -386,4 +394,75 @@
   background: rgba(197, 255, 156, 0.15);
   border-left-color: rgba(197, 255, 156, 0.6);
   font-weight: 600;
+}
+
+/* ===================================
+   BARRE DE RECHERCHE SIDEBAR
+   =================================== */
+
+.sidebar-search {
+  margin: 12px 0;
+  padding: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.sidebar-search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  overflow: hidden;
+}
+
+.sidebar-search-container:focus-within {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(158, 255, 0, 0.4);
+  box-shadow: 0 0 0 2px rgba(158, 255, 0, 0.1);
+}
+
+.sidebar-search-icon {
+  position: absolute;
+  left: 10px;
+  width: 16px;
+  height: 16px;
+  color: rgba(255, 255, 255, 0.5);
+  pointer-events: none;
+  flex-shrink: 0;
+  transition: color 0.2s ease;
+  z-index: 1;
+}
+
+.sidebar-search-container:focus-within .sidebar-search-icon {
+  color: #9EFF00;
+}
+
+.sidebar-search-input {
+  width: 100%;
+  padding: 10px 12px 10px 36px;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #ffffff;
+  font-size: 14px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+
+.sidebar-search-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 14px;
+}
+
+.sidebar-search-input:focus {
+  color: #ffffff;
+}
+
+.sidebar-search-input:focus::placeholder {
+  color: rgba(255, 255, 255, 0.3);
 }

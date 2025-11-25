@@ -68,3 +68,4 @@ Après la mise à jour, tu peux vérifier que tout fonctionne :
 3. Email : `admin@hearst.ai`
 4. Mot de passe : n'importe quel mot de passe
 
+

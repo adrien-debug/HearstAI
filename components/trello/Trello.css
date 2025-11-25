@@ -1,0 +1,444 @@
+/* Trello Styles - EXACT copy from DocumentsVault.css */
+
+/* ====================================
+   TRELLO BOARD
+   ==================================== */
+.trello-board {
+    display: flex;
+    gap: var(--space-4);
+    overflow-x: auto;
+    padding-bottom: var(--space-4);
+    min-height: calc(100vh - 200px);
+}
+
+/* ====================================
+   TRELLO COLUMN
+   ==================================== */
+.trello-column {
+    min-width: 300px;
+    max-width: 300px;
+    background: rgba(26, 26, 26, 0.7);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: var(--border-thin) solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-xl);
+    padding: var(--space-4);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        0 2px 8px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    transition: all var(--duration-normal) var(--ease-in-out);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    max-height: calc(100vh - 200px);
+}
+
+.trello-column::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+        circle at top right,
+        rgba(197, 255, 167, 0.05) 0%,
+        transparent 50%
+    );
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.trello-column > * {
+    position: relative;
+    z-index: 1;
+}
+
+.trello-column:hover {
+    box-shadow: 
+        0 12px 48px rgba(0, 0, 0, 0.5),
+        0 4px 16px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(197, 255, 167, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* ====================================
+   COLUMN HEADER
+   ==================================== */
+.trello-column-header {
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-3);
+    border-bottom: var(--border-thin) solid rgba(255, 255, 255, 0.05);
+}
+
+.trello-column-title {
+    font-size: var(--text-lg);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+    margin: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: color var(--duration-fast) var(--ease-in-out);
+}
+
+.trello-column-title:hover {
+    color: #C5FFA7;
+}
+
+.trello-column-title-input {
+    width: 100%;
+    padding: var(--space-2) var(--space-3);
+    background: rgba(10, 10, 10, 0.6);
+    border: 1px solid rgba(197, 255, 167, 0.3);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: var(--text-lg);
+    font-weight: var(--font-semibold);
+    font-family: var(--font-primary);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: all var(--duration-fast) var(--ease-in-out);
+}
+
+.trello-column-title-input:focus {
+    outline: none;
+    border-color: #C5FFA7;
+    box-shadow: 0 0 0 3px rgba(197, 255, 167, 0.1);
+    background: rgba(10, 10, 10, 0.9);
+}
+
+.trello-column-count {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+    font-weight: var(--font-normal);
+}
+
+/* ====================================
+   COLUMN CARDS CONTAINER
+   ==================================== */
+.trello-column-cards {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    overflow-y: auto;
+    flex: 1;
+    min-height: 100px;
+    max-height: calc(100vh - 350px);
+    padding-right: var(--space-2);
+}
+
+.trello-column-cards::-webkit-scrollbar {
+    width: 8px;
+}
+
+.trello-column-cards::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: var(--radius-full);
+}
+
+.trello-column-cards::-webkit-scrollbar-thumb {
+    background: rgba(197, 255, 167, 0.2);
+    border-radius: var(--radius-full);
+}
+
+.trello-column-cards::-webkit-scrollbar-thumb:hover {
+    background: rgba(197, 255, 167, 0.3);
+}
+
+/* ====================================
+   TRELLO CARD
+   ==================================== */
+.trello-card {
+    background: rgba(10, 10, 10, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: var(--border-thin) solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-lg);
+    padding: var(--space-3) var(--space-4);
+    box-shadow: 
+        0 4px 16px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    transition: all var(--duration-normal) var(--ease-in-out);
+    cursor: pointer;
+    position: relative;
+}
+
+.trello-card:hover {
+    box-shadow: 
+        0 8px 24px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(197, 255, 167, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    transform: translateY(-2px);
+    border-color: rgba(197, 255, 167, 0.3);
+}
+
+.trello-card-preview {
+    opacity: 0.9;
+    transform: rotate(3deg);
+    box-shadow: 
+        0 12px 48px rgba(0, 0, 0, 0.6),
+        0 0 0 1px rgba(197, 255, 167, 0.3);
+}
+
+.trello-card-labels {
+    display: flex;
+    gap: var(--space-2);
+    margin-bottom: var(--space-2);
+    flex-wrap: wrap;
+}
+
+.trello-card-label {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    font-size: var(--text-xs);
+    font-weight: var(--font-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: rgba(197, 255, 167, 0.1);
+    color: #C5FFA7;
+    border: 1px solid rgba(197, 255, 167, 0.3);
+}
+
+.trello-card-title {
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+    letter-spacing: -0.01em;
+    line-height: var(--leading-normal);
+}
+
+.trello-card-description {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-2);
+    line-height: var(--leading-normal);
+}
+
+.trello-card-due-date {
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+    margin-top: var(--space-2);
+    padding-top: var(--space-2);
+    border-top: var(--border-thin) solid rgba(255, 255, 255, 0.05);
+}
+
+/* ====================================
+   CARD EDITOR
+   ==================================== */
+.trello-card-editor {
+    background: rgba(10, 10, 10, 0.9);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(197, 255, 167, 0.3);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(197, 255, 167, 0.2);
+    position: relative;
+    z-index: 1000;
+}
+
+.trello-card-editor-title {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    background: rgba(10, 10, 10, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+    font-family: var(--font-primary);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: all var(--duration-fast) var(--ease-in-out);
+    margin-bottom: var(--space-3);
+}
+
+.trello-card-editor-title::placeholder {
+    color: var(--text-muted);
+}
+
+.trello-card-editor-title:focus {
+    outline: none;
+    border-color: #C5FFA7;
+    box-shadow: 0 0 0 3px rgba(197, 255, 167, 0.1);
+    background: rgba(10, 10, 10, 0.9);
+}
+
+.trello-card-editor-description {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    background: rgba(10, 10, 10, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: var(--text-sm);
+    font-family: var(--font-primary);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: all var(--duration-fast) var(--ease-in-out);
+    margin-bottom: var(--space-3);
+    resize: vertical;
+    min-height: 60px;
+}
+
+.trello-card-editor-description::placeholder {
+    color: var(--text-muted);
+}
+
+.trello-card-editor-description:focus {
+    outline: none;
+    border-color: #C5FFA7;
+    box-shadow: 0 0 0 3px rgba(197, 255, 167, 0.1);
+    background: rgba(10, 10, 10, 0.9);
+}
+
+.trello-card-editor-date,
+.trello-card-editor-labels {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    background: rgba(10, 10, 10, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: var(--text-sm);
+    font-family: var(--font-primary);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: all var(--duration-fast) var(--ease-in-out);
+    margin-bottom: var(--space-3);
+}
+
+.trello-card-editor-date::placeholder,
+.trello-card-editor-labels::placeholder {
+    color: var(--text-muted);
+}
+
+.trello-card-editor-date:focus,
+.trello-card-editor-labels:focus {
+    outline: none;
+    border-color: #C5FFA7;
+    box-shadow: 0 0 0 3px rgba(197, 255, 167, 0.1);
+    background: rgba(10, 10, 10, 0.9);
+}
+
+.trello-card-editor-actions {
+    display: flex;
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+}
+
+/* ====================================
+   BUTTONS
+   ==================================== */
+.trello-btn {
+    padding: var(--space-3) var(--space-6);
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    border-radius: var(--radius-full);
+    border: none;
+    transition: all var(--duration-normal) var(--ease-in-out);
+    cursor: pointer;
+    letter-spacing: -0.01em;
+    font-family: var(--font-primary);
+}
+
+.trello-btn-primary {
+    background: #C5FFA7;
+    color: #000000;
+    box-shadow: 
+        0 4px 16px rgba(197, 255, 167, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.trello-btn-primary:hover:not(:disabled) {
+    background: #B0FF8F;
+    box-shadow: 
+        0 6px 24px rgba(197, 255, 167, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    transform: translateY(-1px) scale(1.02);
+}
+
+.trello-btn-secondary {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.trello-btn-secondary:hover {
+    color: var(--text-primary);
+    border-color: rgba(197, 255, 167, 0.3);
+    background: rgba(197, 255, 167, 0.03);
+}
+
+.trello-btn-danger {
+    background: transparent;
+    color: #FF4D4D;
+    border: 1px solid rgba(255, 77, 77, 0.3);
+}
+
+.trello-btn-danger:hover {
+    background: rgba(255, 77, 77, 0.1);
+    border-color: rgba(255, 77, 77, 0.5);
+}
+
+.trello-add-card-btn {
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+    transition: all var(--duration-fast) var(--ease-in-out);
+    cursor: pointer;
+    font-family: var(--font-primary);
+    margin-top: var(--space-3);
+    width: 100%;
+}
+
+.trello-add-card-btn:hover {
+    color: #C5FFA7;
+    border-color: rgba(197, 255, 167, 0.3);
+    background: rgba(197, 255, 167, 0.03);
+}
+
+/* ====================================
+   RESPONSIVE
+   ==================================== */
+@media (max-width: 1024px) {
+    .trello-board {
+        flex-direction: column;
+    }
+    
+    .trello-column {
+        min-width: 100%;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .trello-column {
+        min-width: 100%;
+        max-width: 100%;
+    }
+    
+    .trello-card-editor-actions {
+        flex-direction: column;
+    }
+    
+    .trello-btn {
+        width: 100%;
+    }
+}
+

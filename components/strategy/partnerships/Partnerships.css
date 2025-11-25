@@ -1,0 +1,586 @@
+/* Partnerships Styles - Premium Design System */
+
+/* ====================================
+   NAVIGATION TABS
+   ==================================== */
+.partnerships-nav-tabs {
+    display: flex;
+    gap: var(--space-2);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    margin-bottom: var(--space-6);
+    padding-bottom: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.partnerships-nav-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.partnerships-nav-tab {
+    padding: var(--space-3) var(--space-4);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-secondary);
+    font-size: var(--text-base);
+    font-weight: var(--font-medium);
+    font-family: var(--font-primary);
+    cursor: pointer;
+    transition: all var(--duration-normal) var(--ease-in-out);
+    white-space: nowrap;
+    position: relative;
+    letter-spacing: -0.01em;
+}
+
+.partnerships-nav-tab::before {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--hearst-green);
+    transform: scaleX(0);
+    transition: transform var(--duration-normal) var(--ease-in-out);
+}
+
+.partnerships-nav-tab:hover {
+    color: var(--text-primary);
+}
+
+.partnerships-nav-tab.active {
+    color: var(--hearst-green);
+    font-weight: var(--font-semibold);
+}
+
+.partnerships-nav-tab.active::before {
+    transform: scaleX(1);
+}
+
+/* ====================================
+   PREMIUM CARDS
+   ==================================== */
+.partnership-card {
+    background: rgba(14, 14, 14, 0.8);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    box-shadow: 
+        0 8px 40px rgba(0, 0, 0, 0.5),
+        0 2px 12px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    transition: all var(--duration-normal) var(--ease-in-out);
+    position: relative;
+    overflow: hidden;
+}
+
+.partnership-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+        circle at top right,
+        rgba(138, 253, 129, 0.08) 0%,
+        transparent 60%
+    );
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity var(--duration-normal) var(--ease-in-out);
+}
+
+.partnership-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(138, 253, 129, 0.2);
+    box-shadow: 
+        0 12px 48px rgba(0, 0, 0, 0.6),
+        0 4px 16px rgba(138, 253, 129, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.partnership-card:hover::before {
+    opacity: 1;
+}
+
+.partnership-card > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* ====================================
+   STAT CARDS
+   ==================================== */
+.partnership-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+}
+
+.partnership-stat-card {
+    background: rgba(14, 14, 14, 0.8);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        0 2px 8px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    transition: all var(--duration-normal) var(--ease-in-out);
+    position: relative;
+    overflow: hidden;
+}
+
+.partnership-stat-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(
+        180deg,
+        var(--hearst-green) 0%,
+        rgba(138, 253, 129, 0.3) 100%
+    );
+    opacity: 0;
+    transition: opacity var(--duration-normal) var(--ease-in-out);
+}
+
+.partnership-stat-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(138, 253, 129, 0.15);
+    box-shadow: 
+        0 12px 40px rgba(0, 0, 0, 0.5),
+        0 4px 12px rgba(138, 253, 129, 0.08);
+}
+
+.partnership-stat-card:hover::after {
+    opacity: 1;
+}
+
+.partnership-stat-label {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    font-weight: var(--font-medium);
+    margin-bottom: var(--space-2);
+    letter-spacing: -0.01em;
+}
+
+.partnership-stat-value {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-bold);
+    color: var(--text-primary);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+}
+
+.partnership-stat-change {
+    font-size: var(--text-xs);
+    margin-top: var(--space-2);
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+}
+
+.partnership-stat-change.positive {
+    color: var(--hearst-green);
+}
+
+.partnership-stat-change.negative {
+    color: var(--text-error);
+}
+
+/* ====================================
+   STATUS BADGES
+   ==================================== */
+.partnership-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-full);
+    font-size: var(--text-xs);
+    font-weight: var(--font-medium);
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    border: 1px solid;
+}
+
+.partnership-status-badge.new {
+    background: rgba(138, 253, 129, 0.1);
+    color: var(--hearst-green);
+    border-color: rgba(138, 253, 129, 0.3);
+}
+
+.partnership-status-badge.active {
+    background: rgba(138, 253, 129, 0.15);
+    color: var(--hearst-green);
+    border-color: rgba(138, 253, 129, 0.4);
+}
+
+.partnership-status-badge.discussion {
+    background: rgba(255, 193, 7, 0.1);
+    color: #ffc107;
+    border-color: rgba(255, 193, 7, 0.3);
+}
+
+.partnership-status-badge.pending {
+    background: rgba(255, 152, 0, 0.1);
+    color: #ff9800;
+    border-color: rgba(255, 152, 0, 0.3);
+}
+
+.partnership-status-badge.inactive {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-secondary);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.partnership-status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* ====================================
+   PARTNERSHIP TABLE
+   ==================================== */
+.partnership-table-container {
+    background: rgba(14, 14, 14, 0.8);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: 
+        0 8px 40px rgba(0, 0, 0, 0.5),
+        0 2px 12px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.partnership-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.partnership-table thead {
+    background: rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.partnership-table th {
+    padding: var(--space-4) var(--space-5);
+    text-align: left;
+    font-size: var(--text-xs);
+    font-weight: var(--font-semibold);
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.partnership-table tbody tr {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    transition: all var(--duration-fast) var(--ease-in-out);
+}
+
+.partnership-table tbody tr:hover {
+    background: rgba(138, 253, 129, 0.05);
+    border-left: 2px solid var(--hearst-green);
+}
+
+.partnership-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.partnership-table td {
+    padding: var(--space-4) var(--space-5);
+    font-size: var(--text-sm);
+    color: var(--text-primary);
+    vertical-align: middle;
+}
+
+.partnership-table td:first-child {
+    font-weight: var(--font-medium);
+}
+
+/* ====================================
+   FILTERS & SEARCH
+   ==================================== */
+.partnership-filters {
+    display: flex;
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.partnership-search {
+    flex: 1;
+    min-width: 280px;
+    position: relative;
+}
+
+.partnership-search input {
+    width: 100%;
+    padding: var(--space-3) var(--space-4) var(--space-3) var(--space-10);
+    background: rgba(14, 14, 14, 0.8);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: var(--text-sm);
+    transition: all var(--duration-normal) var(--ease-in-out);
+    letter-spacing: -0.01em;
+}
+
+.partnership-search input::placeholder {
+    color: var(--text-secondary);
+}
+
+.partnership-search input:focus {
+    outline: none;
+    border-color: rgba(138, 253, 129, 0.3);
+    box-shadow: 
+        0 0 0 3px rgba(138, 253, 129, 0.1),
+        0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.partnership-search-icon {
+    position: absolute;
+    left: var(--space-3);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+    width: 18px;
+    height: 18px;
+}
+
+.partnership-filter-select {
+    padding: var(--space-3) var(--space-4);
+    background: rgba(14, 14, 14, 0.8);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: var(--text-sm);
+    cursor: pointer;
+    transition: all var(--duration-normal) var(--ease-in-out);
+    letter-spacing: -0.01em;
+}
+
+.partnership-filter-select:hover {
+    border-color: rgba(138, 253, 129, 0.2);
+}
+
+.partnership-filter-select:focus {
+    outline: none;
+    border-color: rgba(138, 253, 129, 0.3);
+    box-shadow: 0 0 0 3px rgba(138, 253, 129, 0.1);
+}
+
+/* ====================================
+   PARTNERSHIP DETAIL CARD
+   ==================================== */
+.partnership-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+}
+
+.partnership-detail-card {
+    background: rgba(14, 14, 14, 0.8);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    transition: all var(--duration-normal) var(--ease-in-out);
+    position: relative;
+    overflow: hidden;
+}
+
+.partnership-detail-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        var(--hearst-green),
+        transparent
+    );
+    opacity: 0;
+    transition: opacity var(--duration-normal) var(--ease-in-out);
+}
+
+.partnership-detail-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(138, 253, 129, 0.2);
+    box-shadow: 
+        0 12px 40px rgba(0, 0, 0, 0.5),
+        0 4px 12px rgba(138, 253, 129, 0.08);
+}
+
+.partnership-detail-card:hover::before {
+    opacity: 1;
+}
+
+.partnership-detail-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-4);
+}
+
+.partnership-detail-title {
+    font-size: var(--text-lg);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+}
+
+.partnership-detail-meta {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-top: var(--space-4);
+}
+
+.partnership-detail-meta-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+}
+
+.partnership-detail-meta-label {
+    font-weight: var(--font-medium);
+    min-width: 100px;
+}
+
+.partnership-detail-meta-value {
+    color: var(--text-primary);
+}
+
+/* ====================================
+   EMPTY STATE
+   ==================================== */
+.partnership-empty-state {
+    text-align: center;
+    padding: var(--space-10) var(--space-6);
+    color: var(--text-secondary);
+}
+
+.partnership-empty-state-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto var(--space-4);
+    opacity: 0.3;
+}
+
+.partnership-empty-state-title {
+    font-size: var(--text-lg);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+}
+
+.partnership-empty-state-description {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+}
+
+/* ====================================
+   BUTTONS
+   ==================================== */
+.partnership-btn {
+    padding: var(--space-3) var(--space-5);
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    cursor: pointer;
+    transition: all var(--duration-normal) var(--ease-in-out);
+    border: 1px solid;
+    letter-spacing: -0.01em;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.partnership-btn-primary {
+    background: var(--hearst-green);
+    color: #000;
+    border-color: var(--hearst-green);
+}
+
+.partnership-btn-primary:hover {
+    background: var(--hearst-green-dark);
+    border-color: var(--hearst-green-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(138, 253, 129, 0.3);
+}
+
+.partnership-btn-secondary {
+    background: transparent;
+    color: var(--text-primary);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.partnership-btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(138, 253, 129, 0.3);
+    color: var(--hearst-green);
+}
+
+/* ====================================
+   RESPONSIVE
+   ==================================== */
+@media (max-width: 768px) {
+    .partnership-stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .partnership-detail-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .partnership-filters {
+        flex-direction: column;
+    }
+    
+    .partnership-search {
+        min-width: 100%;
+    }
+    
+    .partnership-table-container {
+        overflow-x: auto;
+    }
+}
+
