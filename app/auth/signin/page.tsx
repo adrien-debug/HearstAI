@@ -51,41 +51,56 @@ export default function SignInPage() {
         
         console.log('[SignIn] Redirection vers:', callbackUrl)
         
+        // Vérifier les cookies avant
+        console.log('[SignIn] Cookies avant attente:', document.cookie)
+        
         // Attendre que le cookie soit défini (important pour le middleware)
-        await new Promise(resolve => setTimeout(resolve, 800))
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        
+        // Vérifier les cookies après
+        console.log('[SignIn] Cookies après attente:', document.cookie)
         
         // Vérifier que la session est bien créée (plusieurs tentatives)
         let session = null
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < 5; i++) {
           try {
             const sessionCheck = await fetch('/api/auth/session', { 
               cache: 'no-store',
-              credentials: 'include'
+              credentials: 'include',
+              headers: {
+                'Cache-Control': 'no-cache',
+              }
             })
             session = await sessionCheck.json()
+            console.log('[SignIn] Session check', i + 1, ':', session)
             if (session?.user) {
-              console.log('[SignIn] Session confirmée (tentative', i + 1, ')')
+              console.log('[SignIn] ✅ Session confirmée (tentative', i + 1, ')')
               break
             }
           } catch (e) {
             console.warn('[SignIn] Erreur vérification session:', e)
           }
-          if (i < 2) {
-            await new Promise(resolve => setTimeout(resolve, 300))
+          if (i < 4) {
+            await new Promise(resolve => setTimeout(resolve, 400))
           }
         }
         
+        // Vérifier les cookies une dernière fois
+        console.log('[SignIn] Cookies finaux:', document.cookie)
+        
         if (session?.user) {
-          console.log('[SignIn] Session confirmée, redirection immédiate vers:', callbackUrl)
+          console.log('[SignIn] ✅ Session confirmée, redirection immédiate vers:', callbackUrl)
           // Utiliser window.location.replace pour éviter l'historique
           window.location.replace(callbackUrl)
         } else {
-          console.warn('[SignIn] Session non confirmée mais redirection quand même vers:', callbackUrl)
+          console.warn('[SignIn] ⚠️ Session non confirmée après 5 tentatives')
+          console.warn('[SignIn] Session reçue:', session)
+          console.warn('[SignIn] Redirection quand même vers:', callbackUrl)
           // Rediriger quand même après un délai
           setTimeout(() => {
-            console.log('[SignIn] Redirection forcée vers:', callbackUrl)
+            console.log('[SignIn] 🔄 Redirection forcée vers:', callbackUrl)
             window.location.replace(callbackUrl)
-          }, 500)
+          }, 1000)
         }
       } else {
         console.warn('[SignIn] Résultat inattendu:', result)
