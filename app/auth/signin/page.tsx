@@ -52,27 +52,40 @@ export default function SignInPage() {
         console.log('[SignIn] Redirection vers:', callbackUrl)
         
         // Attendre que le cookie soit défini (important pour le middleware)
-        await new Promise(resolve => setTimeout(resolve, 500))
+        await new Promise(resolve => setTimeout(resolve, 800))
         
-        // Vérifier que la session est bien créée
-        const sessionCheck = await fetch('/api/auth/session', { 
-          cache: 'no-store',
-          credentials: 'include'
-        })
-        const session = await sessionCheck.json()
+        // Vérifier que la session est bien créée (plusieurs tentatives)
+        let session = null
+        for (let i = 0; i < 3; i++) {
+          try {
+            const sessionCheck = await fetch('/api/auth/session', { 
+              cache: 'no-store',
+              credentials: 'include'
+            })
+            session = await sessionCheck.json()
+            if (session?.user) {
+              console.log('[SignIn] Session confirmée (tentative', i + 1, ')')
+              break
+            }
+          } catch (e) {
+            console.warn('[SignIn] Erreur vérification session:', e)
+          }
+          if (i < 2) {
+            await new Promise(resolve => setTimeout(resolve, 300))
+          }
+        }
         
         if (session?.user) {
-          console.log('[SignIn] Session confirmée, redirection vers:', callbackUrl)
-          // Utiliser window.location.href pour forcer un rechargement complet
-          // Cela permet au middleware de voir le cookie
-          window.location.href = callbackUrl
+          console.log('[SignIn] Session confirmée, redirection immédiate vers:', callbackUrl)
+          // Utiliser window.location.replace pour éviter l'historique
+          window.location.replace(callbackUrl)
         } else {
-          console.warn('[SignIn] Session non disponible, réessai dans 1 seconde...')
-          // Réessayer après un délai plus long
+          console.warn('[SignIn] Session non confirmée mais redirection quand même vers:', callbackUrl)
+          // Rediriger quand même après un délai
           setTimeout(() => {
             console.log('[SignIn] Redirection forcée vers:', callbackUrl)
-            window.location.href = callbackUrl
-          }, 1000)
+            window.location.replace(callbackUrl)
+          }, 500)
         }
       } else {
         console.warn('[SignIn] Résultat inattendu:', result)

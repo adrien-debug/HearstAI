@@ -63,9 +63,23 @@ export async function middleware(request: NextRequest) {
     // If token exists and trying to access login page, redirect to home or callbackUrl
     if (token && pathname === '/auth/signin') {
       const callbackUrl = request.nextUrl.searchParams.get('callbackUrl') || '/'
+      // Décoder le callbackUrl si encodé
+      let decodedCallbackUrl = callbackUrl
+      try {
+        decodedCallbackUrl = decodeURIComponent(callbackUrl)
+      } catch (e) {
+        decodedCallbackUrl = callbackUrl
+      }
+      
+      // S'assurer qu'on ne redirige pas vers /auth/signin
+      if (decodedCallbackUrl === '/auth/signin' || decodedCallbackUrl.startsWith('/auth/signin?')) {
+        decodedCallbackUrl = '/'
+      }
+      
       // Vérifier que callbackUrl est une URL relative valide (sécurité)
-      if (callbackUrl.startsWith('/') && !callbackUrl.startsWith('//')) {
-        return NextResponse.redirect(new URL(callbackUrl, request.url))
+      if (decodedCallbackUrl.startsWith('/') && !decodedCallbackUrl.startsWith('//')) {
+        console.log('[Middleware] Redirection depuis /auth/signin vers:', decodedCallbackUrl)
+        return NextResponse.redirect(new URL(decodedCallbackUrl, request.url))
       }
       return NextResponse.redirect(new URL('/', request.url))
     }
