@@ -76,18 +76,47 @@ export default function HomeOverview() {
   const [loading, setLoading] = useState(true)
   const [mounted, setMounted] = useState(false)
 
-  // Debug: Vérifier que le composant est monté
+  // Debug: Vérifier que le composant est monté et forcer les événements
   useEffect(() => {
     setMounted(true)
     console.log('[HomeOverview] ✅ Composant monté et hydraté')
     
-    // Vérifier que les événements fonctionnent
-    const testButton = document.querySelector('.premium-wallet-copy-btn')
-    if (testButton) {
-      console.log('[HomeOverview] ✅ Bouton trouvé:', testButton)
-    } else {
-      console.warn('[HomeOverview] ⚠️ Bouton non trouvé')
-    }
+    // Attendre que le DOM soit prêt
+    setTimeout(() => {
+      // Vérifier que les événements fonctionnent
+      const testButton = document.querySelector('.premium-wallet-copy-btn')
+      if (testButton) {
+        console.log('[HomeOverview] ✅ Bouton trouvé:', testButton)
+        
+        // FORCER l'ajout d'un event listener natif pour tester
+        const nativeHandler = (e: Event) => {
+          e.preventDefault()
+          e.stopPropagation()
+          console.log('[HomeOverview] 🔥 CLIC NATIF DÉTECTÉ !')
+          alert('CLIC NATIF FONCTIONNE !')
+        }
+        
+        testButton.addEventListener('click', nativeHandler, { capture: true })
+        console.log('[HomeOverview] ✅ Event listener natif ajouté')
+        
+        // Vérifier si React a attaché des handlers
+        const reactFiber = (testButton as any)._reactInternalFiber || (testButton as any)._reactInternalInstance
+        if (reactFiber) {
+          console.log('[HomeOverview] ✅ React Fiber trouvé:', reactFiber)
+        } else {
+          console.warn('[HomeOverview] ⚠️ React Fiber non trouvé - problème d\'hydratation ?')
+        }
+      } else {
+        console.warn('[HomeOverview] ⚠️ Bouton non trouvé')
+      }
+      
+      // Test avec tous les boutons
+      const allButtons = document.querySelectorAll('button')
+      console.log('[HomeOverview] 📊 Total boutons trouvés:', allButtons.length)
+      allButtons.forEach((btn, idx) => {
+        console.log(`[HomeOverview] Bouton ${idx}:`, btn.className, btn.textContent?.substring(0, 30))
+      })
+    }, 1000)
   }, [])
 
   useEffect(() => {
@@ -322,6 +351,47 @@ export default function HomeOverview() {
 
   return (
     <div>
+      {/* BOUTON DE TEST URGENT */}
+      <div style={{ 
+        position: 'fixed', 
+        top: '10px', 
+        right: '10px', 
+        zIndex: 99999, 
+        background: 'red', 
+        padding: '20px',
+        borderRadius: '8px',
+        cursor: 'pointer'
+      }}
+      onClick={(e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        console.log('🔥🔥🔥 BOUTON TEST CLIQUE !!!')
+        alert('BOUTON TEST FONCTIONNE !')
+      }}
+      onMouseDown={(e) => {
+        console.log('🔥 MouseDown sur bouton test')
+      }}
+      >
+        <button 
+          style={{ 
+            background: 'yellow', 
+            padding: '10px 20px', 
+            border: 'none', 
+            cursor: 'pointer',
+            fontSize: '16px',
+            fontWeight: 'bold'
+          }}
+          onClick={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            console.log('🔥🔥🔥 BOUTON INTERNE CLIQUE !!!')
+            alert('BOUTON INTERNE FONCTIONNE !')
+          }}
+        >
+          TEST CLIC ICI
+        </button>
+      </div>
+      
       {/* Premium Stats Boxes Section */}
       <div className="premium-stats-section">
         <div className="premium-stats-grid">
