@@ -17,20 +17,30 @@ export default function SignInPage() {
     setLoading(true)
 
     try {
+      console.log('[SignIn] Tentative de connexion avec:', { email })
+      
       const result = await signIn('credentials', {
         email,
         password,
         redirect: false,
       })
 
+      console.log('[SignIn] Résultat:', result)
+
       if (result?.error) {
-        setError('Email ou mot de passe incorrect')
-      } else {
+        console.error('[SignIn] Erreur:', result.error)
+        setError(`Erreur: ${result.error}`)
+      } else if (result?.ok) {
+        console.log('[SignIn] Connexion réussie, redirection...')
         router.push('/')
         router.refresh()
+      } else {
+        console.warn('[SignIn] Résultat inattendu:', result)
+        setError('Une erreur est survenue lors de la connexion')
       }
     } catch (err) {
-      setError('Une erreur est survenue')
+      console.error('[SignIn] Exception:', err)
+      setError(`Erreur: ${err instanceof Error ? err.message : 'Une erreur est survenue'}`)
     } finally {
       setLoading(false)
     }

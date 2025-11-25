@@ -6,7 +6,7 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 export const authOptions: NextAuthOptions = {
   // PrismaAdapter n'est pas nécessaire avec CredentialsProvider
   // adapter: PrismaAdapter(prisma),
-  debug: process.env.NODE_ENV === 'development',
+  debug: true, // Activer les logs pour le débogage
   providers: [
     CredentialsProvider({
       name: 'Credentials',
