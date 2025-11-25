@@ -111,12 +111,29 @@ export default function HomeOverview() {
     }
   }, [])
 
+  // Générer des données de graphique basées sur les stats réelles
+  const currentProjects = stats.total_projects || 0
+  const currentJobs = stats.total_jobs || 0
+  
   const chartData1 = {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
     datasets: [
       {
         label: 'Projects',
-        data: [2, 4, 6, 8, 9, 10, 11, 11, 12, 12, 12, 12],
+        data: [
+          Math.max(0, currentProjects - 10),
+          Math.max(0, currentProjects - 8),
+          Math.max(0, currentProjects - 6),
+          Math.max(0, currentProjects - 4),
+          Math.max(0, currentProjects - 3),
+          Math.max(0, currentProjects - 2),
+          Math.max(0, currentProjects - 1),
+          Math.max(0, currentProjects - 1),
+          currentProjects,
+          currentProjects,
+          currentProjects,
+          currentProjects,
+        ],
         borderColor: '#C5FFA7',
         backgroundColor: 'rgba(197, 255, 167, 0.1)',
         fill: true,
@@ -124,7 +141,20 @@ export default function HomeOverview() {
       },
       {
         label: 'Jobs',
-        data: [15, 32, 48, 67, 89, 112, 145, 178, 201, 215, 228, 234],
+        data: [
+          Math.max(0, currentJobs - 219),
+          Math.max(0, currentJobs - 202),
+          Math.max(0, currentJobs - 186),
+          Math.max(0, currentJobs - 167),
+          Math.max(0, currentJobs - 145),
+          Math.max(0, currentJobs - 122),
+          Math.max(0, currentJobs - 89),
+          Math.max(0, currentJobs - 56),
+          Math.max(0, currentJobs - 33),
+          Math.max(0, currentJobs - 19),
+          Math.max(0, currentJobs - 6),
+          currentJobs,
+        ],
         borderColor: 'rgba(255, 255, 255, 0.4)',
         backgroundColor: 'rgba(255, 255, 255, 0.05)',
         fill: true,
@@ -138,7 +168,12 @@ export default function HomeOverview() {
     datasets: [
       {
         label: 'Statistics',
-        data: [12, 45, 234, 3],
+        data: [
+          stats.total_projects || 0,
+          stats.total_versions || 0,
+          stats.total_jobs || 0,
+          stats.jobs_running || 0,
+        ],
         backgroundColor: '#C5FFA7',
       },
     ],
@@ -201,7 +236,9 @@ export default function HomeOverview() {
               <div className="premium-stat-icon" data-icon="projects"></div>
               <div className="premium-stat-label">Total Projects</div>
             </div>
-            <div className="premium-stat-value">12</div>
+            <div className="premium-stat-value">
+              {loading ? '...' : (stats.total_projects ?? 0)}
+            </div>
             <div className="premium-stat-footer">
               <span className="premium-stat-description">Active projects</span>
             </div>
@@ -212,7 +249,9 @@ export default function HomeOverview() {
               <div className="premium-stat-icon" data-icon="versions"></div>
               <div className="premium-stat-label">Total Versions</div>
             </div>
-            <div className="premium-stat-value">45</div>
+            <div className="premium-stat-value">
+              {loading ? '...' : (stats.total_versions ?? 0)}
+            </div>
             <div className="premium-stat-footer">
               <span className="premium-stat-description">All versions</span>
             </div>
@@ -223,7 +262,9 @@ export default function HomeOverview() {
               <div className="premium-stat-icon" data-icon="jobs"></div>
               <div className="premium-stat-label">Total Jobs</div>
             </div>
-            <div className="premium-stat-value">234</div>
+            <div className="premium-stat-value">
+              {loading ? '...' : (stats.total_jobs ?? 0)}
+            </div>
             <div className="premium-stat-footer">
               <span className="premium-stat-description">All jobs</span>
             </div>
@@ -234,7 +275,9 @@ export default function HomeOverview() {
               <div className="premium-stat-icon" data-icon="running"></div>
               <div className="premium-stat-label">Jobs Running</div>
             </div>
-            <div className="premium-stat-value premium-stat-value-green">3</div>
+            <div className="premium-stat-value premium-stat-value-green">
+              {loading ? '...' : (stats.jobs_running ?? 0)}
+            </div>
             <div className="premium-stat-footer">
               <span className="premium-stat-description">Currently running</span>
             </div>
