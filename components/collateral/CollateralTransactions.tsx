@@ -12,6 +12,23 @@ export default function CollateralTransactions() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    // Load icons
+    const loadIcons = () => {
+      if (typeof window !== 'undefined' && (window as any).Icons) {
+        document.querySelectorAll('[data-icon]').forEach(el => {
+          const iconName = el.getAttribute('data-icon')
+          if (iconName) {
+            const iconSvg = (window as any).Icons[iconName]
+            if (iconSvg) {
+              el.innerHTML = iconSvg
+            }
+          }
+        })
+      }
+    }
+    loadIcons()
+    const timeout = setTimeout(loadIcons, 500)
+    
     const loadData = async () => {
       try {
         setLoading(true)
@@ -64,7 +81,10 @@ export default function CollateralTransactions() {
     
     // Auto-refresh every 30 seconds pour données en temps réel
     const interval = setInterval(loadData, 30000)
-    return () => clearInterval(interval)
+    return () => {
+      clearInterval(interval)
+      clearTimeout(timeout)
+    }
   }, [])
 
   if (loading) {
@@ -95,27 +115,49 @@ export default function CollateralTransactions() {
 
   return (
     <div>
-      {/* Summary KPI */}
-      <div className="kpi-grid">
-        <div className="kpi-card">
-          <div className="kpi-label">Total Transactions</div>
-          <div className="kpi-value">{allTransactions.length}</div>
-          <div className="kpi-description">All time</div>
-        </div>
-        <div className="kpi-card">
-          <div className="kpi-label">Total Supply</div>
-          <div className="kpi-value">${(totalSupply / 1000000).toFixed(2)}M</div>
-          <div className="kpi-description">Deposited</div>
-        </div>
-        <div className="kpi-card">
-          <div className="kpi-label">Total Borrow</div>
-          <div className="kpi-value">${(totalBorrow / 1000).toFixed(0)}K</div>
-          <div className="kpi-description">Borrowed</div>
-        </div>
-        <div className="kpi-card">
-          <div className="kpi-label">Completed</div>
-          <div className="kpi-value">{completedCount}</div>
-          <div className="kpi-description">Successful transactions</div>
+      {/* Premium Stats Summary */}
+      <div className="premium-stats-section">
+        <div className="premium-stats-grid">
+          <div className="premium-stat-box">
+            <div className="premium-stat-box-header">
+              <div className="premium-stat-icon" data-icon="transaction"></div>
+              <div className="premium-stat-label">Total Transactions</div>
+            </div>
+            <div className="premium-stat-value">{allTransactions.length}</div>
+            <div className="premium-stat-footer">
+              <span className="premium-stat-description">All time</span>
+            </div>
+          </div>
+          <div className="premium-stat-box premium-stat-box-highlight">
+            <div className="premium-stat-box-header">
+              <div className="premium-stat-icon" data-icon="arrow-up"></div>
+              <div className="premium-stat-label">Total Supply</div>
+            </div>
+            <div className="premium-stat-value premium-stat-value-green">${(totalSupply / 1000000).toFixed(2)}M</div>
+            <div className="premium-stat-footer">
+              <span className="premium-stat-description">Deposited</span>
+            </div>
+          </div>
+          <div className="premium-stat-box">
+            <div className="premium-stat-box-header">
+              <div className="premium-stat-icon" data-icon="arrow-down"></div>
+              <div className="premium-stat-label">Total Borrow</div>
+            </div>
+            <div className="premium-stat-value">${(totalBorrow / 1000).toFixed(0)}K</div>
+            <div className="premium-stat-footer">
+              <span className="premium-stat-description">Borrowed</span>
+            </div>
+          </div>
+          <div className="premium-stat-box">
+            <div className="premium-stat-box-header">
+              <div className="premium-stat-icon" data-icon="check"></div>
+              <div className="premium-stat-label">Completed</div>
+            </div>
+            <div className="premium-stat-value">{completedCount}</div>
+            <div className="premium-stat-footer">
+              <span className="premium-stat-description">Successful transactions</span>
+            </div>
+          </div>
         </div>
       </div>
 

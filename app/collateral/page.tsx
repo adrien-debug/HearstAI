@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import CollateralOverview from '@/components/collateral/CollateralOverview'
 import '@/components/collateral/Collateral.css'
 import CollateralAssets from '@/components/collateral/CollateralAssets'
@@ -8,6 +8,7 @@ import CollateralLoans from '@/components/collateral/CollateralLoans'
 import CollateralTransactions from '@/components/collateral/CollateralTransactions'
 import CollateralAnalytics from '@/components/collateral/CollateralAnalytics'
 import CollateralClients from '@/components/collateral/CollateralClients'
+import IconsLoader from '@/components/IconsLoader'
 
 export default function CollateralPage() {
   const [activeSection, setActiveSection] = useState('overview')
@@ -21,8 +22,38 @@ export default function CollateralPage() {
     { id: 'analytics', label: 'Analytics' },
   ]
 
+  useEffect(() => {
+    // Load icons when section changes
+    const loadIcons = () => {
+      if (typeof window !== 'undefined' && (window as any).Icons) {
+        document.querySelectorAll('[data-icon]').forEach(el => {
+          const iconName = el.getAttribute('data-icon')
+          if (iconName) {
+            const iconSvg = (window as any).Icons[iconName]
+            if (iconSvg) {
+              el.innerHTML = iconSvg
+            }
+          }
+        })
+      }
+    }
+    
+    // Load icons immediately and after delays to ensure they load
+    loadIcons()
+    const timeout1 = setTimeout(loadIcons, 100)
+    const timeout2 = setTimeout(loadIcons, 500)
+    const timeout3 = setTimeout(loadIcons, 1000)
+    
+    return () => {
+      clearTimeout(timeout1)
+      clearTimeout(timeout2)
+      clearTimeout(timeout3)
+    }
+  }, [activeSection])
+
   return (
     <div className="dashboard-view">
+      <IconsLoader />
       <div className="dashboard-content">
         <div style={{ marginBottom: 'var(--space-6)' }}>
           <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700 }}>Collateral</h1>

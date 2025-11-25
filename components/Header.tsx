@@ -60,6 +60,13 @@ export default function Header() {
   // Load stats for dashboard page
   useEffect(() => {
     if (pathname === '/') {
+      // MODE DEBUG LOCAL : Utiliser des données mockées pour éviter les blocages
+      const isLocal = typeof window !== 'undefined' && (
+        window.location.hostname === 'localhost' || 
+        window.location.hostname === '127.0.0.1' ||
+        window.location.port === '6001'
+      )
+      
       // Initialize with mock stats immediately
       setStats({
         total_projects: 12,
@@ -69,6 +76,13 @@ export default function Header() {
         jobs_success_rate: 98.5,
       })
 
+      // EN MODE LOCAL : Pas d'appel API, utiliser les données mockées
+      if (isLocal) {
+        console.log('[Header] 🔧 MODE LOCAL - Utilisation de données mockées')
+        return // Pas d'interval en mode local
+      }
+
+      // EN PRODUCTION : Charger les vraies stats
       const loadStats = async () => {
         try {
           const response = await statsAPI.getStats()
@@ -77,11 +91,9 @@ export default function Header() {
           }
         } catch (err) {
           // Silently use mock data if API is not available
-          // Mock data is already initialized above
         }
       }
       
-      // Try to load real data silently in the background
       loadStats()
       const interval = setInterval(loadStats, 30000) // Refresh every 30s
       return () => clearInterval(interval)

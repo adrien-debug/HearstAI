@@ -69,5 +69,65 @@ export const authOptions: NextAuthOptions = {
       }
       return session
     },
+    async redirect({ url, baseUrl }) {
+      console.log('[NextAuth] Redirect callback:', { url, baseUrl })
+      
+      // Si l'URL est vide ou undefined, rediriger vers la page d'accueil
+      if (!url || url === '') {
+        console.log('[NextAuth] URL vide, redirection vers baseUrl')
+        return baseUrl
+      }
+      
+      // Décoder l'URL si elle est encodée
+      let decodedUrl = url
+      try {
+        // Si l'URL contient des caractères encodés, décoder
+        if (url.includes('%')) {
+          decodedUrl = decodeURIComponent(url)
+        }
+      } catch (e) {
+        console.warn('[NextAuth] Erreur décodage URL, utilisation de l\'URL originale:', e)
+        decodedUrl = url
+      }
+      
+      // Si l'URL est la page de login, rediriger vers la page d'accueil
+      if (decodedUrl.includes('/auth/signin')) {
+        console.log('[NextAuth] URL contient /auth/signin, redirection vers baseUrl')
+        return baseUrl
+      }
+      
+      // Permettre les redirections vers des URLs relatives
+      if (decodedUrl.startsWith('/')) {
+        // Vérifier que ce n'est pas /auth/signin
+        if (decodedUrl === '/auth/signin' || decodedUrl.startsWith('/auth/signin?')) {
+          console.log('[NextAuth] URL relative pointe vers /auth/signin, redirection vers baseUrl')
+          return baseUrl
+        }
+        console.log('[NextAuth] URL relative, redirection vers:', `${baseUrl}${decodedUrl}`)
+        return `${baseUrl}${decodedUrl}`
+      }
+      
+      // Permettre les redirections vers le même domaine
+      try {
+        const urlObj = new URL(decodedUrl)
+        if (urlObj.origin === baseUrl) {
+          // Vérifier que ce n'est pas /auth/signin
+          if (urlObj.pathname === '/auth/signin' || urlObj.pathname.startsWith('/auth/signin')) {
+            console.log('[NextAuth] URL complète pointe vers /auth/signin, redirection vers baseUrl')
+            return baseUrl
+          }
+          console.log('[NextAuth] URL même domaine, redirection vers:', decodedUrl)
+          return decodedUrl
+        }
+      } catch (e) {
+        // Si l'URL n'est pas valide, rediriger vers la page d'accueil
+        console.log('[NextAuth] URL invalide, redirection vers baseUrl')
+        return baseUrl
+      }
+      
+      // Par défaut, rediriger vers la page d'accueil
+      console.log('[NextAuth] Par défaut, redirection vers baseUrl')
+      return baseUrl
+    },
   },
 }

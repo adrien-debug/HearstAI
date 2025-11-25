@@ -130,15 +130,35 @@ async function debankFetch(
  * @param wallet - adresse ERC20
  * @param chains - ex: ["eth", "arb", "base"]
  */
+/**
+ * Normalise une adresse de wallet Ethereum
+ * - Supprime les espaces
+ * - Convertit en minuscules (checksum peut causer des problèmes avec DeBank)
+ */
+function normalizeWalletAddress(wallet: string): string {
+  if (!wallet) return wallet;
+  // Supprimer les espaces et convertir en minuscules
+  // DeBank semble préférer les adresses en minuscules
+  const normalized = wallet.trim().toLowerCase();
+  // Vérifier que c'est une adresse valide (commence par 0x et fait 42 caractères)
+  if (normalized.startsWith('0x') && normalized.length === 42) {
+    return normalized;
+  }
+  return wallet; // Retourner l'original si le format n'est pas valide
+}
+
 export async function fetchUserComplexProtocols(
   wallet: string,
   chains: string[] = ["eth"]
 ): Promise<DeBankProtocol[]> {
   const chain_ids = chains.join(",");
   
+  // Normaliser l'adresse du wallet pour éviter les problèmes de format
+  const normalizedWallet = normalizeWalletAddress(wallet);
+  
   // Endpoint DeBank Pro OpenAPI pour récupérer tous les protocoles complexes d'un utilisateur
   const data = await debankFetch("/user/all_complex_protocol_list", {
-    id: wallet,
+    id: normalizedWallet,
     chain_ids,
   });
 
@@ -277,15 +297,30 @@ export async function buildCollateralClientFromDeBank(
     allowedProtocols = [], // si vide → pas de filtre par protocole
   } = options;
 
-  console.log(`[DeBank] 🔍 Récupération données pour wallet: ${wallet}, chains: ${chains.join(',')}`);
+  // Normaliser l'adresse pour l'affichage et les logs
+  const normalizedWallet = normalizeWalletAddress(wallet);
+  
+  console.log(`[DeBank] 🔍 Récupération données pour wallet: ${normalizedWallet}, chains: ${chains.join(',')}`);
   
   let protoList: DeBankProtocol[] = [];
   try {
-    protoList = await fetchUserComplexProtocols(wallet, chains);
-    console.log(`[DeBank] ✅ ${protoList.length} protocole(s) trouvé(s) pour ${wallet}`);
+    protoList = await fetchUserComplexProtocols(normalizedWallet, chains);
+    console.log(`[DeBank] ✅ ${protoList.length} protocole(s) trouvé(s) pour ${normalizedWallet}`);
   } catch (error: any) {
-    console.error(`[DeBank] ❌ Erreur lors de la récupération des protocoles pour ${wallet}:`, error.message);
-    throw error;
+    // Si l'erreur est liée au format de l'adresse, essayer avec l'adresse originale
+    if (error.message && error.message.includes('Unknown format') && wallet !== normalizedWallet) {
+      console.log(`[DeBank] ⚠️  Tentative avec l'adresse originale (non normalisée)...`);
+      try {
+        protoList = await fetchUserComplexProtocols(wallet, chains);
+        console.log(`[DeBank] ✅ ${protoList.length} protocole(s) trouvé(s) avec l'adresse originale`);
+      } catch (retryError: any) {
+        console.error(`[DeBank] ❌ Erreur lors de la récupération des protocoles pour ${wallet}:`, retryError.message);
+        throw retryError;
+      }
+    } else {
+      console.error(`[DeBank] ❌ Erreur lors de la récupération des protocoles pour ${normalizedWallet}:`, error.message);
+      throw error;
+    }
   }
 
   const positions: CollateralPosition[] = [];
@@ -362,10 +397,10 @@ export async function buildCollateralClientFromDeBank(
   const now = new Date().toISOString();
 
   return {
-    id: wallet,
+    id: normalizedWallet, // Utiliser l'adresse normalisée comme ID
     name: displayName,
     tag,
-    wallets: [wallet],
+    wallets: [normalizedWallet], // Utiliser l'adresse normalisée
     positions,
     totalValue,
     totalDebt,

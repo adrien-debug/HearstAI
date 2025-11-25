@@ -11,6 +11,23 @@ export default function CollateralAnalytics() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    // Load icons
+    const loadIcons = () => {
+      if (typeof window !== 'undefined' && (window as any).Icons) {
+        document.querySelectorAll('[data-icon]').forEach(el => {
+          const iconName = el.getAttribute('data-icon')
+          if (iconName) {
+            const iconSvg = (window as any).Icons[iconName]
+            if (iconSvg) {
+              el.innerHTML = iconSvg
+            }
+          }
+        })
+      }
+    }
+    loadIcons()
+    const timeout = setTimeout(loadIcons, 500)
+    
     const loadData = async () => {
       try {
         setLoading(true)
@@ -62,7 +79,10 @@ export default function CollateralAnalytics() {
     
     // Auto-refresh every 30 seconds pour données en temps réel
     const interval = setInterval(loadData, 30000)
-    return () => clearInterval(interval)
+    return () => {
+      clearInterval(interval)
+      clearTimeout(timeout)
+    }
   }, [])
 
   if (loading) {
@@ -89,29 +109,51 @@ export default function CollateralAnalytics() {
 
   return (
     <div>
-      {/* Analytics Summary KPI */}
-      <div className="kpi-grid">
-        <div className="kpi-card">
-          <div className="kpi-label">Total Deposits</div>
-          <div className="kpi-value">${(totalDeposits / 1000000).toFixed(2)}M</div>
-          <div className="kpi-description">All time deposits</div>
-        </div>
-        <div className="kpi-card">
-          <div className="kpi-label">Total Withdrawals</div>
-          <div className="kpi-value">${(totalWithdrawals / 1000).toFixed(0)}K</div>
-          <div className="kpi-description">All time withdrawals</div>
-        </div>
-        <div className="kpi-card">
-          <div className="kpi-label">Interest Earned</div>
-          <div className="kpi-value">${(totalInterestEarned / 1000).toFixed(0)}K</div>
-          <div className="kpi-description">Total interest</div>
-        </div>
-        <div className="kpi-card">
-          <div className="kpi-label">Avg Utilization</div>
-          <div className="kpi-value" style={{ color: avgUtilizationRate < 50 ? '#C5FFA7' : avgUtilizationRate < 80 ? '#FFA500' : '#ff4d4d' }}>
-            {avgUtilizationRate.toFixed(1)}%
+      {/* Premium Analytics Summary */}
+      <div className="premium-stats-section">
+        <div className="premium-stats-grid">
+          <div className="premium-stat-box premium-stat-box-highlight">
+            <div className="premium-stat-box-header">
+              <div className="premium-stat-icon" data-icon="collateral"></div>
+              <div className="premium-stat-label">Total Deposits</div>
+            </div>
+            <div className="premium-stat-value premium-stat-value-green">${(totalDeposits / 1000000).toFixed(2)}M</div>
+            <div className="premium-stat-footer">
+              <span className="premium-stat-description">All time deposits</span>
+            </div>
           </div>
-          <div className="kpi-description">Average utilization rate</div>
+          <div className="premium-stat-box">
+            <div className="premium-stat-box-header">
+              <div className="premium-stat-icon" data-icon="spending"></div>
+              <div className="premium-stat-label">Total Withdrawals</div>
+            </div>
+            <div className="premium-stat-value">${(totalWithdrawals / 1000).toFixed(0)}K</div>
+            <div className="premium-stat-footer">
+              <span className="premium-stat-description">All time withdrawals</span>
+            </div>
+          </div>
+          <div className="premium-stat-box">
+            <div className="premium-stat-box-header">
+              <div className="premium-stat-icon" data-icon="profit"></div>
+              <div className="premium-stat-label">Interest Earned</div>
+            </div>
+            <div className="premium-stat-value">${(totalInterestEarned / 1000).toFixed(0)}K</div>
+            <div className="premium-stat-footer">
+              <span className="premium-stat-description">Total interest</span>
+            </div>
+          </div>
+          <div className="premium-stat-box">
+            <div className="premium-stat-box-header">
+              <div className="premium-stat-icon" data-icon="chart"></div>
+              <div className="premium-stat-label">Avg Utilization</div>
+            </div>
+            <div className="premium-stat-value" style={{ color: avgUtilizationRate < 50 ? '#C5FFA7' : avgUtilizationRate < 80 ? 'rgba(197, 255, 167, 0.7)' : 'rgba(255, 255, 255, 0.5)' }}>
+              {avgUtilizationRate.toFixed(1)}%
+            </div>
+            <div className="premium-stat-footer">
+              <span className="premium-stat-description">Average utilization rate</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -199,12 +241,17 @@ export default function CollateralAnalytics() {
           <h3 className="collateral-card-title">Asset Breakdown</h3>
         </div>
         <div className="collateral-card-body">
-          <div className="kpi-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))' }}>
+          <div className="premium-stats-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))' }}>
             {Object.entries(assetBreakdown).map(([asset, data]) => (
-              <div className="kpi-card" key={asset}>
-                <div className="kpi-label">{asset}</div>
-                <div className="kpi-value">{data.amount.toLocaleString('en-US', { maximumFractionDigits: asset === 'USDC' || asset === 'USDT' ? 0 : 2 })}</div>
-                <div className="kpi-description">${data.value.toLocaleString('en-US', { maximumFractionDigits: 0 })}</div>
+              <div className="premium-stat-box" key={asset}>
+                <div className="premium-stat-box-header">
+                  <div className="premium-stat-icon" data-icon="protocol"></div>
+                  <div className="premium-stat-label">{asset}</div>
+                </div>
+                <div className="premium-stat-value">{data.amount.toLocaleString('en-US', { maximumFractionDigits: asset === 'USDC' || asset === 'USDT' ? 0 : 2 })}</div>
+                <div className="premium-stat-footer">
+                  <span className="premium-stat-description">${data.value.toLocaleString('en-US', { maximumFractionDigits: 0 })}</span>
+                </div>
               </div>
             ))}
           </div>

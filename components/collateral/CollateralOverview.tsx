@@ -12,6 +12,26 @@ export default function CollateralOverview() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    // Load icons
+    const loadIcons = () => {
+      if (typeof window !== 'undefined' && (window as any).Icons) {
+        document.querySelectorAll('[data-icon]').forEach(el => {
+          const iconName = el.getAttribute('data-icon')
+          if (iconName) {
+            const iconSvg = (window as any).Icons[iconName]
+            if (iconSvg) {
+              el.innerHTML = iconSvg
+            }
+          }
+        })
+      }
+    }
+    
+    loadIcons()
+    const timeout1 = setTimeout(loadIcons, 100)
+    const timeout2 = setTimeout(loadIcons, 500)
+    const timeout3 = setTimeout(loadIcons, 1000)
+    
     const loadData = async () => {
       try {
         setLoading(true)
@@ -65,7 +85,12 @@ export default function CollateralOverview() {
     
     // Auto-refresh every 30 seconds
     const interval = setInterval(loadData, 30000)
-    return () => clearInterval(interval)
+    return () => {
+      clearInterval(interval)
+      clearTimeout(timeout1)
+      clearTimeout(timeout2)
+      clearTimeout(timeout3)
+    }
   }, [])
 
   if (loading) {
@@ -111,29 +136,51 @@ export default function CollateralOverview() {
 
   return (
     <div>
-      {/* KPI Cards - Totaux Globaux */}
-      <div className="kpi-grid">
-        <div className="kpi-card">
-          <div className="kpi-label">Total Collateral</div>
-          <div className="kpi-value">${(totalCollateral / 1000000).toFixed(2)}M</div>
-          <div className="kpi-description">Total value locked</div>
-        </div>
-        <div className="kpi-card">
-          <div className="kpi-label">Active Loans</div>
-          <div className="kpi-value">{globalMetrics.clientsWithDebt}</div>
-          <div className="kpi-description">Clients with outstanding loans</div>
-        </div>
-        <div className="kpi-card">
-          <div className="kpi-label">Utilization Rate</div>
-          <div className="kpi-value" style={{ color: parseFloat(utilizationRate) < 50 ? '#C5FFA7' : parseFloat(utilizationRate) < 80 ? '#FFA500' : '#ff4d4d' }}>
-            {utilizationRate}%
+      {/* Premium Stats Cards - Totaux Globaux */}
+      <div className="premium-stats-section">
+        <div className="premium-stats-grid">
+          <div className="premium-stat-box">
+            <div className="premium-stat-box-header">
+              <div className="premium-stat-icon" data-icon="collateral"></div>
+              <div className="premium-stat-label">Total Collateral</div>
+            </div>
+            <div className="premium-stat-value premium-stat-value-green">${(totalCollateral / 1000000).toFixed(2)}M</div>
+            <div className="premium-stat-footer">
+              <span className="premium-stat-description">Total value locked</span>
+            </div>
           </div>
-          <div className="kpi-description">Collateral utilization</div>
-        </div>
-        <div className="kpi-card">
-          <div className="kpi-label">Available Credit</div>
-          <div className="kpi-value">${(totalAvailable / 1000).toFixed(0)}K</div>
-          <div className="kpi-description">Available to borrow</div>
+          <div className="premium-stat-box">
+            <div className="premium-stat-box-header">
+              <div className="premium-stat-icon" data-icon="chart"></div>
+              <div className="premium-stat-label">Active Loans</div>
+            </div>
+            <div className="premium-stat-value">{globalMetrics.clientsWithDebt}</div>
+            <div className="premium-stat-footer">
+              <span className="premium-stat-description">Clients with outstanding loans</span>
+            </div>
+          </div>
+          <div className="premium-stat-box premium-stat-box-highlight">
+            <div className="premium-stat-box-header">
+              <div className="premium-stat-icon" data-icon="flash"></div>
+              <div className="premium-stat-label">Utilization Rate</div>
+            </div>
+            <div className="premium-stat-value" style={{ color: parseFloat(utilizationRate) < 50 ? '#C5FFA7' : parseFloat(utilizationRate) < 80 ? 'rgba(197, 255, 167, 0.7)' : 'rgba(255, 255, 255, 0.5)' }}>
+              {utilizationRate}%
+            </div>
+            <div className="premium-stat-footer">
+              <span className="premium-stat-description">Collateral utilization</span>
+            </div>
+          </div>
+          <div className="premium-stat-box">
+            <div className="premium-stat-box-header">
+              <div className="premium-stat-icon" data-icon="card"></div>
+              <div className="premium-stat-label">Available Credit</div>
+            </div>
+            <div className="premium-stat-value premium-stat-value-green">${(totalAvailable / 1000).toFixed(0)}K</div>
+            <div className="premium-stat-footer">
+              <span className="premium-stat-description">Available to borrow</span>
+            </div>
+          </div>
         </div>
       </div>
 

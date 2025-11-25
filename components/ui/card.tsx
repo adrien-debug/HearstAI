@@ -88,7 +88,8 @@ const CardContent = React.forwardRef<
     className={cn('p-6 pt-0', className)}
     style={{
       padding: 'var(--space-6)',
-      paddingTop: 0,
+      paddingTop: 'var(--space-4)',
+      minHeight: '400px',
     }}
     {...props}
   />

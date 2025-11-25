@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './Projects.css'
 
 interface PhotoGalleryProps {
@@ -12,6 +12,27 @@ export default function PhotoGallery({ photos, projectName }: PhotoGalleryProps)
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null)
   const [imageErrors, setImageErrors] = useState<Set<number>>(new Set())
 
+  useEffect(() => {
+    // Load icons
+    const loadIcons = () => {
+      if (typeof window !== 'undefined' && (window as any).Icons) {
+        document.querySelectorAll('[data-icon]').forEach(el => {
+          const iconName = el.getAttribute('data-icon')
+          if (iconName) {
+            const iconSvg = (window as any).Icons[iconName]
+            if (iconSvg) {
+              el.innerHTML = iconSvg
+            }
+          }
+        })
+      }
+    }
+    
+    loadIcons()
+    const timeout = setTimeout(loadIcons, 500)
+    return () => clearTimeout(timeout)
+  }, [])
+
   const handleImageError = (index: number) => {
     setImageErrors(prev => new Set(prev).add(index))
   }
@@ -21,7 +42,7 @@ export default function PhotoGallery({ photos, projectName }: PhotoGalleryProps)
   if (validPhotos.length === 0) {
     return (
       <div className="photo-gallery-empty">
-        <div className="photo-gallery-empty-icon">📷</div>
+        <div className="photo-gallery-empty-icon premium-stat-icon" data-icon="image"></div>
         <p>No photos available for this project</p>
       </div>
     )
@@ -48,7 +69,7 @@ export default function PhotoGallery({ photos, projectName }: PhotoGalleryProps)
                 onError={() => handleImageError(index)}
               />
               <div className="photo-gallery-overlay">
-                <div className="photo-gallery-zoom-icon">🔍</div>
+                <div className="photo-gallery-zoom-icon premium-stat-icon" data-icon="search"></div>
               </div>
             </div>
           ))}
