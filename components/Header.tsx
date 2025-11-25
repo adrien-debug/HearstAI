@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import ProfileDropdown from './ProfileDropdown'
 import { statsAPI } from '@/lib/api'
+import Icon from './Icon'
 
 const pageTitles: Record<string, string> = {
   '/': 'Dashboard',
@@ -35,27 +36,6 @@ export default function Header() {
   useEffect(() => {
     setPageTitle(pageTitles[pathname || ''] || 'Dashboard')
   }, [pathname])
-
-  // Load icons for dashboard page
-  useEffect(() => {
-    if (isDashboard && typeof window !== 'undefined' && (window as any).Icons) {
-      const loadIcons = () => {
-        document.querySelectorAll('[data-icon]').forEach(el => {
-          const iconName = el.getAttribute('data-icon')
-          if (iconName) {
-            const iconSvg = (window as any).Icons[iconName]
-            if (iconSvg) {
-              el.innerHTML = iconSvg
-            }
-          }
-        })
-      }
-      loadIcons()
-      // Retry after a short delay in case icons aren't loaded yet
-      const timeout = setTimeout(loadIcons, 500)
-      return () => clearTimeout(timeout)
-    }
-  }, [isDashboard])
 
   // Load stats for dashboard page
   useEffect(() => {
@@ -159,28 +139,16 @@ export default function Header() {
                 }}></div>
                 <span>Live</span>
               </div>
-              {mounted && currentTime && (
               <div style={{
                 fontFamily: 'monospace',
                 fontVariantNumeric: 'tabular-nums',
                 letterSpacing: '0.02em',
                 color: 'var(--hearst-green)',
+                width: '80px',
+                height: '20px',
               }}>
-                {formatTime(currentTime)}
+                {mounted && currentTime ? formatTime(currentTime) : '--:--:--'}
               </div>
-              )}
-              {!mounted && (
-                <div style={{
-                  fontFamily: 'monospace',
-                  fontVariantNumeric: 'tabular-nums',
-                  letterSpacing: '0.02em',
-                  color: 'var(--hearst-green)',
-                  width: '80px',
-                  height: '20px',
-                }}>
-                  --
-                </div>
-              )}
             </div>
           )}
         </div>

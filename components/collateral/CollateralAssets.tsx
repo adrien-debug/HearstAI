@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { collateralAPI } from '@/lib/api'
 import { collectAllAssets, computeGlobalMetrics } from './collateralUtils'
 import type { Client } from './collateralUtils'
+import Icon from '@/components/Icon'
 import './Collateral.css'
 
 export default function CollateralAssets() {
@@ -12,23 +13,6 @@ export default function CollateralAssets() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Load icons
-    const loadIcons = () => {
-      if (typeof window !== 'undefined' && (window as any).Icons) {
-        document.querySelectorAll('[data-icon]').forEach(el => {
-          const iconName = el.getAttribute('data-icon')
-          if (iconName) {
-            const iconSvg = (window as any).Icons[iconName]
-            if (iconSvg) {
-              el.innerHTML = iconSvg
-            }
-          }
-        })
-      }
-    }
-    loadIcons()
-    const timeout = setTimeout(loadIcons, 500)
-    
     const loadData = async () => {
       try {
         setLoading(true)
@@ -83,7 +67,6 @@ export default function CollateralAssets() {
     const interval = setInterval(loadData, 30000)
     return () => {
       clearInterval(interval)
-      clearTimeout(timeout)
     }
   }, [])
 
@@ -127,7 +110,9 @@ export default function CollateralAssets() {
         <div className="premium-stats-grid">
           <div className="premium-stat-box premium-stat-box-highlight">
             <div className="premium-stat-box-header">
-              <div className="premium-stat-icon" data-icon="diamond"></div>
+              <div className="premium-stat-icon">
+                <Icon name="diamond" />
+              </div>
               <div className="premium-stat-label">Total Assets Value</div>
             </div>
             <div className="premium-stat-value premium-stat-value-green">${(totalValue / 1000000).toFixed(2)}M</div>
@@ -137,7 +122,9 @@ export default function CollateralAssets() {
           </div>
           <div className="premium-stat-box">
             <div className="premium-stat-box-header">
-              <div className="premium-stat-icon" data-icon="protocol"></div>
+              <div className="premium-stat-icon">
+                <Icon name="protocol" />
+              </div>
               <div className="premium-stat-label">Asset Types</div>
             </div>
             <div className="premium-stat-value">{Object.keys(assetsByType).length}</div>
@@ -147,7 +134,9 @@ export default function CollateralAssets() {
           </div>
           <div className="premium-stat-box">
             <div className="premium-stat-box-header">
-              <div className="premium-stat-icon" data-icon="chart"></div>
+              <div className="premium-stat-icon">
+                <Icon name="chart" />
+              </div>
               <div className="premium-stat-label">Total Positions</div>
             </div>
             <div className="premium-stat-value">{allAssets.length}</div>
@@ -157,7 +146,9 @@ export default function CollateralAssets() {
           </div>
           <div className="premium-stat-box">
             <div className="premium-stat-box-header">
-              <div className="premium-stat-icon" data-icon="chain"></div>
+              <div className="premium-stat-icon">
+                <Icon name="chain" />
+              </div>
               <div className="premium-stat-label">Protocols</div>
             </div>
             <div className="premium-stat-value">{new Set(allAssets.map(a => a.protocol)).size}</div>

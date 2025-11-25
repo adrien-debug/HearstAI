@@ -55,14 +55,14 @@ export default function Sidebar() {
       <nav className="sidebar-nav">
         {navItems.map((item, index) => (
           <div key={item.href}>
-            <Link
-              href={item.href}
-              className={`nav-item ${isActive(item.href) ? 'active' : ''}`}
-              data-view={item.view}
-            >
-              <span className="nav-icon" data-icon={item.icon}></span>
-              <span className="nav-label">{item.label}</span>
-            </Link>
+          <Link
+            href={item.href}
+            className={`nav-item ${isActive(item.href) ? 'active' : ''}`}
+            data-view={item.view}
+          >
+            <span className="nav-icon" data-icon={item.icon}></span>
+            <span className="nav-label">{item.label}</span>
+          </Link>
             {index === 1 && (
               <div className="nav-section-separator">
                 <span className="nav-section-label">Mining</span>

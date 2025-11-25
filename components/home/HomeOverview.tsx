@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
+import Icon from '@/components/Icon'
 
 // Simple Chart Wrapper with error handling
 const ChartWrapper = ({ children, fallback }: { children: React.ReactNode; fallback: React.ReactNode }) => {
@@ -76,91 +77,8 @@ export default function HomeOverview() {
   const [loading, setLoading] = useState(true)
   const [mounted, setMounted] = useState(false)
 
-  // Debug: Détecter les éléments qui bloquent les clics
   useEffect(() => {
     setMounted(true)
-    console.log('[HomeOverview] ✅ Composant monté et hydraté')
-    
-    // Attendre que le DOM soit prêt
-    setTimeout(() => {
-      // CHERCHER LES OVERLAYS QUI BLOQUENT
-      const allElements = document.querySelectorAll('*')
-      const blockingElements: Element[] = []
-      
-      allElements.forEach((el) => {
-        const style = window.getComputedStyle(el)
-        const rect = el.getBoundingClientRect()
-        
-        // Vérifier si l'élément couvre l'écran ou bloque les interactions
-        const isFullScreen = 
-          (rect.top <= 0 && rect.bottom >= window.innerHeight) ||
-          (rect.left <= 0 && rect.right >= window.innerWidth) ||
-          (style.position === 'fixed' && (rect.width > window.innerWidth * 0.8 || rect.height > window.innerHeight * 0.8))
-        
-        const hasHighZIndex = parseInt(style.zIndex) > 1000 || style.zIndex === 'auto'
-        const isVisible = style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0'
-        const blocksPointer = style.pointerEvents === 'none' ? false : true
-        
-        if (isFullScreen && hasHighZIndex && isVisible && blocksPointer && el.tagName !== 'BODY' && el.tagName !== 'HTML') {
-          blockingElements.push(el)
-          console.warn('[HomeOverview] 🚨 ÉLÉMENT BLOQUANT DÉTECTÉ:', {
-            tag: el.tagName,
-            className: el.className,
-            id: el.id,
-            zIndex: style.zIndex,
-            position: style.position,
-            rect: { top: rect.top, left: rect.left, width: rect.width, height: rect.height },
-            pointerEvents: style.pointerEvents,
-            element: el
-          })
-        }
-      })
-      
-      if (blockingElements.length > 0) {
-        console.error('[HomeOverview] ❌ ÉLÉMENTS QUI BLOQUENT LES CLICS:', blockingElements)
-        
-        // ESSAYER DE LES DÉSACTIVER
-        blockingElements.forEach((el, idx) => {
-          const htmlEl = el as HTMLElement
-          console.log(`[HomeOverview] 🔧 Tentative de désactivation élément ${idx}:`, htmlEl.className)
-          
-          // Option 1: pointer-events: none
-          htmlEl.style.pointerEvents = 'none'
-          console.log(`[HomeOverview] ✅ pointer-events: none appliqué à`, htmlEl.className)
-          
-          // Option 2: display: none temporairement pour test
-          // htmlEl.style.display = 'none'
-        })
-      } else {
-        console.log('[HomeOverview] ✅ Aucun élément bloquant détecté')
-      }
-      
-      // Vérifier le bouton de test
-      const testButton = document.querySelector('[style*="zIndex: 99999"]') || 
-                        document.querySelector('[style*="z-index: 99999"]')
-      if (testButton) {
-        console.log('[HomeOverview] ✅ Bouton de test trouvé:', testButton)
-        
-        // FORCER l'ajout d'un event listener natif avec capture
-        const nativeHandler = (e: Event) => {
-          e.preventDefault()
-          e.stopPropagation()
-          e.stopImmediatePropagation()
-          console.log('[HomeOverview] 🔥🔥🔥 CLIC NATIF DÉTECTÉ !!!')
-          alert('CLIC NATIF FONCTIONNE !')
-          return false
-        }
-        
-        testButton.addEventListener('click', nativeHandler, { capture: true, passive: false })
-        testButton.addEventListener('mousedown', nativeHandler, { capture: true, passive: false })
-        testButton.addEventListener('mouseup', nativeHandler, { capture: true, passive: false })
-        console.log('[HomeOverview] ✅ Event listeners natifs ajoutés avec capture')
-      }
-      
-      // Test avec tous les boutons
-      const allButtons = document.querySelectorAll('button')
-      console.log('[HomeOverview] 📊 Total boutons trouvés:', allButtons.length)
-    }, 2000)
   }, [])
 
   useEffect(() => {
@@ -242,39 +160,6 @@ export default function HomeOverview() {
     return () => {
       isMounted = false
       if (abortController) abortController.abort()
-    }
-  }, [])
-  
-  // Load icons séparément avec useEffect pour éviter les conflits
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-    
-    const loadIcons = () => {
-      try {
-        if ((window as any).Icons) {
-          const icons = document.querySelectorAll('[data-icon]')
-          icons.forEach(el => {
-            try {
-              const iconName = el.getAttribute('data-icon')
-              if (iconName && (window as any).Icons[iconName]) {
-                el.innerHTML = (window as any).Icons[iconName]
-              }
-            } catch (iconError) {
-              // Ignorer les erreurs d'icônes
-            }
-          })
-        }
-      } catch (error) {
-        // Ignorer les erreurs
-      }
-    }
-    
-    // Attendre que le DOM soit prêt
-    if (document.readyState === 'complete') {
-      loadIcons()
-    } else {
-      window.addEventListener('load', loadIcons)
-      return () => window.removeEventListener('load', loadIcons)
     }
   }, [])
 
@@ -395,73 +280,14 @@ export default function HomeOverview() {
 
   return (
     <div>
-      {/* BOUTON DE TEST URGENT - AVEC SCRIPT NATIF */}
-      <div 
-        id="test-button-overlay"
-        style={{ 
-          position: 'fixed', 
-          top: '10px', 
-          right: '10px', 
-          zIndex: 999999, 
-          background: 'red', 
-          padding: '20px',
-          borderRadius: '8px',
-          cursor: 'pointer',
-          pointerEvents: 'auto' as any
-        }}
-        ref={(el) => {
-          if (el) {
-            // Ajouter event listener natif directement
-            const handler = (e: MouseEvent) => {
-              e.preventDefault()
-              e.stopPropagation()
-              e.stopImmediatePropagation()
-              console.log('🔥🔥🔥 BOUTON TEST CLIQUE (NATIF) !!!')
-              alert('BOUTON TEST FONCTIONNE (NATIF) !')
-              return false
-            }
-            el.addEventListener('click', handler, { capture: true, passive: false })
-            el.addEventListener('mousedown', handler, { capture: true, passive: false })
-            console.log('[HomeOverview] ✅ Event listeners natifs ajoutés au bouton test')
-          }
-        }}
-      >
-        <button 
-          id="test-button-inner"
-          style={{ 
-            background: 'yellow', 
-            padding: '10px 20px', 
-            border: 'none', 
-            cursor: 'pointer',
-            fontSize: '16px',
-            fontWeight: 'bold',
-            pointerEvents: 'auto' as any
-          }}
-          ref={(el) => {
-            if (el) {
-              const handler = (e: MouseEvent) => {
-                e.preventDefault()
-                e.stopPropagation()
-                e.stopImmediatePropagation()
-                console.log('🔥🔥🔥 BOUTON INTERNE CLIQUE (NATIF) !!!')
-                alert('BOUTON INTERNE FONCTIONNE (NATIF) !')
-                return false
-              }
-              el.addEventListener('click', handler, { capture: true, passive: false })
-              el.addEventListener('mousedown', handler, { capture: true, passive: false })
-            }
-          }}
-        >
-          TEST CLIC ICI
-        </button>
-      </div>
-      
       {/* Premium Stats Boxes Section */}
       <div className="premium-stats-section">
         <div className="premium-stats-grid">
           <div className="premium-stat-box">
             <div className="premium-stat-box-header">
-              <div className="premium-stat-icon" data-icon="projects"></div>
+              <div className="premium-stat-icon">
+                <Icon name="projects" />
+              </div>
               <div className="premium-stat-label">Total Projects</div>
             </div>
             <div className="premium-stat-value">
@@ -474,7 +300,9 @@ export default function HomeOverview() {
 
           <div className="premium-stat-box">
             <div className="premium-stat-box-header">
-              <div className="premium-stat-icon" data-icon="versions"></div>
+              <div className="premium-stat-icon">
+                <Icon name="versions" />
+              </div>
               <div className="premium-stat-label">Total Versions</div>
             </div>
             <div className="premium-stat-value">
@@ -487,7 +315,9 @@ export default function HomeOverview() {
 
           <div className="premium-stat-box">
             <div className="premium-stat-box-header">
-              <div className="premium-stat-icon" data-icon="jobs"></div>
+              <div className="premium-stat-icon">
+                <Icon name="jobs" />
+              </div>
               <div className="premium-stat-label">Total Jobs</div>
             </div>
             <div className="premium-stat-value">
@@ -500,7 +330,9 @@ export default function HomeOverview() {
 
           <div className="premium-stat-box premium-stat-box-highlight">
             <div className="premium-stat-box-header">
-              <div className="premium-stat-icon" data-icon="running"></div>
+              <div className="premium-stat-icon">
+                <Icon name="running" />
+              </div>
               <div className="premium-stat-label">Jobs Running</div>
             </div>
             <div className="premium-stat-value premium-stat-value-green">
@@ -518,7 +350,9 @@ export default function HomeOverview() {
         <div className="premium-wallet-box">
           <div className="premium-wallet-header">
             <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
-              <div className="premium-stat-icon" data-icon="wallet"></div>
+              <div className="premium-stat-icon">
+                <Icon name="wallet" />
+              </div>
               <h3 className="premium-wallet-title">Wallet</h3>
             </div>
             <button 
@@ -567,7 +401,7 @@ export default function HomeOverview() {
                 title="Copy address"
                 style={{ cursor: 'pointer' }}
               >
-                <span data-icon="copy"></span>
+                <Icon name="copy" />
                 <span>Copy</span>
               </button>
             </div>
@@ -646,7 +480,7 @@ export default function HomeOverview() {
             </div>
           </div>
           <div className="chart-container">
-            {typeof window !== 'undefined' ? (
+            {mounted ? (
               <ChartWrapper fallback={<div style={{ height: '350px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)' }}>Chart error</div>}>
                 <LineChart data={chartData1} options={chartOptions} />
               </ChartWrapper>
@@ -663,7 +497,7 @@ export default function HomeOverview() {
             <h2 className="chart-title">Statistics Bar Chart</h2>
           </div>
           <div className="chart-container">
-            {typeof window !== 'undefined' ? (
+            {mounted ? (
               <ChartWrapper fallback={<div style={{ height: '350px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)' }}>Chart error</div>}>
                 <BarChart data={chartData2} options={chartOptions} />
               </ChartWrapper>

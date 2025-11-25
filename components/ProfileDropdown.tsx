@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useSession, signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
+import Icon from './Icon'
 
 export default function ProfileDropdown() {
   const { data: session } = useSession()
@@ -48,7 +49,9 @@ export default function ProfileDropdown() {
           cursor: 'pointer',
         }}
       >
-        <span className="user-avatar" data-icon="user"></span>
+        <span className="user-avatar">
+          <Icon name="user" />
+        </span>
         <span className="user-name">{session?.user?.name || 'User'}</span>
       </div>
 

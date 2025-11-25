@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { collateralAPI } from '@/lib/api'
 import { collectAllLoans } from './collateralUtils'
 import type { Client } from './collateralUtils'
+import Icon from '@/components/Icon'
 import './Collateral.css'
 
 export default function CollateralLoans() {
@@ -12,23 +13,6 @@ export default function CollateralLoans() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Load icons
-    const loadIcons = () => {
-      if (typeof window !== 'undefined' && (window as any).Icons) {
-        document.querySelectorAll('[data-icon]').forEach(el => {
-          const iconName = el.getAttribute('data-icon')
-          if (iconName) {
-            const iconSvg = (window as any).Icons[iconName]
-            if (iconSvg) {
-              el.innerHTML = iconSvg
-            }
-          }
-        })
-      }
-    }
-    loadIcons()
-    const timeout = setTimeout(loadIcons, 500)
-    
     const loadData = async () => {
       try {
         setLoading(true)
@@ -83,7 +67,6 @@ export default function CollateralLoans() {
     const interval = setInterval(loadData, 30000)
     return () => {
       clearInterval(interval)
-      clearTimeout(timeout)
     }
   }, [])
 
@@ -121,7 +104,9 @@ export default function CollateralLoans() {
         <div className="premium-stats-grid">
           <div className="premium-stat-box">
             <div className="premium-stat-box-header">
-              <div className="premium-stat-icon" data-icon="list"></div>
+              <div className="premium-stat-icon">
+                <Icon name="list" />
+              </div>
               <div className="premium-stat-label">Active Loans</div>
             </div>
             <div className="premium-stat-value">{allLoans.length}</div>
@@ -131,7 +116,9 @@ export default function CollateralLoans() {
           </div>
           <div className="premium-stat-box">
             <div className="premium-stat-box-header">
-              <div className="premium-stat-icon" data-icon="dollar"></div>
+              <div className="premium-stat-icon">
+                <Icon name="dollar" />
+              </div>
               <div className="premium-stat-label">Total Principal</div>
             </div>
             <div className="premium-stat-value">${(totalPrincipal / 1000).toFixed(0)}K</div>
@@ -141,7 +128,9 @@ export default function CollateralLoans() {
           </div>
           <div className="premium-stat-box">
             <div className="premium-stat-box-header">
-              <div className="premium-stat-icon" data-icon="trend-up"></div>
+              <div className="premium-stat-icon">
+                <Icon name="trend-up" />
+              </div>
               <div className="premium-stat-label">Average Interest Rate</div>
             </div>
             <div className="premium-stat-value">{avgInterestRate.toFixed(2)}%</div>
@@ -151,7 +140,9 @@ export default function CollateralLoans() {
           </div>
           <div className="premium-stat-box premium-stat-box-highlight">
             <div className="premium-stat-box-header">
-              <div className="premium-stat-icon" data-icon="shield"></div>
+              <div className="premium-stat-icon">
+                <Icon name="shield" />
+              </div>
               <div className="premium-stat-label">Total Collateral</div>
             </div>
             <div className="premium-stat-value premium-stat-value-green">${(totalCollateralValue / 1000000).toFixed(2)}M</div>
