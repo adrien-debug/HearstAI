@@ -74,6 +74,21 @@ export default function HomeOverview() {
     jobs_success_rate: 0,
   })
   const [loading, setLoading] = useState(true)
+  const [mounted, setMounted] = useState(false)
+
+  // Debug: Vérifier que le composant est monté
+  useEffect(() => {
+    setMounted(true)
+    console.log('[HomeOverview] ✅ Composant monté et hydraté')
+    
+    // Vérifier que les événements fonctionnent
+    const testButton = document.querySelector('.premium-wallet-copy-btn')
+    if (testButton) {
+      console.log('[HomeOverview] ✅ Bouton trouvé:', testButton)
+    } else {
+      console.warn('[HomeOverview] ⚠️ Bouton non trouvé')
+    }
+  }, [])
 
   useEffect(() => {
     let isMounted = true
@@ -374,12 +389,19 @@ export default function HomeOverview() {
             </div>
             <button 
               className="premium-wallet-transaction-btn"
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                console.log('[HomeOverview] 🔘 Bouton Transaction history cliqué')
                 const element = document.querySelector('.premium-transaction-section')
                 if (element) {
                   element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                  console.log('[HomeOverview] ✅ Scroll effectué')
+                } else {
+                  console.warn('[HomeOverview] ⚠️ Section transaction non trouvée')
                 }
               }}
+              style={{ cursor: 'pointer' }}
             >
               Transaction history
             </button>
@@ -393,10 +415,23 @@ export default function HomeOverview() {
               <div className="premium-wallet-address-text">1Lzu8ieZUN7QDk6MTiPive2s2uhr2xzqqpck</div>
               <button 
                 className="premium-wallet-copy-btn"
-                onClick={() => {
-                  navigator.clipboard.writeText('1Lzu8ieZUN7QDk6MTiPive2s2uhr2xzqqpck')
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  console.log('[HomeOverview] 🔘 Bouton Copy cliqué')
+                  try {
+                    navigator.clipboard.writeText('1Lzu8ieZUN7QDk6MTiPive2s2uhr2xzqqpck').then(() => {
+                      console.log('[HomeOverview] ✅ Texte copié')
+                      alert('Adresse copiée !')
+                    }).catch(err => {
+                      console.error('[HomeOverview] ❌ Erreur copie:', err)
+                    })
+                  } catch (err) {
+                    console.error('[HomeOverview] ❌ Erreur:', err)
+                  }
                 }}
                 title="Copy address"
+                style={{ cursor: 'pointer' }}
               >
                 <span data-icon="copy"></span>
                 <span>Copy</span>
