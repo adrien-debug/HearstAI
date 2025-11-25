@@ -88,9 +88,15 @@ export default function ClientDetailModal({ isOpen, onClose, customer }: ClientD
       let protocols: string[] = []
       try {
         if (customer.protocols) {
-          const protocolsStr = customer.protocols.trim()
-          if (protocolsStr && protocolsStr !== '[]' && protocolsStr !== '') {
-            protocols = JSON.parse(protocolsStr)
+          // Si c'est déjà un tableau, l'utiliser directement
+          if (Array.isArray(customer.protocols)) {
+            protocols = customer.protocols
+          } else {
+            // Sinon, parser la string JSON
+            const protocolsStr = typeof customer.protocols === 'string' ? customer.protocols.trim() : String(customer.protocols)
+            if (protocolsStr && protocolsStr !== '[]' && protocolsStr !== '') {
+              protocols = JSON.parse(protocolsStr)
+            }
           }
         }
       } catch (e) {
@@ -128,11 +134,17 @@ export default function ClientDetailModal({ isOpen, onClose, customer }: ClientD
   
   try {
     if (customer.chains) {
-      const chainsStr = customer.chains.trim()
-      if (chainsStr && chainsStr !== '[]' && chainsStr !== '') {
-        chains = JSON.parse(chainsStr)
+      // Si c'est déjà un tableau, l'utiliser directement
+      if (Array.isArray(customer.chains)) {
+        chains = customer.chains
       } else {
-        chains = ['eth']
+        // Sinon, parser la string JSON
+        const chainsStr = typeof customer.chains === 'string' ? customer.chains.trim() : String(customer.chains)
+        if (chainsStr && chainsStr !== '[]' && chainsStr !== '') {
+          chains = JSON.parse(chainsStr)
+        } else {
+          chains = ['eth']
+        }
       }
     } else {
       chains = ['eth']
@@ -144,9 +156,15 @@ export default function ClientDetailModal({ isOpen, onClose, customer }: ClientD
   
   try {
     if (customer.protocols) {
-      const protocolsStr = customer.protocols.trim()
-      if (protocolsStr && protocolsStr !== '[]' && protocolsStr !== '') {
-        protocols = JSON.parse(protocolsStr)
+      // Si c'est déjà un tableau, l'utiliser directement
+      if (Array.isArray(customer.protocols)) {
+        protocols = customer.protocols
+      } else {
+        // Sinon, parser la string JSON
+        const protocolsStr = typeof customer.protocols === 'string' ? customer.protocols.trim() : String(customer.protocols)
+        if (protocolsStr && protocolsStr !== '[]' && protocolsStr !== '') {
+          protocols = JSON.parse(protocolsStr)
+        }
       }
     }
   } catch (e) {
