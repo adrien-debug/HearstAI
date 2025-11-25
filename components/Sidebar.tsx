@@ -68,11 +68,11 @@ const managementSection: NavSection = {
 
 export default function Sidebar() {
   const pathname = usePathname()
-  const [isMiningOpen, setIsMiningOpen] = useState(true) // Par défaut ouvert
-  const [isCostCenterOpen, setIsCostCenterOpen] = useState(true) // Par défaut ouvert
-  const [isHearstToolsOpen, setIsHearstToolsOpen] = useState(true) // Par défaut ouvert
-  const [isStrategieOpen, setIsStrategieOpen] = useState(true) // Par défaut ouvert
-  const [isManagementOpen, setIsManagementOpen] = useState(true) // Par défaut ouvert
+  const [isMiningOpen, setIsMiningOpen] = useState(false) // Par défaut fermé
+  const [isCostCenterOpen, setIsCostCenterOpen] = useState(false) // Par défaut fermé
+  const [isHearstToolsOpen, setIsHearstToolsOpen] = useState(false) // Par défaut fermé
+  const [isStrategieOpen, setIsStrategieOpen] = useState(false) // Par défaut fermé
+  const [isManagementOpen, setIsManagementOpen] = useState(false) // Par défaut fermé
 
   const isActive = (href: string): boolean => {
     if (href === '/') {
@@ -193,7 +193,6 @@ export default function Sidebar() {
           className={`nav-item ${isActive('/') ? 'active' : ''}`}
           data-view="dashboard"
         >
-          <span className="nav-icon" data-icon="home"></span>
           <span className="nav-label">Overview</span>
         </Link>
 
@@ -203,9 +202,13 @@ export default function Sidebar() {
           className={`nav-item ${isActive('/myearthai') ? 'active' : ''}`}
           data-view="myearthai"
         >
-          <span className="nav-icon" data-icon="dashboard"></span>
           <span className="nav-label">MyEarthAI</span>
         </Link>
+
+        {/* Séparateur Hearst Environement */}
+        <div className="nav-section-separator">
+          <span className="nav-section-label">Hearst Environement</span>
+        </div>
 
         {/* Section Mining avec menu déroulant */}
         <div className="nav-section">
@@ -239,7 +242,6 @@ export default function Sidebar() {
                 className={`nav-item nav-sub-item ${isActive(item.href) ? 'active' : ''}`}
                 data-view={item.view}
               >
-                <span className="nav-icon" data-icon={item.icon}></span>
                 <span className="nav-label">{item.label}</span>
               </Link>
             ))}
@@ -278,7 +280,6 @@ export default function Sidebar() {
                 className={`nav-item nav-sub-item ${isActive(item.href) ? 'active' : ''}`}
                 data-view={item.view}
               >
-                <span className="nav-icon" data-icon={item.icon}></span>
                 <span className="nav-label">{item.label}</span>
               </Link>
             ))}
@@ -317,7 +318,6 @@ export default function Sidebar() {
                 className={`nav-item nav-sub-item ${isActive(item.href) ? 'active' : ''}`}
                 data-view={item.view}
               >
-                <span className="nav-icon" data-icon={item.icon}></span>
                 <span className="nav-label">{item.label}</span>
               </Link>
             ))}
@@ -356,7 +356,6 @@ export default function Sidebar() {
                 className={`nav-item nav-sub-item ${isActive(item.href) ? 'active' : ''}`}
                 data-view={item.view}
               >
-                <span className="nav-icon" data-icon={item.icon}></span>
                 <span className="nav-label">{item.label}</span>
               </Link>
             ))}
@@ -395,19 +394,27 @@ export default function Sidebar() {
                 className={`nav-item nav-sub-item ${isActive(item.href) ? 'active' : ''}`}
                 data-view={item.view}
               >
-                <span className="nav-icon" data-icon={item.icon}></span>
                 <span className="nav-label">{item.label}</span>
               </Link>
             ))}
           </div>
         </div>
 
-        {/* Séparateur sous Management quand fermé */}
-        {!isManagementOpen && (
-          <div className="nav-section-separator">
-            <span className="nav-section-label"></span>
-          </div>
-        )}
+        {/* Séparateur avec logo Bitcoin sous Management */}
+        <div className="nav-section-separator nav-section-separator-bitcoin">
+          <span className="nav-section-separator-bitcoin-icon">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
+              <path d="M10.5 8.5C10.5 7.67 11.17 7 12 7C12.83 7 13.5 7.67 13.5 8.5C13.5 9.33 12.83 10 12 10M10.5 15.5C10.5 14.67 11.17 14 12 14C12.83 14 13.5 14.67 13.5 15.5C13.5 16.33 12.83 17 12 17M9 10H15M9 14H15" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+            </svg>
+          </span>
+        </div>
       </nav>
 
       <div className="sidebar-version">
@@ -416,7 +423,6 @@ export default function Sidebar() {
           className="nav-item"
           data-view="admin-panel"
         >
-          <span className="nav-icon" data-icon="admin"></span>
           <span className="nav-label">Admin</span>
         </Link>
         <div className="sidebar-version-text">

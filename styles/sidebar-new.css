@@ -54,7 +54,8 @@
 .nav-item {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: center;
+  gap: 0;
   padding: 10px 12px;
   border-radius: 8px;
   text-decoration: none;
@@ -72,11 +73,11 @@
 }
 
 .nav-item:hover {
-  background: rgba(165, 255, 156, 0.12);
+  background: rgba(197, 255, 156, 0.12);
 }
 
 .nav-item.active {
-  background: rgba(165, 255, 156, 0.2);
+  background: rgba(197, 255, 156, 0.2);
   font-weight: 600;
 }
 
@@ -146,21 +147,77 @@
   position: relative;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.nav-section-separator::before,
+.nav-section-separator::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(197, 255, 156, 0.4) 50%,
+    transparent
+  );
+}
+
+.nav-section-separator::before {
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(197, 255, 156, 0.35)
+  );
+}
+
+.nav-section-separator::after {
+  background: linear-gradient(
+    to left,
+    transparent,
+    rgba(197, 255, 156, 0.35)
+  );
+}
+
+/* Séparateur avec logo Bitcoin */
+.nav-section-separator-bitcoin {
+  position: relative;
+}
+
+.nav-section-separator-bitcoin-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: rgba(197, 255, 156, 0.75);
+  z-index: 2;
+  position: relative;
+  margin: 0 auto;
+}
+
+.nav-section-separator-bitcoin-icon svg {
+  width: 100%;
+  height: 100%;
 }
 
 
 .nav-section-label {
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 2px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: rgba(165, 255, 156, 0.75);
+  color: rgba(197, 255, 156, 0.75);
   padding: 0;
   text-align: center;
   position: relative;
   white-space: nowrap;
   transition: color 0.3s ease;
+  line-height: 1.2;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 }
 
 /* ===================================
@@ -181,7 +238,8 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: center;
+  gap: 6px;
   margin: 20px 0 12px 0;
   padding: 0;
   width: 100%;
@@ -189,6 +247,7 @@
   border: none;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-sizing: border-box;
 }
 
 .nav-section:first-of-type .nav-section-header {
@@ -197,12 +256,12 @@
 
 
 .nav-section-header .nav-section-label {
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 2px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: rgba(165, 255, 156, 0.75);
-  padding: 0 8px;
+  color: rgba(197, 255, 156, 0.75);
+  padding: 0;
   text-align: center;
   position: relative;
   white-space: nowrap;
@@ -210,46 +269,48 @@
   flex: 0 0 auto;
   cursor: pointer;
   z-index: 1;
+  line-height: 1.2;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 }
 
 .nav-section-header:hover .nav-section-label {
-  color: rgba(165, 255, 156, 0.9);
+  color: rgba(197, 255, 156, 0.9);
 }
 
 .nav-section-header.open .nav-section-label {
-  color: rgba(165, 255, 156, 1);
+  color: rgba(197, 255, 156, 1);
 }
 
 .nav-section-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 16px;
-  height: 16px;
-  min-width: 16px;
+  width: 14px;
+  height: 14px;
+  min-width: 14px;
   flex-shrink: 0;
   position: relative;
   cursor: pointer;
   z-index: 1;
-  margin-left: 8px;
+  margin: 0;
 }
 
 .nav-section-lightning {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  color: rgba(165, 255, 156, 0.75);
+  color: rgba(197, 255, 156, 0.75);
   transform: scale(1);
-  filter: drop-shadow(0 0 2px rgba(165, 255, 156, 0.3));
+  filter: drop-shadow(0 0 2px rgba(197, 255, 156, 0.3));
 }
 
 .nav-section-header:hover .nav-section-lightning {
-  color: rgba(165, 255, 156, 0.9);
-  filter: drop-shadow(0 0 4px rgba(165, 255, 156, 0.5));
+  color: rgba(197, 255, 156, 0.9);
+  filter: drop-shadow(0 0 4px rgba(197, 255, 156, 0.5));
   transform: scale(1.1);
 }
 
 .nav-section-lightning.open {
-  color: rgba(165, 255, 156, 1);
-  filter: drop-shadow(0 0 6px rgba(165, 255, 156, 0.8));
+  color: rgba(197, 255, 156, 1);
+  filter: drop-shadow(0 0 6px rgba(197, 255, 156, 0.8));
   transform: scale(1.15);
   animation: lightning-pulse 1.5s ease-in-out infinite;
 }
@@ -257,11 +318,11 @@
 @keyframes lightning-pulse {
   0%, 100% {
     opacity: 1;
-    filter: drop-shadow(0 0 6px rgba(165, 255, 156, 0.8));
+    filter: drop-shadow(0 0 6px rgba(197, 255, 156, 0.8));
   }
   50% {
     opacity: 0.8;
-    filter: drop-shadow(0 0 10px rgba(165, 255, 156, 1));
+    filter: drop-shadow(0 0 10px rgba(197, 255, 156, 1));
   }
 }
 
@@ -283,7 +344,7 @@
 
 /* Items de sous-menu avec indentation */
 .nav-sub-item {
-  margin-left: 8px;
+  margin-left: 0;
   margin-right: 0;
   padding-left: 8px;
   padding-right: 8px;
@@ -291,10 +352,11 @@
   font-size: 14px;
   border-left: 2px solid transparent;
   transition: all 0.2s ease;
-  width: calc(100% - 8px);
-  max-width: calc(100% - 8px);
+  width: 100%;
+  max-width: 100%;
   box-sizing: border-box;
   overflow: hidden;
+  justify-content: center;
 }
 
 .nav-sub-item::before {
@@ -305,7 +367,7 @@
   transform: translateY(-50%);
   width: 2px;
   height: 0;
-  background: rgba(165, 255, 156, 0.3);
+  background: rgba(197, 255, 156, 0.3);
   transition: height 0.2s ease;
   z-index: 1;
 }
@@ -316,12 +378,12 @@
 }
 
 .nav-sub-item:hover {
-  background: rgba(165, 255, 156, 0.1);
-  border-left-color: rgba(165, 255, 156, 0.4);
+  background: rgba(197, 255, 156, 0.1);
+  border-left-color: rgba(197, 255, 156, 0.4);
 }
 
 .nav-sub-item.active {
-  background: rgba(165, 255, 156, 0.15);
-  border-left-color: rgba(165, 255, 156, 0.6);
+  background: rgba(197, 255, 156, 0.15);
+  border-left-color: rgba(197, 255, 156, 0.6);
   font-weight: 600;
 }
