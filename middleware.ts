@@ -24,12 +24,16 @@ export async function middleware(request: NextRequest) {
       return NextResponse.next()
     }
 
-    // MODE DEBUG LOCAL : Désactiver les redirections si on est en local sur le port 6001
-    const isLocalDebug = process.env.NODE_ENV === 'development' && 
-                         (request.url.includes('localhost:6001') || request.url.includes('127.0.0.1:6001'))
+    // MODE DEBUG LOCAL : Désactiver COMPLÈTEMENT le middleware en développement local
+    // Cela évite toutes les boucles de redirection
+    const isLocalDebug = process.env.NODE_ENV === 'development' || 
+                         request.url.includes('localhost:6001') || 
+                         request.url.includes('127.0.0.1:6001') ||
+                         request.url.includes('localhost:3000') ||
+                         request.url.includes('127.0.0.1:3000')
     
     if (isLocalDebug) {
-      console.log('[Middleware] 🔧 MODE DEBUG LOCAL - Redirections désactivées pour:', pathname)
+      console.log('[Middleware] 🔧 MODE DEBUG LOCAL - Middleware complètement désactivé pour:', pathname)
       return NextResponse.next()
     }
 
