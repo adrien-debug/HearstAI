@@ -96,27 +96,49 @@ export default function CollateralLoans() {
 
   return (
     <div>
-      {/* Summary KPI */}
-      <div className="kpi-grid">
-        <div className="kpi-card">
-          <div className="kpi-label">Active Loans</div>
-          <div className="kpi-value">{allLoans.length}</div>
-          <div className="kpi-description">Outstanding loans</div>
-        </div>
-        <div className="kpi-card">
-          <div className="kpi-label">Total Principal</div>
-          <div className="kpi-value">${(totalPrincipal / 1000).toFixed(0)}K</div>
-          <div className="kpi-description">Total borrowed</div>
-        </div>
-        <div className="kpi-card">
-          <div className="kpi-label">Average Interest Rate</div>
-          <div className="kpi-value">{avgInterestRate.toFixed(2)}%</div>
-          <div className="kpi-description">Weighted average APR</div>
-        </div>
-        <div className="kpi-card">
-          <div className="kpi-label">Total Collateral</div>
-          <div className="kpi-value">${(totalCollateralValue / 1000000).toFixed(2)}M</div>
-          <div className="kpi-description">Securing loans</div>
+      {/* Premium Stats Summary */}
+      <div className="premium-stats-section">
+        <div className="premium-stats-grid">
+          <div className="premium-stat-box">
+            <div className="premium-stat-box-header">
+              <div className="premium-stat-icon" style={{ fontSize: '20px' }}>📋</div>
+              <div className="premium-stat-label">Active Loans</div>
+            </div>
+            <div className="premium-stat-value">{allLoans.length}</div>
+            <div className="premium-stat-footer">
+              <span className="premium-stat-description">Outstanding loans</span>
+            </div>
+          </div>
+          <div className="premium-stat-box">
+            <div className="premium-stat-box-header">
+              <div className="premium-stat-icon" style={{ fontSize: '20px' }}>💵</div>
+              <div className="premium-stat-label">Total Principal</div>
+            </div>
+            <div className="premium-stat-value">${(totalPrincipal / 1000).toFixed(0)}K</div>
+            <div className="premium-stat-footer">
+              <span className="premium-stat-description">Total borrowed</span>
+            </div>
+          </div>
+          <div className="premium-stat-box">
+            <div className="premium-stat-box-header">
+              <div className="premium-stat-icon" style={{ fontSize: '20px' }}>📈</div>
+              <div className="premium-stat-label">Average Interest Rate</div>
+            </div>
+            <div className="premium-stat-value">{avgInterestRate.toFixed(2)}%</div>
+            <div className="premium-stat-footer">
+              <span className="premium-stat-description">Weighted average APR</span>
+            </div>
+          </div>
+          <div className="premium-stat-box premium-stat-box-highlight">
+            <div className="premium-stat-box-header">
+              <div className="premium-stat-icon" style={{ fontSize: '20px' }}>🛡️</div>
+              <div className="premium-stat-label">Total Collateral</div>
+            </div>
+            <div className="premium-stat-value premium-stat-value-green">${(totalCollateralValue / 1000000).toFixed(2)}M</div>
+            <div className="premium-stat-footer">
+              <span className="premium-stat-description">Securing loans</span>
+            </div>
+          </div>
         </div>
       </div>
 

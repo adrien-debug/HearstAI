@@ -95,27 +95,49 @@ export default function CollateralTransactions() {
 
   return (
     <div>
-      {/* Summary KPI */}
-      <div className="kpi-grid">
-        <div className="kpi-card">
-          <div className="kpi-label">Total Transactions</div>
-          <div className="kpi-value">{allTransactions.length}</div>
-          <div className="kpi-description">All time</div>
-        </div>
-        <div className="kpi-card">
-          <div className="kpi-label">Total Supply</div>
-          <div className="kpi-value">${(totalSupply / 1000000).toFixed(2)}M</div>
-          <div className="kpi-description">Deposited</div>
-        </div>
-        <div className="kpi-card">
-          <div className="kpi-label">Total Borrow</div>
-          <div className="kpi-value">${(totalBorrow / 1000).toFixed(0)}K</div>
-          <div className="kpi-description">Borrowed</div>
-        </div>
-        <div className="kpi-card">
-          <div className="kpi-label">Completed</div>
-          <div className="kpi-value">{completedCount}</div>
-          <div className="kpi-description">Successful transactions</div>
+      {/* Premium Stats Summary */}
+      <div className="premium-stats-section">
+        <div className="premium-stats-grid">
+          <div className="premium-stat-box">
+            <div className="premium-stat-box-header">
+              <div className="premium-stat-icon" style={{ fontSize: '20px' }}>📝</div>
+              <div className="premium-stat-label">Total Transactions</div>
+            </div>
+            <div className="premium-stat-value">{allTransactions.length}</div>
+            <div className="premium-stat-footer">
+              <span className="premium-stat-description">All time</span>
+            </div>
+          </div>
+          <div className="premium-stat-box premium-stat-box-highlight">
+            <div className="premium-stat-box-header">
+              <div className="premium-stat-icon" style={{ fontSize: '20px' }}>⬆️</div>
+              <div className="premium-stat-label">Total Supply</div>
+            </div>
+            <div className="premium-stat-value premium-stat-value-green">${(totalSupply / 1000000).toFixed(2)}M</div>
+            <div className="premium-stat-footer">
+              <span className="premium-stat-description">Deposited</span>
+            </div>
+          </div>
+          <div className="premium-stat-box">
+            <div className="premium-stat-box-header">
+              <div className="premium-stat-icon" style={{ fontSize: '20px' }}>⬇️</div>
+              <div className="premium-stat-label">Total Borrow</div>
+            </div>
+            <div className="premium-stat-value">${(totalBorrow / 1000).toFixed(0)}K</div>
+            <div className="premium-stat-footer">
+              <span className="premium-stat-description">Borrowed</span>
+            </div>
+          </div>
+          <div className="premium-stat-box">
+            <div className="premium-stat-box-header">
+              <div className="premium-stat-icon" style={{ fontSize: '20px' }}>✅</div>
+              <div className="premium-stat-label">Completed</div>
+            </div>
+            <div className="premium-stat-value">{completedCount}</div>
+            <div className="premium-stat-footer">
+              <span className="premium-stat-description">Successful transactions</span>
+            </div>
+          </div>
         </div>
       </div>
 

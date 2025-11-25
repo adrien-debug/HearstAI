@@ -102,27 +102,49 @@ export default function CollateralAssets() {
 
   return (
     <div>
-      {/* Summary KPI */}
-      <div className="kpi-grid">
-        <div className="kpi-card">
-          <div className="kpi-label">Total Assets Value</div>
-          <div className="kpi-value">${(totalValue / 1000000).toFixed(2)}M</div>
-          <div className="kpi-description">All collateral assets</div>
-        </div>
-        <div className="kpi-card">
-          <div className="kpi-label">Asset Types</div>
-          <div className="kpi-value">{Object.keys(assetsByType).length}</div>
-          <div className="kpi-description">Different asset types</div>
-        </div>
-        <div className="kpi-card">
-          <div className="kpi-label">Total Positions</div>
-          <div className="kpi-value">{allAssets.length}</div>
-          <div className="kpi-description">Active positions</div>
-        </div>
-        <div className="kpi-card">
-          <div className="kpi-label">Protocols</div>
-          <div className="kpi-value">{new Set(allAssets.map(a => a.protocol)).size}</div>
-          <div className="kpi-description">Different protocols</div>
+      {/* Premium Stats Summary */}
+      <div className="premium-stats-section">
+        <div className="premium-stats-grid">
+          <div className="premium-stat-box premium-stat-box-highlight">
+            <div className="premium-stat-box-header">
+              <div className="premium-stat-icon" style={{ fontSize: '20px' }}>💎</div>
+              <div className="premium-stat-label">Total Assets Value</div>
+            </div>
+            <div className="premium-stat-value premium-stat-value-green">${(totalValue / 1000000).toFixed(2)}M</div>
+            <div className="premium-stat-footer">
+              <span className="premium-stat-description">All collateral assets</span>
+            </div>
+          </div>
+          <div className="premium-stat-box">
+            <div className="premium-stat-box-header">
+              <div className="premium-stat-icon" style={{ fontSize: '20px' }}>🔷</div>
+              <div className="premium-stat-label">Asset Types</div>
+            </div>
+            <div className="premium-stat-value">{Object.keys(assetsByType).length}</div>
+            <div className="premium-stat-footer">
+              <span className="premium-stat-description">Different asset types</span>
+            </div>
+          </div>
+          <div className="premium-stat-box">
+            <div className="premium-stat-box-header">
+              <div className="premium-stat-icon" style={{ fontSize: '20px' }}>📊</div>
+              <div className="premium-stat-label">Total Positions</div>
+            </div>
+            <div className="premium-stat-value">{allAssets.length}</div>
+            <div className="premium-stat-footer">
+              <span className="premium-stat-description">Active positions</span>
+            </div>
+          </div>
+          <div className="premium-stat-box">
+            <div className="premium-stat-box-header">
+              <div className="premium-stat-icon" style={{ fontSize: '20px' }}>🔗</div>
+              <div className="premium-stat-label">Protocols</div>
+            </div>
+            <div className="premium-stat-value">{new Set(allAssets.map(a => a.protocol)).size}</div>
+            <div className="premium-stat-footer">
+              <span className="premium-stat-description">Different protocols</span>
+            </div>
+          </div>
         </div>
       </div>
 

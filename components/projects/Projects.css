@@ -651,8 +651,18 @@
 }
 
 .project-card-image-icon {
-    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     opacity: 0.5;
+    color: rgba(138, 253, 129, 0.3);
+}
+
+.project-card-image-icon svg {
+    width: 100%;
+    height: 100%;
 }
 
 .project-card-image-text {
@@ -768,8 +778,17 @@
 }
 
 .project-card-stat-icon {
-    font-size: var(--text-2xl);
-    line-height: 1;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #C5FFA7;
+}
+
+.project-card-stat-icon svg {
+    width: 100%;
+    height: 100%;
 }
 
 .project-card-stat-content {
@@ -1046,8 +1065,17 @@
 }
 
 .photo-gallery-zoom-icon {
-    font-size: var(--text-2xl);
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: #fff;
+}
+
+.photo-gallery-zoom-icon svg {
+    width: 100%;
+    height: 100%;
 }
 
 .photo-gallery-empty {
@@ -1057,9 +1085,19 @@
 }
 
 .photo-gallery-empty-icon {
-    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin-bottom: var(--space-4);
     opacity: 0.5;
+    color: var(--text-secondary);
+}
+
+.photo-gallery-empty-icon svg {
+    width: 100%;
+    height: 100%;
 }
 
 /* Photo Gallery Modal */

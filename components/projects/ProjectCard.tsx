@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import './Projects.css'
 
@@ -31,6 +31,27 @@ interface ProjectCardProps {
 
 export default function ProjectCard({ project }: ProjectCardProps) {
   const [imageError, setImageError] = useState(false)
+
+  useEffect(() => {
+    // Load icons
+    const loadIcons = () => {
+      if (typeof window !== 'undefined' && (window as any).Icons) {
+        document.querySelectorAll('[data-icon]').forEach(el => {
+          const iconName = el.getAttribute('data-icon')
+          if (iconName) {
+            const iconSvg = (window as any).Icons[iconName]
+            if (iconSvg) {
+              el.innerHTML = iconSvg
+            }
+          }
+        })
+      }
+    }
+    
+    loadIcons()
+    const timeout = setTimeout(loadIcons, 500)
+    return () => clearTimeout(timeout)
+  }, [])
 
   const getStatusColor = (status: string) => {
     const statusUpper = status.toUpperCase()
@@ -66,7 +87,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
             />
           ) : (
             <div className="project-card-image-placeholder">
-              <div className="project-card-image-icon">📁</div>
+              <div className="project-card-image-icon" data-icon="folder"></div>
               <div className="project-card-image-text">{project.name.charAt(0).toUpperCase()}</div>
             </div>
           )}
@@ -115,14 +136,14 @@ export default function ProjectCard({ project }: ProjectCardProps) {
 
           <div className="project-card-stats">
             <div className="project-card-stat">
-              <div className="project-card-stat-icon">📦</div>
+              <div className="project-card-stat-icon premium-stat-icon" data-icon="versions"></div>
               <div className="project-card-stat-content">
                 <span className="project-card-stat-value">{project._count?.versions || 0}</span>
                 <span className="project-card-stat-label">Versions</span>
               </div>
             </div>
             <div className="project-card-stat">
-              <div className="project-card-stat-icon">⚙️</div>
+              <div className="project-card-stat-icon premium-stat-icon" data-icon="jobs"></div>
               <div className="project-card-stat-content">
                 <span className="project-card-stat-value">{project._count?.jobs || 0}</span>
                 <span className="project-card-stat-label">Jobs</span>

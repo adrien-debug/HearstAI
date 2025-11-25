@@ -33,16 +33,24 @@ export default function SignInPage() {
       } else if (result?.ok) {
         console.log('[SignIn] Connexion réussie, redirection...')
         
-        // Utiliser router.push au lieu de window.location pour éviter les problèmes de middleware
+        // ⚠️ PROTECTION CONTRE LES RÉGRESSIONS ⚠️
+        // NE PAS UTILISER window.location.href directement ici !
+        // Cela cause une boucle de redirection car le middleware vérifie le token
+        // avant que le cookie ne soit défini.
+        // 
+        // SOLUTION: Utiliser router.push() pour une navigation côté client
+        // qui ne déclenche pas de rechargement complet de la page.
+        
         const callbackUrl = new URLSearchParams(window.location.search).get('callbackUrl') || '/'
         
         // Forcer un refresh de la session avant de rediriger
         await fetch('/api/auth/session', { cache: 'no-store' })
         
-        // Utiliser router.push pour une navigation côté client
+        // Utiliser router.push pour une navigation côté client (pas de rechargement)
         router.push(callbackUrl)
         
-        // Fallback avec window.location si router.push ne fonctionne pas
+        // Fallback intelligent: seulement si on est toujours sur /auth/signin après 1 seconde
+        // Cela évite les boucles infinies
         setTimeout(() => {
           if (window.location.pathname === '/auth/signin') {
             console.log('[SignIn] Fallback: redirection forcée')
