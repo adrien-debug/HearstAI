@@ -43,69 +43,46 @@ export default function CollateralTransactions() {
     )
   }
 
-  // Générer des transactions depuis les positions et l'historique
+  // Transactions vides - seront récupérées depuis l'API ou la DB plus tard
+  // Pour l'instant, on affiche uniquement les positions actuelles comme transactions
   const allTransactions: any[] = []
   const clients = data?.clients || []
   
-  // Générer des transactions basées sur les positions actuelles
+  // Créer des transactions basées uniquement sur les positions actuelles (pas de données mockées)
   clients.forEach((client: any) => {
     const lastUpdate = client.lastUpdate ? new Date(client.lastUpdate) : new Date()
     
     client.positions?.forEach((pos: any, posIdx: number) => {
-      // Transaction de supply (collatéral déposé)
+      // Transaction de supply (collatéral déposé) - basée sur la position actuelle
       if (pos.collateralAmount > 0) {
-        const supplyDate = new Date(lastUpdate.getTime() - Math.random() * 7 * 24 * 60 * 60 * 1000) // Random date within last 7 days
-        
         allTransactions.push({
           id: `${client.id}-supply-${posIdx}`,
-          date: supplyDate.toISOString(),
+          date: lastUpdate.toISOString(), // Utiliser la date de dernière mise à jour
           type: 'Supply',
           amount: pos.collateralAmount,
           asset: pos.asset,
           assetValue: pos.collateralAmount * (pos.collateralPriceUsd || 0),
           protocol: pos.protocol || 'Unknown',
           chain: pos.chain || 'unknown',
-          status: 'Completed',
-          txHash: `0x${Math.random().toString(16).slice(2, 66)}`,
+          status: 'Active', // Position active
+          txHash: null, // Pas de hash de transaction disponible
           clientName: client.name,
         })
       }
       
-      // Transaction de borrow (emprunt)
+      // Transaction de borrow (emprunt) - basée sur la position actuelle
       if (pos.debtAmount > 0) {
-        const borrowDate = new Date(lastUpdate.getTime() - Math.random() * 14 * 24 * 60 * 60 * 1000) // Random date within last 14 days
-        
         allTransactions.push({
           id: `${client.id}-borrow-${posIdx}`,
-          date: borrowDate.toISOString(),
+          date: lastUpdate.toISOString(), // Utiliser la date de dernière mise à jour
           type: 'Borrow',
           amount: pos.debtAmount,
           asset: pos.debtToken || 'USD',
           assetValue: pos.debtAmount,
           protocol: pos.protocol || 'Unknown',
           chain: pos.chain || 'unknown',
-          status: 'Active',
-          txHash: `0x${Math.random().toString(16).slice(2, 66)}`,
-          clientName: client.name,
-        })
-      }
-      
-      // Transaction de repay simulée (occasionnelle)
-      if (pos.debtAmount > 0 && Math.random() > 0.7) {
-        const repayAmount = pos.debtAmount * (0.1 + Math.random() * 0.3) // 10-40% du montant
-        const repayDate = new Date(lastUpdate.getTime() - Math.random() * 30 * 24 * 60 * 60 * 1000)
-        
-        allTransactions.push({
-          id: `${client.id}-repay-${posIdx}`,
-          date: repayDate.toISOString(),
-          type: 'Repay',
-          amount: repayAmount,
-          asset: pos.debtToken || 'USD',
-          assetValue: repayAmount,
-          protocol: pos.protocol || 'Unknown',
-          chain: pos.chain || 'unknown',
-          status: 'Completed',
-          txHash: `0x${Math.random().toString(16).slice(2, 66)}`,
+          status: 'Active', // Emprunt actif
+          txHash: null, // Pas de hash de transaction disponible
           clientName: client.name,
         })
       }
@@ -135,8 +112,9 @@ export default function CollateralTransactions() {
   const totalRepay = allTransactions.filter(t => t.type === 'Repay').reduce((sum, t) => sum + t.assetValue, 0)
   const completedCount = allTransactions.filter(t => t.status === 'Completed').length
 
-  // Tronquer le hash pour l'affichage
-  const truncateHash = (hash: string) => {
+  // Tronquer le hash pour l'affichage (si disponible)
+  const truncateHash = (hash: string | null) => {
+    if (!hash) return 'N/A'
     return `${hash.slice(0, 6)}...${hash.slice(-4)}`
   }
 
@@ -224,14 +202,24 @@ export default function CollateralTransactions() {
                         </span>
                       </td>
                       <td>
-                        <span style={{ 
-                          fontFamily: 'var(--font-mono)', 
-                          fontSize: 'var(--text-xs)',
-                          color: 'var(--text-secondary)',
-                          cursor: 'pointer'
-                        }} title={tx.txHash}>
-                          {truncateHash(tx.txHash)}
-                        </span>
+                        {tx.txHash ? (
+                          <span style={{ 
+                            fontFamily: 'var(--font-mono)', 
+                            fontSize: 'var(--text-xs)',
+                            color: 'var(--text-secondary)',
+                            cursor: 'pointer'
+                          }} title={tx.txHash}>
+                            {truncateHash(tx.txHash)}
+                          </span>
+                        ) : (
+                          <span style={{ 
+                            fontSize: 'var(--text-xs)',
+                            color: 'var(--text-secondary)',
+                            fontStyle: 'italic'
+                          }}>
+                            N/A
+                          </span>
+                        )}
                       </td>
                     </tr>
                   ))

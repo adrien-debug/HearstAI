@@ -58,12 +58,9 @@ export async function GET(request: NextRequest) {
         });
         wallets = customersFromDb.map(c => c.erc20Address);
       } catch (dbError) {
-        console.warn('[API Collateral] Erreur DB, utilisation des wallets par défaut:', dbError);
-        // Fallback sur wallets par défaut
-        wallets = [
-          '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
-          '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
-        ];
+        console.error('[API Collateral] Erreur DB:', dbError);
+        // Pas de fallback - retourner tableau vide si erreur DB
+        wallets = [];
       }
     }
     
