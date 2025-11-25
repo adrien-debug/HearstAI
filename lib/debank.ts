@@ -169,7 +169,7 @@ function mapPortfolioItemToPosition(
   const collatUsd = stats.asset_usd_value || 0;
   const debtUsd = stats.debt_usd_value || 0;
 
-  // On récupère le premier token collat et le premier token de dette
+  // Récupérer tous les tokens disponibles (pas seulement le premier)
   const detail = item.detail || {};
   const assetTokens =
     detail.supply_token_list ||
@@ -182,15 +182,50 @@ function mapPortfolioItemToPosition(
     detail.debt_list ||
     [];
 
-  const mainAsset = assetTokens[0] || {};
-  const mainDebt = debtTokens[0] || {};
+  // Prendre le token principal (celui avec la plus grande valeur)
+  let mainAsset = assetTokens[0] || {};
+  let maxAssetValue = 0;
+  
+  assetTokens.forEach((token: any) => {
+    const tokenValue = (token.amount || 0) * (token.price || 0);
+    if (tokenValue > maxAssetValue) {
+      maxAssetValue = tokenValue;
+      mainAsset = token;
+    }
+  });
+
+  // Prendre le token de dette principal (celui avec la plus grande valeur)
+  let mainDebt = debtTokens[0] || {};
+  let maxDebtValue = 0;
+  
+  debtTokens.forEach((token: any) => {
+    const tokenValue = token.amount || 0;
+    if (tokenValue > maxDebtValue) {
+      maxDebtValue = tokenValue;
+      mainDebt = token;
+    }
+  });
+
+  // Si pas de token de dette mais une dette USD, utiliser les stats
+  if (debtTokens.length === 0 && debtUsd > 0) {
+    mainDebt = { symbol: "USD", amount: debtUsd, price: 1 };
+  }
 
   const assetSymbol = normalizeAssetSymbol(mainAsset.symbol);
   const collateralAmount = mainAsset.amount || 0;
-  const collateralPriceUsd = mainAsset.price || 0;
+  
+  // Calculer le prix USD si non fourni mais qu'on a la valeur USD
+  let collateralPriceUsd = mainAsset.price || 0;
+  if (collateralPriceUsd === 0 && collateralAmount > 0 && collatUsd > 0) {
+    collateralPriceUsd = collatUsd / collateralAmount;
+  }
 
-  const debtTokenSymbol = mainDebt.symbol || "USD";
+  const debtTokenSymbol = normalizeAssetSymbol(mainDebt.symbol) || "USD";
   const debtAmount = mainDebt.amount || debtUsd; // fallback sur debtUsd
+
+  // Calculer le liquidation threshold depuis les stats si disponible
+  // Par défaut 0.9 (90%) pour la plupart des protocoles
+  const liquidationThreshold = stats.liquidation_threshold || 0.9;
 
   return {
     asset: assetSymbol, // ex: "BTC" / "ETH"
@@ -203,7 +238,7 @@ function mapPortfolioItemToPosition(
     // APR non fourni directement par DeBank → 0 en attendant mieux
     // TODO: Récupérer l'APR depuis un autre endpoint ou une autre source
     borrowApr: 0,
-    liquidationThreshold: 0.9,
+    liquidationThreshold,
   };
 }
 
@@ -257,13 +292,37 @@ export async function buildCollateralClientFromDeBank(
     }
 
     const itemList = protocol.portfolio_item_list || [];
-    for (const item of itemList) {
-      const pos = mapPortfolioItemToPosition(protocol, item);
+    
+    // Si pas de portfolio_item_list mais qu'on a des stats au niveau protocole
+    if (itemList.length === 0 && protocol.stats) {
+      // Créer une position depuis les stats du protocole
+      const protocolStats = protocol.stats as any;
+      const protocolCollatUsd = protocolStats.asset_usd_value || 0;
+      const protocolDebtUsd = protocolStats.debt_usd_value || 0;
+      
+      if (protocolCollatUsd > 0 || protocolDebtUsd > 0) {
+        positions.push({
+          asset: "MIXED", // Protocole avec plusieurs assets
+          protocol: protocolId,
+          chain: protocol.chain || "unknown",
+          collateralAmount: protocolCollatUsd, // En USD équivalent
+          collateralPriceUsd: 1,
+          debtToken: "USD",
+          debtAmount: protocolDebtUsd,
+          borrowApr: 0,
+          liquidationThreshold: 0.9,
+        });
+      }
+    } else {
+      // Traiter chaque item du portfolio
+      for (const item of itemList) {
+        const pos = mapPortfolioItemToPosition(protocol, item);
 
-      // On ignore les positions vides (0 collat & 0 dette)
-      if (pos.collateralAmount === 0 && pos.debtAmount === 0) continue;
+        // On ignore les positions vides (0 collat & 0 dette)
+        if (pos.collateralAmount === 0 && pos.debtAmount === 0) continue;
 
-      positions.push(pos);
+        positions.push(pos);
+      }
     }
   }
 
