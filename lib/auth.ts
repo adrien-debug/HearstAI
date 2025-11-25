@@ -70,14 +70,27 @@ export const authOptions: NextAuthOptions = {
       return session
     },
     async redirect({ url, baseUrl }) {
+      // Si l'URL est la page de login, rediriger vers la page d'accueil
+      if (url.includes('/auth/signin')) {
+        return baseUrl
+      }
+      
       // Permettre les redirections vers des URLs relatives
       if (url.startsWith('/')) {
         return `${baseUrl}${url}`
       }
+      
       // Permettre les redirections vers le même domaine
-      if (new URL(url).origin === baseUrl) {
-        return url
+      try {
+        const urlObj = new URL(url)
+        if (urlObj.origin === baseUrl) {
+          return url
+        }
+      } catch (e) {
+        // Si l'URL n'est pas valide, rediriger vers la page d'accueil
+        return baseUrl
       }
+      
       // Par défaut, rediriger vers la page d'accueil
       return baseUrl
     },
