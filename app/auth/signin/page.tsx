@@ -1,7 +1,7 @@
 'use client'
 
 import { signIn } from 'next-auth/react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
 export default function SignInPage() {
@@ -10,6 +10,28 @@ export default function SignInPage() {
   const [password, setPassword] = useState('admin')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [isLocal, setIsLocal] = useState(false)
+
+  // Détecter si on est en mode local et rediriger automatiquement
+  useEffect(() => {
+    const isLocalEnv = typeof window !== 'undefined' && (
+      window.location.hostname === 'localhost' || 
+      window.location.hostname === '127.0.0.1' ||
+      window.location.port === '6001' ||
+      window.location.port === '3000'
+    )
+    setIsLocal(isLocalEnv)
+    console.log('[SignIn] Mode local détecté:', isLocalEnv)
+    
+    // EN MODE LOCAL : Rediriger automatiquement vers la page d'accueil
+    // Pas besoin de login en local
+    if (isLocalEnv) {
+      console.log('[SignIn] 🔧 MODE LOCAL - Redirection automatique vers /')
+      setTimeout(() => {
+        router.push('/')
+      }, 500)
+    }
+  }, [router])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -17,7 +39,7 @@ export default function SignInPage() {
     setLoading(true)
 
     try {
-      console.log('[SignIn] Tentative de connexion avec:', { email })
+      console.log('[SignIn] Tentative de connexion avec:', { email, isLocal })
       
       const result = await signIn('credentials', {
         email,
@@ -32,6 +54,22 @@ export default function SignInPage() {
         console.error('[SignIn] Erreur:', result.error)
         setError(`Erreur: ${result.error}`)
       } else if (result?.ok) {
+        console.log('[SignIn] Connexion réussie')
+        
+        // EN MODE LOCAL : Pas de redirection, juste un message de succès
+        if (isLocal) {
+          console.log('[SignIn] 🔧 MODE LOCAL - Pas de redirection automatique')
+          setError('') // Clear error
+          // Afficher un message de succès et laisser l'utilisateur naviguer manuellement
+          alert('✅ Connexion réussie ! Vous pouvez maintenant naviguer vers la page d\'accueil.')
+          // Optionnel : redirection simple sans boucle
+          setTimeout(() => {
+            router.push('/')
+          }, 1000)
+          return
+        }
+        
+        // EN PRODUCTION : Redirection normale
         console.log('[SignIn] Connexion réussie, redirection...')
         
         // Récupérer le callbackUrl depuis l'URL ou utiliser '/' par défaut
@@ -42,15 +80,10 @@ export default function SignInPage() {
         if (!callbackUrl || callbackUrl.trim() === '') {
           callbackUrl = '/'
         } else {
-          // Décoder l'URL si elle est encodée (%2F -> /)
-          // URLSearchParams.get() peut retourner une valeur déjà partiellement décodée
-          // On doit donc décoder manuellement si nécessaire
           try {
-            // Si ça commence par % c'est encore encodé
             if (callbackUrl.startsWith('%')) {
               callbackUrl = decodeURIComponent(callbackUrl)
             } else {
-              // Sinon, essayer quand même de décoder (au cas où)
               callbackUrl = decodeURIComponent(callbackUrl)
             }
           } catch (e) {
@@ -73,67 +106,8 @@ export default function SignInPage() {
         
         console.log('[SignIn] Redirection vers:', callbackUrl)
         
-        // Vérifier la session plusieurs fois pour s'assurer qu'elle est bien définie
-        let session = null
-        let attempts = 0
-        const maxAttempts = 5
-        
-        while (attempts < maxAttempts && !session?.user) {
-          attempts++
-          console.log(`[SignIn] Vérification session (tentative ${attempts}/${maxAttempts})...`)
-          
-          try {
-            const sessionCheck = await fetch('/api/auth/session', { 
-              cache: 'no-store',
-              credentials: 'include',
-            })
-            session = await sessionCheck.json()
-            console.log('[SignIn] Session vérifiée:', session)
-            
-            if (session?.user) {
-              console.log('[SignIn] ✅ Session confirmée, redirection...')
-              break
-            }
-          } catch (e) {
-            console.warn('[SignIn] Erreur vérification session:', e)
-          }
-          
-          // Attendre un peu avant la prochaine tentative
-          if (attempts < maxAttempts) {
-            await new Promise(resolve => setTimeout(resolve, 500))
-          }
-        }
-        
-        if (!session?.user) {
-          console.warn('[SignIn] ⚠️ Session non confirmée après', maxAttempts, 'tentatives, redirection quand même...')
-        }
-        
-        // Rediriger vers la page d'accueil
-        // Utiliser window.location.href avec un rechargement complet
-        // pour que le middleware voie le cookie
-        console.log('[SignIn] 🔄 Redirection finale vers:', callbackUrl)
-        
-        // Attendre un peu pour que le cookie soit bien défini
-        await new Promise(resolve => setTimeout(resolve, 300))
-        
-        // Vérifier une dernière fois la session avant redirection
-        try {
-          const finalSessionCheck = await fetch('/api/auth/session', { 
-            cache: 'no-store',
-            credentials: 'include',
-          })
-          const finalSession = await finalSessionCheck.json()
-          if (finalSession?.user) {
-            console.log('[SignIn] ✅ Session finale confirmée')
-          }
-        } catch (e) {
-          console.warn('[SignIn] Erreur vérification session finale:', e)
-        }
-        
-        // Redirection avec un flag pour éviter les boucles
-        const redirectUrl = new URL(callbackUrl, window.location.origin)
-        redirectUrl.searchParams.set('_auth', 'success')
-        window.location.href = redirectUrl.toString()
+        // Redirection simple en production
+        router.push(callbackUrl)
       } else {
         console.warn('[SignIn] Résultat inattendu:', result)
         setError('Une erreur est survenue lors de la connexion')
