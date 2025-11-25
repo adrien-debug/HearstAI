@@ -2,10 +2,13 @@
 
 import { useEffect, useState } from 'react'
 import { collateralAPI } from '@/lib/api'
+import { collectAllTransactions, formatRelativeDate, truncateHash } from './collateralUtils'
+import type { Client } from './collateralUtils'
 import './Collateral.css'
 
 export default function CollateralTransactions() {
   const [data, setData] = useState<any>(null)
+  const [customers, setCustomers] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -13,13 +16,42 @@ export default function CollateralTransactions() {
       try {
         setLoading(true)
         console.log('[CollateralTransactions] Chargement des données...')
-        // Récupérer les données depuis DeBank en temps réel
-        const response = await collateralAPI.getAll()
-        console.log('[CollateralTransactions] Données reçues:', {
-          clients: response?.clients?.length || 0,
-          source: response?.source
-        })
-        setData(response)
+        
+        // Charger les clients depuis la base de données avec refresh DeBank
+        const { customersAPI } = await import('@/lib/api')
+        const customersResponse = await customersAPI.getAll()
+        const loadedCustomers = customersResponse.customers || []
+        setCustomers(loadedCustomers)
+        
+        // Charger les données collatérales depuis DeBank
+        // Utiliser les wallets des customers chargés
+        const customerWallets = loadedCustomers.map((c: any) => c.erc20Address).filter(Boolean)
+        if (customerWallets.length > 0) {
+          const response = await collateralAPI.getAll(
+            customerWallets,
+            loadedCustomers.map((c: any) => {
+              try {
+                return JSON.parse(c.chains || '["eth"]')
+              } catch {
+                return ['eth']
+              }
+            }).flat(),
+            loadedCustomers.map((c: any) => {
+              try {
+                return JSON.parse(c.protocols || '[]')
+              } catch {
+                return []
+              }
+            }).flat()
+          )
+          console.log('[CollateralTransactions] Données reçues:', {
+            clients: response?.clients?.length || 0,
+            source: response?.source
+          })
+          setData(response)
+        } else {
+          setData({ clients: [] })
+        }
       } catch (err: any) {
         console.error('[CollateralTransactions] Erreur lors du chargement:', err)
         // Fallback sur données vides si erreur
@@ -43,80 +75,23 @@ export default function CollateralTransactions() {
     )
   }
 
-  // Transactions vides - seront récupérées depuis l'API ou la DB plus tard
-  // Pour l'instant, on affiche uniquement les positions actuelles comme transactions
-  const allTransactions: any[] = []
-  const clients = data?.clients || []
+  // Enrichir les clients avec les noms de la DB
+  const customersMap = new Map(
+    customers.map((c: any) => [c.erc20Address?.toLowerCase(), c.name])
+  )
   
-  // Créer des transactions basées uniquement sur les positions actuelles (pas de données mockées)
-  clients.forEach((client: any) => {
-    const lastUpdate = client.lastUpdate ? new Date(client.lastUpdate) : new Date()
-    
-    client.positions?.forEach((pos: any, posIdx: number) => {
-      // Transaction de supply (collatéral déposé) - basée sur la position actuelle
-      if (pos.collateralAmount > 0) {
-        allTransactions.push({
-          id: `${client.id}-supply-${posIdx}`,
-          date: lastUpdate.toISOString(), // Utiliser la date de dernière mise à jour
-          type: 'Supply',
-          amount: pos.collateralAmount,
-          asset: pos.asset,
-          assetValue: pos.collateralAmount * (pos.collateralPriceUsd || 0),
-          protocol: pos.protocol || 'Unknown',
-          chain: pos.chain || 'unknown',
-          status: 'Active', // Position active
-          txHash: null, // Pas de hash de transaction disponible
-          clientName: client.name,
-        })
-      }
-      
-      // Transaction de borrow (emprunt) - basée sur la position actuelle
-      if (pos.debtAmount > 0) {
-        allTransactions.push({
-          id: `${client.id}-borrow-${posIdx}`,
-          date: lastUpdate.toISOString(), // Utiliser la date de dernière mise à jour
-          type: 'Borrow',
-          amount: pos.debtAmount,
-          asset: pos.debtToken || 'USD',
-          assetValue: pos.debtAmount,
-          protocol: pos.protocol || 'Unknown',
-          chain: pos.chain || 'unknown',
-          status: 'Active', // Emprunt actif
-          txHash: null, // Pas de hash de transaction disponible
-          clientName: client.name,
-        })
-      }
-    })
-  })
-
-  // Trier par date (plus récent en premier)
-  allTransactions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-
-  // Formater les dates
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr)
-    const now = new Date()
-    const diffMs = now.getTime() - date.getTime()
-    const diffHours = Math.floor(diffMs / (1000 * 60 * 60))
-    const diffDays = Math.floor(diffHours / 24)
-    
-    if (diffHours < 1) return 'Just now'
-    if (diffHours < 24) return `${diffHours}h ago`
-    if (diffDays < 7) return `${diffDays}d ago`
-    return date.toLocaleDateString()
-  }
+  const enrichedClients: Client[] = (data?.clients || []).map((client: Client) => ({
+    ...client,
+    name: customersMap.get(client.id?.toLowerCase()) || client.name || client.id
+  }))
+  
+  const allTransactions = collectAllTransactions(enrichedClients)
 
   // Calculer les statistiques
   const totalSupply = allTransactions.filter(t => t.type === 'Supply').reduce((sum, t) => sum + t.assetValue, 0)
   const totalBorrow = allTransactions.filter(t => t.type === 'Borrow').reduce((sum, t) => sum + t.assetValue, 0)
   const totalRepay = allTransactions.filter(t => t.type === 'Repay').reduce((sum, t) => sum + t.assetValue, 0)
   const completedCount = allTransactions.filter(t => t.status === 'Completed').length
-
-  // Tronquer le hash pour l'affichage (si disponible)
-  const truncateHash = (hash: string | null) => {
-    if (!hash) return 'N/A'
-    return `${hash.slice(0, 6)}...${hash.slice(-4)}`
-  }
 
   return (
     <div>
@@ -168,7 +143,7 @@ export default function CollateralTransactions() {
                 {allTransactions.length > 0 ? (
                   allTransactions.map((tx) => (
                     <tr key={tx.id}>
-                      <td>{formatDate(tx.date)}</td>
+                      <td>{formatRelativeDate(tx.date)}</td>
                       <td>
                         <span style={{ 
                           padding: '4px 8px', 

@@ -8,6 +8,9 @@ import { Button } from '@/components/ui/button'
 import { formatDate } from '@/lib/utils'
 import Link from 'next/link'
 import EditProjectModal from '@/components/projects/EditProjectModal'
+import ProjectRoadmap from '@/components/projects/ProjectRoadmap'
+import PhotoGallery from '@/components/projects/PhotoGallery'
+import '@/components/home/Home.css'
 
 interface Project {
   id: string
@@ -28,9 +31,11 @@ interface Project {
   } | null
   versions?: Array<{
     id: string
-    version: string
-    status: string
+    label: string
+    description?: string
+    isStable: boolean
     createdAt: string
+    version?: string
   }>
   jobs?: Array<{
     id: string
@@ -366,13 +371,9 @@ export default function ProjectDetailPage() {
                 >
                   Delete Project
                 </button>
-                <Button style={{ 
-                  background: '#C5FFA7',
-                  color: '#000',
-                  border: 'none'
-                }}>
+                <button className="home-btn">
                   New Job
-                </Button>
+                </button>
               </div>
             </div>
           </div>
@@ -386,36 +387,41 @@ export default function ProjectDetailPage() {
           marginBottom: 'var(--space-6)' 
         }}>
           <Card style={{
-            background: 'rgba(197, 255, 167, 0.05)',
-            border: '1px solid rgba(197, 255, 167, 0.1)'
+            background: '#1a1a1a',
+            border: '2px solid rgba(138, 253, 129, 0.3)',
+            boxShadow: '0 4px 16px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(138, 253, 129, 0.1)'
           }}>
             <CardContent style={{ padding: 'var(--space-5)' }}>
               <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-secondary)', marginBottom: 'var(--space-2)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                 Total Versions
               </div>
-              <div style={{ fontSize: 'var(--text-3xl)', fontWeight: 'bold', color: '#C5FFA7', fontFamily: 'var(--font-mono)' }}>
+              <div style={{ fontSize: 'var(--text-3xl)', fontWeight: 'bold', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums' }}>
                 {project.versions?.length || 0}
               </div>
             </CardContent>
           </Card>
 
           <Card style={{
-            background: 'rgba(197, 255, 167, 0.05)',
-            border: '1px solid rgba(197, 255, 167, 0.1)'
+            background: '#1a1a1a',
+            border: '2px solid rgba(138, 253, 129, 0.3)',
+            boxShadow: '0 4px 16px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(138, 253, 129, 0.1)'
           }}>
             <CardContent style={{ padding: 'var(--space-5)' }}>
               <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-secondary)', marginBottom: 'var(--space-2)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                 Total Jobs
               </div>
-              <div style={{ fontSize: 'var(--text-3xl)', fontWeight: 'bold', color: '#C5FFA7', fontFamily: 'var(--font-mono)' }}>
+              <div style={{ fontSize: 'var(--text-3xl)', fontWeight: 'bold', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums' }}>
                 {project.jobs?.length || 0}
               </div>
             </CardContent>
           </Card>
 
           <Card style={{
-            background: 'rgba(255, 255, 255, 0.03)',
-            border: '1px solid rgba(255, 255, 255, 0.1)'
+            background: 'rgba(26, 26, 26, 0.7)',
+            backdropFilter: 'blur(20px) saturate(180%)',
+            WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+            border: '1px solid rgba(255, 255, 255, 0.05)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
           }}>
             <CardContent style={{ padding: 'var(--space-5)' }}>
               <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-secondary)', marginBottom: 'var(--space-2)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
@@ -428,8 +434,11 @@ export default function ProjectDetailPage() {
           </Card>
 
           <Card style={{
-            background: 'rgba(255, 255, 255, 0.03)',
-            border: '1px solid rgba(255, 255, 255, 0.1)'
+            background: 'rgba(26, 26, 26, 0.7)',
+            backdropFilter: 'blur(20px) saturate(180%)',
+            WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+            border: '1px solid rgba(255, 255, 255, 0.05)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
           }}>
             <CardContent style={{ padding: 'var(--space-5)' }}>
               <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-secondary)', marginBottom: 'var(--space-2)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
@@ -442,9 +451,83 @@ export default function ProjectDetailPage() {
           </Card>
         </div>
 
+        {/* Roadmap & Gallery Section */}
+        <div className="project-detail-sections-grid">
+          <Card style={{ 
+            marginBottom: 0,
+            background: 'rgba(26, 26, 26, 0.7)',
+            backdropFilter: 'blur(20px) saturate(180%)',
+            WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+            border: '1px solid rgba(255, 255, 255, 0.05)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
+          }}>
+            <CardHeader style={{ 
+              borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+              background: 'linear-gradient(180deg, #454646 0%, #3a3a3a 100%)'
+            }}>
+              <CardTitle>Roadmap</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ProjectRoadmap project={project} />
+            </CardContent>
+          </Card>
+
+          <Card style={{ 
+            marginBottom: 0,
+            background: 'rgba(26, 26, 26, 0.7)',
+            backdropFilter: 'blur(20px) saturate(180%)',
+            WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+            border: '1px solid rgba(255, 255, 255, 0.05)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
+          }}>
+            <CardHeader style={{ 
+              borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+              background: 'linear-gradient(180deg, #454646 0%, #3a3a3a 100%)'
+            }}>
+              <CardTitle>Photo Gallery</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <PhotoGallery 
+                photos={(() => {
+                  const photos: string[] = []
+                  if (project.imageUrl) {
+                    photos.push(project.imageUrl)
+                  }
+                  // Extraire les photos supplémentaires depuis les métadonnées
+                  if (project.metadata) {
+                    try {
+                      const metadata = typeof project.metadata === 'string' ? JSON.parse(project.metadata) : project.metadata
+                      if (metadata.photos && Array.isArray(metadata.photos)) {
+                        photos.push(...metadata.photos)
+                      }
+                      if (metadata.additionalImages && Array.isArray(metadata.additionalImages)) {
+                        photos.push(...metadata.additionalImages)
+                      }
+                    } catch (e) {
+                      // Ignore parsing errors
+                    }
+                  }
+                  return photos
+                })()} 
+                projectName={project.name} 
+              />
+            </CardContent>
+          </Card>
+        </div>
+
         {/* Project Information */}
-        <Card style={{ marginBottom: 'var(--space-6)' }}>
-          <CardHeader>
+        <Card style={{ 
+          marginBottom: 'var(--space-6)',
+          background: 'rgba(26, 26, 26, 0.7)',
+          backdropFilter: 'blur(20px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+          border: '1px solid rgba(255, 255, 255, 0.05)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
+        }}>
+          <CardHeader style={{ 
+            borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+            background: 'linear-gradient(180deg, #454646 0%, #3a3a3a 100%)'
+          }}>
             <CardTitle>Project Information</CardTitle>
           </CardHeader>
           <CardContent>
@@ -498,14 +581,13 @@ export default function ProjectDetailPage() {
         </Card>
 
         {/* Versions */}
-        <Card style={{ marginBottom: 'var(--space-6)' }}>
-          <CardHeader>
-            <CardTitle>Versions</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {project.versions && project.versions.length > 0 ? (
-              <div className="table-container">
-                <table className="table">
+        <div className="premium-transaction-section">
+          <div className="premium-section-header">
+            <h3 className="premium-section-title">Versions</h3>
+          </div>
+          {project.versions && project.versions.length > 0 ? (
+            <div className="premium-transaction-table-container">
+              <table className="premium-transaction-table">
                   <thead>
                     <tr>
                       <th>Version</th>
@@ -517,39 +599,41 @@ export default function ProjectDetailPage() {
                   <tbody>
                     {project.versions.map((version) => (
                       <tr key={version.id}>
-                        <td style={{ fontFamily: 'var(--font-mono)', fontWeight: 'bold' }}>{version.version}</td>
+                        <td className="premium-transaction-amount">{version.label || version.version}</td>
                         <td>
                           <span style={{ 
                             padding: '4px 8px',
                             borderRadius: '4px',
                             fontSize: 'var(--text-xs)',
                             fontWeight: 600,
-                            background: version.status === 'stable' 
+                            background: version.isStable 
                               ? 'rgba(197, 255, 167, 0.15)' 
                               : 'rgba(255, 255, 255, 0.05)',
-                            color: version.status === 'stable' ? '#C5FFA7' : 'var(--text-secondary)',
-                            border: `1px solid ${version.status === 'stable' ? 'rgba(197, 255, 167, 0.3)' : 'rgba(255, 255, 255, 0.1)'}`
+                            color: version.isStable ? '#C5FFA7' : 'var(--text-secondary)',
+                            border: `1px solid ${version.isStable ? 'rgba(197, 255, 167, 0.3)' : 'rgba(255, 255, 255, 0.1)'}`
                           }}>
-                            {version.status}
+                            {version.isStable ? 'Stable' : 'Development'}
                           </span>
                         </td>
-                        <td style={{ color: 'var(--text-secondary)', fontSize: 'var(--text-xs)' }}>
-                          {formatDate(version.createdAt)}
-                        </td>
+                        <td>{formatDate(version.createdAt)}</td>
                         <td>
                           <Link href={`/versions/${version.id}`}>
-                            <Button variant="outline" size="sm" style={{
-                              borderColor: 'rgba(197, 255, 167, 0.3)',
-                              color: '#C5FFA7'
+                            <button className="home-btn-secondary" style={{
+                              textDecoration: 'none'
                             }}>
                               View
-                            </Button>
+                            </button>
                           </Link>
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
+                {project.versions.length > 0 && (
+                  <div className="premium-transaction-total">
+                    <strong>Total: <span className="premium-transaction-total-amount">{project.versions.length} version{project.versions.length > 1 ? 's' : ''}</span></strong>
+                  </div>
+                )}
               </div>
             ) : (
               <div style={{ 
@@ -558,23 +642,21 @@ export default function ProjectDetailPage() {
                 color: 'var(--text-secondary)'
               }}>
                 <p style={{ marginBottom: 'var(--space-4)' }}>No versions yet</p>
-                <Button variant="outline" size="sm">
+                <button className="home-btn-secondary">
                   Create First Version
-                </Button>
+                </button>
               </div>
             )}
-          </CardContent>
-        </Card>
+        </div>
 
         {/* Jobs */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Jobs</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {project.jobs && project.jobs.length > 0 ? (
-              <div className="table-container">
-                <table className="table">
+        <div className="premium-transaction-section">
+          <div className="premium-section-header">
+            <h3 className="premium-section-title">Recent Jobs</h3>
+          </div>
+          {project.jobs && project.jobs.length > 0 ? (
+            <div className="premium-transaction-table-container">
+              <table className="premium-transaction-table">
                   <thead>
                     <tr>
                       <th>Type</th>
@@ -586,13 +668,15 @@ export default function ProjectDetailPage() {
                   <tbody>
                     {project.jobs.slice(0, 10).map((job) => (
                       <tr key={job.id}>
-                        <td style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--text-sm)' }}>{job.type}</td>
+                        <td>{job.type}</td>
                         <td>
                           <span style={{ 
                             padding: '4px 8px',
-                            borderRadius: '4px',
+                            borderRadius: 'var(--radius-sm)',
                             fontSize: 'var(--text-xs)',
-                            fontWeight: 600,
+                            fontWeight: 'var(--font-semibold)',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.5px',
                             background: job.status === 'SUCCESS' 
                               ? 'rgba(197, 255, 167, 0.15)' 
                               : job.status === 'FAILED'
@@ -612,23 +696,27 @@ export default function ProjectDetailPage() {
                             {job.status}
                           </span>
                         </td>
-                        <td style={{ color: 'var(--text-secondary)', fontSize: 'var(--text-xs)' }}>
+                        <td>
                           {formatDate(job.createdAt)}
                         </td>
                         <td>
                           <Link href={`/jobs/${job.id}`}>
-                            <Button variant="outline" size="sm" style={{
-                              borderColor: 'rgba(197, 255, 167, 0.3)',
-                              color: '#C5FFA7'
+                            <button className="home-btn-secondary" style={{
+                              textDecoration: 'none'
                             }}>
                               View
-                            </Button>
+                            </button>
                           </Link>
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
+                {project.jobs.length > 0 && (
+                  <div className="premium-transaction-total">
+                    <strong>Total: <span className="premium-transaction-total-amount">{project.jobs.length} job{project.jobs.length > 1 ? 's' : ''}</span></strong>
+                  </div>
+                )}
               </div>
             ) : (
               <div style={{ 
@@ -637,17 +725,12 @@ export default function ProjectDetailPage() {
                 color: 'var(--text-secondary)'
               }}>
                 <p style={{ marginBottom: 'var(--space-4)' }}>No jobs yet</p>
-                <Button style={{
-                  background: '#C5FFA7',
-                  color: '#000',
-                  border: 'none'
-                }}>
+                <button className="home-btn">
                   Create First Job
-                </Button>
+                </button>
               </div>
             )}
-          </CardContent>
-        </Card>
+        </div>
       </div>
 
       {/* Edit Modal */}
@@ -680,20 +763,23 @@ export default function ProjectDetailPage() {
           <div 
             style={{
               background: 'rgba(26, 26, 26, 0.95)',
+              backdropFilter: 'blur(20px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(20px) saturate(180%)',
               border: '1px solid rgba(255, 77, 77, 0.3)',
               borderRadius: 'var(--radius-xl)',
               padding: 'var(--space-6)',
               maxWidth: '500px',
               width: '90%',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)',
             }}
             onClick={(e) => e.stopPropagation()}
           >
             <h3 style={{ 
               fontSize: 'var(--text-xl)', 
-              fontWeight: 700, 
+              fontWeight: 'var(--font-semibold)', 
               marginBottom: 'var(--space-4)',
-              color: '#FF4D4D'
+              color: '#FF4D4D',
+              letterSpacing: '-0.02em'
             }}>
               Delete Project
             </h3>
@@ -708,52 +794,30 @@ export default function ProjectDetailPage() {
             <div style={{ display: 'flex', gap: 'var(--space-3)', justifyContent: 'flex-end' }}>
               <button
                 onClick={() => setShowDeleteConfirm(false)}
-                style={{
-                  padding: 'var(--space-3) var(--space-6)',
-                  background: 'transparent',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  borderRadius: 'var(--radius-full)',
-                  color: 'var(--text-primary)',
-                  fontSize: 'var(--text-sm)',
-                  fontWeight: 500,
-                  cursor: 'pointer',
-                  transition: 'all var(--duration-normal) var(--ease-in-out)',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)'
-                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)'
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)'
-                  e.currentTarget.style.background = 'transparent'
-                }}
+                className="home-btn-secondary"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDelete}
                 disabled={deleting}
+                className="home-btn-secondary"
                 style={{
-                  padding: 'var(--space-3) var(--space-6)',
-                  background: deleting ? 'rgba(255, 77, 77, 0.5)' : '#FF4D4D',
-                  border: 'none',
-                  borderRadius: 'var(--radius-full)',
-                  color: '#fff',
-                  fontSize: 'var(--text-sm)',
-                  fontWeight: 600,
+                  background: deleting ? 'rgba(255, 77, 77, 0.3)' : 'transparent',
+                  color: deleting ? 'rgba(255, 77, 77, 0.5)' : '#FF4D4D',
+                  borderColor: '#FF4D4D',
                   cursor: deleting ? 'not-allowed' : 'pointer',
-                  transition: 'all var(--duration-normal) var(--ease-in-out)',
                 }}
                 onMouseEnter={(e) => {
                   if (!deleting) {
-                    e.currentTarget.style.background = '#ff3333'
-                    e.currentTarget.style.transform = 'scale(1.02)'
+                    e.currentTarget.style.background = 'rgba(255, 77, 77, 0.1)'
+                    e.currentTarget.style.borderColor = '#ff3333'
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (!deleting) {
-                    e.currentTarget.style.background = '#FF4D4D'
-                    e.currentTarget.style.transform = 'scale(1)'
+                    e.currentTarget.style.background = 'transparent'
+                    e.currentTarget.style.borderColor = '#FF4D4D'
                   }
                 }}
               >

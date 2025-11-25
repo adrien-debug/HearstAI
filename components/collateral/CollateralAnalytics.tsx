@@ -2,65 +2,9 @@
 
 import { useEffect, useState } from 'react'
 import { collateralAPI } from '@/lib/api'
+import { computeGlobalMetrics, computeProtocolBreakdown, computeAssetBreakdown } from './collateralUtils'
+import type { Client } from './collateralUtils'
 import './Collateral.css'
-
-// Fonction pour calculer les métriques complètes
-function computeClientMetrics(client: any) {
-  let totalCollateralUsd = 0
-  let totalDebtUsd = 0
-  let weightedRateNumerator = 0
-  let totalBtcCollateral = 0
-  let totalEthCollateral = 0
-  let totalUsdcCollateral = 0
-
-  client.positions?.forEach((pos: any) => {
-    const collatUsd = (pos.collateralAmount || 0) * (pos.collateralPriceUsd || 0)
-    const debtUsd = pos.debtAmount || 0
-
-    totalCollateralUsd += collatUsd
-    totalDebtUsd += debtUsd
-    weightedRateNumerator += debtUsd * (pos.borrowApr || 0)
-
-    if (pos.asset === 'BTC') totalBtcCollateral += pos.collateralAmount || 0
-    if (pos.asset === 'ETH') totalEthCollateral += pos.collateralAmount || 0
-    if (pos.asset === 'USDC' || pos.asset === 'USDT') totalUsdcCollateral += pos.collateralAmount || 0
-  })
-
-  const collateralizationRatio = totalDebtUsd === 0 ? Infinity : totalCollateralUsd / totalDebtUsd
-  const healthFactor = collateralizationRatio === Infinity ? 999 : collateralizationRatio
-  const threshold = 0.9
-  const maxDebtSafe = totalCollateralUsd * threshold
-  const riskRaw = maxDebtSafe === 0 ? 0 : totalDebtUsd / maxDebtSafe
-  const riskPercent = Math.max(0, Math.min(100, riskRaw * 100))
-  const avgBorrowRate = totalDebtUsd === 0 ? 0 : weightedRateNumerator / totalDebtUsd
-  const utilizationRate = totalCollateralUsd > 0 ? (totalDebtUsd / totalCollateralUsd) * 100 : 0
-
-  // Calcul du prix de liquidation pour BTC et ETH
-  let btcLiqPrice = null
-  if (totalBtcCollateral > 0 && totalDebtUsd > 0) {
-    btcLiqPrice = totalDebtUsd / (threshold * totalBtcCollateral)
-  }
-
-  let ethLiqPrice = null
-  if (totalEthCollateral > 0 && totalDebtUsd > 0) {
-    ethLiqPrice = totalDebtUsd / (threshold * totalEthCollateral)
-  }
-
-  return {
-    totalCollateralUsd,
-    totalDebtUsd,
-    collateralizationRatio,
-    healthFactor,
-    riskPercent,
-    avgBorrowRate,
-    utilizationRate,
-    totalBtcCollateral,
-    totalEthCollateral,
-    totalUsdcCollateral,
-    btcLiqPrice,
-    ethLiqPrice,
-  }
-}
 
 export default function CollateralAnalytics() {
   const [data, setData] = useState<any>(null)
@@ -71,13 +15,41 @@ export default function CollateralAnalytics() {
       try {
         setLoading(true)
         console.log('[CollateralAnalytics] Chargement des données...')
-        // Récupérer les données depuis DeBank en temps réel
-        const response = await collateralAPI.getAll()
-        console.log('[CollateralAnalytics] Données reçues:', {
-          clients: response?.clients?.length || 0,
-          source: response?.source
-        })
-        setData(response)
+        
+        // Charger les clients depuis la base de données avec refresh DeBank
+        const { customersAPI } = await import('@/lib/api')
+        const customersResponse = await customersAPI.getAll()
+        const loadedCustomers = customersResponse.customers || []
+        
+        // Charger les données collatérales depuis DeBank
+        // Utiliser les wallets des customers chargés
+        const customerWallets = loadedCustomers.map((c: any) => c.erc20Address).filter(Boolean)
+        if (customerWallets.length > 0) {
+          const response = await collateralAPI.getAll(
+            customerWallets,
+            loadedCustomers.map((c: any) => {
+              try {
+                return JSON.parse(c.chains || '["eth"]')
+              } catch {
+                return ['eth']
+              }
+            }).flat(),
+            loadedCustomers.map((c: any) => {
+              try {
+                return JSON.parse(c.protocols || '[]')
+              } catch {
+                return []
+              }
+            }).flat()
+          )
+          console.log('[CollateralAnalytics] Données reçues:', {
+            clients: response?.clients?.length || 0,
+            source: response?.source
+          })
+          setData(response)
+        } else {
+          setData({ clients: [] })
+        }
       } catch (err: any) {
         console.error('[CollateralAnalytics] Erreur lors du chargement:', err)
         // Fallback sur données vides si erreur
@@ -101,48 +73,19 @@ export default function CollateralAnalytics() {
     )
   }
 
-  const clients = data?.clients || []
+  const clients: Client[] = data?.clients || []
   
-  // Calculer les métriques globales
-  const allMetrics = clients.map((client: any) => computeClientMetrics(client))
-  const totalCollateral = allMetrics.reduce((sum: number, m: any) => sum + m.totalCollateralUsd, 0)
-  const totalDebt = allMetrics.reduce((sum: number, m: any) => sum + m.totalDebtUsd, 0)
-  const totalDeposits = totalCollateral // Pour simplifier, on considère que le collatéral = dépôts
+  // Calculer les métriques globales avec les utilitaires partagés
+  const globalMetrics = computeGlobalMetrics(clients)
+  const totalDeposits = globalMetrics.totalCollateral // Pour simplifier, on considère que le collatéral = dépôts
   const totalWithdrawals = 0 // Pas de données de retrait disponibles
   const totalInterestEarned = 0 // Pas de données d'intérêt disponibles pour l'instant
-  const avgUtilizationRate = allMetrics.length > 0 
-    ? allMetrics.reduce((sum: number, m: any) => sum + m.utilizationRate, 0) / allMetrics.length 
-    : 0
-  const avgHealthFactor = allMetrics.length > 0 
-    ? allMetrics.filter((m: any) => m.totalDebtUsd > 0).reduce((sum: number, m: any) => sum + m.healthFactor, 0) / allMetrics.filter((m: any) => m.totalDebtUsd > 0).length 
-    : 0
+  const avgUtilizationRate = globalMetrics.avgUtilizationRate
+  const avgHealthFactor = globalMetrics.avgHealthFactor
 
-  // Répartition par protocole
-  const protocolBreakdown: { [key: string]: { collateral: number; debt: number; positions: number } } = {}
-  clients.forEach((client: any) => {
-    client.positions?.forEach((pos: any) => {
-      const protocol = pos.protocol || 'Unknown'
-      if (!protocolBreakdown[protocol]) {
-        protocolBreakdown[protocol] = { collateral: 0, debt: 0, positions: 0 }
-      }
-      protocolBreakdown[protocol].collateral += (pos.collateralAmount || 0) * (pos.collateralPriceUsd || 0)
-      protocolBreakdown[protocol].debt += pos.debtAmount || 0
-      protocolBreakdown[protocol].positions += 1
-    })
-  })
-
-  // Répartition par asset
-  const assetBreakdown: { [key: string]: { amount: number; value: number } } = {}
-  clients.forEach((client: any) => {
-    client.positions?.forEach((pos: any) => {
-      const asset = pos.asset || 'UNKNOWN'
-      if (!assetBreakdown[asset]) {
-        assetBreakdown[asset] = { amount: 0, value: 0 }
-      }
-      assetBreakdown[asset].amount += pos.collateralAmount || 0
-      assetBreakdown[asset].value += (pos.collateralAmount || 0) * (pos.collateralPriceUsd || 0)
-    })
-  })
+  // Répartition par protocole et asset avec les utilitaires partagés
+  const protocolBreakdown = computeProtocolBreakdown(clients)
+  const assetBreakdown = computeAssetBreakdown(clients)
 
   return (
     <div>

@@ -2,54 +2,13 @@
 
 import { useEffect, useState } from 'react'
 import { collateralAPI } from '@/lib/api'
+import { computeClientMetrics, computeGlobalMetrics, collectAllTransactions, formatRelativeDate } from './collateralUtils'
+import type { Client } from './collateralUtils'
 import './Collateral.css'
-
-// Fonction pour calculer les métriques d'un client
-function computeClientMetrics(client: any) {
-  let totalCollateralUsd = 0
-  let totalDebtUsd = 0
-  let weightedRateNumerator = 0
-  let totalBtcCollateral = 0
-  let totalEthCollateral = 0
-
-  client.positions?.forEach((pos: any) => {
-    const collatUsd = (pos.collateralAmount || 0) * (pos.collateralPriceUsd || 0)
-    const debtUsd = pos.debtAmount || 0
-
-    totalCollateralUsd += collatUsd
-    totalDebtUsd += debtUsd
-    weightedRateNumerator += debtUsd * (pos.borrowApr || 0)
-
-    if (pos.asset === 'BTC') totalBtcCollateral += pos.collateralAmount || 0
-    if (pos.asset === 'ETH') totalEthCollateral += pos.collateralAmount || 0
-  })
-
-  const collateralizationRatio = totalDebtUsd === 0 ? Infinity : totalCollateralUsd / totalDebtUsd
-  const healthFactor = collateralizationRatio === Infinity ? 999 : collateralizationRatio
-  const threshold = 0.9
-  const maxDebtSafe = totalCollateralUsd * threshold
-  const riskRaw = maxDebtSafe === 0 ? 0 : totalDebtUsd / maxDebtSafe
-  const riskPercent = Math.max(0, Math.min(100, riskRaw * 100))
-  const avgBorrowRate = totalDebtUsd === 0 ? 0 : weightedRateNumerator / totalDebtUsd
-  const availableCredit = Math.max(0, maxDebtSafe - totalDebtUsd)
-  const utilizationRate = totalCollateralUsd > 0 ? (totalDebtUsd / totalCollateralUsd) * 100 : 0
-
-  return {
-    totalCollateralUsd,
-    totalDebtUsd,
-    collateralizationRatio,
-    healthFactor,
-    riskPercent,
-    avgBorrowRate,
-    availableCredit,
-    utilizationRate,
-    totalBtcCollateral,
-    totalEthCollateral,
-  }
-}
 
 export default function CollateralOverview() {
   const [data, setData] = useState<any>(null)
+  const [customers, setCustomers] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -57,13 +16,43 @@ export default function CollateralOverview() {
       try {
         setLoading(true)
         console.log('[CollateralOverview] Chargement des données...')
-        const response = await collateralAPI.getAll()
-        console.log('[CollateralOverview] Données reçues:', {
-          clients: response?.clients?.length || 0,
-          source: response?.source,
-          count: response?.count
-        })
-        setData(response)
+        
+        // Charger les clients depuis la base de données avec refresh DeBank
+        const { customersAPI } = await import('@/lib/api')
+        const customersResponse = await customersAPI.getAll()
+        const loadedCustomers = customersResponse.customers || []
+        setCustomers(loadedCustomers)
+        
+        // Charger les données collatérales depuis DeBank
+        // Utiliser les wallets des customers chargés
+        const customerWallets = loadedCustomers.map((c: any) => c.erc20Address).filter(Boolean)
+        if (customerWallets.length > 0) {
+          const response = await collateralAPI.getAll(
+            customerWallets,
+            loadedCustomers.map((c: any) => {
+              try {
+                return JSON.parse(c.chains || '["eth"]')
+              } catch {
+                return ['eth']
+              }
+            }).flat(),
+            loadedCustomers.map((c: any) => {
+              try {
+                return JSON.parse(c.protocols || '[]')
+              } catch {
+                return []
+              }
+            }).flat()
+          )
+          console.log('[CollateralOverview] Données reçues:', {
+            clients: response?.clients?.length || 0,
+            source: response?.source,
+            count: response?.count
+          })
+          setData(response)
+        } else {
+          setData({ clients: [] })
+        }
       } catch (err: any) {
         console.error('[CollateralOverview] Erreur lors du chargement:', err)
         // Fallback sur données vides si erreur
@@ -87,47 +76,38 @@ export default function CollateralOverview() {
     )
   }
 
-  const clients = data?.clients || []
+  // Enrichir les clients avec les noms de la DB
+  const customersMap = new Map(
+    customers.map((c: any) => [c.erc20Address?.toLowerCase(), c.name])
+  )
   
-  // Calculer les totaux globaux
-  const allMetrics = clients.map((client: any) => computeClientMetrics(client))
-  const totalCollateral = allMetrics.reduce((sum: number, m: any) => sum + m.totalCollateralUsd, 0)
-  const totalDebt = allMetrics.reduce((sum: number, m: any) => sum + m.totalDebtUsd, 0)
-  const totalAvailable = allMetrics.reduce((sum: number, m: any) => sum + m.availableCredit, 0)
-  const utilizationRate = totalCollateral > 0 ? ((totalDebt / totalCollateral) * 100).toFixed(1) : '0'
+  const enrichedClients: Client[] = (data?.clients || []).map((client: Client) => ({
+    ...client,
+    name: customersMap.get(client.id?.toLowerCase()) || client.name || client.id
+  }))
+  
+  // Calculer les totaux globaux avec les utilitaires partagés
+  const globalMetrics = computeGlobalMetrics(enrichedClients)
+  const totalCollateral = globalMetrics.totalCollateral
+  const totalDebt = globalMetrics.totalDebt
+  const totalAvailable = globalMetrics.totalAvailable
+  const utilizationRate = globalMetrics.utilizationRate.toFixed(1)
 
   // Générer les activités récentes depuis les positions
-  const recentActivities: any[] = []
-  clients.forEach((client: any) => {
-    client.positions?.forEach((pos: any, idx: number) => {
-      if (pos.collateralAmount > 0) {
-        recentActivities.push({
-          id: `${client.id}-${idx}`,
-          type: 'Supply',
-          amount: `${pos.collateralAmount.toFixed(2)} ${pos.asset}`,
-          protocol: pos.protocol || 'Unknown',
-          date: client.lastUpdate ? new Date(client.lastUpdate).toLocaleDateString() : 'N/A',
-          status: 'Completed',
-          value: (pos.collateralAmount * (pos.collateralPriceUsd || 0)).toLocaleString('en-US', { style: 'currency', currency: 'USD' }),
-        })
-      }
-      if (pos.debtAmount > 0) {
-        recentActivities.push({
-          id: `${client.id}-${idx}-borrow`,
-          type: 'Borrow',
-          amount: `${pos.debtAmount.toLocaleString()} ${pos.debtToken}`,
-          protocol: pos.protocol || 'Unknown',
-          date: client.lastUpdate ? new Date(client.lastUpdate).toLocaleDateString() : 'N/A',
-          status: 'Active',
-          value: `-${pos.debtAmount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}`,
-        })
-      }
-    })
-  })
-  
-  // Trier par date (plus récent en premier)
-  recentActivities.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-  const displayActivities = recentActivities.slice(0, 10)
+  const allTransactions = collectAllTransactions(enrichedClients)
+  const displayActivities = allTransactions.slice(0, 10).map(tx => ({
+    id: tx.id,
+    type: tx.type,
+    amount: tx.type === 'Supply' 
+      ? `${tx.amount.toFixed(2)} ${tx.asset}`
+      : `${tx.amount.toLocaleString()} ${tx.asset}`,
+    protocol: tx.protocol,
+    date: formatRelativeDate(tx.date),
+    status: tx.status,
+    value: tx.type === 'Supply'
+      ? `+${tx.assetValue.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}`
+      : `-${tx.assetValue.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}`,
+  }))
 
   return (
     <div>
@@ -140,7 +120,7 @@ export default function CollateralOverview() {
         </div>
         <div className="kpi-card">
           <div className="kpi-label">Active Loans</div>
-          <div className="kpi-value">{clients.filter((c: any) => (computeClientMetrics(c).totalDebtUsd > 0)).length}</div>
+          <div className="kpi-value">{globalMetrics.clientsWithDebt}</div>
           <div className="kpi-description">Clients with outstanding loans</div>
         </div>
         <div className="kpi-card">
@@ -177,7 +157,7 @@ export default function CollateralOverview() {
                 </tr>
               </thead>
               <tbody>
-                {clients.map((client: any) => {
+                {enrichedClients.map((client) => {
                   const metrics = computeClientMetrics(client)
                   const positionsCount = client.positions?.length || 0
                   return (

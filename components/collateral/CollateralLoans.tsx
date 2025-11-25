@@ -2,36 +2,13 @@
 
 import { useEffect, useState } from 'react'
 import { collateralAPI } from '@/lib/api'
+import { collectAllLoans } from './collateralUtils'
+import type { Client } from './collateralUtils'
 import './Collateral.css'
-
-// Fonction pour calculer les métriques d'un client
-function computeClientMetrics(client: any) {
-  let totalCollateralUsd = 0
-  let totalDebtUsd = 0
-  let weightedRateNumerator = 0
-
-  client.positions?.forEach((pos: any) => {
-    const collatUsd = (pos.collateralAmount || 0) * (pos.collateralPriceUsd || 0)
-    const debtUsd = pos.debtAmount || 0
-    totalCollateralUsd += collatUsd
-    totalDebtUsd += debtUsd
-    weightedRateNumerator += debtUsd * (pos.borrowApr || 0)
-  })
-
-  const collateralizationRatio = totalDebtUsd === 0 ? Infinity : totalCollateralUsd / totalDebtUsd
-  const healthFactor = collateralizationRatio === Infinity ? 999 : collateralizationRatio
-  const avgBorrowRate = totalDebtUsd === 0 ? 0 : weightedRateNumerator / totalDebtUsd
-
-  return {
-    totalCollateralUsd,
-    totalDebtUsd,
-    healthFactor,
-    avgBorrowRate,
-  }
-}
 
 export default function CollateralLoans() {
   const [data, setData] = useState<any>(null)
+  const [customers, setCustomers] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -39,12 +16,42 @@ export default function CollateralLoans() {
       try {
         setLoading(true)
         console.log('[CollateralLoans] Chargement des données...')
-        const response = await collateralAPI.getAll()
-        console.log('[CollateralLoans] Données reçues:', {
-          clients: response?.clients?.length || 0,
-          source: response?.source
-        })
-        setData(response)
+        
+        // Charger les clients depuis la base de données avec refresh DeBank
+        const { customersAPI } = await import('@/lib/api')
+        const customersResponse = await customersAPI.getAll()
+        const loadedCustomers = customersResponse.customers || []
+        setCustomers(loadedCustomers)
+        
+        // Charger les données collatérales depuis DeBank
+        // Utiliser les wallets des customers chargés
+        const customerWallets = loadedCustomers.map((c: any) => c.erc20Address).filter(Boolean)
+        if (customerWallets.length > 0) {
+          const response = await collateralAPI.getAll(
+            customerWallets,
+            loadedCustomers.map((c: any) => {
+              try {
+                return JSON.parse(c.chains || '["eth"]')
+              } catch {
+                return ['eth']
+              }
+            }).flat(),
+            loadedCustomers.map((c: any) => {
+              try {
+                return JSON.parse(c.protocols || '[]')
+              } catch {
+                return []
+              }
+            }).flat()
+          )
+          console.log('[CollateralLoans] Données reçues:', {
+            clients: response?.clients?.length || 0,
+            source: response?.source
+          })
+          setData(response)
+        } else {
+          setData({ clients: [] })
+        }
       } catch (err: any) {
         console.error('[CollateralLoans] Erreur lors du chargement:', err)
         // Fallback sur données vides si erreur
@@ -68,40 +75,17 @@ export default function CollateralLoans() {
     )
   }
 
-  // Collecter tous les prêts actifs (positions avec debtAmount > 0)
-  const allLoans: any[] = []
-  const clients = data?.clients || []
+  // Enrichir les clients avec les noms de la DB
+  const customersMap = new Map(
+    customers.map((c: any) => [c.erc20Address?.toLowerCase(), c.name])
+  )
   
-  clients.forEach((client: any) => {
-    const clientMetrics = computeClientMetrics(client)
-    client.positions?.forEach((pos: any, posIdx: number) => {
-      if (pos.debtAmount > 0) {
-        const collateralValue = (pos.collateralAmount || 0) * (pos.collateralPriceUsd || 0)
-        const ltv = collateralValue > 0 ? (pos.debtAmount / collateralValue) * 100 : 0
-        const status = clientMetrics.healthFactor >= 2 ? 'Safe' : clientMetrics.healthFactor >= 1.5 ? 'At Risk' : 'Critical'
-        
-        allLoans.push({
-          loanId: `${client.id.slice(0, 8)}-${posIdx}`,
-          clientName: client.name,
-          clientId: client.id,
-          principal: pos.debtAmount,
-          debtToken: pos.debtToken || 'USD',
-          interestRate: (pos.borrowApr || 0) * 100, // Convert to percentage
-          collateral: `${pos.collateralAmount.toFixed(2)} ${pos.asset}`,
-          collateralValue: collateralValue,
-          protocol: pos.protocol || 'Unknown',
-          chain: pos.chain || 'unknown',
-          healthFactor: clientMetrics.healthFactor,
-          ltv: ltv,
-          status: status,
-          lastUpdate: client.lastUpdate,
-        })
-      }
-    })
-  })
-
-  // Trier par principal (décroissant)
-  allLoans.sort((a, b) => b.principal - a.principal)
+  const enrichedClients: Client[] = (data?.clients || []).map((client: Client) => ({
+    ...client,
+    name: customersMap.get(client.id?.toLowerCase()) || client.name || client.id
+  }))
+  
+  const allLoans = collectAllLoans(enrichedClients)
 
   // Calculer les totaux
   const totalPrincipal = allLoans.reduce((sum, loan) => sum + loan.principal, 0)
@@ -160,7 +144,7 @@ export default function CollateralLoans() {
               </thead>
               <tbody>
                 {allLoans.length > 0 ? (
-                  allLoans.map((loan, idx) => (
+                  allLoans.map((loan) => (
                     <tr key={loan.loanId}>
                       <td><strong style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--text-xs)' }}>{loan.loanId}</strong></td>
                       <td>{loan.clientName}</td>

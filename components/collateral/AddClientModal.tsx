@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { customersAPI } from '@/lib/api'
 import './Collateral.css'
 
@@ -8,21 +8,69 @@ interface AddClientModalProps {
   isOpen: boolean
   onClose: () => void
   onSuccess: () => void
+  customer?: any // Si fourni, mode édition
 }
 
 const AVAILABLE_CHAINS = ['eth', 'arb', 'base', 'op', 'bsc', 'polygon', 'avax']
 const AVAILABLE_PROTOCOLS = ['morpho', 'aave', 'compound', 'maker', 'spark']
 
-export default function AddClientModal({ isOpen, onClose, onSuccess }: AddClientModalProps) {
-  const [formData, setFormData] = useState({
-    name: '',
-    erc20Address: '',
-    tag: 'Client',
-    chains: ['eth'] as string[],
-    protocols: [] as string[],
-  })
+export default function AddClientModal({ isOpen, onClose, onSuccess, customer }: AddClientModalProps) {
+  // Initialiser le formulaire avec les données du customer si en mode édition
+  const getInitialFormData = () => {
+    if (customer) {
+      let chains: string[] = ['eth']
+      let protocols: string[] = []
+      try {
+        if (customer.chains) {
+          if (Array.isArray(customer.chains)) {
+            chains = customer.chains
+          } else {
+            chains = JSON.parse(customer.chains || '["eth"]')
+          }
+        }
+      } catch {
+        chains = ['eth']
+      }
+      try {
+        if (customer.protocols) {
+          if (Array.isArray(customer.protocols)) {
+            protocols = customer.protocols
+          } else {
+            protocols = JSON.parse(customer.protocols || '[]')
+          }
+        }
+      } catch {
+        protocols = []
+      }
+      return {
+        name: customer.name || '',
+        erc20Address: customer.erc20Address || '',
+        tag: customer.tag || 'Client',
+        chains,
+        protocols,
+      }
+    }
+    return {
+      name: '',
+      erc20Address: '',
+      tag: 'Client',
+      chains: ['eth'] as string[],
+      protocols: [] as string[],
+    }
+  }
+
+  const [formData, setFormData] = useState(getInitialFormData())
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  // Réinitialiser le formulaire quand le modal s'ouvre
+  useEffect(() => {
+    if (isOpen) {
+      setFormData(getInitialFormData())
+      setError(null)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, customer?.id])
 
   if (!isOpen) return null
 
@@ -41,23 +89,34 @@ export default function AddClientModal({ isOpen, onClose, onSuccess }: AddClient
         throw new Error('Adresse ERC20 invalide (doit faire 42 caractères)')
       }
 
-      // Créer le client
-      await customersAPI.create({
-        name: formData.name,
-        erc20Address: formData.erc20Address.toLowerCase(),
-        tag: formData.tag,
-        chains: formData.chains,
-        protocols: formData.protocols,
-      })
+      if (customer) {
+        // Mode édition
+        await customersAPI.update(customer.id, {
+          name: formData.name,
+          erc20Address: formData.erc20Address.toLowerCase(),
+          tag: formData.tag,
+          chains: formData.chains,
+          protocols: formData.protocols,
+        })
+      } else {
+        // Mode création
+        await customersAPI.create({
+          name: formData.name,
+          erc20Address: formData.erc20Address.toLowerCase(),
+          tag: formData.tag,
+          chains: formData.chains,
+          protocols: formData.protocols,
+        })
 
-      // Réinitialiser le formulaire
-      setFormData({
-        name: '',
-        erc20Address: '',
-        tag: 'Client',
-        chains: ['eth'],
-        protocols: [],
-      })
+        // Réinitialiser le formulaire seulement en mode création
+        setFormData({
+          name: '',
+          erc20Address: '',
+          tag: 'Client',
+          chains: ['eth'],
+          protocols: [],
+        })
+      }
 
       onSuccess()
       onClose()
@@ -90,7 +149,7 @@ export default function AddClientModal({ isOpen, onClose, onSuccess }: AddClient
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h2>Ajouter un nouveau client</h2>
+          <h2>{customer ? 'Modifier le client' : 'Ajouter un nouveau client'}</h2>
           <button className="modal-close" onClick={onClose}>×</button>
         </div>
 
@@ -123,9 +182,10 @@ export default function AddClientModal({ isOpen, onClose, onSuccess }: AddClient
               required
               placeholder="0x..."
               style={{ fontFamily: 'var(--font-mono)' }}
+              disabled={!!customer}
             />
             <small style={{ color: 'var(--text-secondary)', marginTop: '4px', display: 'block' }}>
-              Adresse Ethereum du wallet à surveiller
+              {customer ? 'L\'adresse ERC20 ne peut pas être modifiée' : 'Adresse Ethereum du wallet à surveiller'}
             </small>
           </div>
 
@@ -187,7 +247,7 @@ export default function AddClientModal({ isOpen, onClose, onSuccess }: AddClient
               className="collateral-btn-primary" 
               disabled={loading || formData.chains.length === 0}
             >
-              {loading ? 'Création...' : 'Créer le client'}
+              {loading ? (customer ? 'Modification...' : 'Création...') : (customer ? 'Modifier' : 'Créer le client')}
             </button>
           </div>
         </form>

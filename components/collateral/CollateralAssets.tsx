@@ -2,10 +2,13 @@
 
 import { useEffect, useState } from 'react'
 import { collateralAPI } from '@/lib/api'
+import { collectAllAssets, computeGlobalMetrics } from './collateralUtils'
+import type { Client } from './collateralUtils'
 import './Collateral.css'
 
 export default function CollateralAssets() {
   const [data, setData] = useState<any>(null)
+  const [customers, setCustomers] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -13,13 +16,42 @@ export default function CollateralAssets() {
       try {
         setLoading(true)
         console.log('[CollateralAssets] Chargement des données...')
-        // Récupérer les données depuis DeBank en temps réel
-        const response = await collateralAPI.getAll()
-        console.log('[CollateralAssets] Données reçues:', {
-          clients: response?.clients?.length || 0,
-          source: response?.source
-        })
-        setData(response)
+        
+        // Charger les clients depuis la base de données avec refresh DeBank
+        const { customersAPI } = await import('@/lib/api')
+        const customersResponse = await customersAPI.getAll()
+        const loadedCustomers = customersResponse.customers || []
+        setCustomers(loadedCustomers)
+        
+        // Charger les données collatérales depuis DeBank
+        // Utiliser les wallets des customers chargés
+        const customerWallets = loadedCustomers.map((c: any) => c.erc20Address).filter(Boolean)
+        if (customerWallets.length > 0) {
+          const response = await collateralAPI.getAll(
+            customerWallets,
+            loadedCustomers.map((c: any) => {
+              try {
+                return JSON.parse(c.chains || '["eth"]')
+              } catch {
+                return ['eth']
+              }
+            }).flat(),
+            loadedCustomers.map((c: any) => {
+              try {
+                return JSON.parse(c.protocols || '[]')
+              } catch {
+                return []
+              }
+            }).flat()
+          )
+          console.log('[CollateralAssets] Données reçues:', {
+            clients: response?.clients?.length || 0,
+            source: response?.source
+          })
+          setData(response)
+        } else {
+          setData({ clients: [] })
+        }
       } catch (err: any) {
         console.error('[CollateralAssets] Erreur lors du chargement:', err)
         // Fallback sur données vides si erreur
@@ -43,39 +75,19 @@ export default function CollateralAssets() {
     )
   }
 
-  // Collecter tous les assets de tous les clients
-  const allAssets: any[] = []
-  const clients = data?.clients || []
+  // Enrichir les clients avec les noms de la DB
+  const customersMap = new Map(
+    customers.map((c: any) => [c.erc20Address?.toLowerCase(), c.name])
+  )
   
-  clients.forEach((client: any) => {
-    client.positions?.forEach((pos: any) => {
-      if (pos.collateralAmount > 0) {
-        const existingAsset = allAssets.find(
-          (a) => a.asset === pos.asset && a.protocol === pos.protocol && a.chain === pos.chain
-        )
-        
-        if (existingAsset) {
-          existingAsset.amount += pos.collateralAmount
-          existingAsset.totalValue += pos.collateralAmount * (pos.collateralPriceUsd || 0)
-          existingAsset.clients.push(client.name)
-        } else {
-          allAssets.push({
-            asset: pos.asset || 'UNKNOWN',
-            protocol: pos.protocol || 'Unknown',
-            chain: pos.chain || 'unknown',
-            amount: pos.collateralAmount,
-            priceUsd: pos.collateralPriceUsd || 0,
-            totalValue: pos.collateralAmount * (pos.collateralPriceUsd || 0),
-            clients: [client.name],
-          })
-        }
-      }
-    })
-  })
-
-  // Trier par valeur totale (décroissant)
-  allAssets.sort((a, b) => b.totalValue - a.totalValue)
-
+  const enrichedClients: Client[] = (data?.clients || []).map((client: Client) => ({
+    ...client,
+    name: customersMap.get(client.id?.toLowerCase()) || client.name || client.id
+  }))
+  
+  // Collecter tous les assets avec les utilitaires partagés
+  const allAssets = collectAllAssets(enrichedClients)
+  
   // Calculer les totaux par asset type
   const assetsByType: { [key: string]: { amount: number; value: number } } = {}
   allAssets.forEach((asset) => {
@@ -144,7 +156,17 @@ export default function CollateralAssets() {
                       <td className="collateral-value-green">${asset.totalValue.toLocaleString('en-US', { maximumFractionDigits: 0 })}</td>
                       <td>{asset.protocol}</td>
                       <td><span style={{ textTransform: 'capitalize', fontSize: 'var(--text-xs)' }}>{asset.chain}</span></td>
-                      <td>{asset.clients.join(', ')}</td>
+                      <td>
+                        <span style={{ 
+                          fontSize: 'var(--text-xs)',
+                          color: 'var(--text-secondary)'
+                        }} title={asset.clients.join(', ')}>
+                          {asset.clients.length > 2 
+                            ? `${asset.clients.slice(0, 2).join(', ')} +${asset.clients.length - 2}`
+                            : asset.clients.join(', ')
+                          }
+                        </span>
+                      </td>
                       <td>
                         <button className="collateral-btn-secondary">View</button>
                       </td>

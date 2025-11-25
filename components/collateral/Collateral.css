@@ -707,3 +707,40 @@
     color: var(--text-secondary);
 }
 
+/* ====================================
+   COLLATERAL GAUGE STYLES
+   ==================================== */
+.collateral-gauge-container {
+    display: flex;
+    gap: var(--space-8);
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.collateral-gauge-circle {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.collateral-gauge-value {
+    position: absolute;
+    text-align: center;
+    transform: rotate(90deg);
+}
+
+.collateral-gauge-percent {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-bold);
+    line-height: var(--leading-tight);
+}
+
+.collateral-gauge-label {
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+

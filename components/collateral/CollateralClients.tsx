@@ -4,43 +4,9 @@ import { useEffect, useState } from 'react'
 import { collateralAPI, customersAPI } from '@/lib/api'
 import AddClientModal from './AddClientModal'
 import ClientDetailModal from './ClientDetailModal'
+import { computeClientMetrics, computeGlobalMetrics } from './collateralUtils'
+import type { Client } from './collateralUtils'
 import './Collateral.css'
-
-// Fonction pour calculer les métriques d'un client
-function computeClientMetrics(client: any) {
-  let totalCollateralUsd = 0
-  let totalDebtUsd = 0
-  let weightedRateNumerator = 0
-
-  client.positions?.forEach((pos: any) => {
-    const collatUsd = (pos.collateralAmount || 0) * (pos.collateralPriceUsd || 0)
-    const debtUsd = pos.debtAmount || 0
-    totalCollateralUsd += collatUsd
-    totalDebtUsd += debtUsd
-    weightedRateNumerator += debtUsd * (pos.borrowApr || 0)
-  })
-
-  const collateralizationRatio = totalDebtUsd === 0 ? Infinity : totalCollateralUsd / totalDebtUsd
-  const healthFactor = collateralizationRatio === Infinity ? 999 : collateralizationRatio
-  const threshold = 0.9
-  const maxDebtSafe = totalCollateralUsd * threshold
-  const riskRaw = maxDebtSafe === 0 ? 0 : totalDebtUsd / maxDebtSafe
-  const riskPercent = Math.max(0, Math.min(100, riskRaw * 100))
-  const avgBorrowRate = totalDebtUsd === 0 ? 0 : weightedRateNumerator / totalDebtUsd
-  const availableCredit = Math.max(0, maxDebtSafe - totalDebtUsd)
-  const utilizationRate = totalCollateralUsd > 0 ? (totalDebtUsd / totalCollateralUsd) * 100 : 0
-
-  return {
-    totalCollateralUsd,
-    totalDebtUsd,
-    collateralizationRatio,
-    healthFactor,
-    riskPercent,
-    avgBorrowRate,
-    availableCredit,
-    utilizationRate,
-  }
-}
 
 export default function CollateralClients() {
   const [customers, setCustomers] = useState<any[]>([])
@@ -126,24 +92,23 @@ export default function CollateralClients() {
   }
 
   // Fonction pour trouver les données collatérales d'un client
-  const getCollateralData = (customer: any) => {
+  const getCollateralData = (customer: any): Client | undefined => {
     const erc20Address = customer.erc20Address || customer.id
-    return collateralData?.clients?.find((c: any) => 
+    return collateralData?.clients?.find((c: Client) => 
       c.id === erc20Address || c.id?.toLowerCase() === erc20Address?.toLowerCase()
     )
   }
 
-  // Calculer les statistiques globales
+  // Calculer les statistiques globales avec les utilitaires partagés
+  const collateralClients: Client[] = collateralData?.clients || []
+  const globalMetrics = computeGlobalMetrics(collateralClients)
   const totalClients = customers.length
   const clientsWithPositions = customers.filter(c => {
     const collateral = getCollateralData(c)
-    return collateral && (collateral.positions?.length > 0)
+    return collateral && collateral.positions && collateral.positions.length > 0
   }).length
-
-  // Calculer les totaux
-  const allMetrics = collateralData?.clients?.map((client: any) => computeClientMetrics(client)) || []
-  const totalCollateral = allMetrics.reduce((sum: number, m: any) => sum + m.totalCollateralUsd, 0)
-  const totalDebt = allMetrics.reduce((sum: number, m: any) => sum + m.totalDebtUsd, 0)
+  const totalCollateral = globalMetrics.totalCollateral
+  const totalDebt = globalMetrics.totalDebt
 
   return (
     <div>
@@ -324,8 +289,7 @@ export default function CollateralClients() {
                           <button 
                             className="collateral-btn-secondary"
                             onClick={() => {
-                              setSelectedCustomer(customer)
-                              setShowDetailModal(true)
+                              window.location.href = `/collateral/${customer.id}`
                             }}
                           >
                             View
