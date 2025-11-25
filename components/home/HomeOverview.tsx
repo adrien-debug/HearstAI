@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 import {
   Chart as ChartJS,
@@ -14,6 +14,7 @@ import {
   Legend,
   Filler,
 } from 'chart.js'
+import { statsAPI } from '@/lib/api/stats'
 
 // Dynamically import Chart.js components to avoid SSR issues
 const LineChart = dynamic(
@@ -45,7 +46,24 @@ ChartJS.register(
   Filler
 )
 
+interface DashboardStats {
+  total_projects?: number
+  total_versions?: number
+  total_jobs?: number
+  jobs_running?: number
+  jobs_success_rate?: number
+}
+
 export default function HomeOverview() {
+  const [stats, setStats] = useState<DashboardStats>({
+    total_projects: 0,
+    total_versions: 0,
+    total_jobs: 0,
+    jobs_running: 0,
+    jobs_success_rate: 0,
+  })
+  const [loading, setLoading] = useState(true)
+
   useEffect(() => {
     // Load icons
     const loadIcons = () => {
@@ -64,7 +82,33 @@ export default function HomeOverview() {
     
     loadIcons()
     const timeout = setTimeout(loadIcons, 500)
-    return () => clearTimeout(timeout)
+    
+    // Load stats from API
+    const loadStats = async () => {
+      try {
+        setLoading(true)
+        const response = await statsAPI.getStats()
+        if (response && response.stats) {
+          setStats(response.stats)
+        } else if (response) {
+          // Si la réponse n'a pas de .stats, utiliser directement la réponse
+          setStats(response as DashboardStats)
+        }
+      } catch (err) {
+        console.error('Error loading stats:', err)
+        // Garder les valeurs par défaut en cas d'erreur
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadStats()
+    const statsInterval = setInterval(loadStats, 30000) // Refresh every 30s
+    
+    return () => {
+      clearTimeout(timeout)
+      clearInterval(statsInterval)
+    }
   }, [])
 
   const chartData1 = {
