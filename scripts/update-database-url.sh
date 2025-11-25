@@ -1,50 +1,79 @@
 #!/bin/bash
 
-# Script pour mettre à jour DATABASE_URL avec PRISMA_DATABASE_URL sur Vercel
+# Script pour mettre à jour DATABASE_URL avec Prisma Accelerate
+# Usage: ./scripts/update-database-url.sh 'prisma+postgres://accelerate...'
 
 set -e
 
-echo "🔧 Mise à jour de DATABASE_URL avec PRISMA_DATABASE_URL..."
-echo ""
-
-# Récupérer les variables
-vercel env pull .env.vercel.tmp 2>&1 | head -3
-
-PRISMA_URL=$(grep "^PRISMA_DATABASE_URL=" .env.vercel.tmp 2>/dev/null | cut -d'=' -f2- | tr -d '"' || echo "")
-rm -f .env.vercel.tmp
-
-if [ -z "$PRISMA_URL" ]; then
-  echo "❌ Impossible de récupérer PRISMA_DATABASE_URL"
+if [ -z "$1" ]; then
+  echo "❌ Erreur: URL Prisma Accelerate requise"
+  echo ""
+  echo "Usage: ./scripts/update-database-url.sh 'prisma+postgres://accelerate...'"
   exit 1
 fi
 
-echo "✅ PRISMA_DATABASE_URL récupéré"
+ACCELERATE_URL="$1"
+
+echo "🔄 Mise à jour de DATABASE_URL avec Prisma Accelerate..."
 echo ""
 
-# Supprimer DATABASE_URL pour tous les environnements d'abord
-echo "🗑️  Suppression de l'ancienne DATABASE_URL..."
-for env in production preview development; do
-  vercel env rm DATABASE_URL "$env" --yes 2>&1 | head -1 || true
-done
-
-echo ""
-echo "✅ Ancienne DATABASE_URL supprimée"
-echo ""
-
-# Mettre à jour pour chaque environnement
-for env in production preview development; do
-  echo "🔧 Configuration de DATABASE_URL pour $env..."
-  
-  # Ajouter la nouvelle valeur
-  echo "$PRISMA_URL" | vercel env add DATABASE_URL "$env" 2>&1 | grep -v "password" || {
-    echo "⚠️  Erreur lors de l'ajout pour $env"
-  }
-  
+# Vérifier le format
+if [[ ! "$ACCELERATE_URL" =~ ^prisma\+postgres://accelerate ]]; then
+  echo "⚠️  Attention: L'URL ne semble pas être une URL Prisma Accelerate"
+  echo "   Format attendu: prisma+postgres://accelerate.prisma-data.net/?api_key=..."
   echo ""
-done
+  read -p "   Continuer quand même ? (y/n) " -n 1 -r
+  echo ""
+  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    echo "   Annulé"
+    exit 0
+  fi
+fi
 
-echo "✅ DATABASE_URL mis à jour avec PRISMA_DATABASE_URL pour tous les environnements !"
+# Mettre à jour .env.local
+if [ -f .env.local ]; then
+  if grep -q "^DATABASE_URL=" .env.local; then
+    sed -i.bak "s|^DATABASE_URL=.*|DATABASE_URL=\"$ACCELERATE_URL\"|" .env.local
+    echo "✅ DATABASE_URL mis à jour dans .env.local"
+  else
+    echo "DATABASE_URL=\"$ACCELERATE_URL\"" >> .env.local
+    echo "✅ DATABASE_URL ajouté à .env.local"
+  fi
+else
+  echo "DATABASE_URL=\"$ACCELERATE_URL\"" > .env.local
+  echo "✅ .env.local créé avec DATABASE_URL"
+fi
+
 echo ""
-echo "🔄 Redéploiement..."
-vercel --prod 2>&1 | tail -5
+echo "🧪 Test de la connexion..."
+echo ""
 
+export $(cat .env.local | grep -v '^#' | xargs)
+
+node -e "
+require('dotenv').config({ path: '.env.local' });
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
+prisma.\$connect()
+  .then(() => {
+    console.log('✅ Connexion réussie avec Prisma Accelerate !');
+    return prisma.user.count();
+  })
+  .then(count => {
+    console.log('👥 Utilisateurs:', count);
+    prisma.\$disconnect();
+  })
+  .catch(err => {
+    console.error('❌ Erreur:', err.message);
+    prisma.\$disconnect();
+    process.exit(1);
+  });
+" 2>&1
+
+echo ""
+echo "✅ Configuration terminée !"
+echo ""
+echo "📋 Prochaines étapes:"
+echo "   1. Mettre à jour DATABASE_URL sur Vercel avec la même URL"
+echo "   2. Tester l'application: npm run dev"
+echo ""

@@ -15,7 +15,8 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 echo -e "${CYAN}╔════════════════════════════════════════╗${NC}"
-echo -e "${CYAN}║  🚀 Configuration HearstAI v2.0      ║${NC}"
+echo -e "${CYAN}║  🚀 Configuration HearstAI v3.0      ║${NC}"
+echo -e "${CYAN}║  Supabase + Prisma Accelerate         ║${NC}"
 echo -e "${CYAN}╚════════════════════════════════════════╝${NC}\n"
 
 # Vérifier que nous sommes dans le bon répertoire
@@ -58,8 +59,15 @@ echo -e "${CYAN}⚙️  Configuration de l'environnement...${NC}"
 if [ ! -f ".env.local" ]; then
     echo -e "${YELLOW}⚠️  .env.local n'existe pas, création...${NC}"
     cat > .env.local << 'EOF'
-# Database
-DATABASE_URL="file:./prisma/storage/hearstai.db"
+# Database - Prisma Accelerate (Supabase PostgreSQL)
+# Obtenez cette URL depuis Prisma Data Platform: https://console.prisma.io
+# Databases → Votre base → Connection Strings → Accelerate Connection
+DATABASE_URL="prisma+postgres://accelerate.prisma-data.net/?api_key=YOUR_API_KEY_HERE"
+
+# Supabase (optionnel, pour utilisation directe si nécessaire)
+SUPABASE_ANON_KEY=""
+SUPABASE_SERVICE_KEY=""
+NEXT_PUBLIC_SUPABASE_URL=""
 
 # Next.js API URL (vide pour utiliser les routes relatives)
 NEXT_PUBLIC_API_URL=""
@@ -68,7 +76,7 @@ NEXT_PUBLIC_API_URL=""
 DEBANK_ACCESS_KEY=""
 
 # NextAuth
-NEXTAUTH_URL="http://localhost:6001"
+NEXTAUTH_URL="http://localhost:3000"
 NEXTAUTH_SECRET=""
 
 # Autres APIs (optionnel)
@@ -78,12 +86,15 @@ FIREBLOCKS_SECRET_KEY=""
 LUXOR_API_KEY=""
 EOF
     echo -e "${GREEN}✅ .env.local créé${NC}"
+    echo -e "${YELLOW}⚠️  IMPORTANT: Configurez DATABASE_URL avec votre URL Prisma Accelerate${NC}"
+    echo -e "${YELLOW}   Obtenez-la depuis: https://console.prisma.io → Databases → Connection Strings${NC}"
     echo -e "${YELLOW}⚠️  IMPORTANT: Remplis DEBANK_ACCESS_KEY dans .env.local${NC}"
 else
     # Vérifier et corriger DATABASE_URL
     if ! grep -q "^DATABASE_URL" .env.local; then
         echo -e "${YELLOW}⚠️  Ajout de DATABASE_URL...${NC}"
-        echo 'DATABASE_URL="file:./prisma/storage/hearstai.db"' >> .env.local
+        echo 'DATABASE_URL="prisma+postgres://accelerate.prisma-data.net/?api_key=YOUR_API_KEY_HERE"' >> .env.local
+        echo -e "${YELLOW}⚠️  IMPORTANT: Configurez DATABASE_URL avec votre URL Prisma Accelerate${NC}"
     fi
     
     # Nettoyer les doublons DATABASE_URL (garder le premier)
@@ -120,28 +131,57 @@ else
 fi
 echo ""
 
-# 5. Créer le répertoire de la base de données
+# 5. Vérifier la configuration de la base de données
 echo -e "${CYAN}💾 Configuration de la base de données...${NC}"
-mkdir -p prisma/storage
-touch prisma/storage/.gitkeep
-echo -e "${GREEN}✅ Répertoire de base de données créé${NC}\n"
+if [ -f ".env.local" ]; then
+    export $(cat .env.local | grep -v '^#' | xargs)
+fi
+
+# Vérifier que DATABASE_URL est configuré
+if [ -z "$DATABASE_URL" ] || [[ "$DATABASE_URL" == *"YOUR_API_KEY_HERE"* ]]; then
+    echo -e "${RED}❌ DATABASE_URL n'est pas configuré correctement${NC}"
+    echo -e "${YELLOW}⚠️  Configurez DATABASE_URL dans .env.local avec votre URL Prisma Accelerate${NC}"
+    echo -e "${YELLOW}   Obtenez-la depuis: https://console.prisma.io → Databases → Connection Strings${NC}"
+    echo -e "${YELLOW}   Format: prisma+postgres://accelerate.prisma-data.net/?api_key=...${NC}"
+    echo -e "${YELLOW}⚠️  Le script continue, mais la base de données ne sera pas synchronisée${NC}\n"
+    SKIP_DB=true
+else
+    echo -e "${GREEN}✅ DATABASE_URL configuré${NC}"
+    SKIP_DB=false
+fi
 
 # 6. Générer Prisma Client
 echo -e "${CYAN}🔧 Génération de Prisma Client...${NC}"
-export DATABASE_URL="file:./prisma/storage/hearstai.db"
-if npx prisma generate 2>&1 | tee /tmp/prisma-generate.log; then
-    echo -e "${GREEN}✅ Prisma Client généré${NC}\n"
+if [ "$SKIP_DB" = false ]; then
+    if npx prisma generate 2>&1 | tee /tmp/prisma-generate.log; then
+        echo -e "${GREEN}✅ Prisma Client généré${NC}\n"
+    else
+        echo -e "${YELLOW}⚠️  Erreur lors de la génération Prisma, mais on continue...${NC}\n"
+    fi
 else
-    echo -e "${YELLOW}⚠️  Erreur lors de la génération Prisma, mais on continue...${NC}\n"
+    echo -e "${YELLOW}⚠️  Génération Prisma ignorée (DATABASE_URL non configuré)${NC}\n"
 fi
 
 # 7. Créer/Mettre à jour les tables dans la base de données
 echo -e "${CYAN}🗄️  Synchronisation de la base de données...${NC}"
-export DATABASE_URL="file:./prisma/storage/hearstai.db"
-if npx prisma db push --accept-data-loss 2>&1 | tee /tmp/prisma-push.log; then
-    echo -e "${GREEN}✅ Base de données synchronisée${NC}\n"
+if [ "$SKIP_DB" = false ]; then
+    if npx prisma db push --accept-data-loss 2>&1 | tee /tmp/prisma-push.log; then
+        echo -e "${GREEN}✅ Base de données synchronisée${NC}\n"
+        
+        # Créer l'utilisateur par défaut si le script existe
+        if [ -f "scripts/create-user.js" ]; then
+            echo -e "${CYAN}👤 Création de l'utilisateur par défaut...${NC}"
+            if node scripts/create-user.js 2>&1 | grep -q "créé\|existe"; then
+                echo -e "${GREEN}✅ Utilisateur vérifié/créé${NC}\n"
+            else
+                echo -e "${YELLOW}⚠️  Utilisateur non créé (peut-être déjà existant)${NC}\n"
+            fi
+        fi
+    else
+        echo -e "${YELLOW}⚠️  Erreur lors de la synchronisation, mais on continue...${NC}\n"
+    fi
 else
-    echo -e "${YELLOW}⚠️  Erreur lors de la synchronisation, mais on continue...${NC}\n"
+    echo -e "${YELLOW}⚠️  Synchronisation ignorée (DATABASE_URL non configuré)${NC}\n"
 fi
 
 # 8. Vérifier que les ports sont libres
@@ -304,11 +344,13 @@ echo -e "${GREEN}║  ✅ Configuration terminée !          ║${NC}"
 echo -e "${GREEN}╚════════════════════════════════════════╝${NC}\n"
 
 echo -e "${CYAN}📋 Prochaines étapes:${NC}"
-echo -e "   ${BLUE}1.${NC} Vérifie que .env.local contient toutes tes clés API"
-echo -e "   ${BLUE}2.${NC} Lance le projet avec: ${GREEN}./start-local-all.sh${NC}"
-echo -e "   ${BLUE}3.${NC} Ou manuellement:"
-echo -e "      - Backend: ${GREEN}cd backend && PORT=4000 node server.js${NC}"
-echo -e "      - Frontend: ${GREEN}npm run dev${NC}"
+echo -e "   ${BLUE}1.${NC} Configurez DATABASE_URL dans .env.local avec votre URL Prisma Accelerate"
+echo -e "      Obtenez-la depuis: ${GREEN}https://console.prisma.io → Databases → Connection Strings${NC}"
+echo -e "   ${BLUE}2.${NC} Vérifie que .env.local contient toutes tes clés API (DEBANK_ACCESS_KEY, etc.)"
+echo -e "   ${BLUE}3.${NC} Lance le projet avec: ${GREEN}npm run dev${NC}"
+echo -e "   ${BLUE}4.${NC} Ouvre: ${GREEN}http://localhost:3000/auth/signin${NC}"
+echo -e "      Email: ${GREEN}admin@hearst.ai${NC}"
+echo -e "      Mot de passe: ${GREEN}n'importe quel mot de passe${NC}"
 echo ""
 
 echo -e "${CYAN}🚀 Déploiement GitHub + Vercel:${NC}"
@@ -316,8 +358,11 @@ echo -e "   ${BLUE}1.${NC} Configure le repo GitHub: ${GREEN}git remote add orig
 echo -e "   ${BLUE}2.${NC} Déploie avec: ${GREEN}./deploy.sh${NC}"
 echo -e "   ${BLUE}3.${NC} Configure les secrets GitHub Actions:"
 echo -e "      - VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID"
-echo -e "      - DATABASE_URL, NEXTAUTH_SECRET, DEBANK_ACCESS_KEY"
-echo -e "   ${BLUE}4.${NC} Configure les variables d'environnement sur Vercel"
+echo -e "      - DATABASE_URL (URL Prisma Accelerate), NEXTAUTH_SECRET, DEBANK_ACCESS_KEY"
+echo -e "   ${BLUE}4.${NC} Configure les variables d'environnement sur Vercel:"
+echo -e "      - DATABASE_URL: ${GREEN}URL Prisma Accelerate (prisma+postgres://accelerate...){NC}"
+echo -e "      - NEXTAUTH_URL: ${GREEN}URL de votre app Vercel${NC}"
+echo -e "      - NEXTAUTH_SECRET, DEBANK_ACCESS_KEY, etc."
 echo ""
 
 echo -e "${CYAN}💡 Astuces:${NC}"
