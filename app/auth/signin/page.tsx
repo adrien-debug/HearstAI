@@ -32,8 +32,10 @@ export default function SignInPage() {
         setError(`Erreur: ${result.error}`)
       } else if (result?.ok) {
         console.log('[SignIn] Connexion réussie, redirection...')
-        router.push('/')
-        router.refresh()
+        // Utiliser window.location pour forcer une redirection complète
+        // Cela permet au middleware de détecter le token
+        const callbackUrl = new URLSearchParams(window.location.search).get('callbackUrl') || '/'
+        window.location.href = callbackUrl
       } else {
         console.warn('[SignIn] Résultat inattendu:', result)
         setError('Une erreur est survenue lors de la connexion')
