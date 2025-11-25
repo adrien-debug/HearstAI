@@ -112,7 +112,28 @@ export default function SignInPage() {
         // Utiliser window.location.href avec un rechargement complet
         // pour que le middleware voie le cookie
         console.log('[SignIn] 🔄 Redirection finale vers:', callbackUrl)
-        window.location.href = callbackUrl
+        
+        // Attendre un peu pour que le cookie soit bien défini
+        await new Promise(resolve => setTimeout(resolve, 300))
+        
+        // Vérifier une dernière fois la session avant redirection
+        try {
+          const finalSessionCheck = await fetch('/api/auth/session', { 
+            cache: 'no-store',
+            credentials: 'include',
+          })
+          const finalSession = await finalSessionCheck.json()
+          if (finalSession?.user) {
+            console.log('[SignIn] ✅ Session finale confirmée')
+          }
+        } catch (e) {
+          console.warn('[SignIn] Erreur vérification session finale:', e)
+        }
+        
+        // Redirection avec un flag pour éviter les boucles
+        const redirectUrl = new URL(callbackUrl, window.location.origin)
+        redirectUrl.searchParams.set('_auth', 'success')
+        window.location.href = redirectUrl.toString()
       } else {
         console.warn('[SignIn] Résultat inattendu:', result)
         setError('Une erreur est survenue lors de la connexion')

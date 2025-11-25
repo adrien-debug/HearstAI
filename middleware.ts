@@ -24,39 +24,83 @@ export async function middleware(request: NextRequest) {
       return NextResponse.next()
     }
 
+    // MODE DEBUG LOCAL : Désactiver les redirections si on est en local sur le port 6001
+    const isLocalDebug = process.env.NODE_ENV === 'development' && 
+                         (request.url.includes('localhost:6001') || request.url.includes('127.0.0.1:6001'))
+    
+    if (isLocalDebug) {
+      console.log('[Middleware] 🔧 MODE DEBUG LOCAL - Redirections désactivées pour:', pathname)
+      return NextResponse.next()
+    }
+
     // Check if NEXTAUTH_SECRET is defined
     if (!process.env.NEXTAUTH_SECRET) {
       console.warn('NEXTAUTH_SECRET is not defined, allowing access')
       return NextResponse.next()
     }
 
+    // Vérifier les cookies directement pour éviter les problèmes de timing
+    const cookieName = process.env.NODE_ENV === 'production' 
+      ? '__Secure-next-auth.session-token'
+      : 'next-auth.session-token'
+    
+    const hasAuthCookie = request.cookies.has(cookieName)
+    
     // Check for authentication token
     let token = null
     try {
       token = await getToken({
         req: request,
         secret: process.env.NEXTAUTH_SECRET,
-        cookieName: process.env.NODE_ENV === 'production' 
-          ? '__Secure-next-auth.session-token'
-          : 'next-auth.session-token',
+        cookieName: cookieName,
       })
       console.log('[Middleware] Token check:', { 
         hasToken: !!token, 
+        hasCookie: hasAuthCookie,
         pathname,
-        cookieName: process.env.NODE_ENV === 'production' 
-          ? '__Secure-next-auth.session-token'
-          : 'next-auth.session-token'
+        cookieName
       })
     } catch (error) {
       console.error('[Middleware] Error getting token:', error)
-      // If token check fails, allow access to avoid blocking the app
+      // Si on a le cookie mais que getToken échoue, laisser passer (cookie en cours de traitement)
+      if (hasAuthCookie) {
+        console.log('[Middleware] Cookie présent mais getToken échoué, laisser passer')
+        return NextResponse.next()
+      }
+      // Sinon, rediriger vers login seulement si on n'est pas déjà sur /auth/signin
+      if (pathname !== '/auth/signin') {
+        const signInUrl = new URL('/auth/signin', request.url)
+        signInUrl.searchParams.set('callbackUrl', pathname)
+        return NextResponse.redirect(signInUrl)
+      }
+      return NextResponse.next()
+    }
+
+    // Si on a le cookie mais pas de token, laisser passer (cookie en cours de traitement par NextAuth)
+    if (hasAuthCookie && !token) {
+      console.log('[Middleware] Cookie présent mais token non disponible, laisser passer (cookie en traitement)')
       return NextResponse.next()
     }
 
     // If no token and trying to access protected route, redirect to login
     if (!token && pathname !== '/auth/signin') {
+      // Vérifier qu'on n'est pas déjà en train de rediriger (éviter les boucles)
+      const referer = request.headers.get('referer')
+      if (referer && referer.includes('/auth/signin')) {
+        console.warn('[Middleware] ⚠️ Redirection depuis /auth/signin détectée, laisser passer pour éviter boucle')
+        return NextResponse.next()
+      }
+      
+      // Vérifier si on vient d'une authentification réussie (flag _auth=success)
+      const authSuccess = request.nextUrl.searchParams.get('_auth')
+      if (authSuccess === 'success') {
+        console.log('[Middleware] Flag _auth=success détecté, laisser passer (cookie en cours de traitement)')
+        return NextResponse.next()
+      }
+      
       const signInUrl = new URL('/auth/signin', request.url)
       signInUrl.searchParams.set('callbackUrl', pathname)
+      console.log('[Middleware] Redirection vers /auth/signin depuis:', pathname)
       return NextResponse.redirect(signInUrl)
     }
 
