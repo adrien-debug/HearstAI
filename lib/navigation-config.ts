@@ -77,7 +77,7 @@ export const navigationConfig = {
   management: {
     enabled: true,
     items: {
-      trello: { enabled: false }, // Masqué temporairement
+      trello: { enabled: true }, // Activé
       projects: { enabled: false }, // Masqué temporairement
       portfolio: { enabled: true },
       'documents-vault': { enabled: true },
