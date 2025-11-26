@@ -12,11 +12,11 @@ function DocumentsVaultContent() {
   const [activeSection, setActiveSection] = useState('overview')
 
   useEffect(() => {
-    // Si on vient avec le paramètre share, ouvrir directement la page Partager
+    // If coming with share parameter, open Share page directly
     if (searchParams?.get('share')) {
       setActiveSection('share')
     }
-    // Si on vient avec le paramètre tab, ouvrir l'onglet correspondant
+    // If coming with tab parameter, open corresponding tab
     const tab = searchParams?.get('tab')
     if (tab && ['overview', 'upload', 'share'].includes(tab)) {
       setActiveSection(tab)
@@ -24,9 +24,9 @@ function DocumentsVaultContent() {
   }, [searchParams])
 
   const sections = [
-    { id: 'overview', label: 'Vue d\'ensemble' },
-    { id: 'upload', label: 'Téléverser' },
-    { id: 'share', label: 'Partager' },
+    { id: 'overview', label: 'Overview' },
+    { id: 'upload', label: 'Upload' },
+    { id: 'share', label: 'Share' },
   ]
 
   return (
@@ -65,7 +65,7 @@ export default function DocumentsVaultPage() {
       <div className="dashboard-view">
         <div className="dashboard-content">
           <div style={{ color: 'var(--text-secondary)', textAlign: 'center', padding: 'var(--space-6)' }}>
-            Chargement...
+            Loading...
           </div>
         </div>
       </div>

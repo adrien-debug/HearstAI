@@ -14,13 +14,13 @@ export default function DocumentsVaultShare() {
   const [shareLink, setShareLink] = useState('')
 
   useEffect(() => {
-    // Charger les documents sélectionnés depuis localStorage
+    // Load selected documents from localStorage
     const loadDocuments = () => {
       setAvailableDocuments(getDocumentsToSend())
     }
     loadDocuments()
     
-    // Écouter les changements
+    // Listen for changes
     window.addEventListener('documents-selection-changed', loadDocuments)
     return () => window.removeEventListener('documents-selection-changed', loadDocuments)
   }, [])
@@ -45,19 +45,19 @@ export default function DocumentsVaultShare() {
 
   const sendByEmail = () => {
     if (!emailRecipients || availableDocuments.length === 0) {
-      alert('Veuillez sélectionner des documents et entrer au moins un destinataire')
+      alert('Please select documents and enter at least one recipient')
       return
     }
     // Simulate email send
-    alert(`Envoi de ${availableDocuments.length} document(s) par email à ${emailRecipients}`)
+    alert(`Sending ${availableDocuments.length} document(s) by email to ${emailRecipients}`)
   }
 
   const sendByWhatsApp = () => {
     if (!whatsappNumber || availableDocuments.length === 0) {
-      alert('Veuillez sélectionner des documents et entrer un numéro WhatsApp')
+      alert('Please select documents and enter a WhatsApp number')
       return
     }
-    const message = whatsappMessage || `Voici ${availableDocuments.length} document(s) partagé(s)`
+    const message = whatsappMessage || `Here are ${availableDocuments.length} shared document(s)`
     const whatsappUrl = `https://wa.me/${whatsappNumber.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`
     window.open(whatsappUrl, '_blank')
   }
@@ -67,7 +67,7 @@ export default function DocumentsVaultShare() {
       generateShareLink()
     }
     navigator.clipboard.writeText(shareLink || generateShareLink())
-    alert('Lien copié dans le presse-papiers!')
+    alert('Link copied to clipboard!')
   }
 
 
@@ -75,16 +75,16 @@ export default function DocumentsVaultShare() {
 
   return (
     <div>
-      {/* Documents sélectionnés depuis toutes les catégories */}
+      {/* Documents selected from all categories */}
       <div className="documents-card">
         <div className="documents-card-header">
           <div className="documents-card-title">
-            Documents à envoyer ({availableDocuments.length})
+            Documents to send ({availableDocuments.length})
           </div>
           <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
             {availableDocuments.length > 0 && (
               <button className="documents-btn-secondary" onClick={deselectAll}>
-                Tout retirer
+                Remove all
               </button>
             )}
           </div>
@@ -95,10 +95,10 @@ export default function DocumentsVaultShare() {
               <table className="premium-transaction-table">
                 <thead>
                   <tr>
-                    <th>Nom du document</th>
-                    <th>Catégorie</th>
+                    <th>Document name</th>
+                    <th>Category</th>
                     <th>Client</th>
-                    <th>Taille</th>
+                    <th>Size</th>
                     <th>Date</th>
                     <th>Actions</th>
                   </tr>
@@ -119,7 +119,7 @@ export default function DocumentsVaultShare() {
                           onClick={() => toggleDocumentSelection(doc.id)}
                           style={{ fontSize: 'var(--text-xs)', padding: 'var(--space-1) var(--space-3)' }}
                         >
-                          Retirer
+                          Remove
                         </button>
                       </td>
                     </tr>
@@ -133,9 +133,9 @@ export default function DocumentsVaultShare() {
               textAlign: 'center',
               color: 'var(--text-secondary)'
             }}>
-              <p>Aucun document sélectionné</p>
+              <p>No documents selected</p>
               <p style={{ fontSize: 'var(--text-sm)', marginTop: 'var(--space-2)' }}>
-                Naviguez dans les catégories et cochez les documents que vous souhaitez envoyer
+                Browse categories and check the documents you want to send
               </p>
             </div>
           )}
@@ -145,7 +145,7 @@ export default function DocumentsVaultShare() {
       {/* Share Method Selection */}
       <div className="documents-card">
         <div className="documents-card-header">
-          <div className="documents-card-title">Méthode de partage</div>
+          <div className="documents-card-title">Share method</div>
         </div>
         <div className="documents-card-body">
           <div style={{ display: 'flex', gap: 'var(--space-2)', marginBottom: 'var(--space-4)', flexWrap: 'wrap' }}>
@@ -165,7 +165,7 @@ export default function DocumentsVaultShare() {
               className={shareMethod === 'link' ? 'documents-btn' : 'documents-btn-secondary'}
               onClick={() => setShareMethod('link')}
             >
-              🔗 Lien de partage
+              🔗 Share link
             </button>
           </div>
 
@@ -173,7 +173,7 @@ export default function DocumentsVaultShare() {
           {shareMethod === 'email' && (
             <div>
               <div style={{ marginBottom: 'var(--space-4)' }}>
-                <label className="documents-label">Destinataires (séparés par des virgules)</label>
+                <label className="documents-label">Recipients (comma-separated)</label>
                 <input
                   type="text"
                   className="documents-input"
@@ -183,11 +183,11 @@ export default function DocumentsVaultShare() {
                 />
               </div>
               <div style={{ marginBottom: 'var(--space-4)' }}>
-                <label className="documents-label">Sujet</label>
+                <label className="documents-label">Subject</label>
                 <input
                   type="text"
                   className="documents-input"
-                  placeholder="Sujet de l'email"
+                  placeholder="Email subject"
                   value={emailSubject}
                   onChange={(e) => setEmailSubject(e.target.value)}
                 />
@@ -196,7 +196,7 @@ export default function DocumentsVaultShare() {
                 <label className="documents-label">Message</label>
                 <textarea
                   className="documents-input"
-                  placeholder="Message optionnel"
+                  placeholder="Optional message"
                   rows={4}
                   value={emailMessage}
                   onChange={(e) => setEmailMessage(e.target.value)}
@@ -205,11 +205,11 @@ export default function DocumentsVaultShare() {
               </div>
               <div style={{ marginBottom: 'var(--space-2)' }}>
                 <div style={{ color: 'var(--text-secondary)', fontSize: 'var(--text-sm)' }}>
-                  {availableDocuments.length} document(s) à envoyer
+                  {availableDocuments.length} document(s) to send
                 </div>
               </div>
               <button className="documents-btn" onClick={sendByEmail} disabled={availableDocuments.length === 0}>
-                Envoyer par email
+                Send by email
               </button>
             </div>
           )}
@@ -218,7 +218,7 @@ export default function DocumentsVaultShare() {
           {shareMethod === 'whatsapp' && (
             <div>
               <div style={{ marginBottom: 'var(--space-4)' }}>
-                <label className="documents-label">Numéro WhatsApp (avec indicatif pays)</label>
+                <label className="documents-label">WhatsApp number (with country code)</label>
                 <input
                   type="text"
                   className="documents-input"
@@ -228,10 +228,10 @@ export default function DocumentsVaultShare() {
                 />
               </div>
               <div style={{ marginBottom: 'var(--space-4)' }}>
-                <label className="documents-label">Message (optionnel)</label>
+                <label className="documents-label">Message (optional)</label>
                 <textarea
                   className="documents-input"
-                  placeholder="Message à envoyer avec les documents"
+                  placeholder="Message to send with documents"
                   rows={3}
                   value={whatsappMessage}
                   onChange={(e) => setWhatsappMessage(e.target.value)}
@@ -240,11 +240,11 @@ export default function DocumentsVaultShare() {
               </div>
               <div style={{ marginBottom: 'var(--space-2)' }}>
                 <div style={{ color: 'var(--text-secondary)', fontSize: 'var(--text-sm)' }}>
-                  {availableDocuments.length} document(s) à partager
+                  {availableDocuments.length} document(s) to share
                 </div>
               </div>
               <button className="documents-btn" onClick={sendByWhatsApp} disabled={availableDocuments.length === 0}>
-                Ouvrir WhatsApp
+                Open WhatsApp
               </button>
             </div>
           )}
@@ -253,33 +253,33 @@ export default function DocumentsVaultShare() {
           {shareMethod === 'link' && (
             <div>
               <div style={{ marginBottom: 'var(--space-4)' }}>
-                <label className="documents-label">Lien de partage</label>
+                <label className="documents-label">Share link</label>
                 <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
                   <input
                     type="text"
                     className="documents-input"
-                    value={shareLink || 'Cliquez sur "Générer le lien" pour créer un lien de partage'}
+                    value={shareLink || 'Click "Generate link" to create a share link'}
                     readOnly
                     style={{ flex: 1 }}
                   />
                   <button className="documents-btn-secondary" onClick={generateShareLink}>
-                    Générer le lien
+                    Generate link
                   </button>
                   {shareLink && (
                     <button className="documents-btn" onClick={copyShareLink}>
-                      Copier
+                      Copy
                     </button>
                   )}
                 </div>
               </div>
               <div style={{ marginBottom: 'var(--space-2)' }}>
                 <div style={{ color: 'var(--text-secondary)', fontSize: 'var(--text-sm)' }}>
-                  {availableDocuments.length} document(s) partagé(s)
+                  {availableDocuments.length} document(s) shared
                 </div>
               </div>
               <div style={{ padding: 'var(--space-3)', background: 'rgba(197, 255, 167, 0.05)', borderRadius: 'var(--radius-md)', marginTop: 'var(--space-4)' }}>
                 <div style={{ color: 'var(--text-secondary)', fontSize: 'var(--text-sm)' }}>
-                  💡 Le lien de partage permet d'accéder aux documents sélectionnés. Partagez-le avec qui vous voulez.
+                  💡 The share link allows access to selected documents. Share it with anyone you want.
                 </div>
               </div>
             </div>

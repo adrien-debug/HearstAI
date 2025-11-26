@@ -10,12 +10,12 @@ export default function DocumentsVaultUpload() {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
 
   const categories = [
-    'Contrats',
-    'Factures',
-    'Rapports',
-    'Financier',
-    'Technique',
-    'Juridique',
+    'Contracts',
+    'Invoices',
+    'Reports',
+    'Financial',
+    'Technical',
+    'Legal',
   ]
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -88,7 +88,7 @@ export default function DocumentsVaultUpload() {
       {/* Upload Area */}
       <div className="documents-card">
         <div className="documents-card-header">
-          <div className="documents-card-title">Téléverser des documents</div>
+          <div className="documents-card-title">Upload documents</div>
         </div>
         <div className="documents-card-body">
           <div
@@ -100,10 +100,10 @@ export default function DocumentsVaultUpload() {
           >
             <div style={{ fontSize: 'var(--text-4xl)', marginBottom: 'var(--space-4)', color: '#C5FFA7' }}>📤</div>
             <div style={{ fontSize: 'var(--text-lg)', fontWeight: 'var(--font-semibold)', color: 'var(--text-primary)', marginBottom: 'var(--space-2)' }}>
-              Glissez-déposez vos fichiers ici
+              Drag and drop your files here
             </div>
             <div style={{ color: 'var(--text-secondary)', marginBottom: 'var(--space-4)' }}>
-              ou cliquez pour parcourir
+              or click to browse
             </div>
             <input
               id="file-input"
@@ -112,7 +112,7 @@ export default function DocumentsVaultUpload() {
               style={{ display: 'none' }}
               onChange={handleFileInput}
             />
-            <button className="documents-btn">Sélectionner des fichiers</button>
+            <button className="documents-btn">Select files</button>
           </div>
         </div>
       </div>
@@ -121,10 +121,10 @@ export default function DocumentsVaultUpload() {
       {uploading && (
         <div className="documents-card">
           <div className="documents-card-header">
-            <div className="documents-card-title">Téléversement en cours...</div>
+            <div className="documents-card-title">Uploading...</div>
           </div>
           <div className="documents-card-body">
-            <div style={{ color: '#C5FFA7', fontFamily: 'var(--font-mono)' }}>Traitement des fichiers...</div>
+            <div style={{ color: '#C5FFA7', fontFamily: 'var(--font-mono)' }}>Processing files...</div>
           </div>
         </div>
       )}
@@ -133,7 +133,7 @@ export default function DocumentsVaultUpload() {
       {uploadedFiles.length > 0 && (
         <div className="documents-card">
           <div className="documents-card-header">
-            <div className="documents-card-title">Documents téléversés ({uploadedFiles.length})</div>
+            <div className="documents-card-title">Uploaded documents ({uploadedFiles.length})</div>
             <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
               <select
                 className="documents-select"
@@ -141,9 +141,9 @@ export default function DocumentsVaultUpload() {
                 onChange={(e) => setSortBy(e.target.value as 'name' | 'date' | 'size')}
                 style={{ width: 'auto', padding: 'var(--space-2) var(--space-3)' }}
               >
-                <option value="name">Trier par nom</option>
-                <option value="date">Trier par date</option>
-                <option value="size">Trier par taille</option>
+                <option value="name">Sort by name</option>
+                <option value="date">Sort by date</option>
+                <option value="size">Sort by size</option>
               </select>
               <button
                 className="documents-btn-secondary"
@@ -153,7 +153,7 @@ export default function DocumentsVaultUpload() {
                 {sortOrder === 'asc' ? '↑' : '↓'}
               </button>
               <button className="documents-btn-secondary" onClick={() => setUploadedFiles([])}>
-                Tout effacer
+                Clear all
               </button>
             </div>
           </div>
@@ -162,9 +162,9 @@ export default function DocumentsVaultUpload() {
               <table className="documents-table">
                 <thead>
                   <tr>
-                    <th>Nom du document</th>
-                    <th>Catégorie</th>
-                    <th>Taille</th>
+                    <th>Document name</th>
+                    <th>Category</th>
+                    <th>Size</th>
                     <th>Type</th>
                     <th>Actions</th>
                   </tr>
@@ -182,7 +182,7 @@ export default function DocumentsVaultUpload() {
                           onChange={(e) => updateFileCategory(file.id, e.target.value)}
                           style={{ width: '100%', fontSize: 'var(--text-sm)', padding: 'var(--space-1) var(--space-2)' }}
                         >
-                          <option value="">Sélectionner une catégorie</option>
+                          <option value="">Select a category</option>
                           {categories.map((cat) => (
                             <option key={cat} value={cat}>{cat}</option>
                           ))}
@@ -194,13 +194,13 @@ export default function DocumentsVaultUpload() {
                       </td>
                       <td>
                         <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
-                          <span className="documents-badge documents-badge-success">Téléversé</span>
+                          <span className="documents-badge documents-badge-success">Uploaded</span>
                           <button
                             className="documents-btn-secondary"
                             style={{ fontSize: 'var(--text-xs)', padding: 'var(--space-1) var(--space-3)' }}
                             onClick={() => removeFile(file.id)}
                           >
-                            Supprimer
+                            Delete
                           </button>
                         </div>
                       </td>
@@ -216,19 +216,19 @@ export default function DocumentsVaultUpload() {
       {/* File Size Limits */}
       <div className="documents-card">
         <div className="documents-card-header">
-          <div className="documents-card-title">Règles de téléversement</div>
+          <div className="documents-card-title">Upload rules</div>
         </div>
         <div className="documents-card-body">
           <div style={{ marginBottom: 'var(--space-2)' }}>
-            <span style={{ color: 'var(--text-secondary)' }}>Taille maximale par fichier: </span>
+            <span style={{ color: 'var(--text-secondary)' }}>Maximum file size: </span>
             <span style={{ color: '#C5FFA7', fontFamily: 'var(--font-mono)' }}>50 MB</span>
           </div>
           <div style={{ marginBottom: 'var(--space-2)' }}>
-            <span style={{ color: 'var(--text-secondary)' }}>Formats supportés: </span>
+            <span style={{ color: 'var(--text-secondary)' }}>Supported formats: </span>
             <span style={{ color: '#C5FFA7', fontFamily: 'var(--font-mono)' }}>PDF, DOCX, XLSX, PNG, JPG</span>
           </div>
           <div>
-            <span style={{ color: 'var(--text-secondary)' }}>Espace de stockage disponible: </span>
+            <span style={{ color: 'var(--text-secondary)' }}>Available storage space: </span>
             <span style={{ color: '#C5FFA7', fontFamily: 'var(--font-mono)' }}>57.2 GB</span>
           </div>
         </div>

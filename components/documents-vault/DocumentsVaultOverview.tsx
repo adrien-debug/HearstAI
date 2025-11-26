@@ -90,74 +90,74 @@ export default function DocumentsVaultOverview() {
   const categories = [
     {
       id: 'contracts',
-      name: 'Contrats',
+      name: 'Contracts',
       count: 156,
       size: '8.4 GB',
       color: '#C5FFA7',
-      description: 'Contrats et accords miniers',
+      description: 'Mining contracts and agreements',
       icon: ContractIcon,
     },
     {
       id: 'invoices',
-      name: 'Factures',
+      name: 'Invoices',
       count: 269,
       size: '2.6 GB',
       color: '#4a9eff',
-      description: 'Factures et reçus',
+      description: 'Invoices and receipts',
       icon: InvoiceIcon,
     },
     {
       id: 'reports',
-      name: 'Rapports',
+      name: 'Reports',
       count: 234,
       size: '12.3 GB',
       color: '#FFA500',
-      description: 'Rapports mensuels et trimestriels',
+      description: 'Monthly and quarterly reports',
       icon: ReportIcon,
     },
     {
       id: 'financial',
-      name: 'Financier',
+      name: 'Financial',
       count: 189,
       size: '9.8 GB',
       color: '#FF4D4D',
-      description: 'États financiers et audits',
+      description: 'Financial statements and audits',
       icon: FinancialIcon,
     },
     {
       id: 'technical',
-      name: 'Technique',
+      name: 'Technical',
       count: 312,
       size: '6.2 GB',
       color: '#9d4edd',
-      description: 'Spécifications et manuels techniques',
+      description: 'Technical specifications and manuals',
       icon: TechnicalIcon,
     },
     {
       id: 'legal',
-      name: 'Juridique',
+      name: 'Legal',
       count: 87,
       size: '3.5 GB',
       color: '#06d6a0',
-      description: 'Documents juridiques et certificats',
+      description: 'Legal documents and certificates',
       icon: LegalIcon,
     },
     {
       id: 'archive',
-      name: 'Archives',
+      name: 'Archive',
       count: 145,
       size: '5.8 GB',
       color: '#C5FFA7',
-      description: 'Documents archivés et historiques',
+      description: 'Archived and historical documents',
       icon: ArchiveIcon,
     },
     {
       id: 'certificates',
-      name: 'Certificats',
+      name: 'Certificates',
       count: 98,
       size: '2.1 GB',
       color: '#C5FFA7',
-      description: 'Certificats et accréditations',
+      description: 'Certificates and accreditations',
       icon: CertificateIcon,
     },
   ]
@@ -165,42 +165,42 @@ export default function DocumentsVaultOverview() {
   const documents = [
     {
       id: '1',
-      name: 'Contrat_Mining_2024.pdf',
-      category: 'Contrats',
+      name: 'Mining_Contract_2024.pdf',
+      category: 'Contracts',
       size: '2.4 MB',
       uploaded: '2025-01-15',
     },
     {
       id: '2',
-      name: 'Rapport_Electricite_Q4.xlsx',
-      category: 'Rapports',
+      name: 'Electricity_Report_Q4.xlsx',
+      category: 'Reports',
       size: '1.8 MB',
       uploaded: '2025-01-14',
     },
     {
       id: '3',
-      name: 'Specifications_Materiel.docx',
-      category: 'Technique',
+      name: 'Hardware_Specifications.docx',
+      category: 'Technical',
       size: '3.2 MB',
       uploaded: '2025-01-13',
     },
     {
       id: '4',
-      name: 'Audit_Financier_2024.pdf',
-      category: 'Financier',
+      name: 'Financial_Audit_2024.pdf',
+      category: 'Financial',
       size: '5.6 MB',
       uploaded: '2025-01-12',
     },
     {
       id: '5',
-      name: 'Facture_Janvier_2025.pdf',
-      category: 'Factures',
+      name: 'Invoice_January_2025.pdf',
+      category: 'Invoices',
       size: '892 KB',
       uploaded: '2025-01-10',
     },
   ]
 
-  // Filtrer les documents par recherche rapide
+  // Filter documents by quick search
   const filteredDocuments = documents.filter(doc => {
     return doc.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
            doc.category.toLowerCase().includes(searchQuery.toLowerCase())
@@ -213,7 +213,7 @@ export default function DocumentsVaultOverview() {
 
   return (
     <div>
-      {/* Catégories en boîtes */}
+      {/* Categories in boxes */}
       <div className="documents-grid-4" style={{ marginBottom: 'var(--space-6)' }}>
         {categories.map((category) => (
           <div
@@ -223,11 +223,11 @@ export default function DocumentsVaultOverview() {
               cursor: 'pointer',
             }}
             onClick={() => {
-              // Naviguer vers la page de la catégorie
+              // Navigate to category page
               router.push(`/documents-vault/${category.id}`)
             }}
           >
-            {/* Titre en haut - blanc, plus grand */}
+            {/* Title at top - white, larger */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--space-4)' }}>
               <div style={{ 
                 fontSize: 'var(--text-2xl)', 
@@ -255,7 +255,7 @@ export default function DocumentsVaultOverview() {
               </div>
             </div>
             
-            {/* Chiffre en dessous - vert, plus petit */}
+            {/* Number below - green, smaller */}
             <div style={{ 
               fontSize: 'var(--text-2xl)', 
               fontWeight: 'var(--font-bold)', 
@@ -271,7 +271,7 @@ export default function DocumentsVaultOverview() {
               {category.description}
             </div>
             
-            {/* Taille en bas */}
+            {/* Size at bottom */}
             <div style={{ 
               color: 'var(--text-secondary)', 
               fontSize: 'var(--text-sm)', 
@@ -284,7 +284,7 @@ export default function DocumentsVaultOverview() {
         ))}
       </div>
 
-      {/* Recherche rapide */}
+      {/* Quick search */}
       <div className="documents-card" style={{ marginTop: 'var(--space-6)', marginBottom: 'var(--space-4)' }}>
         <div className="documents-card-body">
           <div style={{ display: 'flex', gap: 'var(--space-3)', alignItems: 'center' }}>
@@ -292,7 +292,7 @@ export default function DocumentsVaultOverview() {
               <input
                 type="text"
                 className="documents-input"
-                placeholder="Recherche rapide par nom ou catégorie..."
+                placeholder="Quick search by name or category..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 style={{ width: '100%' }}
@@ -303,23 +303,23 @@ export default function DocumentsVaultOverview() {
                 className="documents-btn-secondary"
                 onClick={() => setSearchQuery('')}
               >
-                Effacer
+                Clear
               </button>
             )}
           </div>
         </div>
       </div>
 
-      {/* Tableau premium des documents - Recherche rapide */}
+      {/* Premium documents table - Quick search */}
       <div className="premium-transaction-table-container" style={{ marginTop: 'var(--space-4)' }}>
         <table className="premium-transaction-table">
             <thead>
               <tr>
-                <th style={{ width: '50px' }}>À envoyer</th>
+                <th style={{ width: '50px' }}>To send</th>
                 <th>Date</th>
-                <th>Nom du document</th>
-                <th>Catégorie</th>
-                <th>Taille</th>
+                <th>Document name</th>
+                <th>Category</th>
+                <th>Size</th>
               </tr>
             </thead>
             <tbody>
@@ -349,7 +349,7 @@ export default function DocumentsVaultOverview() {
                           cursor: 'pointer',
                           accentColor: '#C5FFA7',
                         }}
-                        title="Ajouter au dossier à envoyer"
+                        title="Add to send folder"
                       />
                     </td>
                     <td>{doc.uploaded}</td>
@@ -361,7 +361,7 @@ export default function DocumentsVaultOverview() {
               ) : (
                 <tr>
                   <td colSpan={5} style={{ textAlign: 'center', padding: 'var(--space-6)', color: 'var(--text-secondary)' }}>
-                    Aucun document trouvé
+                    No documents found
                   </td>
                 </tr>
               )}
@@ -372,17 +372,17 @@ export default function DocumentsVaultOverview() {
         </div>
       </div>
 
-      {/* Indicateur de sélection globale */}
+      {/* Global selection indicator */}
       {selectedCount > 0 && (
         <div className="documents-card" style={{ marginTop: 'var(--space-4)', border: '1px solid rgba(197, 255, 167, 0.3)' }}>
           <div className="documents-card-body">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <span style={{ color: '#C5FFA7', fontWeight: 'var(--font-semibold)' }}>
-                  {selectedCount} document{selectedCount > 1 ? 's' : ''} sélectionné{selectedCount > 1 ? 's' : ''}
+                  {selectedCount} document{selectedCount > 1 ? 's' : ''} selected
                 </span>
                 <span style={{ color: 'var(--text-secondary)', marginLeft: 'var(--space-2)', fontSize: 'var(--text-sm)' }}>
-                  prêt{selectedCount > 1 ? 's' : ''} à être envoyé{selectedCount > 1 ? 's' : ''}
+                  ready to be sent
                 </span>
               </div>
               <button
@@ -395,7 +395,7 @@ export default function DocumentsVaultOverview() {
                   }, 100)
                 }}
               >
-                Aller à la page Partager
+                Go to Share page
               </button>
             </div>
           </div>
