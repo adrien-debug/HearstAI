@@ -11,17 +11,19 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String    @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-  projects      Project[]
-  documents     Document[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id                String            @id @default(cuid())
+  name              String?
+  email             String            @unique
+  emailVerified     DateTime?
+  image             String?
+  accounts          Account[]
+  sessions          Session[]
+  projects          Project[]
+  documents         Document[]
+  portfolioSections PortfolioSection[]
+  portfolioImages   PortfolioImage[]
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
 }
 
 model Account {
@@ -207,5 +209,63 @@ model Document {
   @@index([category])
   @@index([googleDriveFileId])
   @@index([lastSyncedAt])
+}
+
+model PortfolioSection {
+  id                String            @id @default(cuid())
+  userId            String
+  title             String
+  description       String?
+  type              String            @default("gallery") // gallery, showcase, grid, carousel
+  order             Int               @default(0) // Ordre d'affichage
+  isVisible         Boolean           @default(true)
+  backgroundColor   String?           // Couleur de fond hex
+  textColor         String?           // Couleur du texte hex
+  layout            String            @default("grid") // grid, masonry, carousel
+  columns           Int               @default(3) // Nombre de colonnes
+  metadata          String            @default("{}") // JSON pour métadonnées additionnelles
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  images            PortfolioImage[]
+  
+  @@index([userId])
+  @@index([order])
+  @@index([isVisible])
+  @@index([createdAt])
+}
+
+model PortfolioImage {
+  id                String            @id @default(cuid())
+  sectionId         String
+  userId            String
+  title             String?
+  description       String?
+  alt               String?           // Texte alternatif pour l'accessibilité
+  url               String            // URL de l'image (peut être locale ou externe)
+  thumbnailUrl      String?           // URL de la miniature
+  storagePath       String?           // Chemin de stockage local si stockée localement
+  mimeType          String?           // Type MIME (image/jpeg, image/png, etc.)
+  size              BigInt?           // Taille en octets
+  width             Int?              // Largeur en pixels
+  height            Int?              // Hauteur en pixels
+  order             Int               @default(0) // Ordre d'affichage dans la section
+  isVisible         Boolean           @default(true)
+  category          String?           // Catégorie/tag pour organisation
+  tags              String            @default("[]") // JSON array de tags
+  metadata          String            @default("{}") // JSON pour métadonnées additionnelles
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  
+  section           PortfolioSection  @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([sectionId])
+  @@index([userId])
+  @@index([order])
+  @@index([isVisible])
+  @@index([category])
+  @@index([createdAt])
 }
 

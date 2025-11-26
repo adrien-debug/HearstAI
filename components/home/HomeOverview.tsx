@@ -26,22 +26,22 @@ import { statsAPI } from '@/lib/api'
 const LineChart = dynamic(
   () => import('react-chartjs-2').then((mod) => ({ default: mod.Line })).catch((err) => {
     console.error('Error loading LineChart:', err)
-    return { default: () => <div style={{ height: '350px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)' }}>Chart unavailable</div> }
+    return { default: () => <div style={{ height: '175px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)' }}>Chart unavailable</div> }
   }),
   { 
     ssr: false,
-    loading: () => <div style={{ height: '350px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)' }}>Loading chart...</div>
+    loading: () => <div style={{ height: '175px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)' }}>Loading chart...</div>
   }
 )
 
 const BarChart = dynamic(
   () => import('react-chartjs-2').then((mod) => ({ default: mod.Bar })).catch((err) => {
     console.error('Error loading BarChart:', err)
-    return { default: () => <div style={{ height: '350px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)' }}>Chart unavailable</div> }
+    return { default: () => <div style={{ height: '175px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)' }}>Chart unavailable</div> }
   }),
   { 
     ssr: false,
-    loading: () => <div style={{ height: '350px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)' }}>Loading chart...</div>
+    loading: () => <div style={{ height: '175px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)' }}>Loading chart...</div>
   }
 )
 
@@ -77,11 +77,13 @@ export default function HomeOverview() {
   })
   const [loading, setLoading] = useState(true)
   const [mounted, setMounted] = useState(false)
+  const [btcMinedPeriod, setBtcMinedPeriod] = useState<'weekly' | 'monthly' | 'yearly'>('weekly')
+  const [hashratePeriod, setHashratePeriod] = useState<'daily' | 'weekly' | 'monthly'>('daily')
 
   const sections = [
-    { id: 'overview', label: 'Overview' },
-    { id: 'search', label: 'Search' },
-    { id: 'history', label: 'History' },
+    { id: 'overview', label: 'Hearst' },
+    { id: 'search', label: 'WeMine' },
+    { id: 'history', label: 'Meeneo' },
   ]
 
   useEffect(() => {
@@ -170,73 +172,148 @@ export default function HomeOverview() {
     }
   }, [])
 
-  // Générer des données de graphique basées sur les stats réelles
-  const currentProjects = stats.total_projects || 0
-  const currentJobs = stats.total_jobs || 0
-  
-  const chartData1 = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-    datasets: [
-      {
-        label: 'Projects',
-        data: [
-          Math.max(0, currentProjects - 10),
-          Math.max(0, currentProjects - 8),
-          Math.max(0, currentProjects - 6),
-          Math.max(0, currentProjects - 4),
-          Math.max(0, currentProjects - 3),
-          Math.max(0, currentProjects - 2),
-          Math.max(0, currentProjects - 1),
-          Math.max(0, currentProjects - 1),
-          currentProjects,
-          currentProjects,
-          currentProjects,
-          currentProjects,
+  // Générer des données de hashrate selon la période
+  const getHashrateData = () => {
+    // Utiliser total_jobs comme base pour le hashrate (en TH/s)
+    const baseHashrate = (stats.total_jobs || 0) * 100 // Multiplier pour avoir des valeurs réalistes en TH/s
+    
+    if (hashratePeriod === 'daily') {
+      // 24 heures
+      const hours = Array.from({ length: 24 }, (_, i) => {
+        const hour = i.toString().padStart(2, '0') + ':00'
+        return hour
+      })
+      // Variations fixes pour chaque heure (simulation réaliste)
+      const hourlyVariations = [0.85, 0.82, 0.80, 0.78, 0.79, 0.81, 0.85, 0.90, 0.95, 0.98, 1.0, 1.02, 1.03, 1.02, 1.0, 0.98, 0.96, 0.94, 0.92, 0.90, 0.88, 0.86, 0.85, 0.84]
+      return {
+        labels: hours,
+        datasets: [
+          {
+            label: 'Total Hashrate',
+            data: hourlyVariations.map(variation => baseHashrate * variation),
+            borderColor: '#C5FFA7',
+            backgroundColor: 'rgba(197, 255, 167, 0.1)',
+            fill: true,
+            tension: 0.4,
+          },
         ],
-        borderColor: '#C5FFA7',
-        backgroundColor: 'rgba(197, 255, 167, 0.1)',
-        fill: true,
-        tension: 0.4,
-      },
-      {
-        label: 'Jobs',
-        data: [
-          Math.max(0, currentJobs - 219),
-          Math.max(0, currentJobs - 202),
-          Math.max(0, currentJobs - 186),
-          Math.max(0, currentJobs - 167),
-          Math.max(0, currentJobs - 145),
-          Math.max(0, currentJobs - 122),
-          Math.max(0, currentJobs - 89),
-          Math.max(0, currentJobs - 56),
-          Math.max(0, currentJobs - 33),
-          Math.max(0, currentJobs - 19),
-          Math.max(0, currentJobs - 6),
-          currentJobs,
+      }
+    } else if (hashratePeriod === 'weekly') {
+      // 7 jours
+      return {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        datasets: [
+          {
+            label: 'Total Hashrate',
+            data: [
+              baseHashrate * 0.95,
+              baseHashrate * 0.98,
+              baseHashrate * 1.0,
+              baseHashrate * 1.02,
+              baseHashrate * 1.0,
+              baseHashrate * 0.97,
+              baseHashrate * 0.95,
+            ],
+            borderColor: '#C5FFA7',
+            backgroundColor: 'rgba(197, 255, 167, 0.1)',
+            fill: true,
+            tension: 0.4,
+          },
         ],
-        borderColor: 'rgba(255, 255, 255, 0.4)',
-        backgroundColor: 'rgba(255, 255, 255, 0.05)',
-        fill: true,
-        tension: 0.4,
-      },
-    ],
+      }
+    } else {
+      // monthly - 4 semaines
+      return {
+        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+        datasets: [
+          {
+            label: 'Total Hashrate',
+            data: [
+              baseHashrate * 0.92,
+              baseHashrate * 0.96,
+              baseHashrate * 1.0,
+              baseHashrate * 1.02,
+            ],
+            borderColor: '#C5FFA7',
+            backgroundColor: 'rgba(197, 255, 167, 0.1)',
+            fill: true,
+            tension: 0.4,
+          },
+        ],
+      }
+    }
   }
 
-  const chartData2 = {
-    labels: ['Projects', 'Versions', 'Jobs', 'Running'],
-    datasets: [
-      {
-        label: 'Statistics',
-        data: [
-          stats.total_projects || 0,
-          stats.total_versions || 0,
-          stats.total_jobs || 0,
-          stats.jobs_running || 0,
+  const chartData1 = getHashrateData()
+
+  // Données BTC Mined selon la période
+  const getBtcMinedData = () => {
+    const btcMinedValue = stats.jobs_running || 0 // Utiliser jobs_running comme valeur de base pour BTC Mined
+    
+    if (btcMinedPeriod === 'weekly') {
+      return {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        datasets: [
+          {
+            label: 'BTC Mined',
+            data: [
+              btcMinedValue * 0.12,
+              btcMinedValue * 0.15,
+              btcMinedValue * 0.18,
+              btcMinedValue * 0.14,
+              btcMinedValue * 0.16,
+              btcMinedValue * 0.13,
+              btcMinedValue * 0.12,
+            ],
+            backgroundColor: '#C5FFA7',
+          },
         ],
-        backgroundColor: '#C5FFA7',
-      },
-    ],
+      }
+    } else if (btcMinedPeriod === 'monthly') {
+      return {
+        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+        datasets: [
+          {
+            label: 'BTC Mined',
+            data: [
+              btcMinedValue * 0.22,
+              btcMinedValue * 0.28,
+              btcMinedValue * 0.25,
+              btcMinedValue * 0.25,
+            ],
+            backgroundColor: '#C5FFA7',
+          },
+        ],
+      }
+    } else {
+      // yearly
+      return {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        datasets: [
+          {
+            label: 'BTC Mined',
+            data: [
+              btcMinedValue * 0.06,
+              btcMinedValue * 0.07,
+              btcMinedValue * 0.08,
+              btcMinedValue * 0.09,
+              btcMinedValue * 0.10,
+              btcMinedValue * 0.09,
+              btcMinedValue * 0.08,
+              btcMinedValue * 0.09,
+              btcMinedValue * 0.10,
+              btcMinedValue * 0.08,
+              btcMinedValue * 0.08,
+              btcMinedValue * 0.08,
+            ],
+            backgroundColor: '#C5FFA7',
+          },
+        ],
+      }
+    }
   }
+
+  const chartData2 = getBtcMinedData()
 
   const chartOptions = {
     responsive: true,
@@ -324,7 +401,7 @@ export default function HomeOverview() {
               <div className="premium-stat-icon">
                 <Icon name="projects" />
               </div>
-              <div className="premium-stat-label">Total Projects</div>
+              <div className="premium-stat-label">Total Turnover</div>
             </div>
             <div className="premium-stat-value">
               {loading ? '...' : (stats.total_projects ?? 0)}
@@ -339,7 +416,7 @@ export default function HomeOverview() {
               <div className="premium-stat-icon">
                 <Icon name="versions" />
               </div>
-              <div className="premium-stat-label">Total Versions</div>
+              <div className="premium-stat-label">Numbers of clients</div>
             </div>
             <div className="premium-stat-value">
               {loading ? '...' : (stats.total_versions ?? 0)}
@@ -354,7 +431,7 @@ export default function HomeOverview() {
               <div className="premium-stat-icon">
                 <Icon name="jobs" />
               </div>
-              <div className="premium-stat-label">Total Jobs</div>
+              <div className="premium-stat-label">Total Miners</div>
             </div>
             <div className="premium-stat-value">
               {loading ? '...' : (stats.total_jobs ?? 0)}
@@ -369,7 +446,7 @@ export default function HomeOverview() {
               <div className="premium-stat-icon">
                 <Icon name="running" />
               </div>
-              <div className="premium-stat-label">Jobs Running</div>
+              <div className="premium-stat-label">BTC Mined</div>
             </div>
             <div className="premium-stat-value premium-stat-value-green">
               {loading ? '...' : (stats.jobs_running ?? 0)}
@@ -381,66 +458,87 @@ export default function HomeOverview() {
         </div>
       </div>
 
-      {/* Wallet Premium Section */}
-      <div className="premium-wallet-section">
-        <div className="premium-wallet-box">
-          <div className="premium-wallet-header">
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
-              <div className="premium-stat-icon">
-                <Icon name="wallet" />
+      {/* Charts Container */}
+      <div className="wallet-charts-container">
+        <div className="wallet-chart-section">
+          <div className="chart-header">
+            <div className="chart-header-left">
+              <h2 className="chart-title">Total Hashrate</h2>
+              <div className="chart-live-hashrate">
+                <span className="chart-live-label">Live hashrate:</span>
+                <span className="chart-live-value">
+                  {loading ? '...' : `${((stats.total_jobs || 0) * 100).toLocaleString()} TH/s`}
+                </span>
               </div>
-              <h3 className="premium-wallet-title">Wallet</h3>
             </div>
-            <button 
-              className="premium-wallet-transaction-btn"
-              onClick={(e) => {
-                e.preventDefault()
-                e.stopPropagation()
-                console.log('[HomeOverview] 🔘 Bouton Transaction history cliqué')
-                const element = document.querySelector('.premium-transaction-section')
-                if (element) {
-                  element.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                  console.log('[HomeOverview] ✅ Scroll effectué')
-                } else {
-                  console.warn('[HomeOverview] ⚠️ Section transaction non trouvée')
-                }
-              }}
-              style={{ cursor: 'pointer' }}
-            >
-              Transaction history
-            </button>
-          </div>
-          <div className="premium-wallet-balance">
-            <div className="premium-wallet-balance-btc">0.031819 BTC</div>
-            <div className="premium-wallet-balance-usd">$3,628.13 USD</div>
-          </div>
-          <div className="premium-wallet-address-section">
-            <div className="premium-wallet-address">
-              <div className="premium-wallet-address-text">1Lzu8ieZUN7QDk6MTiPive2s2uhr2xzqqpck</div>
-              <button 
-                className="premium-wallet-copy-btn"
-                onClick={(e) => {
-                  e.preventDefault()
-                  e.stopPropagation()
-                  console.log('[HomeOverview] 🔘 Bouton Copy cliqué')
-                  try {
-                    navigator.clipboard.writeText('1Lzu8ieZUN7QDk6MTiPive2s2uhr2xzqqpck').then(() => {
-                      console.log('[HomeOverview] ✅ Texte copié')
-                      alert('Adresse copiée !')
-                    }).catch(err => {
-                      console.error('[HomeOverview] ❌ Erreur copie:', err)
-                    })
-                  } catch (err) {
-                    console.error('[HomeOverview] ❌ Erreur:', err)
-                  }
-                }}
-                title="Copy address"
-                style={{ cursor: 'pointer' }}
+            <div className="chart-period-tabs">
+              <button
+                className={`chart-period-tab ${hashratePeriod === 'daily' ? 'active' : ''}`}
+                onClick={() => setHashratePeriod('daily')}
               >
-                <Icon name="copy" />
-                <span>Copy</span>
+                Daily
+              </button>
+              <button
+                className={`chart-period-tab ${hashratePeriod === 'weekly' ? 'active' : ''}`}
+                onClick={() => setHashratePeriod('weekly')}
+              >
+                Weekly
+              </button>
+              <button
+                className={`chart-period-tab ${hashratePeriod === 'monthly' ? 'active' : ''}`}
+                onClick={() => setHashratePeriod('monthly')}
+              >
+                Monthly
               </button>
             </div>
+          </div>
+          <div className="chart-container">
+            {mounted ? (
+              <ChartWrapper fallback={<div style={{ height: '175px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)' }}>Chart error</div>}>
+                <LineChart data={chartData1} options={chartOptions} />
+              </ChartWrapper>
+            ) : (
+              <div style={{ height: '175px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)' }}>
+                Loading chart...
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="wallet-chart-section">
+          <div className="chart-header">
+            <h2 className="chart-title">BTC Mined</h2>
+            <div className="chart-period-tabs">
+              <button
+                className={`chart-period-tab ${btcMinedPeriod === 'weekly' ? 'active' : ''}`}
+                onClick={() => setBtcMinedPeriod('weekly')}
+              >
+                Weekly
+              </button>
+              <button
+                className={`chart-period-tab ${btcMinedPeriod === 'monthly' ? 'active' : ''}`}
+                onClick={() => setBtcMinedPeriod('monthly')}
+              >
+                Monthly
+              </button>
+              <button
+                className={`chart-period-tab ${btcMinedPeriod === 'yearly' ? 'active' : ''}`}
+                onClick={() => setBtcMinedPeriod('yearly')}
+              >
+                Yearly
+              </button>
+            </div>
+          </div>
+          <div className="chart-container">
+            {mounted ? (
+              <ChartWrapper fallback={<div style={{ height: '175px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)' }}>Chart error</div>}>
+                <BarChart data={chartData2} options={chartOptions} />
+              </ChartWrapper>
+            ) : (
+              <div style={{ height: '175px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)' }}>
+                Loading chart...
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -495,53 +593,6 @@ export default function HomeOverview() {
           </table>
           <div className="premium-transaction-total">
             <strong>Total: <span className="premium-transaction-total-amount">0.491902 BTC</span></strong>
-          </div>
-        </div>
-      </div>
-
-      {/* Charts Container */}
-      <div className="wallet-charts-container">
-        <div className="wallet-chart-section">
-          <div className="chart-header">
-            <h2 className="chart-title">Performance Overview</h2>
-            <div className="chart-legend">
-              <div className="legend-item">
-                <span className="legend-dot green"></span>
-                <span>Projects</span>
-              </div>
-              <div className="legend-item">
-                <span className="legend-dot gray"></span>
-                <span>Jobs</span>
-              </div>
-            </div>
-          </div>
-          <div className="chart-container">
-            {mounted ? (
-              <ChartWrapper fallback={<div style={{ height: '350px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)' }}>Chart error</div>}>
-                <LineChart data={chartData1} options={chartOptions} />
-              </ChartWrapper>
-            ) : (
-              <div style={{ height: '350px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)' }}>
-                Loading chart...
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="wallet-chart-section">
-          <div className="chart-header">
-            <h2 className="chart-title">Statistics Bar Chart</h2>
-          </div>
-          <div className="chart-container">
-            {mounted ? (
-              <ChartWrapper fallback={<div style={{ height: '350px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)' }}>Chart error</div>}>
-                <BarChart data={chartData2} options={chartOptions} />
-              </ChartWrapper>
-            ) : (
-              <div style={{ height: '350px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)' }}>
-                Loading chart...
-              </div>
-            )}
           </div>
         </div>
       </div>

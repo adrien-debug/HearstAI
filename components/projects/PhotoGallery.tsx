@@ -33,11 +33,24 @@ export default function PhotoGallery({ photos, projectName }: PhotoGalleryProps)
     return () => clearTimeout(timeout)
   }, [])
 
-  const handleImageError = (index: number) => {
+  const handleImageError = (index: number, photo: string) => {
+    console.error(`Erreur de chargement de l'image ${index + 1}:`, photo)
     setImageErrors(prev => new Set(prev).add(index))
   }
 
-  const validPhotos = photos.filter((_, index) => !imageErrors.has(index))
+  const validPhotos = photos.filter((photo, index) => {
+    // Filtrer les photos vides ou invalides
+    if (!photo || photo.trim() === '') {
+      return false
+    }
+    // Reject blob URLs (they can't be loaded after page reload)
+    if (photo.startsWith('blob:')) {
+      console.warn(`Photo ${index + 1} is a blob URL and will be skipped:`, photo)
+      return false
+    }
+    // Vérifier que ce n'est pas une photo qui a déjà échoué
+    return !imageErrors.has(index)
+  })
 
   if (validPhotos.length === 0) {
     return (
@@ -66,7 +79,14 @@ export default function PhotoGallery({ photos, projectName }: PhotoGalleryProps)
                 src={photo}
                 alt={`${projectName} - Photo ${index + 1}`}
                 className="photo-gallery-image"
-                onError={() => handleImageError(index)}
+                onError={(e) => {
+                  handleImageError(index, photo)
+                  // Afficher un placeholder en cas d'erreur
+                  const target = e.currentTarget
+                  target.style.display = 'none'
+                }}
+                loading="lazy"
+                crossOrigin="anonymous"
               />
               <div className="photo-gallery-overlay">
                 <div className="photo-gallery-zoom-icon premium-stat-icon" data-icon="search"></div>

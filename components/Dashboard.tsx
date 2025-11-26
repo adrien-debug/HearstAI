@@ -234,48 +234,6 @@ export default function Dashboard({ data }: DashboardProps) {
           </div>
         </div>
 
-        {/* Wallet Premium Section */}
-        <div className="premium-wallet-section">
-          <div className="premium-wallet-box">
-            <div className="premium-wallet-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
-                <div className="premium-stat-icon" data-icon="wallet"></div>
-                <h3 className="premium-wallet-title">Wallet</h3>
-              </div>
-              <button 
-                className="premium-wallet-transaction-btn"
-                onClick={() => {
-                  // Scroll to transaction history section
-                  const element = document.querySelector('.premium-transaction-section')
-                  if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                  }
-                }}
-              >
-                Transaction history
-              </button>
-            </div>
-            <div className="premium-wallet-balance">
-              <div className="premium-wallet-balance-btc">0.031819 BTC</div>
-              <div className="premium-wallet-balance-usd">$3,628.13 USD</div>
-            </div>
-            <div className="premium-wallet-address-section">
-              <div className="premium-wallet-address">
-                <div className="premium-wallet-address-text">1Lzu8ieZUN7QDk6MTiPive2s2uhr2xzqqpck</div>
-                <button 
-                  className="premium-wallet-copy-btn"
-                  onClick={() => {
-                    navigator.clipboard.writeText('1Lzu8ieZUN7QDk6MTiPive2s2uhr2xzqqpck')
-                  }}
-                  title="Copy address"
-                >
-                  <span data-icon="copy"></span>
-                  <span>Copy</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
 
         {/* Transaction History Section */}
         <div className="premium-transaction-section">

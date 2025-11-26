@@ -51,23 +51,42 @@ export default function ProjectModalMarketing({ project, onClose, onUpdate }: Pr
   useEffect(() => {
     // Extract photos from project
     const projectPhotos: string[] = []
-    if (project.imageUrl) {
+    
+    // Helper function to check if URL is valid (not a blob URL)
+    const isValidImageUrl = (url: string | null | undefined): boolean => {
+      if (!url || typeof url !== 'string') return false
+      // Reject blob URLs
+      if (url.startsWith('blob:')) return false
+      // Accept data URLs (base64)
+      if (url.startsWith('data:image/')) return true
+      // Accept HTTP/HTTPS URLs
+      if (url.startsWith('http://') || url.startsWith('https://')) return true
+      // Accept relative URLs
+      if (url.startsWith('/')) return true
+      return false
+    }
+    
+    if (project.imageUrl && isValidImageUrl(project.imageUrl)) {
       projectPhotos.push(project.imageUrl)
     }
     if (project.metadata) {
       try {
         const metadata = typeof project.metadata === 'string' ? JSON.parse(project.metadata) : project.metadata
         if (metadata.photos && Array.isArray(metadata.photos)) {
-          projectPhotos.push(...metadata.photos)
+          const validPhotos = metadata.photos.filter((photo: string) => isValidImageUrl(photo))
+          projectPhotos.push(...validPhotos)
         }
         if (metadata.additionalImages && Array.isArray(metadata.additionalImages)) {
-          projectPhotos.push(...metadata.additionalImages)
+          const validAdditionalImages = metadata.additionalImages.filter((photo: string) => isValidImageUrl(photo))
+          projectPhotos.push(...validAdditionalImages)
         }
       } catch (e) {
-        // Ignore parsing errors
+        console.error('Error parsing metadata:', e)
       }
     }
-    setPhotos(projectPhotos)
+    // Remove duplicates
+    const uniquePhotos = Array.from(new Set(projectPhotos))
+    setPhotos(uniquePhotos)
   }, [project])
 
   const handlePhotosUpdated = (newPhotos: string[]) => {
@@ -120,6 +139,11 @@ export default function ProjectModalMarketing({ project, onClose, onUpdate }: Pr
               src={project.imageUrl}
               alt={project.name}
               className="project-modal-marketing-hero-image"
+              onError={(e) => {
+                console.error('Erreur de chargement de l\'image hero:', project.imageUrl)
+                const target = e.currentTarget
+                target.style.display = 'none'
+              }}
             />
             <div className="project-modal-marketing-hero-overlay">
               <div className="project-modal-marketing-hero-content">
@@ -242,7 +266,16 @@ export default function ProjectModalMarketing({ project, onClose, onUpdate }: Pr
                     <div className="project-modal-marketing-preview-grid">
                       {photos.slice(0, 6).map((photo, index) => (
                         <div key={index} className="project-modal-marketing-preview-item">
-                          <img src={photo} alt={`${project.name} - ${index + 1}`} />
+                          <img 
+                            src={photo} 
+                            alt={`${project.name} - ${index + 1}`}
+                            onError={(e) => {
+                              console.error('Erreur de chargement de la photo preview:', photo)
+                              const target = e.currentTarget
+                              target.style.display = 'none'
+                            }}
+                            loading="lazy"
+                          />
                         </div>
                       ))}
                     </div>

@@ -7,14 +7,25 @@ export const dynamic = 'force-dynamic'
 
 export async function GET(request: NextRequest) {
   try {
-    // Désactiver l'authentification pour le développement
-    // const session = await getServerSession(authOptions)
-    // if (!session?.user?.id) {
-    //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    // }
+    // En développement local, désactiver l'authentification
+    const isDevelopment = process.env.NODE_ENV === 'development' || 
+                         process.env.NEXT_PUBLIC_API_URL?.includes('localhost')
     
-    // Pour le développement, utiliser un userId par défaut ou récupérer sans filtre user
-    const userId = null // Pas de filtre utilisateur en développement
+    let userId = null // Pas de filtre utilisateur en développement
+    
+    // Tenter de récupérer la session seulement si on n'est pas en développement
+    if (!isDevelopment) {
+      try {
+        const session = await getServerSession(authOptions)
+        if (session?.user?.id) {
+          userId = session.user.id
+        }
+        // En production, si pas de session, on continue quand même (pas d'erreur 401)
+      } catch (sessionError) {
+        console.warn('[Stats API] Erreur lors de la récupération de la session (continuation sans filtre utilisateur):', sessionError)
+        // Continuer sans filtre utilisateur en cas d'erreur
+      }
+    }
 
     // En développement, récupérer toutes les données sans filtre utilisateur
     // Total projects

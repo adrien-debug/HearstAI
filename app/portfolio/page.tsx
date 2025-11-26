@@ -46,15 +46,38 @@ export default function PortfolioPage() {
       setLoading(true)
       const response = await projectsAPI.getAll()
       
+      // Helper function to check if URL is valid (not a blob URL)
+      const isValidImageUrl = (url: string | null | undefined): boolean => {
+        if (!url || typeof url !== 'string') return false
+        // Reject blob URLs
+        if (url.startsWith('blob:')) return false
+        // Accept data URLs (base64)
+        if (url.startsWith('data:image/')) return true
+        // Accept HTTP/HTTPS URLs
+        if (url.startsWith('http://') || url.startsWith('https://')) return true
+        // Accept relative URLs
+        if (url.startsWith('/')) return true
+        return false
+      }
+      
       const projectsList = (response.projects || []).map((project: any) => {
         if (!project.imageUrl && project.metadata) {
           try {
             const metadata = typeof project.metadata === 'string' ? JSON.parse(project.metadata) : project.metadata
-            project.imageUrl = metadata.imageUrl || null
-            project.photos = metadata.photos || []
+            const imageUrl = metadata.imageUrl || null
+            // Only set imageUrl if it's valid
+            if (isValidImageUrl(imageUrl)) {
+              project.imageUrl = imageUrl
+            }
+            // Filter photos to only include valid URLs
+            const photos = metadata.photos || []
+            project.photos = photos.filter((photo: string) => isValidImageUrl(photo))
           } catch (e) {
-            // Ignore parsing errors
+            console.error('Error parsing project metadata:', e)
           }
+        } else if (project.imageUrl && !isValidImageUrl(project.imageUrl)) {
+          // If imageUrl exists but is invalid (blob), remove it
+          project.imageUrl = null
         }
         return project
       })
@@ -201,14 +224,24 @@ export default function PortfolioPage() {
                     src={project.imageUrl}
                     alt={project.name}
                     className="portfolio-card-image"
+                    onError={(e) => {
+                      console.error('Erreur de chargement de l\'image:', project.imageUrl)
+                      // Remplacer par le placeholder en cas d'erreur
+                      const target = e.currentTarget
+                      target.style.display = 'none'
+                      const placeholder = target.nextElementSibling as HTMLElement
+                      if (placeholder && placeholder.classList.contains('portfolio-card-placeholder')) {
+                        placeholder.style.display = 'flex'
+                      }
+                    }}
+                    loading="lazy"
                   />
-                ) : (
-                  <div className="portfolio-card-placeholder">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-                      <path d="M4 16l4.586-4.586a2 2 0 0 1 2.828 0L16 16m-2-2l1.586-1.586a2 2 0 0 1 2.828 0L20 14m-6-6h.01M6 20h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2z" stroke="currentColor" strokeWidth="2"/>
-                    </svg>
-                  </div>
-                )}
+                ) : null}
+                <div className="portfolio-card-placeholder" style={{ display: project.imageUrl ? 'none' : 'flex' }}>
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                    <path d="M4 16l4.586-4.586a2 2 0 0 1 2.828 0L16 16m-2-2l1.586-1.586a2 2 0 0 1 2.828 0L20 14m-6-6h.01M6 20h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2z" stroke="currentColor" strokeWidth="2"/>
+                  </svg>
+                </div>
                 <div className="portfolio-card-overlay">
                   <div className="portfolio-card-status">
                     {project.status}

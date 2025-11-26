@@ -3,10 +3,18 @@ import { PrismaAdapter } from '@auth/prisma-adapter'
 import { prisma } from './db'
 import CredentialsProvider from 'next-auth/providers/credentials'
 
+// S'assurer que NEXTAUTH_URL est défini avec une valeur par défaut (côté serveur uniquement)
+if (!process.env.NEXTAUTH_URL) {
+  // En développement, utiliser localhost:6001 par défaut
+  const port = process.env.PORT || '6001'
+  process.env.NEXTAUTH_URL = `http://localhost:${port}`
+  console.log(`[NextAuth] ⚠️ NEXTAUTH_URL non défini, utilisation de la valeur par défaut: ${process.env.NEXTAUTH_URL}`)
+}
+
 export const authOptions: NextAuthOptions = {
   // PrismaAdapter n'est pas nécessaire avec CredentialsProvider
   // adapter: PrismaAdapter(prisma),
-  debug: true, // Activer les logs pour le débogage
+  debug: process.env.NODE_ENV === 'development', // Activer les logs seulement en développement
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -52,6 +60,7 @@ export const authOptions: NextAuthOptions = {
     strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60, // 30 jours
   },
+  secret: process.env.NEXTAUTH_SECRET || 'fallback-secret-for-development-only-change-in-production',
   useSecureCookies: process.env.NEXTAUTH_URL?.startsWith('https://') ?? false,
   pages: {
     signIn: '/auth/signin',

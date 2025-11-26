@@ -211,6 +211,33 @@ export async function POST(request: NextRequest) {
     //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     // }
 
+    // Créer ou récupérer un utilisateur par défaut pour le développement
+    // (doit être fait avant le traitement de l'image)
+    let defaultUser
+    try {
+      // Chercher un utilisateur par défaut
+      defaultUser = await prisma.user.findFirst({
+        where: {
+          email: 'dev@hearstai.local'
+        }
+      })
+      
+      // Si pas d'utilisateur, en créer un
+      if (!defaultUser) {
+        defaultUser = await prisma.user.create({
+          data: {
+            email: 'dev@hearstai.local',
+            name: 'Dev User',
+          }
+        })
+      }
+    } catch (error: any) {
+      console.error('Error creating/finding default user:', error)
+      // Si erreur (table User n'existe pas), utiliser un ID mock
+      const defaultUserId = 'dev-user-id'
+      defaultUser = { id: defaultUserId }
+    }
+
     // Handle FormData (for image upload) or JSON
     const contentType = request.headers.get('content-type') || ''
     let body: any = {}
@@ -230,10 +257,37 @@ export async function POST(request: NextRequest) {
       // Handle image upload
       const imageFile = formData.get('image') as File | null
       if (imageFile) {
-        // For now, we'll store the image URL in metadata
-        // In production, you'd upload to a storage service
-        const imageUrl = URL.createObjectURL(imageFile)
-        body.metadata = JSON.stringify({ imageUrl })
+        try {
+          // Sauvegarder le fichier sur le serveur
+          const { writeFile, mkdir } = await import('fs/promises')
+          const { existsSync } = await import('fs')
+          const path = await import('path')
+          
+          // Créer le répertoire de stockage si nécessaire
+          const uploadDir = path.default.join(process.cwd(), 'public', 'uploads', 'projects', defaultUser.id)
+          if (!existsSync(uploadDir)) {
+            await mkdir(uploadDir, { recursive: true })
+          }
+          
+          // Générer un nom de fichier unique
+          const timestamp = Date.now()
+          const originalName = imageFile.name.replace(/[^a-zA-Z0-9.-]/g, '_')
+          const fileName = `${timestamp}-${originalName}`
+          const filePath = path.default.join(uploadDir, fileName)
+          const publicUrl = `/uploads/projects/${defaultUser.id}/${fileName}`
+          
+          // Sauvegarder le fichier
+          const bytes = await imageFile.arrayBuffer()
+          const buffer = Buffer.from(bytes)
+          await writeFile(filePath, buffer)
+          
+          // Stocker l'URL dans les métadonnées
+          body.metadata = JSON.stringify({ imageUrl: publicUrl })
+        } catch (error: any) {
+          console.error('Error saving project image:', error)
+          // En cas d'erreur, ne pas bloquer la création du projet
+          body.metadata = JSON.stringify({ imageUrl: null })
+        }
       }
     } else {
       try {
@@ -274,32 +328,6 @@ export async function POST(request: NextRequest) {
         { error: `Invalid repo_type. Must be one of: ${validRepoTypes.join(', ')}` },
         { status: 400 }
       )
-    }
-
-    // Créer ou récupérer un utilisateur par défaut pour le développement
-    let defaultUser
-    try {
-      // Chercher un utilisateur par défaut
-      defaultUser = await prisma.user.findFirst({
-        where: {
-          email: 'dev@hearstai.local'
-        }
-      })
-      
-      // Si pas d'utilisateur, en créer un
-      if (!defaultUser) {
-        defaultUser = await prisma.user.create({
-          data: {
-            email: 'dev@hearstai.local',
-            name: 'Dev User',
-          }
-        })
-      }
-    } catch (error: any) {
-      console.error('Error creating/finding default user:', error)
-      // Si erreur (table User n'existe pas), utiliser un ID mock
-      const defaultUserId = 'dev-user-id'
-      defaultUser = { id: defaultUserId }
     }
     
     const project = await prisma.project.create({
