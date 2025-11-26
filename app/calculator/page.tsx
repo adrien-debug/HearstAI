@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Icon from '@/components/Icon'
 import '@/components/home/Home.css'
 import './CalculatorPage.css'
@@ -94,20 +94,19 @@ export default function CalculatorPage() {
   const [lifespan, setLifespan] = useState<number>(3) // années
   const [capex, setCapex] = useState<number>(0)
   const [electricityRate, setElectricityRate] = useState<number>(0.07)
-  const [btcPrice, setBtcPrice] = useState<number>(0)
-  const [btcHashrate, setBtcHashrate] = useState<number>(600000000) // TH/s
+  const [btcPrice, setBtcPrice] = useState<number>(95000)
+  const [btcHashrate, setBtcHashrate] = useState<number>(600000000) // TH/s (toujours en TH/s en interne)
   const [revenuePerTH, setRevenuePerTH] = useState<number>(0) // $/TH/s/jour
-  const [btcIndexManualMode, setBtcIndexManualMode] = useState<boolean>(false)
-  const [manualBtcPrice, setManualBtcPrice] = useState<number>(95000)
-  const [manualBtcHashrate, setManualBtcHashrate] = useState<number>(600) // EH/s pour l'affichage
-  const [loading, setLoading] = useState<boolean>(true)
+  // Note: btcHashrate est en TH/s en interne, on convertit pour l'affichage en EH/s
+  const [loading, setLoading] = useState<boolean>(false)
   const [mounted, setMounted] = useState<boolean>(false)
+  // Flags pour garantir l'ordre d'initialisation et éviter les race conditions
+  const [dataLoaded, setDataLoaded] = useState<boolean>(false) // Machines et hosters chargés
   const [result, setResult] = useState<CalculationResult | null>(null)
   const [machineDropdownOpen, setMachineDropdownOpen] = useState<boolean>(false)
   const [hosterDropdownOpen, setHosterDropdownOpen] = useState<boolean>(false)
   const [calculationTriggered, setCalculationTriggered] = useState<boolean>(false)
   const [formulasModalOpen, setFormulasModalOpen] = useState<boolean>(false)
-  const [editMode, setEditMode] = useState<boolean>(false)
   
   // Paramètres de formules éditables
   const [formulaParams, setFormulaParams] = useState({
@@ -139,15 +138,12 @@ export default function CalculatorPage() {
     if (savedBtcIndex) {
       try {
         const btcIndex = JSON.parse(savedBtcIndex)
-        setBtcIndexManualMode(btcIndex.manualMode || false)
-        setManualBtcPrice(btcIndex.manualPrice || 95000)
-        setManualBtcHashrate(btcIndex.manualHashrate || 600)
-        if (btcIndex.manualMode) {
-          setBtcPrice(btcIndex.manualPrice || 95000)
-          setBtcHashrate((btcIndex.manualHashrate || 600) * 1000000) // Convertir EH/s en TH/s
-        }
+        setBtcPrice(btcIndex.price || 95000)
+        setBtcHashrate((btcIndex.hashrate || 600) * 1000000) // Convertir EH/s en TH/s
       } catch (error) {
         console.error('Error loading BTC index params:', error)
+        setBtcPrice(95000)
+        setBtcHashrate(600 * 1000000)
       }
     }
   }, [])
@@ -163,41 +159,22 @@ export default function CalculatorPage() {
   useEffect(() => {
     if (mounted) {
       localStorage.setItem('calculator-btc-index', JSON.stringify({
-        manualMode: btcIndexManualMode,
-        manualPrice: manualBtcPrice,
-        manualHashrate: manualBtcHashrate,
+        price: btcPrice,
+        hashrate: btcHashrate / 1000000, // Convertir TH/s en EH/s pour sauvegarde
       }))
     }
-  }, [btcIndexManualMode, manualBtcPrice, manualBtcHashrate, mounted])
+  }, [btcPrice, btcHashrate, mounted])
 
-  // Mettre à jour les valeurs BTC quand on bascule en mode manuel
-  useEffect(() => {
-    if (btcIndexManualMode) {
-      setBtcPrice(manualBtcPrice)
-      setBtcHashrate(manualBtcHashrate * 1000000) // Convertir EH/s en TH/s
-    }
-  }, [btcIndexManualMode, manualBtcPrice, manualBtcHashrate])
-
-  // Recalculer revenuePerTH en mode manuel quand les valeurs changent
-  useEffect(() => {
-    if (btcIndexManualMode && btcPrice > 0 && btcHashrate > 0) {
-      const blocksPerDay = formulaParams.blocksPerDay || 144
-      const btcPerBlock = formulaParams.btcPerBlock || 3.125
-      const totalBtcPerDay = blocksPerDay * btcPerBlock
-      const revenuePerTHPerDay = (totalBtcPerDay / btcHashrate) * btcPrice
-      setRevenuePerTH(revenuePerTHPerDay)
-    }
-  }, [btcIndexManualMode, btcPrice, btcHashrate, formulaParams])
-
-  // Charger les données depuis localStorage
-  useEffect(() => {
-    setMounted(true)
-    
-    // Charger les machines
+  // Fonction pour charger les machines depuis localStorage
+  const loadMachines = () => {
     const savedMiners = localStorage.getItem('miners-data')
     if (savedMiners) {
       try {
         const minersData = JSON.parse(savedMiners)
+        // Valider que les données sont valides
+        if (!Array.isArray(minersData) || minersData.length === 0) {
+          throw new Error('Invalid miners data format')
+        }
         const machinesData: Machine[] = minersData.map((m: any) => ({
           id: m.id,
           name: m.name,
@@ -207,16 +184,23 @@ export default function CalculatorPage() {
           price: m.price,
         }))
         setMachines(machinesData)
+        // Si aucune machine n'est sélectionnée, sélectionner la première
         if (machinesData.length > 0 && !selectedMachine) {
           setSelectedMachine(machinesData[0])
           setCapex(machinesData[0].price)
         }
+        return true
       } catch (error) {
         console.error('Error loading miners:', error)
+        // Nettoyer le localStorage corrompu
+        localStorage.removeItem('miners-data')
         // Utiliser les données par défaut
         setMachines(DEFAULT_MACHINES)
-        setSelectedMachine(DEFAULT_MACHINES[0])
-        setCapex(DEFAULT_MACHINES[0].price)
+        if (!selectedMachine) {
+          setSelectedMachine(DEFAULT_MACHINES[0])
+          setCapex(DEFAULT_MACHINES[0].price)
+        }
+        return false
       }
     } else {
       // Initialiser avec des données de démonstration
@@ -235,15 +219,24 @@ export default function CalculatorPage() {
         price: m.price,
       }))
       setMachines(machinesData)
-      setSelectedMachine(machinesData[0])
-      setCapex(machinesData[0].price)
+      if (!selectedMachine) {
+        setSelectedMachine(machinesData[0])
+        setCapex(machinesData[0].price)
+      }
+      return true
     }
+  }
 
-    // Charger les hosters
+  // Fonction pour charger les hosters depuis localStorage
+  const loadHosters = () => {
     const savedHosters = localStorage.getItem('hosters-data')
     if (savedHosters) {
       try {
         const hostersData = JSON.parse(savedHosters)
+        // Valider que les données sont valides
+        if (!Array.isArray(hostersData) || hostersData.length === 0) {
+          throw new Error('Invalid hosters data format')
+        }
         const hostersList: Hoster[] = hostersData.map((h: any) => ({
           id: h.id,
           name: h.name,
@@ -253,16 +246,23 @@ export default function CalculatorPage() {
           deposit: h.deposit || 0,
         }))
         setHosters(hostersList)
+        // Si aucun hoster n'est sélectionné, sélectionner le premier
         if (hostersList.length > 0 && !selectedHoster) {
           setSelectedHoster(hostersList[0])
           setElectricityRate(hostersList[0].electricityRate)
         }
+        return true
       } catch (error) {
         console.error('Error loading hosters:', error)
+        // Nettoyer le localStorage corrompu
+        localStorage.removeItem('hosters-data')
         // Utiliser les données par défaut
         setHosters(DEFAULT_HOSTERS)
-        setSelectedHoster(DEFAULT_HOSTERS[0])
-        setElectricityRate(DEFAULT_HOSTERS[0].electricityRate)
+        if (!selectedHoster) {
+          setSelectedHoster(DEFAULT_HOSTERS[0])
+          setElectricityRate(DEFAULT_HOSTERS[0].electricityRate)
+        }
+        return false
       }
     } else {
       // Initialiser avec des données de démonstration
@@ -282,39 +282,90 @@ export default function CalculatorPage() {
         deposit: h.deposit,
       }))
       setHosters(hostersList)
-      setSelectedHoster(hostersList[0])
-      setElectricityRate(hostersList[0].electricityRate)
+      if (!selectedHoster) {
+        setSelectedHoster(hostersList[0])
+        setElectricityRate(hostersList[0].electricityRate)
+      }
+      return true
+    }
+  }
+
+  // Charger les données depuis localStorage (garantir l'ordre d'initialisation)
+  useEffect(() => {
+    setMounted(true)
+    let machinesLoaded = false
+    let hostersLoaded = false
+    
+    // Charger les machines
+    machinesLoaded = loadMachines()
+    
+    // Charger les hosters
+    hostersLoaded = loadHosters()
+    
+    // Marquer les données comme chargées une fois que machines et hosters sont prêts
+    if (machinesLoaded && hostersLoaded) {
+      setDataLoaded(true)
     }
   }, [])
 
-  // Récupération du prix BTC (seulement en mode automatique)
+  // Écouter les changements dans localStorage pour recharger automatiquement les données
   useEffect(() => {
-    if (!mounted || btcIndexManualMode) {
-      if (btcIndexManualMode) {
-        setLoading(false)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'miners-data') {
+        loadMachines()
+      } else if (e.key === 'hosters-data') {
+        loadHosters()
       }
-      return
     }
 
-    const fetchBtcPrice = async () => {
-      try {
-        const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd')
-        const data = await response.json()
-        if (data.bitcoin?.usd) {
-          setBtcPrice(data.bitcoin.usd)
-        } else {
-          setBtcPrice(95000)
+    // Écouter les événements de changement de localStorage (depuis d'autres onglets)
+    window.addEventListener('storage', handleStorageChange)
+
+    // Écouter les changements dans le même onglet via un intervalle (pour détecter les changements depuis les pages de gestion)
+    const interval = setInterval(() => {
+      const currentMiners = localStorage.getItem('miners-data')
+      const currentHosters = localStorage.getItem('hosters-data')
+      
+      // Vérifier si les données ont changé
+      if (currentMiners) {
+        try {
+          const minersData = JSON.parse(currentMiners)
+          const currentIds = minersData.map((m: any) => m.id).join(',')
+          const existingIds = machines.map(m => m.id).join(',')
+          if (currentIds !== existingIds) {
+            loadMachines()
+          }
+        } catch (error) {
+          // Ignorer les erreurs de parsing
         }
-      } catch (error) {
-        console.error('Error fetching BTC price:', error)
-        setBtcPrice(95000)
-      } finally {
-        setLoading(false)
       }
-    }
+      
+      if (currentHosters) {
+        try {
+          const hostersData = JSON.parse(currentHosters)
+          const currentIds = hostersData.map((h: any) => h.id).join(',')
+          const existingIds = hosters.map(h => h.id).join(',')
+          if (currentIds !== existingIds) {
+            loadHosters()
+          }
+        } catch (error) {
+          // Ignorer les erreurs de parsing
+        }
+      }
+    }, 1000) // Vérifier toutes les secondes
 
-    fetchBtcPrice()
-  }, [mounted, btcIndexManualMode])
+    return () => {
+      window.removeEventListener('storage', handleStorageChange)
+      clearInterval(interval)
+    }
+  }, [machines, hosters, selectedMachine, selectedHoster])
+
+  // Initialisation du chargement des données
+  useEffect(() => {
+    if (mounted && dataLoaded) {
+      setLoading(false)
+    }
+  }, [mounted, dataLoaded])
 
   // Mise à jour du CAPEX quand la machine change
   useEffect(() => {
@@ -330,59 +381,21 @@ export default function CalculatorPage() {
     }
   }, [selectedHoster])
 
-  // Récupération du hashrate réseau et revenue TH/s (seulement en mode automatique)
+  // Calcul du revenue TH/s/jour
   useEffect(() => {
-    if (!mounted || !btcPrice || btcPrice === 0 || btcIndexManualMode) {
-      // En mode manuel, calculer directement le revenuePerTH
-      if (btcIndexManualMode && btcPrice > 0 && btcHashrate > 0) {
-        const blocksPerDay = formulaParams.blocksPerDay || 144
-        const btcPerBlock = formulaParams.btcPerBlock || 3.125
-        const totalBtcPerDay = blocksPerDay * btcPerBlock
-        const revenuePerTHPerDay = (totalBtcPerDay / btcHashrate) * btcPrice
-        setRevenuePerTH(revenuePerTHPerDay)
-      }
-      return
+    if (btcPrice > 0 && btcHashrate > 0) {
+      const blocksPerDay = formulaParams.blocksPerDay || 144
+      const btcPerBlock = formulaParams.btcPerBlock || 3.125
+      const totalBtcPerDay = blocksPerDay * btcPerBlock
+      const revenuePerTHPerDay = (totalBtcPerDay / btcHashrate) * btcPrice
+      setRevenuePerTH(revenuePerTHPerDay)
     }
-
-    const fetchNetworkData = async () => {
-      try {
-        // Récupérer le hashrate réseau BTC
-        const hashResponse = await fetch('https://api.blockchain.info/stats')
-        const hashData = await hashResponse.json()
-        if (hashData.hash_rate) {
-          // Convertir de EH/s à TH/s (1 EH = 1,000,000 TH)
-          setBtcHashrate(hashData.hash_rate * 1000000)
-        } else {
-          setBtcHashrate(600000000) // Valeur par défaut
-        }
-
-        // Calculer le revenue TH/s/jour
-        // Formule: (BTC par jour / Total Hashrate TH) * Prix BTC
-        const blocksPerDay = formulaParams.blocksPerDay || 144
-        const btcPerBlock = formulaParams.btcPerBlock || 3.125
-        const totalBtcPerDay = blocksPerDay * btcPerBlock
-        const networkHashTH = hashData.hash_rate ? hashData.hash_rate * 1000000 : 600000000
-        const revenuePerTHPerDay = (totalBtcPerDay / networkHashTH) * btcPrice
-        setRevenuePerTH(revenuePerTHPerDay)
-      } catch (error) {
-        console.error('Error fetching network data:', error)
-        // Valeurs par défaut
-        setBtcHashrate(600000000)
-        const blocksPerDay = formulaParams.blocksPerDay || 144
-        const btcPerBlock = formulaParams.btcPerBlock || 3.125
-        const totalBtcPerDay = blocksPerDay * btcPerBlock
-        const revenuePerTHPerDay = (totalBtcPerDay / 600000000) * btcPrice
-        setRevenuePerTH(revenuePerTHPerDay)
-      }
-    }
-
-    fetchNetworkData()
-  }, [mounted, btcPrice, formulaParams])
+  }, [btcPrice, btcHashrate, formulaParams])
 
   // Fonction de calcul
   const calculateResults = () => {
-    if (loading || !selectedMachine || !selectedHoster || !btcPrice || btcPrice === 0) {
-      alert('Veuillez sélectionner une machine, un hoster et attendre le chargement du prix BTC')
+    if (!selectedMachine || !selectedHoster || !btcPrice || btcPrice === 0) {
+      alert('Veuillez sélectionner une machine, un hoster et définir le prix BTC')
       return
     }
     setCalculationTriggered(true)
@@ -390,8 +403,8 @@ export default function CalculatorPage() {
 
   // Fonction de test avec 4 scénarios
   const runTests = () => {
-    if (loading || !btcPrice || btcPrice === 0) {
-      alert('Veuillez attendre le chargement du prix BTC')
+    if (!btcPrice || btcPrice === 0) {
+      alert('Veuillez définir le prix BTC')
       return
     }
 
@@ -543,7 +556,7 @@ export default function CalculatorPage() {
       return
     }
     
-    if (loading || !selectedMachine || !selectedHoster || !btcPrice || btcPrice === 0) {
+    if (!selectedMachine || !selectedHoster || !btcPrice || btcPrice === 0) {
       setResult(null)
       return
     }
@@ -607,15 +620,48 @@ export default function CalculatorPage() {
       netRevenuePerMonth,
       netRevenuePerLifespan,
     })
-  }, [calculationTriggered, selectedMachine, selectedHoster, lifespan, capex, electricityRate, btcPrice, loading, btcHashrate, formulaParams])
+  }, [calculationTriggered, selectedMachine, selectedHoster, lifespan, capex, electricityRate, btcPrice, btcHashrate, formulaParams])
 
-  // Réinitialiser le calcul si les paramètres changent
+  // Réinitialiser le calcul si les paramètres changent (seulement si un résultat existe)
+  // Utiliser useRef pour éviter les dépendances circulaires
+  const prevParamsRef = useRef({ selectedMachine, selectedHoster, lifespan, capex, electricityRate })
+  
   useEffect(() => {
-    if (calculationTriggered) {
+    const prevParams = prevParamsRef.current
+    const paramsChanged = 
+      prevParams.selectedMachine?.id !== selectedMachine?.id ||
+      prevParams.selectedHoster?.id !== selectedHoster?.id ||
+      prevParams.lifespan !== lifespan ||
+      prevParams.capex !== capex ||
+      prevParams.electricityRate !== electricityRate
+    
+    // Réinitialiser seulement si les paramètres changent ET qu'un résultat existe
+    if (paramsChanged && result) {
       setCalculationTriggered(false)
       setResult(null)
     }
-  }, [selectedMachine, selectedHoster, lifespan, capex, electricityRate])
+    
+    // Mettre à jour les paramètres précédents
+    prevParamsRef.current = { selectedMachine, selectedHoster, lifespan, capex, electricityRate }
+  }, [selectedMachine, selectedHoster, lifespan, capex, electricityRate, result])
+
+  // Fermer les menus déroulants quand on clique ailleurs
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement
+      if (!target.closest('.calculator-premium-dropdown')) {
+        setMachineDropdownOpen(false)
+        setHosterDropdownOpen(false)
+      }
+    }
+
+    if (machineDropdownOpen || hosterDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside)
+      }
+    }
+  }, [machineDropdownOpen, hosterDropdownOpen])
 
   return (
     <div className="dashboard-view">
@@ -636,10 +682,10 @@ export default function CalculatorPage() {
             <button
               onClick={() => setFormulasModalOpen(true)}
               className="calculator-formulas-btn"
-              title="Voir et éditer les formules de calcul"
+              title="Éditer les formules de calcul"
             >
-              <Icon name="projects" />
-              <span>Formules</span>
+              <Icon name="jobs" />
+              <span>Éditer Formules</span>
             </button>
           </div>
           
@@ -749,15 +795,23 @@ export default function CalculatorPage() {
         <div className="calculator-inputs-section">
           <div className="calculator-inputs-grid">
             {/* Sélection Machine - Menu Déroulant Premium */}
-            <div className="calculator-section-card calculator-section-card-large">
+            <div className={`calculator-section-card calculator-section-card-large ${machineDropdownOpen ? 'dropdown-open' : ''}`}>
               <div className="calculator-section-title">
                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
                   <div className="premium-stat-icon">
                     <Icon name="projects" />
                   </div>
                   <span>Sélection de la Machine</span>
+                  {machines.length > 0 && (
+                    <span style={{ 
+                      fontSize: 'var(--text-xs)', 
+                      color: 'var(--text-secondary)',
+                      marginLeft: 'var(--space-2)'
+                    }}>
+                      ({machines.length} disponible{machines.length > 1 ? 's' : ''})
+                    </span>
+                  )}
                 </div>
-                {loading && <span className="calculator-loading-badge">Chargement...</span>}
               </div>
               
               {/* Dropdown Premium */}
@@ -765,8 +819,10 @@ export default function CalculatorPage() {
                 <button
                   type="button"
                   className="calculator-dropdown-trigger"
-                  onClick={() => setMachineDropdownOpen(!machineDropdownOpen)}
-                  onBlur={() => setTimeout(() => setMachineDropdownOpen(false), 200)}
+                  onClick={() => {
+                    setMachineDropdownOpen(!machineDropdownOpen)
+                    setHosterDropdownOpen(false)
+                  }}
                 >
                   <div className="calculator-dropdown-trigger-content">
                     <div className="calculator-dropdown-selected">
@@ -802,47 +858,56 @@ export default function CalculatorPage() {
 
                 {machineDropdownOpen && (
                   <div className="calculator-dropdown-menu">
-                    {machines.map((machine) => (
-                      <div
-                        key={machine.id}
-                        className={`calculator-dropdown-item ${selectedMachine?.id === machine.id ? 'selected' : ''}`}
-                        onClick={() => {
-                          setSelectedMachine(machine)
-                          setMachineDropdownOpen(false)
-                        }}
-                      >
+                    {machines.length === 0 ? (
+                      <div className="calculator-dropdown-item" style={{ cursor: 'default', opacity: 0.6 }}>
                         <div className="calculator-dropdown-item-content">
-                          <div className="calculator-dropdown-item-name">{machine.name}</div>
-                          <div className="calculator-dropdown-item-specs">
-                            <span>{machine.hashrate} TH/s</span>
-                            <span>•</span>
-                            <span>{machine.power} W</span>
-                            <span>•</span>
-                            <span>{machine.efficiency} J/TH</span>
-                            <span>•</span>
-                            <span className="calculator-dropdown-item-price">${formatNumber(machine.price, 0)}</span>
-                          </div>
+                          <div className="calculator-dropdown-item-name">Aucune machine disponible</div>
+                          <div className="calculator-dropdown-item-specs">Ajoutez des machines dans la page Données Machines</div>
                         </div>
-                        {selectedMachine?.id === machine.id && (
-                          <svg
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="calculator-dropdown-check"
-                          >
-                            <path
-                              d="M20 6L9 17L4 12"
-                              stroke="#C5FFA7"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        )}
                       </div>
-                    ))}
+                    ) : (
+                      machines.map((machine) => (
+                        <div
+                          key={machine.id}
+                          className={`calculator-dropdown-item ${selectedMachine?.id === machine.id ? 'selected' : ''}`}
+                          onClick={() => {
+                            setSelectedMachine(machine)
+                            setMachineDropdownOpen(false)
+                          }}
+                        >
+                          <div className="calculator-dropdown-item-content">
+                            <div className="calculator-dropdown-item-name">{machine.name}</div>
+                            <div className="calculator-dropdown-item-specs">
+                              <span>{machine.hashrate} TH/s</span>
+                              <span>•</span>
+                              <span>{machine.power} W</span>
+                              <span>•</span>
+                              <span>{machine.efficiency} J/TH</span>
+                              <span>•</span>
+                              <span className="calculator-dropdown-item-price">${formatNumber(machine.price, 0)}</span>
+                            </div>
+                          </div>
+                          {selectedMachine?.id === machine.id && (
+                            <svg
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="calculator-dropdown-check"
+                            >
+                              <path
+                                d="M20 6L9 17L4 12"
+                                stroke="#C5FFA7"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          )}
+                        </div>
+                      ))
+                    )}
                   </div>
                 )}
               </div>
@@ -875,13 +940,22 @@ export default function CalculatorPage() {
             </div>
 
             {/* Sélection Hoster - Menu Déroulant Premium */}
-            <div className="calculator-section-card calculator-section-card-large">
+            <div className={`calculator-section-card calculator-section-card-large ${hosterDropdownOpen ? 'dropdown-open' : ''}`}>
               <div className="calculator-section-title">
                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
                   <div className="premium-stat-icon">
                     <Icon name="versions" />
                   </div>
                   <span>Sélection de l'Hoster</span>
+                  {hosters.length > 0 && (
+                    <span style={{ 
+                      fontSize: 'var(--text-xs)', 
+                      color: 'var(--text-secondary)',
+                      marginLeft: 'var(--space-2)'
+                    }}>
+                      ({hosters.length} disponible{hosters.length > 1 ? 's' : ''})
+                    </span>
+                  )}
                 </div>
               </div>
               
@@ -890,8 +964,10 @@ export default function CalculatorPage() {
                 <button
                   type="button"
                   className="calculator-dropdown-trigger"
-                  onClick={() => setHosterDropdownOpen(!hosterDropdownOpen)}
-                  onBlur={() => setTimeout(() => setHosterDropdownOpen(false), 200)}
+                  onClick={() => {
+                    setHosterDropdownOpen(!hosterDropdownOpen)
+                    setMachineDropdownOpen(false)
+                  }}
                 >
                   <div className="calculator-dropdown-trigger-content">
                     <div className="calculator-dropdown-selected">
@@ -928,49 +1004,58 @@ export default function CalculatorPage() {
 
                 {hosterDropdownOpen && (
                   <div className="calculator-dropdown-menu">
-                    {hosters.map((hoster) => (
-                      <div
-                        key={hoster.id}
-                        className={`calculator-dropdown-item ${selectedHoster?.id === hoster.id ? 'selected' : ''}`}
-                        onClick={() => {
-                          setSelectedHoster(hoster)
-                          setHosterDropdownOpen(false)
-                        }}
-                      >
+                    {hosters.length === 0 ? (
+                      <div className="calculator-dropdown-item" style={{ cursor: 'default', opacity: 0.6 }}>
                         <div className="calculator-dropdown-item-content">
-                          <div className="calculator-dropdown-item-name">{hoster.name}</div>
-                          <div className="calculator-dropdown-item-specs">
-                            <span>{hoster.location}</span>
-                            <span>•</span>
-                            <span className="calculator-dropdown-item-price">${hoster.electricityRate.toFixed(3)}/kWh</span>
-                            {hoster.additionalFees && (
-                              <>
-                                <span>•</span>
-                                <span>+${hoster.additionalFees}/mo</span>
-                              </>
-                            )}
-                          </div>
+                          <div className="calculator-dropdown-item-name">Aucun hoster disponible</div>
+                          <div className="calculator-dropdown-item-specs">Ajoutez des hosters dans la page Données Hosters</div>
                         </div>
-                        {selectedHoster?.id === hoster.id && (
-                          <svg
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="calculator-dropdown-check"
-                          >
-                            <path
-                              d="M20 6L9 17L4 12"
-                              stroke="#C5FFA7"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        )}
                       </div>
-                    ))}
+                    ) : (
+                      hosters.map((hoster) => (
+                        <div
+                          key={hoster.id}
+                          className={`calculator-dropdown-item ${selectedHoster?.id === hoster.id ? 'selected' : ''}`}
+                          onClick={() => {
+                            setSelectedHoster(hoster)
+                            setHosterDropdownOpen(false)
+                          }}
+                        >
+                          <div className="calculator-dropdown-item-content">
+                            <div className="calculator-dropdown-item-name">{hoster.name}</div>
+                            <div className="calculator-dropdown-item-specs">
+                              <span>{hoster.location}</span>
+                              <span>•</span>
+                              <span className="calculator-dropdown-item-price">${hoster.electricityRate.toFixed(3)}/kWh</span>
+                              {hoster.additionalFees && (
+                                <>
+                                  <span>•</span>
+                                  <span>+${hoster.additionalFees}/mo</span>
+                                </>
+                              )}
+                            </div>
+                          </div>
+                          {selectedHoster?.id === hoster.id && (
+                            <svg
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="calculator-dropdown-check"
+                            >
+                              <path
+                                d="M20 6L9 17L4 12"
+                                stroke="#C5FFA7"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          )}
+                        </div>
+                      ))
+                    )}
                   </div>
                 )}
               </div>
@@ -1007,9 +1092,10 @@ export default function CalculatorPage() {
             </div>
           </div>
 
-            {/* Paramètres & Prix BTC */}
+            {/* Paramètres & Bitcoin Index - Version Simplifiée */}
           <div className="calculator-params-section">
-            <div className="calculator-section-card calculator-section-card-large" style={{ paddingBottom: 'calc(var(--space-3) + 20px)' }}>
+            {/* Section Paramètres */}
+            <div className="calculator-section-card calculator-section-card-large">
               <div className="calculator-section-title">
                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
                   <div className="premium-stat-icon">
@@ -1019,46 +1105,20 @@ export default function CalculatorPage() {
                 </div>
               </div>
               
-              {/* Paramètres en ligne */}
-              <div className="calculator-params-row">
-                {/* Lifespan */}
+              <div className="calculator-params-row" style={{ marginTop: 'var(--space-4)' }}>
                 <div className="calculator-form-row-inline">
                   <label>Lifespan (années)</label>
-                  <div 
-                    className="calculator-lifespan-control"
-                    style={{ 
-                      '--range-progress': `${((lifespan - 1) / (10 - 1)) * 100}%`
-                    } as React.CSSProperties}
-                  >
-                    <input
-                      type="range"
-                      min="1"
-                      max="10"
-                      step="0.5"
-                      value={lifespan}
-                      onChange={(e) => {
-                        const val = parseFloat(e.target.value)
-                        setLifespan(val)
-                      }}
-                      className="calculator-lifespan-slider"
-                      style={{ 
-                        position: 'relative',
-                        zIndex: 2
-                      }}
-                    />
-                    <input
-                      type="number"
-                      min="1"
-                      max="10"
-                      step="0.5"
-                      value={lifespan}
-                      onChange={(e) => setLifespan(Math.max(1, Math.min(10, parseFloat(e.target.value) || 1)))}
-                      className="calculator-lifespan-input"
-                    />
-                  </div>
+                  <input
+                    type="number"
+                    min="1"
+                    max="10"
+                    step="0.5"
+                    value={lifespan}
+                    onChange={(e) => setLifespan(Math.max(1, Math.min(10, parseFloat(e.target.value) || 1)))}
+                    className="calculator-param-input"
+                  />
                 </div>
 
-                {/* CAPEX */}
                 <div className="calculator-form-row-inline">
                   <label>CAPEX - Prix Machine ($)</label>
                   <input
@@ -1070,7 +1130,6 @@ export default function CalculatorPage() {
                   />
                 </div>
 
-                {/* Prix Électricité */}
                 <div className="calculator-form-row-inline">
                   <label>Prix Électricité ($/kWh)</label>
                   <input
@@ -1085,117 +1144,72 @@ export default function CalculatorPage() {
               </div>
             </div>
 
-            {/* Prix BTC */}
+            {/* Section Bitcoin Index */}
             <div className="calculator-section-card calculator-btc-price-card">
               <div className="calculator-section-title">
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-                    <div className="premium-stat-icon">
-                      <Icon name="running" />
-                    </div>
-                    <span>Bitcoin Index</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+                  <div className="premium-stat-icon">
+                    <Icon name="running" />
                   </div>
-                  <button
-                    onClick={() => setBtcIndexManualMode(!btcIndexManualMode)}
-                    className="calculator-formulas-btn"
-                    style={{ 
-                      padding: 'var(--space-1) var(--space-3)', 
-                      fontSize: 'var(--text-xs)',
-                      background: btcIndexManualMode ? 'rgba(197, 255, 167, 0.2)' : 'rgba(197, 255, 167, 0.1)'
-                    }}
-                    title={btcIndexManualMode ? 'Basculer en mode automatique' : 'Basculer en mode manuel'}
-                  >
-                    <Icon name={btcIndexManualMode ? "versions" : "jobs"} />
-                    <span>{btcIndexManualMode ? 'Mode Manuel' : 'Mode Auto'}</span>
-                  </button>
+                  <span>Bitcoin Index</span>
                 </div>
               </div>
-              {btcIndexManualMode ? (
-                // Mode Manuel - Champs éditables
-                <div style={{ paddingTop: 'var(--space-4)' }}>
-                  <div className="calculator-params-row" style={{ gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
-                    <div className="calculator-form-row-inline">
-                      <label>Prix BTC ($)</label>
-                      <input
-                        type="number"
-                        value={manualBtcPrice}
-                        onChange={(e) => {
-                          const val = Math.max(0, parseFloat(e.target.value) || 0)
-                          setManualBtcPrice(val)
-                          setBtcPrice(val)
-                        }}
-                        placeholder="Prix BTC"
-                        className="calculator-param-input"
-                      />
-                    </div>
-                    <div className="calculator-form-row-inline">
-                      <label>Hashrate Réseau (EH/s)</label>
-                      <input
-                        type="number"
-                        step="1"
-                        value={manualBtcHashrate}
-                        onChange={(e) => {
-                          const val = Math.max(0, parseFloat(e.target.value) || 600)
-                          setManualBtcHashrate(val)
-                          setBtcHashrate(val * 1000000) // Convertir EH/s en TH/s
-                        }}
-                        placeholder="Hashrate en EH/s"
-                        className="calculator-param-input"
-                      />
-                    </div>
+              
+              <div className="calculator-btc-content-wrapper">
+                <div className="calculator-params-row" style={{ gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)', marginTop: 'var(--space-4)' }}>
+                  <div className="calculator-form-row-inline">
+                    <label>Prix BTC ($)</label>
+                    <input
+                      type="number"
+                      value={btcPrice}
+                      onChange={(e) => setBtcPrice(Math.max(0, parseFloat(e.target.value) || 0))}
+                      placeholder="Prix BTC"
+                      className="calculator-param-input"
+                    />
                   </div>
-                  <div style={{ marginTop: 'var(--space-4)', paddingTop: 'var(--space-4)', borderTop: '1px solid rgba(255, 255, 255, 0.05)' }}>
-                    <div className="calculator-btc-info-row">
-                      <div className="calculator-btc-info-item">
-                        <div className="calculator-btc-info-label">Prix du jour</div>
-                        <div className="calculator-btc-info-value">
-                          ${formatNumber(btcPrice, 0)}
-                        </div>
-                        <div className="calculator-btc-info-source">Manuel</div>
-                      </div>
-                      <div className="calculator-btc-info-item">
-                        <div className="calculator-btc-info-label">Total BTC Hashrate</div>
-                        <div className="calculator-btc-info-value">
-                          {formatNumber(btcHashrate / 1000000, 0)} EH/s
-                        </div>
-                        <div className="calculator-btc-info-source">Manuel</div>
-                      </div>
-                      <div className="calculator-btc-info-item">
-                        <div className="calculator-btc-info-label">Revenue Th/$</div>
-                        <div className="calculator-btc-info-value">
-                          {!btcPrice || !revenuePerTH ? '...' : `$${formatNumber(revenuePerTH, 4)}`}
-                        </div>
-                        <div className="calculator-btc-info-source">Calculé</div>
-                      </div>
-                    </div>
+                  <div className="calculator-form-row-inline">
+                    <label>Hashrate Réseau (EH/s)</label>
+                    <input
+                      type="number"
+                      step="1"
+                      value={btcHashrate / 1000000}
+                      onChange={(e) => {
+                        const val = Math.max(0, parseFloat(e.target.value) || 600)
+                        setBtcHashrate(val * 1000000) // Convertir EH/s en TH/s
+                      }}
+                      placeholder="Hashrate en EH/s"
+                      className="calculator-param-input"
+                    />
                   </div>
                 </div>
-              ) : (
-                // Mode Automatique - Affichage seulement
-                <div className="calculator-btc-info-row">
-                  <div className="calculator-btc-info-item">
-                    <div className="calculator-btc-info-label">Prix du jour</div>
-                    <div className="calculator-btc-info-value">
-                      {loading ? '...' : `$${formatNumber(btcPrice, 0)}`}
+
+                {revenuePerTH > 0 && (
+                  <div style={{ 
+                    marginTop: 'var(--space-4)', 
+                    padding: 'var(--space-4)', 
+                    background: 'rgba(197, 255, 167, 0.05)',
+                    border: '1px solid rgba(197, 255, 167, 0.2)',
+                    borderRadius: 'var(--radius-md)',
+                    textAlign: 'center'
+                  }}>
+                    <div style={{ 
+                      fontSize: 'var(--text-xs)', 
+                      color: 'var(--text-secondary)', 
+                      marginBottom: 'var(--space-1)'
+                    }}>
+                      Revenue par TH/s par jour
                     </div>
-                    <div className="calculator-btc-info-source">CoinGecko</div>
-                  </div>
-                  <div className="calculator-btc-info-item">
-                    <div className="calculator-btc-info-label">Total BTC Hashrate</div>
-                    <div className="calculator-btc-info-value">
-                      {loading ? '...' : `${formatNumber(btcHashrate / 1000000, 0)} EH/s`}
+                    <div style={{ 
+                      fontSize: 'var(--text-xl)', 
+                      fontWeight: 700, 
+                      color: '#C5FFA7',
+                      fontFamily: 'var(--font-mono)'
+                    }}>
+                      ${formatNumber(revenuePerTH, 4)}
                     </div>
-                    <div className="calculator-btc-info-source">Réseau Bitcoin</div>
                   </div>
-                  <div className="calculator-btc-info-item">
-                    <div className="calculator-btc-info-label">Revenue Th/$</div>
-                    <div className="calculator-btc-info-value">
-                      {loading || !btcPrice || !revenuePerTH ? '...' : `$${formatNumber(revenuePerTH, 4)}`}
-                    </div>
-                    <div className="calculator-btc-info-source">par TH/jour</div>
-                  </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
 
@@ -1204,7 +1218,7 @@ export default function CalculatorPage() {
             <button
               onClick={calculateResults}
               className="calculator-calculate-btn"
-              disabled={loading || !selectedMachine || !selectedHoster || !btcPrice || btcPrice === 0}
+              disabled={!selectedMachine || !selectedHoster || !btcPrice || btcPrice === 0}
             >
               <Icon name="running" />
               <span>Lancer le Calcul</span>
@@ -1212,7 +1226,7 @@ export default function CalculatorPage() {
             <button
               onClick={runTests}
               className="calculator-formulas-btn"
-              disabled={loading || !btcPrice || btcPrice === 0}
+              disabled={!btcPrice || btcPrice === 0}
               style={{ padding: 'var(--space-4) var(--space-8)', fontSize: 'var(--text-base)' }}
               title="Tester 4 scénarios différents pour valider les formules"
             >
@@ -1432,7 +1446,7 @@ export default function CalculatorPage() {
         )}
 
         {/* Message si pas de résultats */}
-        {!result && !loading && testResults.length === 0 && (
+        {!result && testResults.length === 0 && (
           <div className="calculator-results-empty">
             <div className="calculator-empty-icon">
               <Icon name="projects" />
@@ -1493,78 +1507,79 @@ export default function CalculatorPage() {
           </div>
         )}
 
-        {/* Modal Formules de Calcul */}
+        {/* Modal Formules de Calcul - TOUJOURS EN MODE ÉDITION */}
         {formulasModalOpen && (
-          <div className="calculator-modal-overlay" onClick={() => { setFormulasModalOpen(false); setEditMode(false); }}>
+          <div className="calculator-modal-overlay" onClick={() => { setFormulasModalOpen(false); }}>
             <div className="calculator-modal-content" onClick={(e) => e.stopPropagation()}>
               <div className="calculator-modal-header">
                 <h2 className="calculator-modal-title">
-                  <Icon name="projects" />
-                  <span>{editMode ? 'Éditer les Formules' : 'Formules de Calcul'}</span>
+                  <Icon name="jobs" />
+                  <span>Éditer les Formules de Calcul</span>
                 </h2>
-                <div style={{ display: 'flex', gap: 'var(--space-2)', alignItems: 'center' }}>
-                  <button
-                    onClick={() => setEditMode(!editMode)}
-                    className="calculator-formulas-btn"
-                    style={{ padding: 'var(--space-2) var(--space-3)', fontSize: 'var(--text-xs)' }}
-                  >
-                    <Icon name={editMode ? "versions" : "jobs"} />
-                    <span>{editMode ? 'Annuler' : 'Éditer'}</span>
-                  </button>
-                  <button
-                    className="calculator-modal-close"
-                    onClick={() => { setFormulasModalOpen(false); setEditMode(false); }}
-                    aria-label="Fermer"
-                  >
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </button>
-                </div>
+                <button
+                  className="calculator-modal-close"
+                  onClick={() => setFormulasModalOpen(false)}
+                  aria-label="Fermer"
+                >
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </button>
               </div>
               
               <div className="calculator-modal-body">
+                <div style={{
+                  background: 'rgba(197, 255, 167, 0.1)',
+                  border: '1px solid rgba(197, 255, 167, 0.3)',
+                  borderRadius: 'var(--radius-md)',
+                  padding: 'var(--space-4)',
+                  marginBottom: 'var(--space-6)',
+                  fontSize: 'var(--text-sm)',
+                  color: '#C5FFA7'
+                }}>
+                  <strong>💡 Mode Édition Actif :</strong> Tous les paramètres ci-dessous sont directement éditables. Les modifications sont sauvegardées automatiquement et utilisées dans tous les calculs.
+                </div>
+                
                 <div className="calculator-formula-section">
                   <h3 className="calculator-formula-section-title">1. Production BTC par jour</h3>
                   <div className="calculator-formula-box">
                     <div className="calculator-formula-formula">
-                      BTC/jour = (Hashrate Machine / Hashrate Réseau Total) × ({editMode ? (
-                        <>
-                          <input
-                            type="number"
-                            value={formulaParams.blocksPerDay}
-                            onChange={(e) => setFormulaParams({...formulaParams, blocksPerDay: parseFloat(e.target.value) || 144})}
-                            style={{
-                              width: '60px',
-                              background: 'rgba(197, 255, 167, 0.1)',
-                              border: '1px solid rgba(197, 255, 167, 0.3)',
-                              borderRadius: '4px',
-                              padding: '2px 4px',
-                              color: '#C5FFA7',
-                              fontFamily: 'monospace'
-                            }}
-                          />
-                          {' blocs/jour × '}
-                          <input
-                            type="number"
-                            step="0.001"
-                            value={formulaParams.btcPerBlock}
-                            onChange={(e) => setFormulaParams({...formulaParams, btcPerBlock: parseFloat(e.target.value) || 3.125})}
-                            style={{
-                              width: '70px',
-                              background: 'rgba(197, 255, 167, 0.1)',
-                              border: '1px solid rgba(197, 255, 167, 0.3)',
-                              borderRadius: '4px',
-                              padding: '2px 4px',
-                              color: '#C5FFA7',
-                              fontFamily: 'monospace'
-                            }}
-                          />
-                          {' BTC/bloc'}
-                        </>
-                      ) : (
-                        `${formulaParams.blocksPerDay} blocs/jour × ${formulaParams.btcPerBlock} BTC/bloc`
-                      )})
+                      BTC/jour = (Hashrate Machine / Hashrate Réseau Total) × (
+                        <input
+                          type="number"
+                          value={formulaParams.blocksPerDay}
+                          onChange={(e) => setFormulaParams({...formulaParams, blocksPerDay: parseFloat(e.target.value) || 144})}
+                          style={{
+                            width: '70px',
+                            background: 'rgba(197, 255, 167, 0.15)',
+                            border: '1px solid rgba(197, 255, 167, 0.4)',
+                            borderRadius: '4px',
+                            padding: '4px 8px',
+                            color: '#C5FFA7',
+                            fontFamily: 'monospace',
+                            fontSize: '14px',
+                            margin: '0 4px'
+                          }}
+                        />
+                        {' blocs/jour × '}
+                        <input
+                          type="number"
+                          step="0.001"
+                          value={formulaParams.btcPerBlock}
+                          onChange={(e) => setFormulaParams({...formulaParams, btcPerBlock: parseFloat(e.target.value) || 3.125})}
+                          style={{
+                            width: '80px',
+                            background: 'rgba(197, 255, 167, 0.15)',
+                            border: '1px solid rgba(197, 255, 167, 0.4)',
+                            borderRadius: '4px',
+                            padding: '4px 8px',
+                            color: '#C5FFA7',
+                            fontFamily: 'monospace',
+                            fontSize: '14px',
+                            margin: '0 4px'
+                          }}
+                        />
+                        {' BTC/bloc'})
                     </div>
                     <div className="calculator-formula-explanation">
                       <strong>Exemple :</strong> Machine 605 TH/s, Réseau 600 EH/s (600,000,000 TH/s)

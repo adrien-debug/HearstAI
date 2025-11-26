@@ -114,11 +114,13 @@ app.use((err, req, res, next) => {
 
 // Start server (only if not in Vercel serverless environment)
 if (require.main === module) {
-    app.listen(PORT, () => {
+    const HOST = process.env.HOST || '0.0.0.0'; // Écouter sur toutes les interfaces réseau
+    app.listen(PORT, HOST, () => {
         console.log('');
         console.log('🚀 Claude CI/CD Cockpit - Backend Server');
         console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
         console.log(`✅ Server running on: http://localhost:${PORT}`);
+        console.log(`✅ Server accessible on network: http://0.0.0.0:${PORT}`);
         console.log(`✅ API available at: http://localhost:${PORT}/api`);
         console.log('');
     });

@@ -103,11 +103,45 @@ export default function Header() {
 
   // Load crypto prices (BTC and ETH)
   useEffect(() => {
+    // MODE DEBUG LOCAL : Utiliser des données mockées pour éviter les blocages CORS et 429
+    const isLocal = typeof window !== 'undefined' && (
+      window.location.hostname === 'localhost' || 
+      window.location.hostname === '127.0.0.1' ||
+      window.location.port === '6001'
+    )
+
+    // Initialize with mock prices immediately
+    setCryptoPrices([
+      { symbol: 'BTC', name: 'Bitcoin', price: 85000, change24h: 2.5 },
+      { symbol: 'ETH', name: 'Ethereum', price: 3200, change24h: 1.8 },
+    ])
+
+    // EN MODE LOCAL : Pas d'appel API, utiliser les données mockées
+    if (isLocal) {
+      console.log('[Header] 🔧 MODE LOCAL - Utilisation de prix crypto mockés')
+      return // Pas d'interval en mode local
+    }
+
+    // EN PRODUCTION : Charger les vraies données depuis CoinGecko
     const loadCryptoPrices = async () => {
       try {
         const response = await fetch(
-          'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd&include_24hr_change=true'
+          'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd&include_24hr_change=true',
+          {
+            method: 'GET',
+            headers: {
+              'Accept': 'application/json',
+            },
+            // Ne pas afficher d'erreur si la requête échoue (429, CORS, etc.)
+            signal: AbortSignal.timeout(5000), // Timeout après 5 secondes
+          }
         )
+        
+        if (!response.ok) {
+          // Si erreur (429, etc.), utiliser les données mockées silencieusement
+          return
+        }
+
         const data = await response.json()
         
         if (data.bitcoin && data.ethereum) {
@@ -127,19 +161,20 @@ export default function Header() {
           ])
         }
       } catch (err) {
-        console.error('[Header] Erreur chargement prix crypto:', err)
-        // Fallback avec données mockées
-        setCryptoPrices([
-          { symbol: 'BTC', name: 'Bitcoin', price: 85000, change24h: 2.5 },
-          { symbol: 'ETH', name: 'Ethereum', price: 3200, change24h: 1.8 },
-        ])
+        // Erreur silencieuse - les données mockées sont déjà définies
+        // Ne pas logger pour éviter le spam dans la console
       }
     }
 
-    loadCryptoPrices()
-    // Rafraîchir toutes les 60 secondes
-    const interval = setInterval(loadCryptoPrices, 60000)
-    return () => clearInterval(interval)
+    // Charger une première fois après un délai
+    const timeout = setTimeout(loadCryptoPrices, 2000)
+    // Rafraîchir toutes les 5 minutes (au lieu de 60 secondes pour éviter 429)
+    const interval = setInterval(loadCryptoPrices, 300000)
+    
+    return () => {
+      clearTimeout(timeout)
+      clearInterval(interval)
+    }
   }, [])
 
   const formatTime = (date: Date | null) => {

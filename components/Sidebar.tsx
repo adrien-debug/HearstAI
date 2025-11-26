@@ -62,6 +62,7 @@ const datasSection: NavSection = {
   items: [
     { href: '/datas/miner', label: 'Miner', icon: 'document', view: 'datas-miner' },
     { href: '/datas/hoster', label: 'Hoster', icon: 'document', view: 'datas-hoster' },
+    { href: '/glossaire', label: 'Glossaire', icon: 'document', view: 'glossaire' },
   ]
 }
 

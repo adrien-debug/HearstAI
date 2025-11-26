@@ -168,6 +168,7 @@ body {
   flex: 1;
   overflow-y: auto;
   padding: var(--space-6);
+  padding-top: calc(70px + 24px) !important; /* 70px header + 24px space */
   width: 100%;
 }
 
@@ -175,6 +176,7 @@ body {
 .dashboard-view {
   width: 100%;
   max-width: 100%;
+  padding-top: 0;
 }
 
 .dashboard-content {

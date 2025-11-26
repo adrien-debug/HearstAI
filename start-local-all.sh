@@ -97,10 +97,10 @@ if [ -f "prisma/schema.prisma" ]; then
     echo ""
 fi
 
-# 4. Démarrer le backend Express (port 4000)
-echo -e "${CYAN}🔌 Démarrage du backend Express...${NC}"
+# 4. Démarrer le backend Express (port 4000) - accessible sur le réseau local
+echo -e "${CYAN}🔌 Démarrage du backend Express (accessible sur le réseau local)...${NC}"
 cd backend
-PORT=$BACKEND_PORT node server.js > /tmp/hearst-backend.log 2>&1 &
+PORT=$BACKEND_PORT HOST=0.0.0.0 node server.js > /tmp/hearst-backend.log 2>&1 &
 BACKEND_PID=$!
 cd ..
 sleep 4
@@ -132,10 +132,10 @@ echo ""
 # 5. Configurer les variables d'environnement pour le frontend
 export NEXT_PUBLIC_API_URL="http://localhost:$BACKEND_PORT"
 
-# 6. Démarrer le frontend Next.js (port 6001)
-echo -e "${CYAN}⚡ Démarrage du frontend Next.js...${NC}"
-# Le script dev dans package.json utilise déjà -p 6001
-npm run dev > /tmp/hearst-frontend.log 2>&1 &
+# 6. Démarrer le frontend Next.js (port 6001) - accessible sur le réseau local
+echo -e "${CYAN}⚡ Démarrage du frontend Next.js (accessible sur le réseau local)...${NC}"
+# Utiliser -H 0.0.0.0 pour rendre accessible sur le réseau local
+PORT=$FRONTEND_PORT HOSTNAME=0.0.0.0 npx next dev -p $FRONTEND_PORT -H 0.0.0.0 > /tmp/hearst-frontend.log 2>&1 &
 FRONTEND_PID=$!
 sleep 6
 
@@ -182,14 +182,28 @@ else
 fi
 echo ""
 
-# 9. Afficher le résumé
+# 9. Récupérer l'adresse IP locale
+LOCAL_IP=$(ifconfig | grep "inet " | grep -v 127.0.0.1 | awk '{print $2}' | head -1)
+if [ -z "$LOCAL_IP" ]; then
+    LOCAL_IP=$(ipconfig getifaddr en0 2>/dev/null || ipconfig getifaddr en1 2>/dev/null || echo "VOTRE_IP_LOCALE")
+fi
+
+# 10. Afficher le résumé
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-echo -e "${GREEN}  ✅ Tous les serveurs sont démarrés en LOCAL!${NC}"
+echo -e "${GREEN}  ✅ Tous les serveurs sont démarrés et accessibles sur le réseau local!${NC}"
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo ""
-echo -e "${CYAN}🌐 Frontend Next.js:${NC}  http://localhost:$FRONTEND_PORT"
-echo -e "${CYAN}🔌 Backend Express:${NC}   http://localhost:$BACKEND_PORT"
-echo -e "${CYAN}📡 API Routes:${NC}       http://localhost:$FRONTEND_PORT/api/*"
+echo -e "${CYAN}🌐 Frontend Next.js:${NC}"
+echo -e "   Local:    http://localhost:$FRONTEND_PORT"
+echo -e "   Réseau:   http://$LOCAL_IP:$FRONTEND_PORT"
+echo ""
+echo -e "${CYAN}🔌 Backend Express:${NC}"
+echo -e "   Local:    http://localhost:$BACKEND_PORT"
+echo -e "   Réseau:   http://$LOCAL_IP:$BACKEND_PORT"
+echo ""
+echo -e "${CYAN}📡 API Routes:${NC}"
+echo -e "   Local:    http://localhost:$FRONTEND_PORT/api/*"
+echo -e "   Réseau:   http://$LOCAL_IP:$FRONTEND_PORT/api/*"
 echo ""
 echo -e "${CYAN}📋 Routes API disponibles:${NC}"
 echo -e "   • http://localhost:$FRONTEND_PORT/api/health"

@@ -3,7 +3,7 @@
 /* Ensure the dashboard view is visible */
 .dashboard-view {
     padding: 0;
-    padding-top: 10px;
+    padding-top: 0;
     width: 100%;
     max-width: 100%;
     margin: 0;

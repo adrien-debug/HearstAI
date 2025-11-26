@@ -725,7 +725,8 @@ body {
 .content-area {
     flex: 1;
     padding: 0;
-    margin-top: 0;
+    padding-top: calc(70px + 24px) !important; /* 70px header + 24px space */
+    margin-top: 0 !important;
     overflow-y: auto;
     overflow-x: hidden;
     background: var(--primary-dark);
@@ -842,7 +843,8 @@ body {
     overflow-y: auto !important;
     overflow-x: hidden !important;
     padding: 0 !important;
-    padding-top: var(--header-height) !important;
+    padding-top: calc(70px + 24px) !important; /* 70px header + 24px space */
+    margin-top: 0 !important;
     box-sizing: border-box !important;
     position: relative !important;
     gap: 0 !important;
@@ -853,6 +855,8 @@ body {
 .content-area .dashboard-view {
     min-height: fit-content !important;
     overflow: visible !important;
+    padding-top: 0 !important;
+    margin-top: 0 !important;
 }
 
 /* ====================================
@@ -1004,7 +1008,7 @@ body {
    ==================================== */
 
 .content-area {
-    padding: var(--space-4) var(--space-8) var(--space-8) var(--space-8) !important;
+    padding: calc(70px + 16px) var(--space-8) var(--space-8) var(--space-8) !important; /* 70px header + 16px space */
     gap: var(--space-6) !important;
     background: linear-gradient(180deg, #000000 0%, #0a0a0a 100%) !important;
 }
@@ -1026,7 +1030,7 @@ body {
 
 @media (max-width: 1440px) {
     .content-area {
-        padding: var(--space-6) !important;
+        padding: calc(70px + 24px) var(--space-6) var(--space-6) var(--space-6) !important; /* 70px header + 24px space */
     }
     
     .header-left,
@@ -1047,7 +1051,7 @@ body {
     }
     
     .content-area {
-        padding: var(--space-5) !important;
+        padding: calc(70px + 20px) var(--space-5) var(--space-5) var(--space-5) !important; /* 70px header + 20px space */
         gap: var(--space-5) !important;
     }
 }
@@ -1071,7 +1075,7 @@ body {
     }
     
     .content-area {
-        padding: var(--space-4) !important;
+        padding: calc(70px + 16px) var(--space-4) var(--space-4) var(--space-4) !important; /* 70px header + 16px space */
         gap: var(--space-4) !important;
     }
 }
@@ -1404,7 +1408,7 @@ body {
    ==================================== */
 
 .content-area {
-    padding: var(--space-6) var(--space-8) var(--space-10) var(--space-8) !important;
+    padding: calc(70px + 24px) var(--space-8) var(--space-10) var(--space-8) !important; /* 70px header + 24px space */
     gap: var(--space-6) !important;
     background: linear-gradient(180deg, #000000 0%, #0a0a0a 50%, #000000 100%) !important;
 }
@@ -1887,7 +1891,7 @@ h1, h2, h3, h4, h5, h6 {
    ==================================== */
 
 .content-area {
-    padding: var(--space-6) var(--space-8) var(--space-10) var(--space-8) !important;
+    padding: calc(70px + 24px) var(--space-8) var(--space-10) var(--space-8) !important; /* 70px header + 24px space */
     gap: var(--space-6) !important;
     background: linear-gradient(180deg, #000000 0%, #0a0a0a 50%, #000000 100%) !important;
 }
@@ -1914,7 +1918,7 @@ h1, h2, h3, h4, h5, h6 {
 
 @media (max-width: 1440px) {
     .content-area {
-        padding: var(--space-5) var(--space-6) var(--space-8) var(--space-6) !important;
+        padding: calc(70px + 20px) var(--space-6) var(--space-8) var(--space-6) !important; /* 70px header + 20px space */
     }
     
     .header-left,
@@ -1935,7 +1939,7 @@ h1, h2, h3, h4, h5, h6 {
     }
     
     .content-area {
-        padding: var(--space-4) var(--space-5) var(--space-6) var(--space-5) !important;
+        padding: calc(70px + 16px) var(--space-5) var(--space-6) var(--space-5) !important; /* 70px header + 16px space */
         gap: var(--space-5) !important;
     }
 }
@@ -1956,7 +1960,7 @@ h1, h2, h3, h4, h5, h6 {
     }
     
     .content-area {
-        padding: var(--space-4) !important;
+        padding: calc(70px + 16px) var(--space-4) var(--space-4) var(--space-4) !important; /* 70px header + 16px space */
         gap: var(--space-4) !important;
     }
 }
