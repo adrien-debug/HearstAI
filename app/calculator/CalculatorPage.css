@@ -1,6 +1,280 @@
 /* Calculator Page Styles - EXACT copy from Home.css */
 
 /* ====================================
+   FORMULAS BUTTON (Top Right)
+   ==================================== */
+.calculator-formulas-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    background: rgba(197, 255, 167, 0.1);
+    color: #C5FFA7;
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    letter-spacing: -0.01em;
+    border: 1px solid rgba(197, 255, 167, 0.3);
+    cursor: pointer;
+    transition: all var(--duration-fast) var(--ease-in-out);
+    white-space: nowrap;
+}
+
+.calculator-formulas-btn:hover {
+    background: rgba(197, 255, 167, 0.2);
+    border-color: #C5FFA7;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(197, 255, 167, 0.2);
+}
+
+.calculator-formulas-btn .premium-stat-icon {
+    width: 16px;
+    height: 16px;
+}
+
+/* ====================================
+   MODAL OVERLAY
+   ==================================== */
+.calculator-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-4);
+    animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.calculator-modal-content {
+    background: rgba(26, 26, 26, 0.95);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-xl);
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    max-width: 800px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.calculator-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-6);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: sticky;
+    top: 0;
+    background: rgba(26, 26, 26, 0.95);
+    backdrop-filter: blur(20px);
+    z-index: 1;
+}
+
+.calculator-modal-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: var(--text-xl);
+    font-weight: var(--font-bold);
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.calculator-modal-title .premium-stat-icon {
+    width: 24px;
+    height: 24px;
+    color: #C5FFA7;
+}
+
+.calculator-modal-close {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: var(--space-2);
+    border-radius: var(--radius-md);
+    transition: all var(--duration-fast) var(--ease-in-out);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.calculator-modal-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+}
+
+.calculator-modal-body {
+    padding: var(--space-6);
+}
+
+/* ====================================
+   FORMULA SECTIONS
+   ==================================== */
+.calculator-formula-section {
+    margin-bottom: var(--space-6);
+}
+
+.calculator-formula-section:last-child {
+    margin-bottom: 0;
+}
+
+.calculator-formula-section-title {
+    font-size: var(--text-lg);
+    font-weight: var(--font-semibold);
+    color: #C5FFA7;
+    margin: 0 0 var(--space-3) 0;
+    letter-spacing: -0.01em;
+}
+
+.calculator-formula-box {
+    background: rgba(10, 10, 10, 0.6);
+    border: 1px solid rgba(197, 255, 167, 0.2);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    position: relative;
+    overflow: hidden;
+}
+
+.calculator-formula-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: #C5FFA7;
+}
+
+.calculator-formula-formula {
+    font-family: 'Courier New', monospace;
+    font-size: var(--text-sm);
+    color: var(--text-primary);
+    background: rgba(0, 0, 0, 0.3);
+    padding: var(--space-3);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-3);
+    line-height: 1.6;
+    border-left: 2px solid rgba(197, 255, 167, 0.3);
+    padding-left: var(--space-4);
+}
+
+.calculator-formula-explanation {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.calculator-formula-explanation strong {
+    color: var(--text-primary);
+    font-weight: var(--font-semibold);
+}
+
+/* ====================================
+   CALCULATE BUTTON
+   ==================================== */
+.calculator-calculate-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    background: #C5FFA7;
+    color: #000000;
+    padding: var(--space-4) var(--space-8);
+    border-radius: var(--radius-full);
+    font-size: var(--text-base);
+    font-weight: var(--font-bold);
+    letter-spacing: -0.01em;
+    border: none;
+    cursor: pointer;
+    box-shadow: 
+        0 4px 16px rgba(197, 255, 167, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    transition: all var(--duration-fast) var(--ease-in-out);
+    position: relative;
+    overflow: hidden;
+}
+
+.calculator-calculate-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.2) 0%,
+        transparent 50%,
+        rgba(255, 255, 255, 0.1) 100%
+    );
+    opacity: 0;
+    transition: opacity var(--duration-fast) var(--ease-in-out);
+}
+
+.calculator-calculate-btn:hover:not(:disabled)::before {
+    opacity: 1;
+}
+
+.calculator-calculate-btn:hover:not(:disabled) {
+    background: #B0FF8F;
+    box-shadow: 
+        0 6px 24px rgba(197, 255, 167, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    transform: translateY(-2px) scale(1.02);
+}
+
+.calculator-calculate-btn:active:not(:disabled) {
+    transform: translateY(0) scale(1);
+    box-shadow: 
+        0 2px 8px rgba(197, 255, 167, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.calculator-calculate-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: rgba(197, 255, 167, 0.3);
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.calculator-calculate-btn .premium-stat-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.calculator-calculate-btn span {
+    position: relative;
+    z-index: 1;
+}
+
+/* ====================================
    DASHBOARD VIEW (EXACT from Home)
    ==================================== */
 .dashboard-view {
@@ -333,6 +607,10 @@
    TABLEAU RÉCAPITULATIF (STYLE PREMIUM)
    ==================================== */
 .calculator-table-negative {
+    color: #FF4D4D !important;
+}
+
+.premium-transaction-amount.negative {
     color: #FF4D4D !important;
 }
 
