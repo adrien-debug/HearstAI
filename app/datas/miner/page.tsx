@@ -12,6 +12,7 @@ interface Miner {
   power: number // W
   efficiency: number // J/TH
   price: number // USD
+  coolingType: 'hydro' | 'air' | 'immersion' // Type de refroidissement
   manufacturer?: string
   model?: string
   releaseDate?: string
@@ -22,12 +23,14 @@ export default function MinerDataPage() {
   const [miners, setMiners] = useState<Miner[]>([])
   const [isEditing, setIsEditing] = useState<string | null>(null)
   const [isAdding, setIsAdding] = useState(false)
+  const [activeCoolingType, setActiveCoolingType] = useState<'hydro' | 'air' | 'immersion' | 'all'>('all')
   const [formData, setFormData] = useState<Partial<Miner>>({
     name: '',
     hashrate: 0,
     power: 0,
     efficiency: 0,
     price: 0,
+    coolingType: 'air',
     manufacturer: '',
     model: '',
     releaseDate: '',
@@ -60,6 +63,7 @@ export default function MinerDataPage() {
       power: 0,
       efficiency: 0,
       price: 0,
+      coolingType: 'air',
       manufacturer: '',
       model: '',
       releaseDate: '',
@@ -81,7 +85,7 @@ export default function MinerDataPage() {
   }
 
   const handleSave = () => {
-    if (!formData.name || !formData.hashrate || !formData.power || !formData.price) {
+    if (!formData.name || !formData.hashrate || !formData.power || !formData.price || !formData.coolingType) {
       alert('Veuillez remplir tous les champs obligatoires')
       return
     }
@@ -102,6 +106,7 @@ export default function MinerDataPage() {
         power: formData.power!,
         efficiency: formData.efficiency || (formData.power! / formData.hashrate!),
         price: formData.price!,
+        coolingType: formData.coolingType!,
         manufacturer: formData.manufacturer || '',
         model: formData.model || '',
         releaseDate: formData.releaseDate || '',
@@ -118,6 +123,7 @@ export default function MinerDataPage() {
       power: 0,
       efficiency: 0,
       price: 0,
+      coolingType: 'air',
       manufacturer: '',
       model: '',
       releaseDate: '',
@@ -134,6 +140,7 @@ export default function MinerDataPage() {
       power: 0,
       efficiency: 0,
       price: 0,
+      coolingType: 'air',
       manufacturer: '',
       model: '',
       releaseDate: '',
@@ -144,6 +151,18 @@ export default function MinerDataPage() {
   const formatNumber = (num: number, decimals: number = 2): string => {
     return num.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })
   }
+
+  // Filtrer les machines selon le type de refroidissement
+  const filteredMiners = activeCoolingType === 'all' 
+    ? miners 
+    : miners.filter(m => m.coolingType === activeCoolingType)
+
+  const coolingTypes = [
+    { id: 'all', label: 'Tous' },
+    { id: 'hydro', label: 'Hydro Cooling' },
+    { id: 'air', label: 'Air Cooling' },
+    { id: 'immersion', label: 'Immersion Cooling' },
+  ]
 
   return (
     <div className="dashboard-view">
@@ -167,6 +186,19 @@ export default function MinerDataPage() {
           }}>
             Gérez toutes les données des machines de mining
           </p>
+          
+          {/* Navigation tabs - Cooling Type */}
+          <nav className="miner-nav-tabs" style={{ marginTop: 'var(--space-4)' }}>
+            {coolingTypes.map((type) => (
+              <button
+                key={type.id}
+                onClick={() => setActiveCoolingType(type.id as any)}
+                className={`miner-nav-tab ${activeCoolingType === type.id ? 'active' : ''}`}
+              >
+                {type.label}
+              </button>
+            ))}
+          </nav>
         </div>
 
         {/* Bouton Ajouter */}
@@ -298,6 +330,18 @@ export default function MinerDataPage() {
                 />
               </div>
 
+              <div className="miner-data-form-group">
+                <label>Type de Refroidissement *</label>
+                <select
+                  value={formData.coolingType || 'air'}
+                  onChange={(e) => setFormData({ ...formData, coolingType: e.target.value as 'hydro' | 'air' | 'immersion' })}
+                >
+                  <option value="air">Air Cooling</option>
+                  <option value="hydro">Hydro Cooling</option>
+                  <option value="immersion">Immersion Cooling</option>
+                </select>
+              </div>
+
               <div className="miner-data-form-group miner-data-form-group-full">
                 <label>Notes</label>
                 <textarea
@@ -319,12 +363,12 @@ export default function MinerDataPage() {
                 <div className="premium-stat-icon">
                   <Icon name="projects" />
                 </div>
-                <span>Machines Enregistrées ({miners.length})</span>
+                <span>Machines Enregistrées ({filteredMiners.length}{activeCoolingType !== 'all' ? ` / ${miners.length}` : ''})</span>
               </div>
             </h3>
           </div>
 
-          {miners.length === 0 ? (
+          {filteredMiners.length === 0 ? (
             <div className="miner-data-empty">
               <div className="calculator-empty-icon">
                 <Icon name="projects" />
@@ -342,12 +386,13 @@ export default function MinerDataPage() {
                     <th>Hashrate</th>
                     <th>Consommation</th>
                     <th>Efficacité</th>
+                    <th>Refroidissement</th>
                     <th>Prix</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {miners.map((miner) => (
+                  {filteredMiners.map((miner) => (
                     <tr key={miner.id}>
                       <td>
                         <div style={{ fontWeight: 'var(--font-semibold)' }}>{miner.name}</div>
@@ -360,6 +405,11 @@ export default function MinerDataPage() {
                       <td>{miner.hashrate} TH/s</td>
                       <td>{miner.power} W</td>
                       <td>{miner.efficiency.toFixed(2)} J/TH</td>
+                      <td>
+                        <span className={`miner-cooling-badge miner-cooling-${miner.coolingType}`}>
+                          {miner.coolingType === 'hydro' ? 'Hydro' : miner.coolingType === 'air' ? 'Air' : 'Immersion'}
+                        </span>
+                      </td>
                       <td className="premium-transaction-amount">${formatNumber(miner.price, 0)}</td>
                       <td>
                         <div className="miner-data-actions">
