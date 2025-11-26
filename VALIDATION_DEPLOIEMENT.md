@@ -171,3 +171,5 @@ vercel inspect <deployment-url> --logs
 Il ne reste plus qu'à mettre à jour `NEXTAUTH_URL` et tester l'authentification.
 
 
+
+

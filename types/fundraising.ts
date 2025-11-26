@@ -48,3 +48,5 @@ export interface FundraisingStats {
   totalInterest: number // Somme des montants d'intérêt
 }
 
+
+

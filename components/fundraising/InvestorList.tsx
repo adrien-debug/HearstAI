@@ -225,3 +225,5 @@ export default function InvestorList({ investors, onSelectInvestor, onDeleteInve
   )
 }
 
+
+

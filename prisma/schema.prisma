@@ -19,6 +19,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   projects      Project[]
+  documents     Document[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 }
@@ -176,5 +177,35 @@ model Customer {
   lastUpdate        DateTime @default(now())
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
+}
+
+model Document {
+  id                String   @id @default(cuid())
+  userId            String
+  googleDriveFileId String   @unique // ID du fichier dans Google Drive
+  name              String
+  mimeType          String
+  size              BigInt?  // Taille en octets
+  category          String?  // Catégorie (Contrats, Rapports, etc.)
+  description       String?
+  webViewLink       String?  // Lien pour voir le fichier dans Google Drive
+  webContentLink    String?  // Lien pour télécharger le fichier
+  thumbnailLink     String?  // Lien vers la miniature
+  parentFolderId    String?  // ID du dossier parent dans Google Drive
+  starred           Boolean  @default(false)
+  trashed           Boolean  @default(false)
+  shared            Boolean  @default(false)
+  ownerEmail        String?  // Email du propriétaire du fichier
+  importedAt        DateTime @default(now())
+  lastSyncedAt      DateTime @default(now())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([category])
+  @@index([googleDriveFileId])
+  @@index([lastSyncedAt])
 }
 

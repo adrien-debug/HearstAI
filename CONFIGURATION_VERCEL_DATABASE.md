@@ -107,3 +107,5 @@ Si tu rencontres des erreurs de connexion :
 3. Vérifie que la base de données est bien liée au projet dans Prisma Data Platform
 
 
+
+

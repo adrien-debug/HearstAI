@@ -31,3 +31,5 @@ Configurer sur: https://vercel.com/adrien-nejkovics-projects/hearstai/settings/e
 - `NEXT_PUBLIC_API_URL` (laisser vide)
 
 
+
+

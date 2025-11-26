@@ -12,7 +12,23 @@ export default function SignInPage() {
   const [loading, setLoading] = useState(false)
   const [isLocal, setIsLocal] = useState(false)
 
-  // Détecter si on est en mode local et rediriger automatiquement
+  // Désactiver le scroll automatique de Next.js pour éviter les warnings
+  useEffect(() => {
+    // Empêcher le scroll automatique sur cette page
+    const originalOverflow = document.body.style.overflow
+    const originalPosition = document.body.style.position
+    
+    document.body.style.overflow = 'hidden'
+    document.body.style.position = 'relative'
+    
+    // Restaurer au démontage
+    return () => {
+      document.body.style.overflow = originalOverflow
+      document.body.style.position = originalPosition
+    }
+  }, [])
+
+  // Détecter si on est en mode local
   useEffect(() => {
     const isLocalEnv = typeof window !== 'undefined' && (
       window.location.hostname === 'localhost' || 
@@ -24,12 +40,21 @@ export default function SignInPage() {
     console.log('[SignIn] Mode local détecté:', isLocalEnv)
     
     // EN MODE LOCAL : Rediriger automatiquement vers la page d'accueil
-    // Pas besoin de login en local
+    // SAUF si on a un callbackUrl (ex: depuis une redirection externe)
+    // Dans ce cas, on laisse l'utilisateur se connecter normalement
     if (isLocalEnv) {
-      console.log('[SignIn] 🔧 MODE LOCAL - Redirection automatique vers /')
-      setTimeout(() => {
-        router.push('/')
-      }, 500)
+      const urlParams = new URLSearchParams(window.location.search)
+      const callbackUrl = urlParams.get('callbackUrl')
+      
+      // Si pas de callbackUrl, rediriger automatiquement
+      if (!callbackUrl || callbackUrl.trim() === '') {
+        console.log('[SignIn] 🔧 MODE LOCAL - Redirection automatique vers / (pas de callbackUrl)')
+        setTimeout(() => {
+          router.push('/')
+        }, 500)
+      } else {
+        console.log('[SignIn] 🔧 MODE LOCAL - CallbackUrl détecté, pas de redirection automatique:', callbackUrl)
+      }
     }
   }, [router])
 
@@ -121,18 +146,21 @@ export default function SignInPage() {
   }
 
   return (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      width: '100%',
-      height: '100vh',
-      background: 'linear-gradient(135deg, #0F0F0F 0%, #1A1A1A 100%)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 9999,
-    }}>
+    <div 
+      data-nextjs-scroll-focus-boundary="false"
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100vh',
+        background: 'linear-gradient(135deg, #0F0F0F 0%, #1A1A1A 100%)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 9999,
+      }}
+    >
       <div style={{ width: '100%', maxWidth: '420px', padding: '20px' }}>
         <div style={{ textAlign: 'center', marginBottom: '40px' }}>
           <div style={{
@@ -178,18 +206,22 @@ export default function SignInPage() {
           )}
 
           <div style={{ marginBottom: '24px' }}>
-            <label style={{
-              display: 'block',
-              fontSize: '12px',
-              fontWeight: 600,
-              color: '#B0B0B0',
-              marginBottom: '8px',
-              textTransform: 'uppercase',
-              letterSpacing: '0.5px',
-            }}>
+            <label 
+              htmlFor="email-input"
+              style={{
+                display: 'block',
+                fontSize: '12px',
+                fontWeight: 600,
+                color: '#B0B0B0',
+                marginBottom: '8px',
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+              }}
+            >
               Email
             </label>
             <input
+              id="email-input"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -216,18 +248,22 @@ export default function SignInPage() {
           </div>
 
           <div style={{ marginBottom: '32px' }}>
-            <label style={{
-              display: 'block',
-              fontSize: '12px',
-              fontWeight: 600,
-              color: '#B0B0B0',
-              marginBottom: '8px',
-              textTransform: 'uppercase',
-              letterSpacing: '0.5px',
-            }}>
+            <label 
+              htmlFor="password-input"
+              style={{
+                display: 'block',
+                fontSize: '12px',
+                fontWeight: 600,
+                color: '#B0B0B0',
+                marginBottom: '8px',
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+              }}
+            >
               Password
             </label>
             <input
+              id="password-input"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}

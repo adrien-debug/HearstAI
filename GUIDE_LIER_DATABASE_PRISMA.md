@@ -70,3 +70,5 @@ Une fois la base liée, tu devrais voir :
 - L'URL Prisma Accelerate est différente de l'URL PostgreSQL directe
 
 
+
+

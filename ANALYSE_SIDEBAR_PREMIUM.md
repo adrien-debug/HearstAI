@@ -491,3 +491,5 @@ Après application de ces recommandations, la sidebar aura :
 
 **Tout en restant 100% fidèle au design system existant.**
 
+
+

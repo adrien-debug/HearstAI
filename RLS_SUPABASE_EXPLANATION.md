@@ -119,3 +119,5 @@ USING (auth.uid() = id);
 Elles sont spécifiques à Supabase/PostgREST et ne s'appliquent pas à ton architecture avec Prisma Accelerate.
 
 
+
+

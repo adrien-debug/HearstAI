@@ -266,3 +266,5 @@ export default function InvestorDetail({ investor, onUpdate, onDelete, onBack }:
   )
 }
 
+
+

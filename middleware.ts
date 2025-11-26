@@ -3,26 +3,27 @@ import type { NextRequest } from 'next/server'
 import { getToken } from 'next-auth/jwt'
 
 export async function middleware(request: NextRequest) {
-  try {
-    const { pathname } = request.nextUrl
+  const { pathname } = request.nextUrl
 
-    // Allow access to auth pages, API routes, and public assets
-    if (
-      pathname.startsWith('/auth') ||
-      pathname.startsWith('/_next') ||
-      pathname.startsWith('/api') || // Allow all API routes
-      pathname === '/favicon.ico' ||
-      pathname.startsWith('/js/') ||
-      pathname.startsWith('/css/') ||
-      pathname.startsWith('/public/') ||
-      pathname.endsWith('.svg') ||
-      pathname.endsWith('.png') ||
-      pathname.endsWith('.jpg') ||
-      pathname.endsWith('.ico') ||
-      pathname.endsWith('.json')
-    ) {
-      return NextResponse.next()
-    }
+  // PRIORITÉ ABSOLUE : Exclure TOUS les fichiers statiques et assets
+  // Cette vérification doit être la PREMIÈRE et la plus rapide possible
+  // Ne pas utiliser try/catch ici pour éviter toute surcharge
+  if (
+    pathname.startsWith('/_next') || // Tous les fichiers Next.js (_next/static, _next/image, etc.)
+    pathname.startsWith('/api') || // Toutes les routes API
+    pathname.startsWith('/auth') || // Pages d'authentification
+    pathname === '/favicon.ico' ||
+    pathname.startsWith('/js/') ||
+    pathname.startsWith('/css/') ||
+    pathname.startsWith('/public/') ||
+    pathname.startsWith('/static/') ||
+    pathname.match(/\.(svg|png|jpg|jpeg|gif|webp|ico|json|js|css|woff|woff2|ttf|eot|map)$/i)
+  ) {
+    // Retourner immédiatement sans aucune logique supplémentaire
+    return NextResponse.next()
+  }
+
+  try {
 
     // MODE DEBUG LOCAL : Désactiver COMPLÈTEMENT le middleware en développement local
     // Cela évite toutes les boucles de redirection
@@ -51,33 +52,42 @@ export async function middleware(request: NextRequest) {
     const hasAuthCookie = request.cookies.has(cookieName)
     
     // Check for authentication token
+    // IMPORTANT: Ne pas appeler getToken si NEXTAUTH_SECRET n'est pas défini
     let token = null
-    try {
-      token = await getToken({
-        req: request,
-        secret: process.env.NEXTAUTH_SECRET,
-        cookieName: cookieName,
-      })
-      console.log('[Middleware] Token check:', { 
-        hasToken: !!token, 
-        hasCookie: hasAuthCookie,
-        pathname,
-        cookieName
-      })
-    } catch (error) {
-      console.error('[Middleware] Error getting token:', error)
-      // Si on a le cookie mais que getToken échoue, laisser passer (cookie en cours de traitement)
-      if (hasAuthCookie) {
-        console.log('[Middleware] Cookie présent mais getToken échoué, laisser passer')
+    if (process.env.NEXTAUTH_SECRET) {
+      try {
+        token = await getToken({
+          req: request,
+          secret: process.env.NEXTAUTH_SECRET,
+          cookieName: cookieName,
+        })
+        // Log uniquement en développement pour éviter le spam en production
+        if (process.env.NODE_ENV === 'development') {
+          console.log('[Middleware] Token check:', { 
+            hasToken: !!token, 
+            hasCookie: hasAuthCookie,
+            pathname,
+            cookieName
+          })
+        }
+      } catch (error) {
+        // En cas d'erreur, logger mais ne pas bloquer
+        console.error('[Middleware] Error getting token:', error)
+        // Si on a le cookie mais que getToken échoue, laisser passer (cookie en cours de traitement)
+        if (hasAuthCookie) {
+          if (process.env.NODE_ENV === 'development') {
+            console.log('[Middleware] Cookie présent mais getToken échoué, laisser passer')
+          }
+          return NextResponse.next()
+        }
+        // Sinon, rediriger vers login seulement si on n'est pas déjà sur /auth/signin
+        if (pathname !== '/auth/signin') {
+          const signInUrl = new URL('/auth/signin', request.url)
+          signInUrl.searchParams.set('callbackUrl', pathname)
+          return NextResponse.redirect(signInUrl)
+        }
         return NextResponse.next()
       }
-      // Sinon, rediriger vers login seulement si on n'est pas déjà sur /auth/signin
-      if (pathname !== '/auth/signin') {
-        const signInUrl = new URL('/auth/signin', request.url)
-        signInUrl.searchParams.set('callbackUrl', pathname)
-        return NextResponse.redirect(signInUrl)
-      }
-      return NextResponse.next()
     }
 
     // Si on a le cookie mais pas de token, laisser passer (cookie en cours de traitement par NextAuth)
@@ -159,11 +169,14 @@ export const config = {
   matcher: [
     /*
      * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - api/* (all API routes - handled in middleware logic above)
+     * - _next (all Next.js internal files - static, image, etc.)
+     * - api (all API routes)
+     * - favicon.ico
+     * - static files (images, fonts, etc.)
+     * 
+     * IMPORTANT: Le matcher exclut ces chemins AVANT que le middleware ne s'exécute.
+     * On double la vérification dans le middleware pour être absolument sûr.
      */
-    '/((?!_next/static|_next/image|favicon.ico|api).*)',
+    '/((?!_next/|api/|favicon\\.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|json|js|css|woff|woff2|ttf|eot|map)$).*)',
   ],
 }

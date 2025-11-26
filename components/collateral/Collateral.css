@@ -17,7 +17,7 @@
 }
 
 /* ====================================
-   NAVIGATION TABS
+   NAVIGATION TABS - PREMIUM STYLE (Partnerships)
    ==================================== */
 .collateral-nav-tabs {
     display: flex;
@@ -26,6 +26,12 @@
     margin-bottom: var(--space-6);
     padding-bottom: 0;
     overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.collateral-nav-tabs::-webkit-scrollbar {
+    display: none;
 }
 
 .collateral-nav-tab {
@@ -38,8 +44,22 @@
     font-weight: var(--font-medium);
     font-family: var(--font-primary);
     cursor: pointer;
-    transition: all var(--duration-fast) var(--ease-in-out);
+    transition: all var(--duration-normal) var(--ease-in-out);
     white-space: nowrap;
+    position: relative;
+    letter-spacing: -0.01em;
+}
+
+.collateral-nav-tab::before {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #C5FFA7;
+    transform: scaleX(0);
+    transition: transform var(--duration-normal) var(--ease-in-out);
 }
 
 .collateral-nav-tab:hover {
@@ -48,8 +68,12 @@
 
 .collateral-nav-tab.active {
     color: #C5FFA7;
-    border-bottom-color: #C5FFA7;
     font-weight: var(--font-semibold);
+}
+
+.collateral-nav-tab.active::before {
+    transform: scaleX(1);
+    background: #C5FFA7;
 }
 
 /* ====================================

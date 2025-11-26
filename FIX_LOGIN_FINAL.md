@@ -70,3 +70,5 @@ Puis la page devrait se recharger et rediriger vers `/`.
 **Cette solution devrait fonctionner définitivement !** ✅
 
 
+
+

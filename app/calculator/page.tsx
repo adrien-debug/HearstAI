@@ -1,569 +1,912 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Icon from '@/components/Icon'
+import '@/components/home/Home.css'
 import './CalculatorPage.css'
 
-interface MinerType {
+// ====================================
+// TYPES
+// ====================================
+interface Machine {
   id: string
   name: string
   hashrate: number // TH/s
   power: number // W
   efficiency: number // J/TH
-  price: number // USD
+  price: number // USD (CAPEX)
 }
 
-interface Location {
+interface Hoster {
   id: string
   name: string
-  country: string
+  location: string
   electricityRate: number // $/kWh
-  hostingFee?: number // $/month per miner
+  additionalFees?: number // $/month
+  deposit?: number // nombre de mois de dépôt
 }
 
-interface DealType {
-  id: string
-  name: string
-  description: string
-  electricityRate: number // $/kWh
-  hostingFee: number // $/month per miner
+interface CalculationResult {
+  // ROI
+  roiDays: number | null
+  roiMonths: number | null
+  breakEven: number | null // jours
+  
+  // BTC produits
+  btcPerDay: number
+  btcPerMonth: number
+  btcPerLifespan: number
+  
+  // Revenus
+  revenuePerDay: number
+  revenuePerMonth: number
+  revenuePerLifespan: number
+  
+  // OPEX
+  opexPerDay: number
+  opexPerMonth: number
+  opexPerLifespan: number
+  
+  // Revenu net
+  netRevenuePerDay: number
+  netRevenuePerMonth: number
+  netRevenuePerLifespan: number
 }
 
-const MINER_TYPES: MinerType[] = [
-  { id: 's23hydro', name: 'Antminer S23 Hydro', hashrate: 605, power: 5870, efficiency: 9.7, price: 8500 },
-  { id: 's21pro', name: 'Antminer S21 Pro', hashrate: 234, power: 3510, efficiency: 15.0, price: 4008 },
+// ====================================
+// DONNÉES MOCKÉES (À remplacer par chargement Excel)
+// ====================================
+const MACHINES: Machine[] = [
+  { id: 's23-hydro', name: 'Antminer S23 Hydro', hashrate: 605, power: 5870, efficiency: 9.7, price: 8500 },
+  { id: 's21-pro', name: 'Antminer S21 Pro', hashrate: 234, power: 3510, efficiency: 15.0, price: 4008 },
   { id: 's21', name: 'Antminer S21', hashrate: 200, power: 3550, efficiency: 17.75, price: 3500 },
   { id: 'm60s', name: 'Whatsminer M60S++', hashrate: 372, power: 7200, efficiency: 19.4, price: 5800 },
   { id: 'm53s', name: 'Whatsminer M53S++', hashrate: 320, power: 5040, efficiency: 15.75, price: 4200 },
-  { id: 'custom', name: 'Custom Model', hashrate: 0, power: 0, efficiency: 0, price: 0 },
 ]
 
-const LOCATIONS: Location[] = [
-  { id: 'usa-texas', name: 'Texas, USA', country: 'USA', electricityRate: 0.072, hostingFee: 25 },
-  { id: 'usa-nevada', name: 'Nevada, USA', country: 'USA', electricityRate: 0.065, hostingFee: 28 },
-  { id: 'canada-quebec', name: 'Québec, Canada', country: 'Canada', electricityRate: 0.045, hostingFee: 30 },
-  { id: 'iceland', name: 'Reykjavik, Iceland', country: 'Iceland', electricityRate: 0.035, hostingFee: 35 },
-  { id: 'norway', name: 'Oslo, Norway', country: 'Norway', electricityRate: 0.055, hostingFee: 32 },
-  { id: 'kazakhstan', name: 'Kazakhstan', country: 'Kazakhstan', electricityRate: 0.040, hostingFee: 20 },
-  { id: 'russia', name: 'Siberia, Russia', country: 'Russia', electricityRate: 0.030, hostingFee: 18 },
-  { id: 'paraguay', name: 'Paraguay', country: 'Paraguay', electricityRate: 0.050, hostingFee: 22 },
+const HOSTERS: Hoster[] = [
+  { id: 'hoster-1', name: 'DataCenter USA', location: 'Texas, USA', electricityRate: 0.072, additionalFees: 25, deposit: 3 },
+  { id: 'hoster-2', name: 'Nordic Mining', location: 'Iceland', electricityRate: 0.035, additionalFees: 35, deposit: 2 },
+  { id: 'hoster-3', name: 'Canada Hosting', location: 'Québec, Canada', electricityRate: 0.045, additionalFees: 30, deposit: 2 },
+  { id: 'hoster-4', name: 'Kazakhstan Mining', location: 'Kazakhstan', electricityRate: 0.040, additionalFees: 20, deposit: 1 },
 ]
 
-const DEAL_TYPES: DealType[] = [
-  { id: 'self-hosted', name: 'Self-Hosted', description: 'Opération propre', electricityRate: 0.07, hostingFee: 0 },
-  { id: 'colocation', name: 'Colocation', description: 'Hébergement chez un tiers', electricityRate: 0.08, hostingFee: 30 },
-  { id: 'maas', name: 'MaaS', description: 'Mining as a Service', electricityRate: 0.09, hostingFee: 40 },
-  { id: 'custom', name: 'Custom Deal', description: 'Tarifs personnalisés', electricityRate: 0.07, hostingFee: 25 },
-]
-
-interface CalculationResult {
-  dailyRevenue: number
-  dailyCost: number
-  dailyProfit: number
-  monthlyRevenue: number
-  monthlyCost: number
-  monthlyProfit: number
-  breakEvenDays: number | null
-  breakEvenMonths: number | null
-  roi1Year: number | null
-  roi2Years: number | null
-  profitMargin: number
-  status: 'profitable' | 'marginal' | 'unprofitable'
+// ====================================
+// FONCTIONS UTILITAIRES
+// ====================================
+const formatNumber = (num: number, decimals: number = 2): string => {
+  return num.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })
 }
 
-// Helper function to format numbers consistently (fixes hydration error)
-const formatNumber = (num: number): string => {
-  return num.toLocaleString('en-US')
+const formatBTC = (num: number): string => {
+  return num.toFixed(8)
 }
 
+// ====================================
+// COMPOSANT PRINCIPAL
+// ====================================
 export default function CalculatorPage() {
-  const [selectedMiner, setSelectedMiner] = useState<MinerType>(MINER_TYPES[0])
-  const [selectedLocation, setSelectedLocation] = useState<Location>(LOCATIONS[0])
-  const [selectedDeal, setSelectedDeal] = useState<DealType>(DEAL_TYPES[0])
-  const [units, setUnits] = useState<number>(1)
-  const [customHashrate, setCustomHashrate] = useState<number>(0)
-  const [customPower, setCustomPower] = useState<number>(0)
-  const [customPrice, setCustomPrice] = useState<number>(0)
-  const [customElectricity, setCustomElectricity] = useState<number>(0)
-  const [customHostingFee, setCustomHostingFee] = useState<number>(0)
-  const [hashprice, setHashprice] = useState<number>(0)
+  // États
+  const [selectedMachine, setSelectedMachine] = useState<Machine | null>(MACHINES[0])
+  const [selectedHoster, setSelectedHoster] = useState<Hoster | null>(HOSTERS[0])
+  const [lifespan, setLifespan] = useState<number>(3) // années
+  const [capex, setCapex] = useState<number>(MACHINES[0]?.price || 0)
+  const [electricityRate, setElectricityRate] = useState<number>(HOSTERS[0]?.electricityRate || 0.07)
+  const [btcPrice, setBtcPrice] = useState<number>(0)
   const [loading, setLoading] = useState<boolean>(true)
-  const [result, setResult] = useState<CalculationResult | null>(null)
   const [mounted, setMounted] = useState<boolean>(false)
+  const [result, setResult] = useState<CalculationResult | null>(null)
+  const [machineDropdownOpen, setMachineDropdownOpen] = useState<boolean>(false)
+  const [hosterDropdownOpen, setHosterDropdownOpen] = useState<boolean>(false)
 
-  // Set mounted to avoid hydration issues
+  // Initialisation
   useEffect(() => {
     setMounted(true)
   }, [])
 
-  // Fetch current hashprice
+  // Récupération du prix BTC
   useEffect(() => {
     if (!mounted) return
-    
-    const fetchHashprice = async () => {
+
+    const fetchBtcPrice = async () => {
       try {
-        const response = await fetch('/api/hashprice/current')
+        const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd')
         const data = await response.json()
-        if (data.current) {
-          setHashprice(data.current)
+        if (data.bitcoin?.usd) {
+          setBtcPrice(data.bitcoin.usd)
         } else {
-          // Fallback to default
-          setHashprice(0.05)
+          setBtcPrice(95000)
         }
       } catch (error) {
-        console.error('Error fetching hashprice:', error)
-        setHashprice(0.05) // Default fallback
+        console.error('Error fetching BTC price:', error)
+        setBtcPrice(95000)
       } finally {
         setLoading(false)
       }
     }
 
-    fetchHashprice()
+    fetchBtcPrice()
   }, [mounted])
 
-  // Calculate results when inputs change
+  // Mise à jour du CAPEX quand la machine change
   useEffect(() => {
-    if (loading) return
+    if (selectedMachine) {
+      setCapex(selectedMachine.price)
+    }
+  }, [selectedMachine])
 
-    const miner = selectedMiner.id === 'custom' 
-      ? { hashrate: customHashrate, power: customPower, price: customPrice }
-      : selectedMiner
+  // Mise à jour du prix électricité quand l'hoster change
+  useEffect(() => {
+    if (selectedHoster) {
+      setElectricityRate(selectedHoster.electricityRate)
+    }
+  }, [selectedHoster])
 
-    if (miner.hashrate <= 0 || miner.power <= 0) {
+  // Calcul des résultats
+  useEffect(() => {
+    if (loading || !selectedMachine || !selectedHoster || !btcPrice || btcPrice === 0) {
       setResult(null)
       return
     }
 
-    const electricityRate = selectedDeal.id === 'custom' 
-      ? customElectricity 
-      : selectedDeal.electricityRate
-
-    const hostingFee = selectedDeal.id === 'custom'
-      ? customHostingFee
-      : selectedDeal.hostingFee
-
-    // Calculate daily metrics
-    const totalHashrate = (miner.hashrate * units) / 1000 // Convert to PH/s
-    const totalPower = (miner.power * units) / 1000 // Convert to kW
-    const totalInvestment = miner.price * units
-
-    // Daily revenue (hashprice is in $/PH/day)
-    const dailyRevenue = hashprice * totalHashrate
-
-    // Daily electricity cost
-    const dailyElectricityCost = totalPower * 24 * electricityRate
-
-    // Daily hosting cost
-    const dailyHostingCost = (hostingFee * units) / 30
-
-    // Total daily cost
-    const dailyCost = dailyElectricityCost + dailyHostingCost
-
-    // Daily profit
-    const dailyProfit = dailyRevenue - dailyCost
-
-    // Monthly metrics
-    const monthlyRevenue = dailyRevenue * 30
-    const monthlyCost = dailyCost * 30
-    const monthlyProfit = dailyProfit * 30
-
-    // ROI calculations
-    let breakEvenDays: number | null = null
-    let breakEvenMonths: number | null = null
-    let roi1Year: number | null = null
-    let roi2Years: number | null = null
-
-    if (totalInvestment > 0 && dailyProfit > 0) {
-      breakEvenDays = Math.ceil(totalInvestment / dailyProfit)
-      breakEvenMonths = breakEvenDays / 30
-
-      const profit1Year = dailyProfit * 365
-      roi1Year = ((profit1Year - totalInvestment) / totalInvestment) * 100
-
-      const profit2Years = dailyProfit * 730
-      roi2Years = ((profit2Years - totalInvestment) / totalInvestment) * 100
-    } else if (totalInvestment > 0 && dailyProfit <= 0) {
-      // Unprofitable
-      roi1Year = -100
-      roi2Years = -100
-    }
-
-    // Profit margin
-    const profitMargin = dailyRevenue > 0 ? (dailyProfit / dailyRevenue) * 100 : 0
-
-    // Status
-    let status: 'profitable' | 'marginal' | 'unprofitable'
-    if (dailyProfit < 0) {
-      status = 'unprofitable'
-    } else if (profitMargin < 10) {
-      status = 'marginal'
-    } else {
-      status = 'profitable'
-    }
-
+    // Inputs
+    const hashrateTH = selectedMachine.hashrate
+    const powerW = selectedMachine.power
+    const capexValue = capex
+    const electricityRateValue = electricityRate
+    const lifespanDays = lifespan * 365
+    
+    // OPEX/jour
+    const powerKW = powerW / 1000
+    const opexPerDay = (powerKW * 24) * electricityRateValue
+    const additionalFeesPerDay = (selectedHoster.additionalFees || 0) / 30
+    const totalOpexPerDay = opexPerDay + additionalFeesPerDay
+    
+    // Production BTC/jour
+    const networkHashrateTH = 600000000
+    const blocksPerDay = 144
+    const btcPerBlock = 3.125
+    const btcPerDay = (hashrateTH / networkHashrateTH) * blocksPerDay * btcPerBlock
+    
+    // Revenu brut/jour
+    const revenuePerDay = btcPerDay * btcPrice
+    
+    // Revenu net/jour
+    const netRevenuePerDay = revenuePerDay - totalOpexPerDay
+    
+    // ROI
+    const roiDays = netRevenuePerDay > 0 ? capexValue / netRevenuePerDay : null
+    const roiMonths = roiDays ? roiDays / 30 : null
+    const breakEven = roiDays
+    
+    // Calculs mensuels et sur lifespan
+    const btcPerMonth = btcPerDay * 30
+    const btcPerLifespan = btcPerDay * lifespanDays
+    const revenuePerMonth = revenuePerDay * 30
+    const revenuePerLifespan = revenuePerDay * lifespanDays
+    const opexPerMonth = totalOpexPerDay * 30
+    const opexPerLifespan = totalOpexPerDay * lifespanDays
+    const netRevenuePerMonth = netRevenuePerDay * 30
+    const netRevenuePerLifespan = netRevenuePerDay * lifespanDays
+    
     setResult({
-      dailyRevenue,
-      dailyCost,
-      dailyProfit,
-      monthlyRevenue,
-      monthlyCost,
-      monthlyProfit,
-      breakEvenDays,
-      breakEvenMonths,
-      roi1Year,
-      roi2Years,
-      profitMargin,
-      status,
+      roiDays,
+      roiMonths,
+      breakEven,
+      btcPerDay,
+      btcPerMonth,
+      btcPerLifespan,
+      revenuePerDay,
+      revenuePerMonth,
+      revenuePerLifespan,
+      opexPerDay: totalOpexPerDay,
+      opexPerMonth,
+      opexPerLifespan,
+      netRevenuePerDay,
+      netRevenuePerMonth,
+      netRevenuePerLifespan,
     })
-  }, [
-    selectedMiner,
-    selectedLocation,
-    selectedDeal,
-    units,
-    customHashrate,
-    customPower,
-    customPrice,
-    customElectricity,
-    customHostingFee,
-    hashprice,
-    loading,
-  ])
-
-  const handleMinerChange = (miner: MinerType) => {
-    setSelectedMiner(miner)
-    if (miner.id !== 'custom') {
-      setCustomHashrate(0)
-      setCustomPower(0)
-      setCustomPrice(0)
-    }
-  }
-
-  const handleDealChange = (deal: DealType) => {
-    setSelectedDeal(deal)
-    if (deal.id !== 'custom') {
-      setCustomElectricity(0)
-      setCustomHostingFee(0)
-    }
-  }
+  }, [selectedMachine, selectedHoster, lifespan, capex, electricityRate, btcPrice, loading])
 
   return (
     <div className="dashboard-view">
       <div className="dashboard-content">
+        {/* Page Title */}
         <div style={{ marginBottom: 'var(--space-6)' }}>
-          <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700, color: '#ffffff', position: 'relative', zIndex: 10 }}>Mining Calculator</h1>
+          <h1 style={{ 
+            fontSize: 'var(--text-2xl)', 
+            fontWeight: 700,
+            color: '#ffffff',
+            margin: 0,
+            marginBottom: 'var(--space-4)'
+          }}>
+            Calculateur ROI Crypto
+          </h1>
           <p style={{ 
             fontSize: 'var(--text-sm)', 
             color: 'var(--text-secondary)', 
             marginTop: 'var(--space-2)',
             fontWeight: 400
           }}>
-            Calculez rapidement vos projections de mining : ROI, Break-even et rentabilité
+            Calculez votre ROI, break-even et revenus nets en un clic
           </p>
         </div>
 
-        <div className="calculator-page-grid">
-          {/* Left Panel - Inputs */}
-          <div className="calculator-inputs-panel">
-            {/* Miner Selection */}
-            <div className="calculator-section-card">
+        {/* SECTION RÉSULTATS - PREMIUM STATS GRID (EXACTEMENT COMME HOMEPAGE) - 4 BOXES UNIQUEMENT */}
+        {result && (
+          <div className="premium-stats-section">
+            <div className="premium-stats-grid">
+              {/* ROI */}
+              <div className="premium-stat-box">
+                <div className="premium-stat-box-header">
+                  <div className="premium-stat-icon">
+                    <Icon name="projects" />
+                  </div>
+                  <div className="premium-stat-label">ROI</div>
+                </div>
+                <div className="premium-stat-value">
+                  {result.roiDays !== null ? `${formatNumber(result.roiDays, 0)} jours` : 'N/A'}
+                </div>
+                <div className="premium-stat-footer">
+                  <span className="premium-stat-description">
+                    {result.roiMonths ? `≈ ${formatNumber(result.roiMonths, 1)} mois` : 'Non rentable'}
+                  </span>
+                </div>
+              </div>
+
+              {/* Break-even */}
+              <div className="premium-stat-box">
+                <div className="premium-stat-box-header">
+                  <div className="premium-stat-icon">
+                    <Icon name="versions" />
+                  </div>
+                  <div className="premium-stat-label">Break-even</div>
+                </div>
+                <div className="premium-stat-value">
+                  {result.breakEven !== null ? `${formatNumber(result.breakEven, 0)} jours` : 'N/A'}
+                </div>
+                <div className="premium-stat-footer">
+                  <span className="premium-stat-description">
+                    {result.breakEven ? `≈ ${formatNumber((result.breakEven || 0) / 30, 1)} mois` : 'Non rentable'}
+                  </span>
+                </div>
+              </div>
+
+              {/* BTC / Jour */}
+              <div className="premium-stat-box">
+                <div className="premium-stat-box-header">
+                  <div className="premium-stat-icon">
+                    <Icon name="jobs" />
+                  </div>
+                  <div className="premium-stat-label">BTC / Jour</div>
+                </div>
+                <div className="premium-stat-value">
+                  {formatBTC(result.btcPerDay)}
+                </div>
+                <div className="premium-stat-footer">
+                  <span className="premium-stat-description">
+                    ≈ ${formatNumber(result.revenuePerDay)} / jour
+                  </span>
+                </div>
+              </div>
+
+              {/* Revenu Net / Jour - Highlight */}
+              <div className="premium-stat-box premium-stat-box-highlight">
+                <div className="premium-stat-box-header">
+                  <div className="premium-stat-icon">
+                    <Icon name="running" />
+                  </div>
+                  <div className="premium-stat-label">Revenu Net / Jour</div>
+                </div>
+                <div className={`premium-stat-value ${result.netRevenuePerDay >= 0 ? 'premium-stat-value-green' : ''}`}>
+                  ${formatNumber(result.netRevenuePerDay)}
+                </div>
+                <div className="premium-stat-footer">
+                  <span className="premium-stat-description">
+                    ${formatNumber(result.netRevenuePerMonth)} / mois
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* SECTION INPUTS */}
+        <div className="calculator-inputs-section">
+          <div className="calculator-inputs-grid">
+            {/* Sélection Machine - Menu Déroulant Premium */}
+            <div className="calculator-section-card calculator-section-card-large">
               <div className="calculator-section-title">
-                <span>Type de Mineur</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+                  <div className="premium-stat-icon">
+                    <Icon name="projects" />
+                  </div>
+                  <span>Sélection de la Machine</span>
+                </div>
                 {loading && <span className="calculator-loading-badge">Chargement...</span>}
               </div>
-              <div className="calculator-miner-grid">
-                {MINER_TYPES.map((miner) => (
-                  <div
-                    key={miner.id}
-                    className={`calculator-miner-card ${selectedMiner.id === miner.id ? 'selected' : ''}`}
-                    onClick={() => handleMinerChange(miner)}
-                  >
-                    <div className="calculator-miner-name">{miner.name}</div>
-                    {miner.id !== 'custom' && (
-                      <div className="calculator-miner-specs">
-                        <div className="calculator-miner-spec">
-                          <span className="spec-label">Hashrate:</span>
-                          <span className="spec-value">{miner.hashrate} TH/s</span>
+              
+              {/* Dropdown Premium */}
+              <div className="calculator-premium-dropdown">
+                <button
+                  type="button"
+                  className="calculator-dropdown-trigger"
+                  onClick={() => setMachineDropdownOpen(!machineDropdownOpen)}
+                  onBlur={() => setTimeout(() => setMachineDropdownOpen(false), 200)}
+                >
+                  <div className="calculator-dropdown-trigger-content">
+                    <div className="calculator-dropdown-selected">
+                      {selectedMachine ? (
+                        <>
+                          <span className="calculator-dropdown-selected-name">{selectedMachine.name}</span>
+                          <span className="calculator-dropdown-selected-specs">
+                            {selectedMachine.hashrate} TH/s • {selectedMachine.power}W • ${formatNumber(selectedMachine.price, 0)}
+                          </span>
+                        </>
+                      ) : (
+                        <span className="calculator-dropdown-placeholder">Sélectionner une machine</span>
+                      )}
+                    </div>
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className={`calculator-dropdown-arrow ${machineDropdownOpen ? 'open' : ''}`}
+                    >
+                      <path
+                        d="M6 9L12 15L18 9"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </div>
+                </button>
+
+                {machineDropdownOpen && (
+                  <div className="calculator-dropdown-menu">
+                    {MACHINES.map((machine) => (
+                      <div
+                        key={machine.id}
+                        className={`calculator-dropdown-item ${selectedMachine?.id === machine.id ? 'selected' : ''}`}
+                        onClick={() => {
+                          setSelectedMachine(machine)
+                          setMachineDropdownOpen(false)
+                        }}
+                      >
+                        <div className="calculator-dropdown-item-content">
+                          <div className="calculator-dropdown-item-name">{machine.name}</div>
+                          <div className="calculator-dropdown-item-specs">
+                            <span>{machine.hashrate} TH/s</span>
+                            <span>•</span>
+                            <span>{machine.power} W</span>
+                            <span>•</span>
+                            <span>{machine.efficiency} J/TH</span>
+                            <span>•</span>
+                            <span className="calculator-dropdown-item-price">${formatNumber(machine.price, 0)}</span>
+                          </div>
                         </div>
-                        <div className="calculator-miner-spec">
-                          <span className="spec-label">Power:</span>
-                          <span className="spec-value">{miner.power} W</span>
+                        {selectedMachine?.id === machine.id && (
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="calculator-dropdown-check"
+                          >
+                            <path
+                              d="M20 6L9 17L4 12"
+                              stroke="#C5FFA7"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Détails de la machine sélectionnée */}
+              {selectedMachine && (
+                <div className="calculator-machine-details">
+                  <div className="calculator-machine-details-grid">
+                    <div className="calculator-machine-detail-item">
+                      <div className="calculator-machine-detail-label">Hashrate</div>
+                      <div className="calculator-machine-detail-value">{selectedMachine.hashrate} TH/s</div>
+                    </div>
+                    <div className="calculator-machine-detail-item">
+                      <div className="calculator-machine-detail-label">Consommation</div>
+                      <div className="calculator-machine-detail-value">{selectedMachine.power} W</div>
+                    </div>
+                    <div className="calculator-machine-detail-item">
+                      <div className="calculator-machine-detail-label">Efficacité</div>
+                      <div className="calculator-machine-detail-value">{selectedMachine.efficiency} J/TH</div>
+                    </div>
+                    <div className="calculator-machine-detail-item calculator-machine-detail-item-highlight">
+                      <div className="calculator-machine-detail-label">Prix (CAPEX)</div>
+                      <div className="calculator-machine-detail-value calculator-machine-detail-value-green">
+                        ${formatNumber(selectedMachine.price, 0)}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Sélection Hoster - Menu Déroulant Premium */}
+            <div className="calculator-section-card calculator-section-card-large">
+              <div className="calculator-section-title">
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+                  <div className="premium-stat-icon">
+                    <Icon name="versions" />
+                  </div>
+                  <span>Sélection de l'Hoster</span>
+                </div>
+              </div>
+              
+              {/* Dropdown Premium */}
+              <div className="calculator-premium-dropdown">
+                <button
+                  type="button"
+                  className="calculator-dropdown-trigger"
+                  onClick={() => setHosterDropdownOpen(!hosterDropdownOpen)}
+                  onBlur={() => setTimeout(() => setHosterDropdownOpen(false), 200)}
+                >
+                  <div className="calculator-dropdown-trigger-content">
+                    <div className="calculator-dropdown-selected">
+                      {selectedHoster ? (
+                        <>
+                          <span className="calculator-dropdown-selected-name">{selectedHoster.name}</span>
+                          <span className="calculator-dropdown-selected-specs">
+                            {selectedHoster.location} • ${selectedHoster.electricityRate.toFixed(3)}/kWh
+                            {selectedHoster.additionalFees && ` • +$${selectedHoster.additionalFees}/mo`}
+                          </span>
+                        </>
+                      ) : (
+                        <span className="calculator-dropdown-placeholder">Sélectionner un hoster</span>
+                      )}
+                    </div>
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className={`calculator-dropdown-arrow ${hosterDropdownOpen ? 'open' : ''}`}
+                    >
+                      <path
+                        d="M6 9L12 15L18 9"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </div>
+                </button>
+
+                {hosterDropdownOpen && (
+                  <div className="calculator-dropdown-menu">
+                    {HOSTERS.map((hoster) => (
+                      <div
+                        key={hoster.id}
+                        className={`calculator-dropdown-item ${selectedHoster?.id === hoster.id ? 'selected' : ''}`}
+                        onClick={() => {
+                          setSelectedHoster(hoster)
+                          setHosterDropdownOpen(false)
+                        }}
+                      >
+                        <div className="calculator-dropdown-item-content">
+                          <div className="calculator-dropdown-item-name">{hoster.name}</div>
+                          <div className="calculator-dropdown-item-specs">
+                            <span>{hoster.location}</span>
+                            <span>•</span>
+                            <span className="calculator-dropdown-item-price">${hoster.electricityRate.toFixed(3)}/kWh</span>
+                            {hoster.additionalFees && (
+                              <>
+                                <span>•</span>
+                                <span>+${hoster.additionalFees}/mo</span>
+                              </>
+                            )}
+                          </div>
                         </div>
-                        <div className="calculator-miner-spec">
-                          <span className="spec-label">Efficiency:</span>
-                          <span className="spec-value">{miner.efficiency} J/TH</span>
-                        </div>
-                        <div className="calculator-miner-spec">
-                          <span className="spec-label">Price:</span>
-                          <span className="spec-value">${formatNumber(miner.price)}</span>
-                        </div>
+                        {selectedHoster?.id === hoster.id && (
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="calculator-dropdown-check"
+                          >
+                            <path
+                              d="M20 6L9 17L4 12"
+                              stroke="#C5FFA7"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Détails de l'hoster sélectionné */}
+              {selectedHoster && (
+                <div className="calculator-machine-details">
+                  <div className="calculator-machine-details-grid">
+                    <div className="calculator-machine-detail-item">
+                      <div className="calculator-machine-detail-label">Localisation</div>
+                      <div className="calculator-machine-detail-value">{selectedHoster.location}</div>
+                    </div>
+                    {selectedHoster.additionalFees && (
+                      <div className="calculator-machine-detail-item">
+                        <div className="calculator-machine-detail-label">Frais Additionnels</div>
+                        <div className="calculator-machine-detail-value">${selectedHoster.additionalFees}/mo</div>
                       </div>
                     )}
-                  </div>
-                ))}
-              </div>
-
-              {selectedMiner.id === 'custom' && (
-                <div className="calculator-custom-fields">
-                  <div className="calculator-form-row">
-                    <label>Hashrate (TH/s)</label>
-                    <input
-                      type="number"
-                      value={customHashrate || ''}
-                      onChange={(e) => setCustomHashrate(parseFloat(e.target.value) || 0)}
-                      placeholder="Ex: 200"
-                    />
-                  </div>
-                  <div className="calculator-form-row">
-                    <label>Power (W)</label>
-                    <input
-                      type="number"
-                      value={customPower || ''}
-                      onChange={(e) => setCustomPower(parseFloat(e.target.value) || 0)}
-                      placeholder="Ex: 3500"
-                    />
-                  </div>
-                  <div className="calculator-form-row">
-                    <label>Price ($)</label>
-                    <input
-                      type="number"
-                      value={customPrice || ''}
-                      onChange={(e) => setCustomPrice(parseFloat(e.target.value) || 0)}
-                      placeholder="Ex: 4000"
-                    />
+                    <div className="calculator-machine-detail-item">
+                      <div className="calculator-machine-detail-label">Deposit</div>
+                      <div className="calculator-machine-detail-value">
+                        {selectedHoster.deposit || 0} {selectedHoster.deposit === 1 ? 'mois' : 'mois'}
+                      </div>
+                    </div>
+                    <div className="calculator-machine-detail-item calculator-machine-detail-item-highlight calculator-machine-detail-item-right">
+                      <div className="calculator-machine-detail-label">Prix Électricité</div>
+                      <div className="calculator-machine-detail-value calculator-machine-detail-value-green">
+                        ${selectedHoster.electricityRate.toFixed(3)}/kWh
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
-            </div>
-
-            {/* Location Selection */}
-            <div className="calculator-section-card">
-              <div className="calculator-section-title">Localisation</div>
-              <div className="calculator-location-grid">
-                {LOCATIONS.map((location) => (
-                  <div
-                    key={location.id}
-                    className={`calculator-location-card ${selectedLocation.id === location.id ? 'selected' : ''}`}
-                    onClick={() => setSelectedLocation(location)}
-                  >
-                    <div className="calculator-location-name">{location.name}</div>
-                    <div className="calculator-location-country">{location.country}</div>
-                    <div className="calculator-location-rate">
-                      ${location.electricityRate.toFixed(3)}/kWh
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Deal Type Selection */}
-            <div className="calculator-section-card">
-              <div className="calculator-section-title">Type de Deal</div>
-              <div className="calculator-deal-grid">
-                {DEAL_TYPES.map((deal) => (
-                  <div
-                    key={deal.id}
-                    className={`calculator-deal-card ${selectedDeal.id === deal.id ? 'selected' : ''}`}
-                    onClick={() => handleDealChange(deal)}
-                  >
-                    <div className="calculator-deal-name">{deal.name}</div>
-                    <div className="calculator-deal-desc">{deal.description}</div>
-                    <div className="calculator-deal-rates">
-                      <span>${deal.electricityRate.toFixed(3)}/kWh</span>
-                      {deal.hostingFee > 0 && <span>${deal.hostingFee}/mo</span>}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {selectedDeal.id === 'custom' && (
-                <div className="calculator-custom-fields">
-                  <div className="calculator-form-row">
-                    <label>Electricity Rate ($/kWh)</label>
-                    <input
-                      type="number"
-                      step="0.001"
-                      value={customElectricity || ''}
-                      onChange={(e) => setCustomElectricity(parseFloat(e.target.value) || 0)}
-                      placeholder="Ex: 0.07"
-                    />
-                  </div>
-                  <div className="calculator-form-row">
-                    <label>Hosting Fee ($/month)</label>
-                    <input
-                      type="number"
-                      value={customHostingFee || ''}
-                      onChange={(e) => setCustomHostingFee(parseFloat(e.target.value) || 0)}
-                      placeholder="Ex: 25"
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Units */}
-            <div className="calculator-section-card">
-              <div className="calculator-section-title">Nombre d'Unités</div>
-              <div className="calculator-units-control">
-                <button
-                  className="calculator-units-btn"
-                  onClick={() => setUnits(Math.max(1, units - 1))}
-                >
-                  −
-                </button>
-                <input
-                  type="number"
-                  className="calculator-units-input"
-                  value={units}
-                  onChange={(e) => setUnits(Math.max(1, parseInt(e.target.value) || 1))}
-                  min="1"
-                />
-                <button
-                  className="calculator-units-btn"
-                  onClick={() => setUnits(units + 1)}
-                >
-                  +
-                </button>
-              </div>
-              <div className="calculator-units-info">
-                <div className="calculator-units-info-item">
-                  <span>Hashrate Total:</span>
-                  <span className="highlight">
-                    {((selectedMiner.id === 'custom' ? customHashrate : selectedMiner.hashrate) * units / 1000).toFixed(2)} PH/s
-                  </span>
-                </div>
-                <div className="calculator-units-info-item">
-                  <span>Power Total:</span>
-                  <span className="highlight">
-                    {((selectedMiner.id === 'custom' ? customPower : selectedMiner.power) * units / 1000).toFixed(2)} kW
-                  </span>
-                </div>
-                <div className="calculator-units-info-item">
-                  <span>Investment Total:</span>
-                  <span className="highlight">
-                    ${mounted ? formatNumber((selectedMiner.id === 'custom' ? customPrice : selectedMiner.price) * units) : '0'}
-                  </span>
-                </div>
-              </div>
             </div>
           </div>
 
-          {/* Right Panel - Results */}
-          <div className="calculator-results-panel">
-            {!result ? (
-              <div className="calculator-results-empty">
-                <div className="calculator-empty-icon">📊</div>
-                <div className="calculator-empty-text">
-                  Configurez les paramètres pour voir les résultats
+            {/* Paramètres & Prix BTC */}
+          <div className="calculator-params-section">
+            <div className="calculator-section-card calculator-section-card-large" style={{ paddingBottom: 'calc(var(--space-3) + 20px)' }}>
+              <div className="calculator-section-title">
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+                  <div className="premium-stat-icon">
+                    <Icon name="jobs" />
+                  </div>
+                  <span>Paramètres</span>
                 </div>
               </div>
-            ) : (
-              <>
-                {/* Status Badge */}
-                <div className={`calculator-status-badge ${result.status}`}>
-                  <span className="status-icon">
-                    {result.status === 'profitable' && '✅'}
-                    {result.status === 'marginal' && '⚠️'}
-                    {result.status === 'unprofitable' && '❌'}
-                  </span>
-                  <span className="status-text">
-                    {result.status === 'profitable' && 'Rentable'}
-                    {result.status === 'marginal' && 'Marginal'}
-                    {result.status === 'unprofitable' && 'Non Rentable'}
-                  </span>
-                </div>
-
-                {/* Daily Metrics */}
-                <div className="calculator-results-section">
-                  <div className="calculator-results-title">Métriques Quotidiennes</div>
-                  <div className="calculator-metrics-grid">
-                    <div className="calculator-metric-card">
-                      <div className="metric-label">Revenus</div>
-                      <div className="metric-value positive">${result.dailyRevenue.toFixed(2)}</div>
-                    </div>
-                    <div className="calculator-metric-card">
-                      <div className="metric-label">Coûts</div>
-                      <div className="metric-value negative">${result.dailyCost.toFixed(2)}</div>
-                    </div>
-                    <div className="calculator-metric-card highlight">
-                      <div className="metric-label">Profit</div>
-                      <div className={`metric-value ${result.dailyProfit >= 0 ? 'positive' : 'negative'}`}>
-                        ${result.dailyProfit.toFixed(2)}
-                      </div>
-                    </div>
-                    <div className="calculator-metric-card">
-                      <div className="metric-label">Marge</div>
-                      <div className={`metric-value ${result.profitMargin >= 0 ? 'positive' : 'negative'}`}>
-                        {result.profitMargin.toFixed(1)}%
-                      </div>
-                    </div>
+              
+              {/* Paramètres en ligne */}
+              <div className="calculator-params-row">
+                {/* Lifespan */}
+                <div className="calculator-form-row-inline">
+                  <label>Lifespan (années)</label>
+                  <div 
+                    className="calculator-lifespan-control"
+                    style={{ 
+                      '--range-progress': `${((lifespan - 1) / (10 - 1)) * 100}%`
+                    } as React.CSSProperties}
+                  >
+                    <input
+                      type="range"
+                      min="1"
+                      max="10"
+                      step="0.5"
+                      value={lifespan}
+                      onChange={(e) => {
+                        const val = parseFloat(e.target.value)
+                        setLifespan(val)
+                      }}
+                      className="calculator-lifespan-slider"
+                      style={{ 
+                        position: 'relative',
+                        zIndex: 2
+                      }}
+                    />
+                    <input
+                      type="number"
+                      min="1"
+                      max="10"
+                      step="0.5"
+                      value={lifespan}
+                      onChange={(e) => setLifespan(Math.max(1, Math.min(10, parseFloat(e.target.value) || 1)))}
+                      className="calculator-lifespan-input"
+                    />
                   </div>
                 </div>
 
-                {/* Monthly Metrics */}
-                <div className="calculator-results-section">
-                  <div className="calculator-results-title">Métriques Mensuelles</div>
-                  <div className="calculator-metrics-grid">
-                    <div className="calculator-metric-card">
-                      <div className="metric-label">Revenus</div>
-                      <div className="metric-value positive">${result.monthlyRevenue.toFixed(2)}</div>
-                    </div>
-                    <div className="calculator-metric-card">
-                      <div className="metric-label">Coûts</div>
-                      <div className="metric-value negative">${result.monthlyCost.toFixed(2)}</div>
-                    </div>
-                    <div className="calculator-metric-card highlight">
-                      <div className="metric-label">Profit</div>
-                      <div className={`metric-value ${result.monthlyProfit >= 0 ? 'positive' : 'negative'}`}>
-                        ${result.monthlyProfit.toFixed(2)}
-                      </div>
-                    </div>
-                  </div>
+                {/* CAPEX */}
+                <div className="calculator-form-row-inline">
+                  <label>CAPEX - Prix Machine ($)</label>
+                  <input
+                    type="number"
+                    value={capex}
+                    onChange={(e) => setCapex(Math.max(0, parseFloat(e.target.value) || 0))}
+                    placeholder="Prix de la machine"
+                    className="calculator-param-input"
+                  />
                 </div>
 
-                {/* ROI & Break-even */}
-                <div className="calculator-results-section">
-                  <div className="calculator-results-title">ROI & Break-even</div>
-                  <div className="calculator-roi-grid">
-                    {result.breakEvenDays !== null && (
-                      <div className="calculator-roi-card">
-                        <div className="roi-label">Break-even</div>
-                        <div className="roi-value">
-                          {result.breakEvenDays} jours
-                        </div>
-                        <div className="roi-subvalue">
-                          ({result.breakEvenMonths?.toFixed(1)} mois)
-                        </div>
-                      </div>
-                    )}
-                    {result.roi1Year !== null && (
-                      <div className="calculator-roi-card">
-                        <div className="roi-label">ROI 1 an</div>
-                        <div className={`roi-value ${result.roi1Year >= 0 ? 'positive' : 'negative'}`}>
-                          {result.roi1Year >= 0 ? '+' : ''}{result.roi1Year.toFixed(1)}%
-                        </div>
-                      </div>
-                    )}
-                    {result.roi2Years !== null && (
-                      <div className="calculator-roi-card">
-                        <div className="roi-label">ROI 2 ans</div>
-                        <div className={`roi-value ${result.roi2Years >= 0 ? 'positive' : 'negative'}`}>
-                          {result.roi2Years >= 0 ? '+' : ''}{result.roi2Years.toFixed(1)}%
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                {/* Prix Électricité */}
+                <div className="calculator-form-row-inline">
+                  <label>Prix Électricité ($/kWh)</label>
+                  <input
+                    type="number"
+                    step="0.001"
+                    value={electricityRate}
+                    onChange={(e) => setElectricityRate(Math.max(0, parseFloat(e.target.value) || 0))}
+                    placeholder="Prix électricité"
+                    className="calculator-param-input"
+                  />
                 </div>
+              </div>
+            </div>
 
-                {/* Hashprice Info */}
-                <div className="calculator-hashprice-info">
-                  <div className="hashprice-label">Hashprice actuel:</div>
-                  <div className="hashprice-value">${hashprice.toFixed(4)}/PH/jour</div>
+            {/* Prix BTC */}
+            <div className="calculator-section-card calculator-btc-price-card">
+              <div className="calculator-section-title">
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+                  <div className="premium-stat-icon">
+                    <Icon name="running" />
+                  </div>
+                  <span>Bitcoin Index</span>
                 </div>
-              </>
-            )}
+              </div>
+              <div className="calculator-btc-info-row">
+                <div className="calculator-btc-info-item">
+                  <div className="calculator-btc-info-label">Prix du jour</div>
+                  <div className="calculator-btc-info-value">
+                    {loading ? '...' : `$${formatNumber(btcPrice, 0)}`}
+                  </div>
+                  <div className="calculator-btc-info-source">CoinGecko</div>
+                </div>
+                <div className="calculator-btc-info-item">
+                  <div className="calculator-btc-info-label">Total BTC Hashrate</div>
+                  <div className="calculator-btc-info-value">
+                    {loading ? '...' : `${formatNumber(600000000 / 1000000, 0)} EH/s`}
+                  </div>
+                  <div className="calculator-btc-info-source">Réseau Bitcoin</div>
+                </div>
+                <div className="calculator-btc-info-item">
+                  <div className="calculator-btc-info-label">Revenue Th/$</div>
+                  <div className="calculator-btc-info-value">
+                    {loading || !btcPrice ? '...' : `$${formatNumber((144 * 3.125 * btcPrice) / 600000000, 4)}`}
+                  </div>
+                  <div className="calculator-btc-info-source">par TH/jour</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+
+        {/* Tableau Récapitulatif Premium */}
+        {result && selectedMachine && selectedHoster && (
+          <div className="premium-transaction-section">
+            <div className="premium-section-header">
+              <h3 className="premium-section-title">
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+                  <div className="premium-stat-icon">
+                    <Icon name="projects" />
+                  </div>
+                  <span>Récapitulatif Complet</span>
+                </div>
+              </h3>
+            </div>
+            <div className="premium-transaction-table-container">
+              <table className="premium-transaction-table">
+                <thead>
+                  <tr>
+                    <th>Catégorie</th>
+                    <th>Détails</th>
+                    <th>Valeur</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {/* Machine */}
+                  <tr>
+                    <td><strong>Machine</strong></td>
+                    <td>{selectedMachine.name}</td>
+                    <td className="premium-transaction-amount">${formatNumber(selectedMachine.price, 0)}</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>Hashrate</td>
+                    <td>{selectedMachine.hashrate} TH/s</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>Consommation</td>
+                    <td>{selectedMachine.power} W</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>Efficacité</td>
+                    <td>{selectedMachine.efficiency} J/TH</td>
+                  </tr>
+                  
+                  {/* Hoster */}
+                  <tr>
+                    <td><strong>Hoster</strong></td>
+                    <td>{selectedHoster.name}</td>
+                    <td>{selectedHoster.location}</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>Prix Électricité</td>
+                    <td className="premium-transaction-amount">${selectedHoster.electricityRate.toFixed(3)}/kWh</td>
+                  </tr>
+                  {selectedHoster.additionalFees && (
+                    <tr>
+                      <td></td>
+                      <td>Frais Additionnels</td>
+                      <td>${selectedHoster.additionalFees}/mo</td>
+                    </tr>
+                  )}
+                  {selectedHoster.deposit && (
+                    <tr>
+                      <td></td>
+                      <td>Deposit</td>
+                      <td>{selectedHoster.deposit} mois</td>
+                    </tr>
+                  )}
+                  
+                  {/* Paramètres */}
+                  <tr>
+                    <td><strong>Paramètres</strong></td>
+                    <td>Lifespan</td>
+                    <td>{lifespan} an{lifespan > 1 ? 's' : ''}</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>CAPEX</td>
+                    <td className="premium-transaction-amount">${formatNumber(capex, 0)}</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>Prix Électricité</td>
+                    <td>${electricityRate.toFixed(3)}/kWh</td>
+                  </tr>
+                  
+                  {/* Bitcoin Index */}
+                  <tr>
+                    <td><strong>Bitcoin Index</strong></td>
+                    <td>Prix du jour</td>
+                    <td className="premium-transaction-amount">${formatNumber(btcPrice, 0)}</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>Total BTC Hashrate</td>
+                    <td>600 EH/s</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>Revenue Th/$</td>
+                    <td className="premium-transaction-amount">${formatNumber((144 * 3.125 * btcPrice) / 600000000, 4)}</td>
+                  </tr>
+                  
+                  {/* Résultats - ROI */}
+                  <tr>
+                    <td><strong>ROI & Break-even</strong></td>
+                    <td>ROI (jours)</td>
+                    <td className="premium-transaction-amount">
+                      {result.roiDays !== null ? `${formatNumber(result.roiDays, 0)} jours` : 'N/A'}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>ROI (mois)</td>
+                    <td>
+                      {result.roiMonths ? `≈ ${formatNumber(result.roiMonths, 1)} mois` : 'N/A'}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>Break-even</td>
+                    <td>
+                      {result.breakEven !== null ? `${formatNumber(result.breakEven, 0)} jours` : 'N/A'}
+                    </td>
+                  </tr>
+                  
+                  {/* Résultats - BTC Produits */}
+                  <tr>
+                    <td><strong>BTC Produits</strong></td>
+                    <td>Par jour</td>
+                    <td className="premium-transaction-amount">{formatBTC(result.btcPerDay)} BTC</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>Par mois</td>
+                    <td className="premium-transaction-amount">{formatBTC(result.btcPerMonth)} BTC</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>Sur lifespan</td>
+                    <td className="premium-transaction-amount">{formatBTC(result.btcPerLifespan)} BTC</td>
+                  </tr>
+                  
+                  {/* Résultats - Revenus */}
+                  <tr>
+                    <td><strong>Revenus Bruts</strong></td>
+                    <td>Par jour</td>
+                    <td className="premium-transaction-amount">${formatNumber(result.revenuePerDay)}</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>Par mois</td>
+                    <td className="premium-transaction-amount">${formatNumber(result.revenuePerMonth)}</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>Sur lifespan</td>
+                    <td className="premium-transaction-amount">${formatNumber(result.revenuePerLifespan)}</td>
+                  </tr>
+                  
+                  {/* Résultats - OPEX */}
+                  <tr>
+                    <td><strong>OPEX Totaux</strong></td>
+                    <td>Par jour</td>
+                    <td>${formatNumber(result.opexPerDay)}</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>Par mois</td>
+                    <td>${formatNumber(result.opexPerMonth)}</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>Sur lifespan</td>
+                    <td>${formatNumber(result.opexPerLifespan)}</td>
+                  </tr>
+                  
+                  {/* Résultats - Revenu Net */}
+                  <tr>
+                    <td><strong>Revenu Net</strong></td>
+                    <td>Par jour</td>
+                    <td className={`premium-transaction-amount ${result.netRevenuePerDay >= 0 ? '' : 'negative'}`}>
+                      ${formatNumber(result.netRevenuePerDay)}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>Par mois</td>
+                    <td className={`premium-transaction-amount ${result.netRevenuePerMonth >= 0 ? '' : 'negative'}`}>
+                      ${formatNumber(result.netRevenuePerMonth)}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>Sur lifespan</td>
+                    <td className={`premium-transaction-amount ${result.netRevenuePerLifespan >= 0 ? '' : 'negative'}`}>
+                      ${formatNumber(result.netRevenuePerLifespan)}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* Message si pas de résultats */}
+        {!result && !loading && (
+          <div className="calculator-results-empty">
+            <div className="calculator-empty-icon">
+              <Icon name="projects" />
+            </div>
+            <div className="calculator-empty-text">
+              Configurez les paramètres ci-dessus pour voir les résultats
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
 }
-

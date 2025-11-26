@@ -56,12 +56,22 @@ const strategieSection: NavSection = {
   ]
 }
 
+// Section Datas avec menu déroulant
+const datasSection: NavSection = {
+  label: 'Datas',
+  items: [
+    { href: '/datas/miner', label: 'Miner', icon: 'document', view: 'datas-miner' },
+    { href: '/datas/hoster', label: 'Hoster', icon: 'document', view: 'datas-hoster' },
+  ]
+}
+
 // Section Management avec menu déroulant
 const managementSection: NavSection = {
   label: 'Management',
   items: [
     { href: '/trello', label: 'Trello', icon: 'dashboard', view: 'trello' },
     { href: '/projects', label: 'Projects', icon: 'document', view: 'projects' },
+    { href: '/portfolio', label: 'Portfolio', icon: 'image', view: 'portfolio' },
     { href: '/documents-vault', label: 'Documents Vault', icon: 'document', view: 'documents-vault' },
   ]
 }
@@ -72,6 +82,7 @@ export default function Sidebar() {
   const [isCostCenterOpen, setIsCostCenterOpen] = useState(false) // Par défaut fermé
   const [isHearstToolsOpen, setIsHearstToolsOpen] = useState(false) // Par défaut fermé
   const [isStrategieOpen, setIsStrategieOpen] = useState(false) // Par défaut fermé
+  const [isDatasOpen, setIsDatasOpen] = useState(false) // Par défaut fermé
   const [isManagementOpen, setIsManagementOpen] = useState(false) // Par défaut fermé
 
   const isActive = (href: string): boolean => {
@@ -137,6 +148,20 @@ export default function Sidebar() {
     }
   }, [pathname])
 
+  // Vérifier si un item de la section Datas est actif pour ouvrir automatiquement
+  useEffect(() => {
+    const checkActive = (href: string): boolean => {
+      if (href === '/') {
+        return pathname === '/'
+      }
+      return pathname?.startsWith(href) ?? false
+    }
+    const hasActiveDatasItem = datasSection.items.some(item => checkActive(item.href))
+    if (hasActiveDatasItem) {
+      setIsDatasOpen(true)
+    }
+  }, [pathname])
+
   // Vérifier si un item de la section Management est actif pour ouvrir automatiquement
   useEffect(() => {
     const checkActive = (href: string): boolean => {
@@ -165,6 +190,10 @@ export default function Sidebar() {
 
   const toggleStrategie = () => {
     setIsStrategieOpen(!isStrategieOpen)
+  }
+
+  const toggleDatas = () => {
+    setIsDatasOpen(!isDatasOpen)
   }
 
   const toggleManagement = () => {
@@ -356,6 +385,44 @@ export default function Sidebar() {
           </button>
           <div className={`nav-section-content ${isStrategieOpen ? 'open' : ''}`}>
             {strategieSection.items.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`nav-item nav-sub-item ${isActive(item.href) ? 'active' : ''}`}
+                data-view={item.view}
+              >
+                <span className="nav-label">{item.label}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {/* Section Datas avec menu déroulant */}
+        <div className="nav-section">
+          <button
+            className={`nav-section-header ${isDatasOpen ? 'open' : ''}`}
+            onClick={toggleDatas}
+            aria-expanded={isDatasOpen}
+          >
+            <span className="nav-section-icon">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className={`nav-section-lightning ${isDatasOpen ? 'open' : ''}`}
+              >
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+              </svg>
+            </span>
+            <span className="nav-section-label">{datasSection.label}</span>
+          </button>
+          <div className={`nav-section-content ${isDatasOpen ? 'open' : ''}`}>
+            {datasSection.items.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}

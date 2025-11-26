@@ -1,24 +1,32 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 import DocumentsVaultOverview from '@/components/documents-vault/DocumentsVaultOverview'
-import DocumentsVaultBrowse from '@/components/documents-vault/DocumentsVaultBrowse'
 import DocumentsVaultUpload from '@/components/documents-vault/DocumentsVaultUpload'
-import DocumentsVaultCategories from '@/components/documents-vault/DocumentsVaultCategories'
-import DocumentsVaultSearch from '@/components/documents-vault/DocumentsVaultSearch'
-import DocumentsVaultSettings from '@/components/documents-vault/DocumentsVaultSettings'
+import DocumentsVaultShare from '@/components/documents-vault/DocumentsVaultShare'
 import '@/components/documents-vault/DocumentsVault.css'
 
-export default function DocumentsVaultPage() {
+function DocumentsVaultContent() {
+  const searchParams = useSearchParams()
   const [activeSection, setActiveSection] = useState('overview')
 
+  useEffect(() => {
+    // Si on vient avec le paramètre share, ouvrir directement la page Partager
+    if (searchParams?.get('share')) {
+      setActiveSection('share')
+    }
+    // Si on vient avec le paramètre tab, ouvrir l'onglet correspondant
+    const tab = searchParams?.get('tab')
+    if (tab && ['overview', 'upload', 'share'].includes(tab)) {
+      setActiveSection(tab)
+    }
+  }, [searchParams])
+
   const sections = [
-    { id: 'overview', label: 'Overview' },
-    { id: 'browse', label: 'Browse' },
-    { id: 'upload', label: 'Upload' },
-    { id: 'categories', label: 'Categories' },
-    { id: 'search', label: 'Search' },
-    { id: 'settings', label: 'Settings' },
+    { id: 'overview', label: 'Vue d\'ensemble' },
+    { id: 'upload', label: 'Téléverser' },
+    { id: 'share', label: 'Partager' },
   ]
 
   return (
@@ -32,6 +40,7 @@ export default function DocumentsVaultPage() {
             {sections.map((section) => (
               <button
                 key={section.id}
+                data-tab={section.id}
                 onClick={() => setActiveSection(section.id)}
                 className={`documents-nav-tab ${activeSection === section.id ? 'active' : ''}`}
               >
@@ -43,13 +52,26 @@ export default function DocumentsVaultPage() {
 
         {/* Section Content */}
         {activeSection === 'overview' && <DocumentsVaultOverview />}
-        {activeSection === 'browse' && <DocumentsVaultBrowse />}
         {activeSection === 'upload' && <DocumentsVaultUpload />}
-        {activeSection === 'categories' && <DocumentsVaultCategories />}
-        {activeSection === 'search' && <DocumentsVaultSearch />}
-        {activeSection === 'settings' && <DocumentsVaultSettings />}
+        {activeSection === 'share' && <DocumentsVaultShare />}
       </div>
     </div>
+  )
+}
+
+export default function DocumentsVaultPage() {
+  return (
+    <Suspense fallback={
+      <div className="dashboard-view">
+        <div className="dashboard-content">
+          <div style={{ color: 'var(--text-secondary)', textAlign: 'center', padding: 'var(--space-6)' }}>
+            Chargement...
+          </div>
+        </div>
+      </div>
+    }>
+      <DocumentsVaultContent />
+    </Suspense>
   )
 }
 
