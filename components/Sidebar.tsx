@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import Icon from '@/components/Icon'
+import { isNavItemEnabled, isNavSectionEnabled, filterNavItems } from '@/lib/navigation-config'
 
 interface NavItem {
   href: string
@@ -31,7 +32,6 @@ const miningSection: NavSection = {
 const costCenterSection: NavSection = {
   label: 'Cost Center',
   items: [
-    { href: '/transactions', label: 'Transactions', icon: 'transactions', view: 'transactions' },
     { href: '/electricity', label: 'Électricité', icon: 'energy', view: 'electricity' },
   ]
 }
@@ -40,6 +40,8 @@ const costCenterSection: NavSection = {
 const hearstToolsSection: NavSection = {
   label: 'Hearst Tools',
   items: [
+    { href: '/calculator', label: 'Calculator', icon: 'calculator', view: 'calculator' },
+    { href: '/transactions', label: 'Wallet Transfert', icon: 'transactions', view: 'transactions' },
     { href: '/profitability-index', label: 'Profitability Index', icon: 'profitability-index', view: 'profitability-index' },
     { href: '/collateral', label: 'Collateral', icon: 'collateral', view: 'collateral' },
     { href: '/wallet-scraper', label: 'Wallet Scraper', icon: 'wallet-scraper', view: 'wallet-scraper' },
@@ -50,7 +52,6 @@ const hearstToolsSection: NavSection = {
 const strategieSection: NavSection = {
   label: 'Strategie',
   items: [
-    { href: '/calculator', label: 'Calculator', icon: 'calculator', view: 'calculator' },
     { href: '/business-dev', label: 'Business Dev', icon: 'business-dev', view: 'business-dev' },
     { href: '/partnership', label: 'Partnership', icon: 'partnership', view: 'partnership' },
   ]
@@ -247,6 +248,7 @@ export default function Sidebar() {
         </div>
 
         {/* Section Mining avec menu déroulant */}
+        {isNavSectionEnabled('mining') && filterNavItems(miningSection.items).length > 0 && (
         <div className="nav-section">
           <button
             className={`nav-section-header ${isMiningOpen ? 'open' : ''}`}
@@ -271,7 +273,7 @@ export default function Sidebar() {
             <span className="nav-section-label">{miningSection.label}</span>
           </button>
           <div className={`nav-section-content ${isMiningOpen ? 'open' : ''}`}>
-            {miningSection.items.map((item) => (
+            {filterNavItems(miningSection.items).map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -283,8 +285,10 @@ export default function Sidebar() {
             ))}
           </div>
         </div>
+        )}
 
         {/* Section Cost Center avec menu déroulant */}
+        {isNavSectionEnabled('costCenter') && filterNavItems(costCenterSection.items).length > 0 && (
         <div className="nav-section">
           <button
             className={`nav-section-header ${isCostCenterOpen ? 'open' : ''}`}
@@ -309,7 +313,7 @@ export default function Sidebar() {
             <span className="nav-section-label">{costCenterSection.label}</span>
           </button>
           <div className={`nav-section-content ${isCostCenterOpen ? 'open' : ''}`}>
-            {costCenterSection.items.map((item) => (
+            {filterNavItems(costCenterSection.items).map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -321,8 +325,10 @@ export default function Sidebar() {
             ))}
           </div>
         </div>
+        )}
 
         {/* Section Hearst Tools avec menu déroulant */}
+        {isNavSectionEnabled('hearstTools') && filterNavItems(hearstToolsSection.items).length > 0 && (
         <div className="nav-section">
           <button
             className={`nav-section-header ${isHearstToolsOpen ? 'open' : ''}`}
@@ -347,7 +353,7 @@ export default function Sidebar() {
             <span className="nav-section-label">{hearstToolsSection.label}</span>
           </button>
           <div className={`nav-section-content ${isHearstToolsOpen ? 'open' : ''}`}>
-            {hearstToolsSection.items.map((item) => (
+            {filterNavItems(hearstToolsSection.items).map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -359,8 +365,10 @@ export default function Sidebar() {
             ))}
           </div>
         </div>
+        )}
 
         {/* Section Strategie avec menu déroulant */}
+        {isNavSectionEnabled('strategie') && filterNavItems(strategieSection.items).length > 0 && (
         <div className="nav-section">
           <button
             className={`nav-section-header ${isStrategieOpen ? 'open' : ''}`}
@@ -385,7 +393,7 @@ export default function Sidebar() {
             <span className="nav-section-label">{strategieSection.label}</span>
           </button>
           <div className={`nav-section-content ${isStrategieOpen ? 'open' : ''}`}>
-            {strategieSection.items.map((item) => (
+            {filterNavItems(strategieSection.items).map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -397,8 +405,10 @@ export default function Sidebar() {
             ))}
           </div>
         </div>
+        )}
 
         {/* Section Datas avec menu déroulant */}
+        {isNavSectionEnabled('datas') && filterNavItems(datasSection.items).length > 0 && (
         <div className="nav-section">
           <button
             className={`nav-section-header ${isDatasOpen ? 'open' : ''}`}
@@ -423,7 +433,7 @@ export default function Sidebar() {
             <span className="nav-section-label">{datasSection.label}</span>
           </button>
           <div className={`nav-section-content ${isDatasOpen ? 'open' : ''}`}>
-            {datasSection.items.map((item) => (
+            {filterNavItems(datasSection.items).map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -435,8 +445,10 @@ export default function Sidebar() {
             ))}
           </div>
         </div>
+        )}
 
         {/* Section Management avec menu déroulant */}
+        {isNavSectionEnabled('management') && filterNavItems(managementSection.items).length > 0 && (
         <div className="nav-section">
           <button
             className={`nav-section-header ${isManagementOpen ? 'open' : ''}`}
@@ -461,7 +473,7 @@ export default function Sidebar() {
             <span className="nav-section-label">{managementSection.label}</span>
           </button>
           <div className={`nav-section-content ${isManagementOpen ? 'open' : ''}`}>
-            {managementSection.items.map((item) => (
+            {filterNavItems(managementSection.items).map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -473,6 +485,7 @@ export default function Sidebar() {
             ))}
           </div>
         </div>
+        )}
 
         {/* Séparateur avec logo Bitcoin sous Management */}
         <div className="nav-section-separator nav-section-separator-bitcoin">
