@@ -60,7 +60,8 @@ async function fetchEarningsData(timeframe: 'week' | 'month' | 'year'): Promise<
         LIMIT 7
       `
     } else if (timeframe === 'year') {
-      // Year View - Monthly Earnings (Last 7 Months)
+      // Year View - Monthly Earnings (Last 12 Months)
+      // Display data for all contracts, not only active ones
       result = await prisma.$queryRaw<Array<{
         date: Date
         total_earnings: number
@@ -75,13 +76,13 @@ async function fetchEarningsData(timeframe: 'week' | 'month' | 'year'): Promise<
           ON c.id = h."contractId"
         WHERE
           c.currency = 'Bitcoin'
-          AND h.date >= CURRENT_DATE - INTERVAL '210 days'
+          AND h.date >= CURRENT_DATE - INTERVAL '365 days'
           AND h.date < CURRENT_DATE
         GROUP BY
           DATE_TRUNC('month', h.date)
         ORDER BY
           DATE_TRUNC('month', h.date) ASC
-        LIMIT 7
+        LIMIT 12
       `
     }
     
@@ -239,7 +240,7 @@ export async function GET(request: NextRequest) {
       dateMap.set(dateKey, record.total_earnings || 0)
     })
 
-    // Build arrays for 7 data points based on timeframe
+    // Build arrays for data points based on timeframe
     const dates: string[] = []
     const btcEarningsValues: number[] = []
     
@@ -263,7 +264,7 @@ export async function GET(request: NextRequest) {
         btcEarningsValues.push(record.total_earnings || 0)
       })
     } else {
-      // Year: Last 7 months - use the data from query (already grouped by month, limited to 7)
+      // Year: Last 12 months - use the data from query (already grouped by month, limited to 12)
       earningsData.forEach((record) => {
         const dateObj = record.date instanceof Date ? record.date : new Date(record.date)
         const dateLabel = dateObj.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
