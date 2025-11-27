@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
     const order = maxOrder ? maxOrder.order + 1 : 0
 
     // Créer l'enregistrement dans la base de données
-    const image = await prisma.portfolioImage.create({
+    const image: any = await prisma.portfolioImage.create({
       data: {
         sectionId,
         userId: session.user.id,
