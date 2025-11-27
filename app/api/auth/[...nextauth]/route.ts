@@ -31,7 +31,7 @@ async function handleAuthRequest(
     }
 
     // Créer un objet res qui capture la réponse correctement
-    let finalResponse: Response | null = null
+    let finalResponse: any = null
     let statusCode = 200
     
     const res: any = {
