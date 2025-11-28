@@ -210,8 +210,23 @@ export default function MinerDataPage() {
   }
 
   const handleSave = async () => {
-    if (!formData.name || !formData.hashrate || !formData.power || !formData.price || !formData.coolingType) {
-      alert('Veuillez remplir tous les champs obligatoires')
+    // Validation améliorée - vérifier que les valeurs sont définies et non vides
+    const nameValid = formData.name && formData.name.trim() !== ''
+    const hashrateValid = formData.hashrate !== undefined && formData.hashrate !== null && formData.hashrate > 0
+    const powerValid = formData.power !== undefined && formData.power !== null && formData.power > 0
+    const priceValid = formData.price !== undefined && formData.price !== null && formData.price > 0
+    const coolingTypeValid = formData.coolingType && formData.coolingType.trim() !== ''
+    
+    if (!nameValid || !hashrateValid || !powerValid || !priceValid || !coolingTypeValid) {
+      console.log('Validation failed:', {
+        name: nameValid,
+        hashrate: hashrateValid,
+        power: powerValid,
+        price: priceValid,
+        coolingType: coolingTypeValid,
+        formData
+      })
+      alert('Veuillez remplir tous les champs obligatoires (nom, hashrate > 0, puissance > 0, prix > 0, type de refroidissement)')
       return
     }
 
@@ -275,54 +290,73 @@ export default function MinerDataPage() {
         }
       } else if (isAdding) {
         // Ajouter via API
+        const requestBody = {
+          name: formData.name,
+          hashrate: formData.hashrate,
+          power: formData.power,
+          price: formData.price,
+          coolingType: formData.coolingType,
+          manufacturer: formData.manufacturer || undefined,
+          model: formData.model || undefined,
+          releaseDate: formData.releaseDate || undefined,
+          photo: photoData || undefined,
+          notes: formData.notes || undefined,
+        }
+        
+        console.log('Creating miner:', requestBody)
+        console.log('API URL:', baseUrl)
+        
         const response = await fetch(baseUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            name: formData.name,
-            hashrate: formData.hashrate,
-            power: formData.power,
-            price: formData.price,
-            coolingType: formData.coolingType,
-            manufacturer: formData.manufacturer,
-            model: formData.model,
-            releaseDate: formData.releaseDate,
-            photo: photoData,
-            notes: formData.notes,
-          })
+          body: JSON.stringify(requestBody)
         })
         
-        if (response.ok) {
-          const result = await response.json()
-          if (result.success) {
-            // Recharger les données depuis l'API
-            const loadResponse = await fetch(baseUrl)
-            if (loadResponse.ok) {
-              const loadResult = await loadResponse.json()
-              if (loadResult.success && loadResult.data) {
-                const formattedMiners = loadResult.data.map((m: any) => ({
-                  id: m.id.toString(),
-                  name: m.name,
-                  hashrate: parseFloat(m.hashrate),
-                  power: parseFloat(m.power),
-                  efficiency: parseFloat(m.efficiency),
-                  price: parseFloat(m.price),
-                  coolingType: m.cooling_type || m.coolingType,
-                  manufacturer: m.manufacturer || '',
-                  model: m.model || '',
-                  releaseDate: m.release_date || m.releaseDate || '',
-                  photo: m.photo || null,
-                  notes: m.notes || '',
-                }))
-                setMiners(formattedMiners)
-                localStorage.setItem('miners-data', JSON.stringify(formattedMiners))
-              }
-            }
-            setIsAdding(false)
+        console.log('Response status:', response.status)
+        
+        if (!response.ok) {
+          const errorText = await response.text()
+          console.error('Error response:', errorText)
+          let errorData
+          try {
+            errorData = JSON.parse(errorText)
+          } catch {
+            errorData = { error: errorText || `HTTP ${response.status}` }
           }
+          throw new Error(errorData.error || `Failed to create miner: ${response.status}`)
+        }
+        
+        const result = await response.json()
+        console.log('Create result:', result)
+        
+        if (result.success) {
+          // Recharger les données depuis l'API
+          const loadResponse = await fetch(baseUrl)
+          if (loadResponse.ok) {
+            const loadResult = await loadResponse.json()
+            if (loadResult.success && loadResult.data) {
+              const formattedMiners = loadResult.data.map((m: any) => ({
+                id: m.id.toString(),
+                name: m.name,
+                hashrate: parseFloat(m.hashrate),
+                power: parseFloat(m.power),
+                efficiency: parseFloat(m.efficiency),
+                price: parseFloat(m.price),
+                coolingType: m.cooling_type || m.coolingType,
+                manufacturer: m.manufacturer || '',
+                model: m.model || '',
+                releaseDate: m.release_date || m.releaseDate || '',
+                photo: m.photo || null,
+                notes: m.notes || '',
+              }))
+              setMiners(formattedMiners)
+              localStorage.setItem('miners-data', JSON.stringify(formattedMiners))
+              console.log('Miners reloaded:', formattedMiners.length)
+            }
+          }
+          setIsAdding(false)
         } else {
-          const errorData = await response.json().catch(() => ({}))
-          throw new Error(errorData.error || 'Failed to create miner')
+          throw new Error(result.error || 'Failed to create miner')
         }
       }
 
