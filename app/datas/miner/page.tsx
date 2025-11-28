@@ -99,11 +99,24 @@ export default function MinerDataPage() {
     loadMiners()
   }, [])
 
-  // Sauvegarder dans l'API Railway et localStorage (fallback)
+  // Sauvegarder dans l'API Railway et localStorage (fallback, sans photos)
   const saveMiners = async (newMiners: Miner[]) => {
     setMiners(newMiners)
-    // Sauvegarder aussi dans localStorage comme backup
-    localStorage.setItem('miners-data', JSON.stringify(newMiners))
+    // Sauvegarder aussi dans localStorage comme backup (sans photos pour éviter QuotaExceededError)
+    try {
+      const minersWithoutPhotos = newMiners.map((m: Miner) => ({
+        ...m,
+        photo: null // Ne pas sauvegarder les photos en base64 dans localStorage
+      }))
+      localStorage.setItem('miners-data', JSON.stringify(minersWithoutPhotos))
+    } catch (error: any) {
+      // Si localStorage est plein, on ignore l'erreur (l'API est la source principale)
+      if (error.name === 'QuotaExceededError') {
+        console.warn('localStorage quota exceeded, skipping backup save. API is the primary source.')
+      } else {
+        console.error('Error saving to localStorage:', error)
+      }
+    }
   }
 
   const handleAdd = () => {
@@ -194,7 +207,15 @@ export default function MinerDataPage() {
                 notes: m.notes || '',
               }))
               setMiners(formattedMiners)
-              localStorage.setItem('miners-data', JSON.stringify(formattedMiners))
+              // Sauvegarder dans localStorage sans photos
+              try {
+                const minersWithoutPhotos = formattedMiners.map((m: Miner) => ({ ...m, photo: null }))
+                localStorage.setItem('miners-data', JSON.stringify(minersWithoutPhotos))
+              } catch (error: any) {
+                if (error.name === 'QuotaExceededError') {
+                  console.warn('localStorage quota exceeded, skipping backup save.')
+                }
+              }
             }
           }
         } else {
@@ -350,7 +371,15 @@ export default function MinerDataPage() {
                 notes: m.notes || '',
               }))
               setMiners(formattedMiners)
-              localStorage.setItem('miners-data', JSON.stringify(formattedMiners))
+              // Sauvegarder dans localStorage sans photos
+              try {
+                const minersWithoutPhotos = formattedMiners.map((m: Miner) => ({ ...m, photo: null }))
+                localStorage.setItem('miners-data', JSON.stringify(minersWithoutPhotos))
+              } catch (error: any) {
+                if (error.name === 'QuotaExceededError') {
+                  console.warn('localStorage quota exceeded, skipping backup save.')
+                }
+              }
               console.log('Miners reloaded:', formattedMiners.length)
             }
           }

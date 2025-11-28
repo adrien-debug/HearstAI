@@ -114,9 +114,24 @@ const DEFAULT_DATA: CalculatorData = {
   report_frequency: 'monthly',
 }
 
+// Interface pour les machines depuis l'API
+interface MachineFromAPI {
+  id: string
+  name: string
+  hashrate: number
+  power: number
+  efficiency: number
+  price: number
+  coolingType?: string
+  manufacturer?: string
+  model?: string
+}
+
 export default function Calculator() {
   const [currentStep, setCurrentStep] = useState(0)
   const [data, setData] = useState<CalculatorData>(DEFAULT_DATA)
+  const [machines, setMachines] = useState<Array<MachineFromAPI & { badge?: string }>>([])
+  const [machinesLoading, setMachinesLoading] = useState(true)
 
   const steps = [
     { id: 0, label: 'CONTEXT &\nSCENARIO' },
@@ -149,6 +164,82 @@ export default function Calculator() {
   const getNumberValue = (value: number | undefined): string | number => {
     return value !== undefined && value !== null ? value : ''
   }
+
+  // Charger les machines depuis l'API
+  useEffect(() => {
+    const loadMachines = async () => {
+      try {
+        setMachinesLoading(true)
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || ''
+        const baseUrl = apiUrl && apiUrl.startsWith('http') 
+          ? `${apiUrl}/api/datas/miners`
+          : '/api/datas/miners'
+        
+        const response = await fetch(baseUrl)
+        if (response.ok) {
+          const result = await response.json()
+          if (result.success && result.data) {
+            // Convertir les données de l'API au format attendu
+            const formattedMachines = result.data.map((m: any) => ({
+              id: m.id.toString(),
+              name: m.name,
+              hashrate: parseFloat(m.hashrate || 0),
+              power: parseFloat(m.power || 0),
+              efficiency: parseFloat(m.efficiency || 0),
+              price: parseFloat(m.price || 0),
+              coolingType: m.cooling_type || m.coolingType || '',
+              manufacturer: m.manufacturer || '',
+              model: m.model || '',
+            }))
+            
+            // Ajouter l'option "Custom Model" à la fin
+            formattedMachines.push({
+              id: 'custom',
+              name: 'Custom Model',
+              hashrate: 0,
+              power: 0,
+              efficiency: 0,
+              price: 0,
+              badge: 'Editable',
+            })
+            
+            setMachines(formattedMachines)
+          } else {
+            console.error('Failed to load machines from API')
+            // Fallback: utiliser les machines par défaut
+            setMachines([
+              { id: 's23hydro', name: 'Antminer S23 Hydro', hashrate: 605, power: 5870, efficiency: 9.7, price: 8500, badge: 'Popular' },
+              { id: 's21pro', name: 'Antminer S21 Pro', hashrate: 234, power: 3510, efficiency: 15.0, price: 4008, badge: 'New' },
+              { id: 'm60s', name: 'Whatsminer M60S++', hashrate: 372, power: 7200, efficiency: 19.4, price: 5800 },
+              { id: 'custom', name: 'Custom Model', hashrate: 0, power: 0, efficiency: 0, price: 0, badge: 'Editable' },
+            ])
+          }
+        } else {
+          console.error('Failed to load machines from API')
+          // Fallback: utiliser les machines par défaut
+          setMachines([
+            { id: 's23hydro', name: 'Antminer S23 Hydro', hashrate: 605, power: 5870, efficiency: 9.7, price: 8500, badge: 'Popular' },
+            { id: 's21pro', name: 'Antminer S21 Pro', hashrate: 234, power: 3510, efficiency: 15.0, price: 4008, badge: 'New' },
+            { id: 'm60s', name: 'Whatsminer M60S++', hashrate: 372, power: 7200, efficiency: 19.4, price: 5800 },
+            { id: 'custom', name: 'Custom Model', hashrate: 0, power: 0, efficiency: 0, price: 0, badge: 'Editable' },
+          ])
+        }
+      } catch (error) {
+        console.error('Error loading machines:', error)
+        // Fallback: utiliser les machines par défaut
+        setMachines([
+          { id: 's23hydro', name: 'Antminer S23 Hydro', hashrate: 605, power: 5870, efficiency: 9.7, price: 8500, badge: 'Popular' },
+          { id: 's21pro', name: 'Antminer S21 Pro', hashrate: 234, power: 3510, efficiency: 15.0, price: 4008, badge: 'New' },
+          { id: 'm60s', name: 'Whatsminer M60S++', hashrate: 372, power: 7200, efficiency: 19.4, price: 5800 },
+          { id: 'custom', name: 'Custom Model', hashrate: 0, power: 0, efficiency: 0, price: 0, badge: 'Editable' },
+        ])
+      } finally {
+        setMachinesLoading(false)
+      }
+    }
+    
+    loadMachines()
+  }, [])
 
   const nextStep = () => {
     if (currentStep < steps.length - 1) {
@@ -365,12 +456,16 @@ export default function Calculator() {
                   Choose your mining hardware. Specs are pre-filled from market data but fully editable.
                 </div>
                 <div className="calculator-machine-grid">
-                  {[
-                    { id: 's23hydro', name: 'Antminer S23 Hydro', hashrate: 605, power: 5870, efficiency: 9.7, price: 8500, badge: 'Popular' },
-                    { id: 's21pro', name: 'Antminer S21 Pro', hashrate: 234, power: 3510, efficiency: 15.0, price: 4008, badge: 'New' },
-                    { id: 'm60s', name: 'Whatsminer M60S++', hashrate: 372, power: 7200, efficiency: 19.4, price: 5800 },
-                    { id: 'custom', name: 'Custom Model', hashrate: 0, power: 0, efficiency: 0, price: 0, badge: 'Editable' },
-                  ].map((machine) => (
+                  {machinesLoading ? (
+                    <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: 'var(--space-6)', color: 'var(--text-secondary)' }}>
+                      Chargement des machines...
+                    </div>
+                  ) : machines.length === 0 ? (
+                    <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: 'var(--space-6)', color: 'var(--text-secondary)' }}>
+                      Aucune machine disponible. Veuillez ajouter des machines dans la section Data.
+                    </div>
+                  ) : (
+                    machines.map((machine) => (
                     <div
                       key={machine.id}
                       className={`calculator-machine-card ${data.selected_machine === machine.id ? 'selected' : ''}`}
@@ -404,7 +499,8 @@ export default function Calculator() {
                         Unit Price: <span className="calculator-machine-price-value">${machine.price.toLocaleString('en-US')}</span>
                       </div>
                     </div>
-                  ))}
+                    ))
+                  )}
                 </div>
               </div>
 

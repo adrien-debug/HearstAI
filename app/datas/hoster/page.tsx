@@ -256,8 +256,15 @@ export default function HosterDataPage() {
               notes: h.notes || '',
             }))
             setHosters(formattedHosters)
-            // Sauvegarder aussi dans localStorage comme backup
-            localStorage.setItem('hosters-data', JSON.stringify(formattedHosters))
+            // Sauvegarder aussi dans localStorage comme backup (sans photos)
+            try {
+              const hostersWithoutPhotos = formattedHosters.map((h: Hoster) => ({ ...h, photo: null }))
+              localStorage.setItem('hosters-data', JSON.stringify(hostersWithoutPhotos))
+            } catch (error: any) {
+              if (error.name === 'QuotaExceededError') {
+                console.warn('localStorage quota exceeded, skipping backup save.')
+              }
+            }
           }
         } else {
           console.error('Failed to load hosters from API')
@@ -288,10 +295,24 @@ export default function HosterDataPage() {
     loadHosters()
   }, [])
 
-  // Sauvegarder dans localStorage
+  // Sauvegarder dans localStorage (sans photos pour éviter QuotaExceededError)
   const saveHosters = (newHosters: Hoster[]) => {
     setHosters(newHosters)
-    localStorage.setItem('hosters-data', JSON.stringify(newHosters))
+    try {
+      // Sauvegarder seulement les données sans photos pour éviter de dépasser la limite
+      const hostersWithoutPhotos = newHosters.map((h: Hoster) => ({
+        ...h,
+        photo: null // Ne pas sauvegarder les photos en base64 dans localStorage
+      }))
+      localStorage.setItem('hosters-data', JSON.stringify(hostersWithoutPhotos))
+    } catch (error: any) {
+      // Si localStorage est plein, on ignore l'erreur (l'API est la source principale)
+      if (error.name === 'QuotaExceededError') {
+        console.warn('localStorage quota exceeded, skipping backup save. API is the primary source.')
+      } else {
+        console.error('Error saving to localStorage:', error)
+      }
+    }
   }
 
   // Construire la liste des tabs avec tous les pays (pas seulement ceux avec hosters)
@@ -382,7 +403,15 @@ export default function HosterDataPage() {
                 notes: h.notes || '',
               }))
               setHosters(formattedHosters)
-              localStorage.setItem('hosters-data', JSON.stringify(formattedHosters))
+              // Sauvegarder dans localStorage sans photos
+              try {
+                const hostersWithoutPhotos = formattedHosters.map((h: Hoster) => ({ ...h, photo: null }))
+                localStorage.setItem('hosters-data', JSON.stringify(hostersWithoutPhotos))
+              } catch (error: any) {
+                if (error.name === 'QuotaExceededError') {
+                  console.warn('localStorage quota exceeded, skipping backup save.')
+                }
+              }
             }
           }
         } else {
