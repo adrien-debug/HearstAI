@@ -120,6 +120,24 @@ CREATE TABLE IF NOT EXISTS log_entries (
 );
 
 -- ============================================
+-- BUSINESS DEV CONTACTS TABLE
+-- ============================================
+CREATE TABLE IF NOT EXISTS business_dev_contacts (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    company TEXT NOT NULL,
+    email TEXT NOT NULL,
+    phone TEXT,
+    status TEXT NOT NULL DEFAULT 'pending' CHECK(status IN ('active', 'pending', 'inactive')),
+    estimated_value TEXT,
+    last_contact TEXT NOT NULL DEFAULT (datetime('now')),
+    notes TEXT,
+    user_id TEXT,
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+-- ============================================
 -- INDEXES FOR PERFORMANCE
 -- ============================================
 CREATE INDEX IF NOT EXISTS idx_projects_status ON projects(status);
@@ -131,6 +149,10 @@ CREATE INDEX IF NOT EXISTS idx_jobs_status ON jobs(status);
 CREATE INDEX IF NOT EXISTS idx_jobs_created_at ON jobs(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_log_entries_job_id ON log_entries(job_id);
 CREATE INDEX IF NOT EXISTS idx_log_entries_timestamp ON log_entries(timestamp DESC);
+CREATE INDEX IF NOT EXISTS idx_business_dev_contacts_status ON business_dev_contacts(status);
+CREATE INDEX IF NOT EXISTS idx_business_dev_contacts_email ON business_dev_contacts(email);
+CREATE INDEX IF NOT EXISTS idx_business_dev_contacts_company ON business_dev_contacts(company);
+CREATE INDEX IF NOT EXISTS idx_business_dev_contacts_created_at ON business_dev_contacts(created_at);
 
 -- ============================================
 -- INSERT DEFAULT PROMPT PROFILES
