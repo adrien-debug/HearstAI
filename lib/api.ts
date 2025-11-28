@@ -10,16 +10,20 @@ const getBaseUrl = () => {
   
   // Si une URL complète est fournie (http://... ou https://...), l'utiliser
   if (envUrl && (envUrl.startsWith('http://') || envUrl.startsWith('https://'))) {
+    // Nettoyer l'URL (supprimer les slashes en fin)
+    const cleanUrl = envUrl.replace(/\/+$/, '')
     // Si l'URL se termine déjà par /api, l'utiliser telle quelle
     // Sinon, ajouter /api
-    const baseUrl = envUrl.endsWith('/api') ? envUrl : `${envUrl}/api`
+    const baseUrl = cleanUrl.endsWith('/api') ? cleanUrl : `${cleanUrl}/api`
     return baseUrl
   }
   
   // Si BACKEND_URL est défini (pour Railway backend), l'utiliser
   const backendUrl = process.env.BACKEND_URL
   if (backendUrl && (backendUrl.startsWith('http://') || backendUrl.startsWith('https://'))) {
-    const baseUrl = backendUrl.endsWith('/api') ? backendUrl : `${backendUrl}/api`
+    // Nettoyer l'URL (supprimer les slashes en fin)
+    const cleanUrl = backendUrl.replace(/\/+$/, '')
+    const baseUrl = cleanUrl.endsWith('/api') ? cleanUrl : `${cleanUrl}/api`
     return baseUrl
   }
   
@@ -44,6 +48,16 @@ export async function fetchAPI<T>(
 ): Promise<T> {
   const baseUrl = getBaseUrl()
   const url = `${baseUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`
+  
+  // Log the API URL being used (only in development or when explicitly enabled)
+  if (process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_DEBUG_API === 'true') {
+    console.log(`[API] Calling: ${url}`, {
+      baseUrl,
+      endpoint,
+      usingRailway: baseUrl.includes('railway.app') || baseUrl.includes('railway'),
+      usingLocal: baseUrl.includes('localhost') || baseUrl.startsWith('/api'),
+    })
+  }
   
   try {
     const response = await fetch(url, {
