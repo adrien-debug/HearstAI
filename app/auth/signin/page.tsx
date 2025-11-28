@@ -50,6 +50,7 @@ export default function SignInPage() {
         setError(`Erreur: ${result.error}`);
       } else if (result?.ok) {
         console.log('[SignIn] Connexion réussie');
+        console.log('Testing');
 
         // Redirection normale après connexion
         console.log('[SignIn] Login successful, redirecting...');
