@@ -132,6 +132,159 @@
 }
 
 /* ====================================
+   FORM SECTIONS
+   ==================================== */
+.hoster-data-form-section {
+    margin-bottom: var(--space-6);
+    padding-bottom: var(--space-6);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.hoster-data-form-section:last-of-type {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.hoster-data-form-section-title {
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+    color: #C5FFA7;
+    margin: 0 0 var(--space-4) 0;
+    letter-spacing: -0.01em;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.hoster-data-form-section-title::before {
+    content: '';
+    width: 3px;
+    height: 16px;
+    background: #C5FFA7;
+    border-radius: var(--radius-full);
+}
+
+/* ====================================
+   PHOTO UPLOAD SECTION
+   ==================================== */
+.hoster-data-photo-section {
+    margin-bottom: var(--space-6);
+    padding-bottom: var(--space-6);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.hoster-data-photo-label {
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+    font-weight: var(--font-normal);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: block;
+    margin-bottom: var(--space-3);
+}
+
+.hoster-data-photo-upload {
+    width: 100%;
+}
+
+.hoster-data-photo-upload-label {
+    display: block;
+    cursor: pointer;
+    width: 100%;
+}
+
+.hoster-data-photo-upload-placeholder {
+    background: rgba(10, 10, 10, 0.6);
+    border: 2px dashed rgba(197, 255, 167, 0.3);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    transition: all var(--duration-fast) var(--ease-in-out);
+    min-height: 200px;
+}
+
+.hoster-data-photo-upload-placeholder:hover {
+    border-color: #C5FFA7;
+    background: rgba(197, 255, 167, 0.05);
+}
+
+.hoster-data-photo-icon {
+    font-size: 48px;
+    opacity: 0.7;
+    transition: all var(--duration-fast) var(--ease-in-out);
+}
+
+.hoster-data-photo-upload-placeholder:hover .hoster-data-photo-icon {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.hoster-data-photo-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-1);
+}
+
+.hoster-data-photo-text-main {
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    color: var(--text-primary);
+}
+
+.hoster-data-photo-text-sub {
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+    opacity: 0.7;
+}
+
+.hoster-data-photo-preview {
+    position: relative;
+    width: 100%;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: rgba(10, 10, 10, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.hoster-data-photo-preview img {
+    width: 100%;
+    height: auto;
+    max-height: 400px;
+    object-fit: cover;
+    display: block;
+}
+
+.hoster-data-photo-remove {
+    position: absolute;
+    top: var(--space-2);
+    right: var(--space-2);
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-full);
+    background: rgba(255, 77, 77, 0.9);
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--duration-fast) var(--ease-in-out);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.hoster-data-photo-remove:hover {
+    background: rgba(255, 77, 77, 1);
+    transform: scale(1.1);
+}
+
+/* ====================================
    FORM GRID
    ==================================== */
 .hoster-data-form-grid {
@@ -337,11 +490,87 @@
 }
 
 /* ====================================
+   TABLE ALIGNMENT
+   ==================================== */
+.premium-transaction-table-container .premium-transaction-table th,
+.premium-transaction-table-container .premium-transaction-table td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.premium-transaction-table-container .premium-transaction-table th:first-child,
+.premium-transaction-table-container .premium-transaction-table td:first-child {
+    text-align: center;
+}
+
+/* ====================================
+   TABLE PHOTO
+   ==================================== */
+.hoster-table-photo {
+    width: 100px;
+    height: 100px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: rgba(10, 10, 10, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    margin: 0 auto;
+}
+
+.hoster-table-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hoster-table-photo-placeholder {
+    width: 100px;
+    height: 100px;
+    border-radius: var(--radius-md);
+    background: rgba(197, 255, 167, 0.1);
+    border: 1px solid rgba(197, 255, 167, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #C5FFA7;
+    opacity: 0.6;
+    margin: 0 auto;
+}
+
+.hoster-table-photo-placeholder .premium-stat-icon {
+    width: 40px;
+    height: 40px;
+}
+
+/* Centrer le contenu des cellules */
+.premium-transaction-table-container .premium-transaction-table td > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.premium-transaction-table-container .premium-transaction-table td > span {
+    display: inline-block;
+}
+
+.premium-transaction-table-container .premium-transaction-table .hoster-data-actions {
+    justify-content: center;
+}
+
+/* ====================================
    RESPONSIVE
    ==================================== */
 @media (max-width: 1024px) {
     .hoster-data-form-grid {
         grid-template-columns: 1fr;
+    }
+    
+    .hoster-data-photo-upload-placeholder {
+        min-height: 150px;
+        padding: var(--space-6);
+    }
+    
+    .hoster-data-photo-icon {
+        font-size: 36px;
     }
 }
 
