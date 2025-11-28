@@ -59,7 +59,7 @@ export const navigationConfig = {
     enabled: true, // Section activée
     items: {
       'business-dev': { enabled: true },
-      partnership: { enabled: true },
+      partnership: { enabled: false }, // Masqué
     },
   },
 
