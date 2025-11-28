@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { prisma } from '@/lib/db'
+import { prismaProd } from '@/lib/db'
 
 export const dynamic = 'force-dynamic'
 
@@ -14,7 +14,7 @@ async function fetchRealTimeHashrate(): Promise<Array<{ date: Date; total_speed_
     // Speed is already in PH/s, no conversion needed
     // Only include data from active contracts
     // Exclude today's date as it will be updated tomorrow
-    const result = await prisma.$queryRaw<Array<{
+    const result = await prismaProd.$queryRaw<Array<{
       date: Date
       total_speed_ph: number
     }>>`
@@ -52,7 +52,7 @@ async function fetchCurrentHashrate(): Promise<number> {
     // Get the most recent hashrate value from active contracts (excluding today)
     // Speed is already in PH/s, no conversion needed
     // Exclude today's date as it will be updated tomorrow
-    const result = await prisma.$queryRaw<Array<{
+    const result = await prismaProd.$queryRaw<Array<{
       total_speed_ph: number
     }>>`
       SELECT
@@ -92,7 +92,7 @@ async function fetchTheoreticalHashrate(): Promise<number> {
     console.log('[Hashrate Chart API] Starting fetchTheoreticalHashrate...')
     
     // Query to calculate maximum possible hashrate from active contracts
-    const result = await prisma.$queryRaw<Array<{
+    const result = await prismaProd.$queryRaw<Array<{
       active_contracts: number
       total_machines: number
       theoretical_hashrate_ph: number

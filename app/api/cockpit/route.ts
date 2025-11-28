@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { prisma } from '@/lib/db'
+import { prisma, prismaProd } from '@/lib/db'
 import { Pool } from 'pg'
 
 export const dynamic = 'force-dynamic'
@@ -167,7 +167,7 @@ async function fetchTheoreticalHashrate(): Promise<{
 }> {
   try {
     // Query to calculate theoretical hashrate from active contracts
-    const result = await prisma.$queryRaw<Array<{
+    const result = await prismaProd.$queryRaw<Array<{
       active_contracts: number
       total_machines: number
       theoretical_hashrate_ph: number
@@ -211,7 +211,7 @@ async function fetchBTCProduction24h(): Promise<number> {
     // Get active Bitcoin contracts and calculate yesterday's earnings
     // Step 1: Get active Bitcoin contract IDs
     // Step 2: Calculate yesterday's earnings for those contracts
-    const earningsResult = await prisma.$queryRaw<Array<{
+    const earningsResult = await prismaProd.$queryRaw<Array<{
       record_count: number
       total_earning: number
     }>>`
@@ -247,7 +247,7 @@ async function fetchBTCProductionMonthly(): Promise<number> {
     // Exclude today's date as today's data will be updated tomorrow
     // Step 1: Get active Bitcoin contract IDs
     // Step 2: Calculate current month earnings for those contracts
-    const earningsResult = await prisma.$queryRaw<Array<{
+    const earningsResult = await prismaProd.$queryRaw<Array<{
       record_count: number
       total_earning: number
     }>>`
@@ -334,7 +334,7 @@ async function fetchMiningAccounts(bitcoinPrice: number): Promise<Array<{
 }>> {
   try {
     // Optimized query: Get all Bitcoin contracts with their earnings in last 24h in a single query
-    const accountsResult = await prisma.$queryRaw<Array<{
+    const accountsResult = await prismaProd.$queryRaw<Array<{
       id: string
       name: string
       status: string
@@ -495,11 +495,22 @@ export async function GET(request: NextRequest) {
       // Continue with default value (0)
     }
 
-    // Fetch BTC production (monthly) from database
-    const btcProductionMonthly = await fetchBTCProductionMonthly()
+    // Fetch BTC production (monthly) from database (with fallback)
+    let btcProductionMonthly = 0
+    try {
+      btcProductionMonthly = await fetchBTCProductionMonthly()
+    } catch (error) {
+      console.error('[Cockpit API] Error fetching BTC production monthly:', error)
+      // Continue with default value (0)
+    }
 
-    // Fetch Bitcoin price for yesterday to calculate USD value
-    const bitcoinPrice = await fetchBitcoinPriceYesterday()
+    // Fetch Bitcoin price for yesterday to calculate USD value (with fallback)
+    try {
+      bitcoinPrice = await fetchBitcoinPriceYesterday()
+    } catch (error) {
+      console.error('[Cockpit API] Error fetching Bitcoin price:', error)
+      // Continue with default value (0)
+    }
     
     // Calculate USD value of BTC production
     const btcProduction24hUSD = btcProduction24h * bitcoinPrice

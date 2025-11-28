@@ -13,6 +13,7 @@ interface Hoster {
   electricityPrice: number // $/kWh
   additionalFees: number // USD/mois
   deposit: number // Nombre de mois de dépôt
+  photo?: string // URL de la photo (base64 ou URL)
   notes?: string
 }
 
@@ -21,6 +22,8 @@ export default function HosterDataPage() {
   const [isEditing, setIsEditing] = useState<string | null>(null)
   const [isAdding, setIsAdding] = useState(false)
   const [activeCountry, setActiveCountry] = useState<string>('all')
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [imageFile, setImageFile] = useState<File | null>(null)
   const [formData, setFormData] = useState<Partial<Hoster>>({
     name: '',
     country: '',
@@ -36,16 +39,10 @@ export default function HosterDataPage() {
     'États-Unis',
     'Canada',
     'Islande',
-    'Norvège',
-    'Suède',
-    'Finlande',
-    'République Tchèque',
     'Kazakhstan',
     'Russie',
     'Chine',
     'Paraguay',
-    'Venezuela',
-    'Autre',
   ]
 
   // Charger les données depuis le localStorage ou API
@@ -74,6 +71,8 @@ export default function HosterDataPage() {
 
   const handleAdd = () => {
     setIsAdding(true)
+    setImagePreview(null)
+    setImageFile(null)
     setFormData({
       name: '',
       country: '',
@@ -85,9 +84,40 @@ export default function HosterDataPage() {
     })
   }
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      if (!file.type.startsWith('image/')) {
+        alert('Veuillez sélectionner un fichier image')
+        return
+      }
+      
+      if (file.size > 5 * 1024 * 1024) {
+        alert('La taille de l\'image doit être inférieure à 5MB')
+        return
+      }
+      
+      setImageFile(file)
+      
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  const handleRemoveImage = () => {
+    setImageFile(null)
+    setImagePreview(null)
+    setFormData({ ...formData, photo: undefined })
+  }
+
   const handleEdit = (hoster: Hoster) => {
     setIsEditing(hoster.id)
     setFormData(hoster)
+    setImagePreview(hoster.photo || null)
+    setImageFile(null)
     setIsAdding(false)
   }
 
@@ -104,10 +134,12 @@ export default function HosterDataPage() {
       return
     }
 
+    const photoData = imagePreview || formData.photo
+
     if (isEditing) {
       // Modifier
       const newHosters = hosters.map(h => 
-        h.id === isEditing ? { ...formData, id: isEditing } as Hoster : h
+        h.id === isEditing ? { ...formData, id: isEditing, photo: photoData } as Hoster : h
       )
       saveHosters(newHosters)
       setIsEditing(null)
@@ -121,6 +153,7 @@ export default function HosterDataPage() {
         electricityPrice: formData.electricityPrice!,
         additionalFees: formData.additionalFees!,
         deposit: formData.deposit!,
+        photo: photoData,
         notes: formData.notes || '',
       }
       saveHosters([...hosters, newHoster])
@@ -128,6 +161,8 @@ export default function HosterDataPage() {
     }
 
     // Réinitialiser le formulaire
+    setImagePreview(null)
+    setImageFile(null)
     setFormData({
       name: '',
       country: '',
@@ -142,6 +177,8 @@ export default function HosterDataPage() {
   const handleCancel = () => {
     setIsEditing(null)
     setIsAdding(false)
+    setImagePreview(null)
+    setImageFile(null)
     setFormData({
       name: '',
       country: '',
@@ -236,81 +273,130 @@ export default function HosterDataPage() {
               </div>
             </div>
             
-            <div className="hoster-data-form-grid">
-              <div className="hoster-data-form-group">
-                <label>Nom du Hoster *</label>
-                <input
-                  type="text"
-                  value={formData.name || ''}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="Ex: Bitmain Hosting"
-                />
+            {/* Section Photo - Pleine largeur en haut */}
+            <div className="hoster-data-photo-section">
+              <label className="hoster-data-photo-label">Photo du Hoster</label>
+              <div className="hoster-data-photo-upload">
+                {imagePreview ? (
+                  <div className="hoster-data-photo-preview">
+                    <img src={imagePreview} alt="Preview" />
+                    <button 
+                      type="button"
+                      className="hoster-data-photo-remove"
+                      onClick={handleRemoveImage}
+                      title="Supprimer la photo"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ) : (
+                  <label className="hoster-data-photo-upload-label">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      style={{ display: 'none' }}
+                    />
+                    <div className="hoster-data-photo-upload-placeholder">
+                      <div className="hoster-data-photo-icon">📷</div>
+                      <div className="hoster-data-photo-text">
+                        <span className="hoster-data-photo-text-main">Cliquez pour ajouter une photo</span>
+                        <span className="hoster-data-photo-text-sub">JPG, PNG, WEBP (max 5MB)</span>
+                      </div>
+                    </div>
+                  </label>
+                )}
               </div>
+            </div>
 
-              <div className="hoster-data-form-group">
-                <label>Pays *</label>
-                <select
-                  value={formData.country || ''}
-                  onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-                >
-                  <option value="">Sélectionner un pays</option>
-                  {countries.map(country => (
-                    <option key={country} value={country}>{country}</option>
-                  ))}
-                </select>
+            {/* Section Informations principales */}
+            <div className="hoster-data-form-section">
+              <h4 className="hoster-data-form-section-title">Informations principales</h4>
+              <div className="hoster-data-form-grid">
+                <div className="hoster-data-form-group">
+                  <label>Nom du Hoster *</label>
+                  <input
+                    type="text"
+                    value={formData.name || ''}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    placeholder="Ex: Bitmain Hosting"
+                  />
+                </div>
+
+                <div className="hoster-data-form-group">
+                  <label>Pays *</label>
+                  <select
+                    value={formData.country || ''}
+                    onChange={(e) => setFormData({ ...formData, country: e.target.value })}
+                  >
+                    <option value="">Sélectionner un pays</option>
+                    {countries.map(country => (
+                      <option key={country} value={country}>{country}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="hoster-data-form-group hoster-data-form-group-full">
+                  <label>Localisation *</label>
+                  <input
+                    type="text"
+                    value={formData.location || ''}
+                    onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                    placeholder="Ex: Texas, USA"
+                  />
+                </div>
               </div>
+            </div>
 
-              <div className="hoster-data-form-group">
-                <label>Localisation *</label>
-                <input
-                  type="text"
-                  value={formData.location || ''}
-                  onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                  placeholder="Ex: Texas, USA"
-                />
+            {/* Section Coûts */}
+            <div className="hoster-data-form-section">
+              <h4 className="hoster-data-form-section-title">Coûts et conditions</h4>
+              <div className="hoster-data-form-grid">
+                <div className="hoster-data-form-group">
+                  <label>Prix Électricité ($/kWh) *</label>
+                  <input
+                    type="number"
+                    step="0.001"
+                    value={formData.electricityPrice || ''}
+                    onChange={(e) => setFormData({ ...formData, electricityPrice: parseFloat(e.target.value) || 0 })}
+                    placeholder="Ex: 0.05"
+                  />
+                </div>
+
+                <div className="hoster-data-form-group">
+                  <label>Frais Supplémentaires (USD/mois) *</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={formData.additionalFees || ''}
+                    onChange={(e) => setFormData({ ...formData, additionalFees: parseFloat(e.target.value) || 0 })}
+                    placeholder="Ex: 50"
+                  />
+                </div>
+
+                <div className="hoster-data-form-group">
+                  <label>Dépôt (nombre de mois) *</label>
+                  <input
+                    type="number"
+                    step="0.5"
+                    min="0"
+                    value={formData.deposit || ''}
+                    onChange={(e) => setFormData({ ...formData, deposit: parseFloat(e.target.value) || 0 })}
+                    placeholder="Ex: 3"
+                  />
+                </div>
               </div>
+            </div>
 
-              <div className="hoster-data-form-group">
-                <label>Prix Électricité ($/kWh) *</label>
-                <input
-                  type="number"
-                  step="0.001"
-                  value={formData.electricityPrice || ''}
-                  onChange={(e) => setFormData({ ...formData, electricityPrice: parseFloat(e.target.value) || 0 })}
-                  placeholder="Ex: 0.05"
-                />
-              </div>
-
-              <div className="hoster-data-form-group">
-                <label>Frais Supplémentaires (USD/mois) *</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={formData.additionalFees || ''}
-                  onChange={(e) => setFormData({ ...formData, additionalFees: parseFloat(e.target.value) || 0 })}
-                  placeholder="Ex: 50"
-                />
-              </div>
-
-              <div className="hoster-data-form-group">
-                <label>Dépôt (nombre de mois) *</label>
-                <input
-                  type="number"
-                  step="0.5"
-                  min="0"
-                  value={formData.deposit || ''}
-                  onChange={(e) => setFormData({ ...formData, deposit: parseFloat(e.target.value) || 0 })}
-                  placeholder="Ex: 3"
-                />
-              </div>
-
+            {/* Section Notes */}
+            <div className="hoster-data-form-section">
+              <h4 className="hoster-data-form-section-title">Notes supplémentaires</h4>
               <div className="hoster-data-form-group hoster-data-form-group-full">
-                <label>Notes</label>
                 <textarea
                   value={formData.notes || ''}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                  placeholder="Notes supplémentaires..."
-                  rows={3}
+                  placeholder="Ajoutez des notes ou informations complémentaires..."
+                  rows={4}
                 />
               </div>
             </div>
@@ -344,6 +430,7 @@ export default function HosterDataPage() {
               <table className="premium-transaction-table">
                 <thead>
                   <tr>
+                    <th style={{ width: '120px' }}>Photo</th>
                     <th>Nom</th>
                     <th>Pays</th>
                     <th>Localisation</th>
@@ -357,17 +444,30 @@ export default function HosterDataPage() {
                   {filteredHosters.map((hoster) => (
                     <tr key={hoster.id}>
                       <td>
-                        <div style={{ fontWeight: 'var(--font-semibold)' }}>{hoster.name}</div>
+                        {hoster.photo ? (
+                          <div className="hoster-table-photo">
+                            <img src={hoster.photo} alt={hoster.name} />
+                          </div>
+                        ) : (
+                          <div className="hoster-table-photo-placeholder">
+                            <Icon name="server" />
+                          </div>
+                        )}
                       </td>
                       <td>
-                        <span className="hoster-country-badge">
-                          {hoster.country}
-                        </span>
+                        <div style={{ fontWeight: 'var(--font-semibold)', textAlign: 'center' }}>{hoster.name}</div>
                       </td>
-                      <td>{hoster.location}</td>
-                      <td className="premium-transaction-amount">${formatNumber(hoster.electricityPrice, 3)}/kWh</td>
-                      <td className="premium-transaction-amount">${formatNumber(hoster.additionalFees, 2)}/mois</td>
-                      <td>{hoster.deposit} mois</td>
+                      <td>
+                        <div style={{ display: 'flex', justifyContent: 'center' }}>
+                          <span className="hoster-country-badge">
+                            {hoster.country}
+                          </span>
+                        </div>
+                      </td>
+                      <td style={{ textAlign: 'center' }}>{hoster.location}</td>
+                      <td className="premium-transaction-amount" style={{ textAlign: 'center' }}>${formatNumber(hoster.electricityPrice, 3)}/kWh</td>
+                      <td className="premium-transaction-amount" style={{ textAlign: 'center' }}>${formatNumber(hoster.additionalFees, 2)}/mois</td>
+                      <td style={{ textAlign: 'center' }}>{hoster.deposit} mois</td>
                       <td>
                         <div className="hoster-data-actions">
                           <button
