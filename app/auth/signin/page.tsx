@@ -1,152 +1,122 @@
-'use client'
+'use client';
 
-import { signIn } from 'next-auth/react'
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { signIn } from 'next-auth/react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function SignInPage() {
-  const router = useRouter()
-  const [email, setEmail] = useState('admin@hearst.ai')
-  const [password, setPassword] = useState('admin')
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [isLocal, setIsLocal] = useState(false)
+  const router = useRouter();
+  const [email, setEmail] = useState('admin@hearst.ai');
+  const [password, setPassword] = useState('admin');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [isLocal, setIsLocal] = useState(false);
 
   // Désactiver le scroll automatique de Next.js pour éviter les warnings
   useEffect(() => {
     // Empêcher le scroll automatique sur cette page
-    const originalOverflow = document.body.style.overflow
-    const originalPosition = document.body.style.position
-    
-    document.body.style.overflow = 'hidden'
-    document.body.style.position = 'relative'
-    
+    const originalOverflow = document.body.style.overflow;
+    const originalPosition = document.body.style.position;
+
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'relative';
+
     // Restaurer au démontage
     return () => {
-      document.body.style.overflow = originalOverflow
-      document.body.style.position = originalPosition
-    }
-  }, [])
-
-  // Détecter si on est en mode local
-  useEffect(() => {
-    const isLocalEnv = typeof window !== 'undefined' && (
-      window.location.hostname === 'localhost' || 
-      window.location.hostname === '127.0.0.1' ||
-      window.location.port === '6001' ||
-      window.location.port === '3000'
-    )
-    setIsLocal(isLocalEnv)
-    console.log('[SignIn] Mode local détecté:', isLocalEnv)
-    
-    // EN MODE LOCAL : Rediriger automatiquement vers la page d'accueil
-    // SAUF si on a un callbackUrl (ex: depuis une redirection externe)
-    // Dans ce cas, on laisse l'utilisateur se connecter normalement
-    if (isLocalEnv) {
-      const urlParams = new URLSearchParams(window.location.search)
-      const callbackUrl = urlParams.get('callbackUrl')
-      
-      // Si pas de callbackUrl, rediriger automatiquement
-      if (!callbackUrl || callbackUrl.trim() === '') {
-        console.log('[SignIn] 🔧 MODE LOCAL - Redirection automatique vers / (pas de callbackUrl)')
-        setTimeout(() => {
-          router.push('/')
-        }, 500)
-      } else {
-        console.log('[SignIn] 🔧 MODE LOCAL - CallbackUrl détecté, pas de redirection automatique:', callbackUrl)
-      }
-    }
-  }, [router])
+      document.body.style.overflow = originalOverflow;
+      document.body.style.position = originalPosition;
+    };
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
-    setLoading(true)
+    e.preventDefault();
+    setError('');
+    setLoading(true);
 
     try {
-      console.log('[SignIn] Tentative de connexion avec:', { email, isLocal })
-      
+      console.log('[SignIn] Tentative de connexion avec:', { email });
+
       const result = await signIn('credentials', {
         email,
         password,
         redirect: false,
         callbackUrl: '/',
-      })
+      });
 
-      console.log('[SignIn] Résultat:', result)
+      console.log('[SignIn] Résultat:', result);
 
       if (result?.error) {
-        console.error('[SignIn] Erreur:', result.error)
-        setError(`Erreur: ${result.error}`)
+        console.error('[SignIn] Erreur:', result.error);
+        setError(`Erreur: ${result.error}`);
       } else if (result?.ok) {
-        console.log('[SignIn] Connexion réussie')
-        
-        // EN MODE LOCAL : Pas de redirection, juste un message de succès
-        if (isLocal) {
-          console.log('[SignIn] 🔧 MODE LOCAL - Pas de redirection automatique')
-          setError('') // Clear error
-          // Afficher un message de succès et laisser l'utilisateur naviguer manuellement
-          alert('✅ Connexion réussie ! Vous pouvez maintenant naviguer vers la page d\'accueil.')
-          // Optionnel : redirection simple sans boucle
-          setTimeout(() => {
-            router.push('/')
-          }, 1000)
-          return
-        }
-        
-        // EN PRODUCTION : Redirection normale
-        console.log('[SignIn] Connexion réussie, redirection...')
-        
-        // Récupérer le callbackUrl depuis l'URL ou utiliser '/' par défaut
-        const urlParams = new URLSearchParams(window.location.search)
-        let callbackUrl = urlParams.get('callbackUrl')
-        
-        // Si callbackUrl est null ou vide, utiliser '/'
+        console.log('[SignIn] Connexion réussie');
+        console.log('Testing');
+
+        // Redirection normale après connexion
+        console.log('[SignIn] Login successful, redirecting...');
+
+        // Get callbackUrl from URL or use '/' as default
+        const urlParams = new URLSearchParams(window.location.search);
+        let callbackUrl = urlParams.get('callbackUrl');
+
+        // If callbackUrl is null or empty, use '/'
         if (!callbackUrl || callbackUrl.trim() === '') {
-          callbackUrl = '/'
+          callbackUrl = '/';
         } else {
           try {
             if (callbackUrl.startsWith('%')) {
-              callbackUrl = decodeURIComponent(callbackUrl)
+              callbackUrl = decodeURIComponent(callbackUrl);
             } else {
-              callbackUrl = decodeURIComponent(callbackUrl)
+              callbackUrl = decodeURIComponent(callbackUrl);
             }
           } catch (e) {
-            console.warn('[SignIn] Erreur décodage callbackUrl, utilisation de /:', e)
-            callbackUrl = '/'
+            console.warn('[SignIn] Error decoding callbackUrl, using /:', e);
+            callbackUrl = '/';
           }
         }
-        
-        // FORCER '/' si callbackUrl pointe vers /auth/signin (éviter les boucles)
-        if (callbackUrl === '/auth/signin' || callbackUrl.startsWith('/auth/signin?') || callbackUrl.includes('/auth/signin')) {
-          console.warn('[SignIn] ⚠️ CallbackUrl pointe vers /auth/signin, forcer vers /')
-          callbackUrl = '/'
+
+        // FORCE '/' if callbackUrl points to /auth/signin (avoid loops)
+        if (
+          callbackUrl === '/auth/signin' ||
+          callbackUrl.startsWith('/auth/signin?') ||
+          callbackUrl.includes('/auth/signin')
+        ) {
+          console.warn(
+            '[SignIn] ⚠️ CallbackUrl points to /auth/signin, forcing to /'
+          );
+          callbackUrl = '/';
         }
-        
-        // S'assurer que callbackUrl est une URL relative valide
+
+        // Ensure callbackUrl is a valid relative URL
         if (!callbackUrl.startsWith('/')) {
-          console.warn('[SignIn] ⚠️ CallbackUrl invalide (ne commence pas par /), forcer vers /')
-          callbackUrl = '/'
+          console.warn(
+            '[SignIn] ⚠️ Invalid callbackUrl (does not start with /), forcing to /'
+          );
+          callbackUrl = '/';
         }
-        
-        console.log('[SignIn] Redirection vers:', callbackUrl)
-        
-        // Redirection simple en production
-        router.push(callbackUrl)
+
+        console.log('[SignIn] Redirecting to:', callbackUrl);
+
+        // Simple redirect
+        router.push(callbackUrl);
       } else {
-        console.warn('[SignIn] Résultat inattendu:', result)
-        setError('Une erreur est survenue lors de la connexion')
+        console.warn('[SignIn] Résultat inattendu:', result);
+        setError('Une erreur est survenue lors de la connexion');
       }
     } catch (err) {
-      console.error('[SignIn] Exception:', err)
-      setError(`Erreur: ${err instanceof Error ? err.message : 'Une erreur est survenue'}`)
+      console.error('[SignIn] Exception:', err);
+      setError(
+        `Erreur: ${
+          err instanceof Error ? err.message : 'Une erreur est survenue'
+        }`
+      );
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <div 
+    <div
       data-nextjs-scroll-focus-boundary="false"
       style={{
         position: 'fixed',
@@ -163,20 +133,24 @@ export default function SignInPage() {
     >
       <div style={{ width: '100%', maxWidth: '420px', padding: '20px' }}>
         <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-          <div style={{
-            fontSize: '28px',
-            fontWeight: 800,
-            color: '#FFFFFF',
-            marginTop: '20px',
-            letterSpacing: '-0.5px',
-          }}>
+          <div
+            style={{
+              fontSize: '28px',
+              fontWeight: 800,
+              color: '#FFFFFF',
+              marginTop: '20px',
+              letterSpacing: '-0.5px',
+            }}
+          >
             HearstAI
           </div>
-          <div style={{
-            fontSize: '13px',
-            color: '#B0B0B0',
-            marginTop: '8px',
-          }}>
+          <div
+            style={{
+              fontSize: '13px',
+              color: '#B0B0B0',
+              marginTop: '8px',
+            }}
+          >
             Secure Access Portal
           </div>
         </div>
@@ -192,21 +166,23 @@ export default function SignInPage() {
           }}
         >
           {error && (
-            <div style={{
-              background: 'rgba(255, 77, 77, 0.1)',
-              border: '1px solid #ff4d4d',
-              borderRadius: '8px',
-              padding: '12px',
-              marginBottom: '24px',
-              color: '#ff4d4d',
-              fontSize: '14px',
-            }}>
+            <div
+              style={{
+                background: 'rgba(255, 77, 77, 0.1)',
+                border: '1px solid #ff4d4d',
+                borderRadius: '8px',
+                padding: '12px',
+                marginBottom: '24px',
+                color: '#ff4d4d',
+                fontSize: '14px',
+              }}
+            >
               {error}
             </div>
           )}
 
           <div style={{ marginBottom: '24px' }}>
-            <label 
+            <label
               htmlFor="email-input"
               style={{
                 display: 'block',
@@ -239,16 +215,16 @@ export default function SignInPage() {
                 transition: 'all 0.2s',
               }}
               onFocus={(e) => {
-                e.currentTarget.style.borderColor = '#a5ff9c'
+                e.currentTarget.style.borderColor = '#a5ff9c';
               }}
               onBlur={(e) => {
-                e.currentTarget.style.borderColor = '#3A3A3A'
+                e.currentTarget.style.borderColor = '#3A3A3A';
               }}
             />
           </div>
 
           <div style={{ marginBottom: '32px' }}>
-            <label 
+            <label
               htmlFor="password-input"
               style={{
                 display: 'block',
@@ -281,10 +257,10 @@ export default function SignInPage() {
                 transition: 'all 0.2s',
               }}
               onFocus={(e) => {
-                e.currentTarget.style.borderColor = '#a5ff9c'
+                e.currentTarget.style.borderColor = '#a5ff9c';
               }}
               onBlur={(e) => {
-                e.currentTarget.style.borderColor = '#3A3A3A'
+                e.currentTarget.style.borderColor = '#3A3A3A';
               }}
             />
           </div>
@@ -309,14 +285,16 @@ export default function SignInPage() {
             }}
             onMouseEnter={(e) => {
               if (!loading) {
-                e.currentTarget.style.transform = 'translateY(-2px)'
-                e.currentTarget.style.boxShadow = '0 6px 16px rgba(165, 255, 156, 0.4)'
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow =
+                  '0 6px 16px rgba(165, 255, 156, 0.4)';
               }
             }}
             onMouseLeave={(e) => {
               if (!loading) {
-                e.currentTarget.style.transform = 'translateY(0)'
-                e.currentTarget.style.boxShadow = '0 4px 12px rgba(165, 255, 156, 0.3)'
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow =
+                  '0 4px 12px rgba(165, 255, 156, 0.3)';
               }
             }}
           >
@@ -331,6 +309,5 @@ export default function SignInPage() {
         </form>
       </div>
     </div>
-  )
+  );
 }
-
