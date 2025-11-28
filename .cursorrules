@@ -16,14 +16,32 @@
 2. **Commandes Git automatiques**
    - Toujours utiliser `git checkout Fix/texting` au début d'une session
    - Vérifier l'état de la branche avec `git status` avant de commencer
+   - **TOUJOURS** faire `git fetch origin Fix/texting` avant de pousser
    - Pousser automatiquement sur `origin/Fix/texting` après les commits
 
-3. **Workflow de branche**
+3. **Protection contre l'écrasement - OBLIGATOIRE**
+   - **AVANT chaque push** : Exécuter `git fetch origin Fix/texting`
+   - Vérifier s'il y a des modifications distantes avec `git status` ou `git log HEAD..origin/Fix/texting`
+   - Si des modifications distantes existent :
+     - **NE JAMAIS écraser** les modifications d'autres développeurs
+     - Exécuter `git pull origin Fix/texting` (ou `git merge origin/Fix/texting`) pour fusionner
+     - Résoudre les conflits automatiquement si possible, sinon informer l'utilisateur
+     - Vérifier que la fusion s'est bien passée avant de pousser
+   - Seulement après cette vérification et fusion : pousser les modifications
+
+4. **Workflow de branche sécurisé**
+   - Workflow standard AVANT chaque push :
+     1. `git fetch origin Fix/texting` (récupérer les dernières modifications)
+     2. `git status` (vérifier l'état)
+     3. Si modifications distantes : `git pull origin Fix/texting` (fusionner)
+     4. Résoudre les conflits si nécessaire
+     5. `git push origin Fix/texting` (pousser seulement après vérification)
    - Créer toutes les modifications sur `Fix/texting`
-   - Commit et push automatiques sur cette branche
+   - Commit automatique sur cette branche
+   - Push sécurisé après vérification des modifications distantes
    - Informer si un changement de branche est nécessaire
 
-4. **Exceptions**
+5. **Exceptions**
    - Ne changer de branche que si explicitement demandé par l'utilisateur
    - Toujours revenir sur `Fix/texting` après toute opération sur une autre branche
 
@@ -47,7 +65,8 @@
    - ✅ Builds et compilations (`npm run build`, `next build`)
    - ✅ Tests et vérifications (`npm test`, `npm run lint`)
    - ✅ Démarrage de serveurs (`npm run dev`, `npm start`)
-   - ✅ Commandes Git (`git add`, `git commit`, `git push`)
+   - ✅ Commandes Git (`git add`, `git commit`, `git fetch`, `git pull`, `git push`)
+     - **IMPORTANT** : Toujours `git fetch` avant `git push` pour vérifier les modifications distantes
    - ✅ Commandes de base de données (`prisma generate`, `prisma migrate`)
    - ✅ Commandes de déploiement
    - ✅ Toutes les commandes nécessaires pour accomplir la tâche
