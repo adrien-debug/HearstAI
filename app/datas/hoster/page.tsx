@@ -230,6 +230,27 @@ export default function HosterDataPage() {
     'Zimbabwe',
   ]
 
+  // Nettoyer le localStorage au chargement si nécessaire (enlever les photos)
+  useEffect(() => {
+    try {
+      const savedHosters = localStorage.getItem('hosters-data')
+      if (savedHosters) {
+        const parsed = JSON.parse(savedHosters)
+        // Vérifier si des photos sont présentes
+        const hasPhotos = Array.isArray(parsed) && parsed.some((h: any) => h.photo && h.photo !== null)
+        if (hasPhotos) {
+          // Nettoyer en enlevant les photos
+          const cleaned = parsed.map((h: any) => ({ ...h, photo: null }))
+          localStorage.setItem('hosters-data', JSON.stringify(cleaned))
+          console.log('Cleaned localStorage: removed photos from hosters-data')
+        }
+      }
+    } catch (error) {
+      // Ignorer les erreurs de nettoyage
+      console.warn('Error cleaning localStorage:', error)
+    }
+  }, [])
+
   // Charger les données depuis l'API Railway
   useEffect(() => {
     const loadHosters = async () => {
@@ -493,7 +514,15 @@ export default function HosterDataPage() {
                   notes: h.notes || '',
                 }))
                 setHosters(formattedHosters)
-                localStorage.setItem('hosters-data', JSON.stringify(formattedHosters))
+                // Sauvegarder dans localStorage sans photos
+                try {
+                  const hostersWithoutPhotos = formattedHosters.map((h: Hoster) => ({ ...h, photo: null }))
+                  localStorage.setItem('hosters-data', JSON.stringify(hostersWithoutPhotos))
+                } catch (error: any) {
+                  if (error.name === 'QuotaExceededError') {
+                    console.warn('localStorage quota exceeded, skipping backup save.')
+                  }
+                }
               }
             }
             setIsEditing(null)
@@ -538,7 +567,15 @@ export default function HosterDataPage() {
                   notes: h.notes || '',
                 }))
                 setHosters(formattedHosters)
-                localStorage.setItem('hosters-data', JSON.stringify(formattedHosters))
+                // Sauvegarder dans localStorage sans photos
+                try {
+                  const hostersWithoutPhotos = formattedHosters.map((h: Hoster) => ({ ...h, photo: null }))
+                  localStorage.setItem('hosters-data', JSON.stringify(hostersWithoutPhotos))
+                } catch (error: any) {
+                  if (error.name === 'QuotaExceededError') {
+                    console.warn('localStorage quota exceeded, skipping backup save.')
+                  }
+                }
               }
             }
             setIsAdding(false)
