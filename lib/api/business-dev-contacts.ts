@@ -1,3 +1,4 @@
+// Utiliser l'API Next.js qui fait le proxy vers Railway
 const API_BASE = '/api/business-dev/contacts'
 
 export interface BusinessDevContact {
