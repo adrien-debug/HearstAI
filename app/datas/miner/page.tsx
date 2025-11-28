@@ -40,21 +40,69 @@ export default function MinerDataPage() {
     notes: '',
   })
 
-  // Charger les données depuis le localStorage ou API
+  // Charger les données depuis l'API Railway
   useEffect(() => {
-    const savedMiners = localStorage.getItem('miners-data')
-    if (savedMiners) {
+    const loadMiners = async () => {
       try {
-        setMiners(JSON.parse(savedMiners))
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || ''
+        const baseUrl = apiUrl && apiUrl.startsWith('http') 
+          ? `${apiUrl}/api/datas/miners`
+          : '/api/datas/miners'
+        
+        const response = await fetch(baseUrl)
+        if (response.ok) {
+          const result = await response.json()
+          if (result.success && result.data) {
+            // Convertir les données Railway au format frontend
+            const formattedMiners = result.data.map((m: any) => ({
+              id: m.id.toString(),
+              name: m.name,
+              hashrate: parseFloat(m.hashrate),
+              power: parseFloat(m.power),
+              efficiency: parseFloat(m.efficiency),
+              price: parseFloat(m.price),
+              coolingType: m.cooling_type || m.coolingType,
+              manufacturer: m.manufacturer || '',
+              model: m.model || '',
+              releaseDate: m.release_date || m.releaseDate || '',
+              photo: m.photo || null,
+              notes: m.notes || '',
+            }))
+            setMiners(formattedMiners)
+          }
+        } else {
+          console.error('Failed to load miners from API')
+          // Fallback sur localStorage si l'API échoue
+          const savedMiners = localStorage.getItem('miners-data')
+          if (savedMiners) {
+            try {
+              setMiners(JSON.parse(savedMiners))
+            } catch (error) {
+              console.error('Error loading miners from localStorage:', error)
+            }
+          }
+        }
       } catch (error) {
-        console.error('Error loading miners data:', error)
+        console.error('Error loading miners:', error)
+        // Fallback sur localStorage
+        const savedMiners = localStorage.getItem('miners-data')
+        if (savedMiners) {
+          try {
+            setMiners(JSON.parse(savedMiners))
+          } catch (e) {
+            console.error('Error loading miners from localStorage:', e)
+          }
+        }
       }
     }
+    
+    loadMiners()
   }, [])
 
-  // Sauvegarder dans localStorage
-  const saveMiners = (newMiners: Miner[]) => {
+  // Sauvegarder dans l'API Railway et localStorage (fallback)
+  const saveMiners = async (newMiners: Miner[]) => {
     setMiners(newMiners)
+    // Sauvegarder aussi dans localStorage comme backup
     localStorage.setItem('miners-data', JSON.stringify(newMiners))
   }
 
@@ -113,10 +161,51 @@ export default function MinerDataPage() {
     setIsAdding(false)
   }
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm('Êtes-vous sûr de vouloir supprimer cette machine ?')) {
-      const newMiners = miners.filter(m => m.id !== id)
-      saveMiners(newMiners)
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || ''
+        const baseUrl = apiUrl && apiUrl.startsWith('http') 
+          ? `${apiUrl}/api/datas/miners`
+          : '/api/datas/miners'
+        
+        const response = await fetch(`${baseUrl}/${id}`, {
+          method: 'DELETE'
+        })
+        
+        if (response.ok) {
+          // Recharger les données depuis l'API
+          const loadResponse = await fetch(baseUrl)
+          if (loadResponse.ok) {
+            const loadResult = await loadResponse.json()
+            if (loadResult.success && loadResult.data) {
+              const formattedMiners = loadResult.data.map((m: any) => ({
+                id: m.id.toString(),
+                name: m.name,
+                hashrate: parseFloat(m.hashrate),
+                power: parseFloat(m.power),
+                efficiency: parseFloat(m.efficiency),
+                price: parseFloat(m.price),
+                coolingType: m.cooling_type || m.coolingType,
+                manufacturer: m.manufacturer || '',
+                model: m.model || '',
+                releaseDate: m.release_date || m.releaseDate || '',
+                photo: m.photo || null,
+                notes: m.notes || '',
+              }))
+              setMiners(formattedMiners)
+              localStorage.setItem('miners-data', JSON.stringify(formattedMiners))
+            }
+          }
+        } else {
+          throw new Error('Failed to delete miner')
+        }
+      } catch (error) {
+        console.error('Error deleting miner:', error)
+        // Fallback: supprimer localement
+        const newMiners = miners.filter(m => m.id !== id)
+        saveMiners(newMiners)
+      }
     }
   }
 
