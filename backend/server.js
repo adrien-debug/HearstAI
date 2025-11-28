@@ -61,6 +61,7 @@ const versionsRouter = require('./routes/versions');
 const promptsRouter = require('./routes/prompts');
 const logsRouter = require('./routes/logs');
 const statsRouter = require('./routes/stats');
+const businessDevRouter = require('./routes/business-dev');
 
 app.use('/api/projects', projectsRouter);
 app.use('/api/jobs', jobsRouter);
@@ -68,6 +69,7 @@ app.use('/api/versions', versionsRouter);
 app.use('/api/prompts', promptsRouter);
 app.use('/api/logs', logsRouter);
 app.use('/api/stats', statsRouter);
+app.use('/api/business-dev', businessDevRouter);
 
 // Electricity endpoint (mock data for now)
 app.get('/api/electricity', (req, res) => {

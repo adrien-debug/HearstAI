@@ -56,7 +56,7 @@ export const navigationConfig = {
 
   // Section Strategie
   strategie: {
-    enabled: false, // Section désactivée
+    enabled: true, // Section activée
     items: {
       'business-dev': { enabled: true },
       partnership: { enabled: true },

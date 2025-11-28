@@ -181,6 +181,27 @@ model Customer {
   updatedAt         DateTime @updatedAt
 }
 
+model BusinessDevContact {
+  id            String   @id @default(cuid())
+  name          String
+  company       String
+  email         String
+  phone         String?
+  status        String   @default("pending") // active, pending, inactive
+  estimatedValue String? // Format: "€120K", "€200K", etc.
+  lastContact   DateTime @default(now())
+  notes         String?  // Notes additionnelles sur le contact
+  userId        String?  // Optionnel: lier au User qui a créé le contact
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([status])
+  @@index([email])
+  @@index([company])
+  @@index([createdAt])
+  @@map("business_dev_contacts")
+}
+
 model Document {
   id                String   @id @default(cuid())
   userId            String
