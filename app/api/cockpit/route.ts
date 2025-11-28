@@ -205,25 +205,25 @@ async function fetchTheoreticalHashrate(): Promise<{
 }
 
 // Helper function to fetch BTC production (24h) from database
+// Calculate yesterday's earnings (last 24 hours) as today's data will be updated tomorrow
 async function fetchBTCProduction24h(): Promise<number> {
   try {
-    // Combined query: Get earnings from hashrate table for active Bitcoin contracts in last 24 hours
-    // Using subquery to get active Bitcoin contract IDs
+    // Get active Bitcoin contracts and calculate yesterday's earnings
+    // Step 1: Get active Bitcoin contract IDs
+    // Step 2: Calculate yesterday's earnings for those contracts
     const earningsResult = await prisma.$queryRaw<Array<{
       record_count: number
       total_earning: number
     }>>`
       SELECT 
         COUNT(*)::int as record_count,
-        COALESCE(SUM(earning), 0)::float as total_earning
-      FROM hashrate
-      WHERE "contractId" IN (
-        SELECT id
-        FROM contract
-        WHERE status = 'Active'
-          AND currency = 'Bitcoin'
-      )
-        AND date >= CURRENT_DATE - INTERVAL '1 day'
+        COALESCE(SUM(h.earning), 0)::float as total_earning
+      FROM hashrate h
+      INNER JOIN contract c ON c.id = h."contractId"
+      WHERE c.status = 'Active'
+        AND c.currency = 'Bitcoin'
+        AND h.date >= CURRENT_DATE - INTERVAL '1 day'
+        AND h.date < CURRENT_DATE
     `
     
     if (earningsResult && earningsResult.length > 0) {
@@ -234,6 +234,48 @@ async function fetchBTCProduction24h(): Promise<number> {
     }
   } catch (error) {
     console.error('[Cockpit API] Error calculating BTC production 24h:', error)
+    return 0
+  }
+}
+
+// Helper function to fetch BTC production for current month from database
+async function fetchBTCProductionMonthly(): Promise<number> {
+  try {
+    console.log('[Cockpit API] Starting fetchBTCProductionMonthly...')
+    
+    // Get active Bitcoin contracts and calculate current month earnings
+    // Exclude today's date as today's data will be updated tomorrow
+    // Step 1: Get active Bitcoin contract IDs
+    // Step 2: Calculate current month earnings for those contracts
+    const earningsResult = await prisma.$queryRaw<Array<{
+      record_count: number
+      total_earning: number
+    }>>`
+      SELECT 
+        COUNT(*)::int as record_count,
+        COALESCE(SUM(h.earning), 0)::float as total_earning
+      FROM hashrate h
+      INNER JOIN contract c ON c.id = h."contractId"
+      WHERE c.status = 'Active'
+        AND c.currency = 'Bitcoin'
+        AND h.date >= DATE_TRUNC('month', CURRENT_DATE)
+        AND h.date < CURRENT_DATE
+    `
+    
+    if (earningsResult && earningsResult.length > 0) {
+      const data = earningsResult[0]
+      const totalEarning = data.total_earning || 0
+      console.log('[Cockpit API] Monthly production calculated:', {
+        record_count: data.record_count,
+        total_earning: totalEarning
+      })
+      return totalEarning
+    } else {
+      console.log('[Cockpit API] No monthly production data found')
+      return 0
+    }
+  } catch (error) {
+    console.error('[Cockpit API] Error calculating BTC production monthly:', error)
     return 0
   }
 }
@@ -453,16 +495,15 @@ export async function GET(request: NextRequest) {
       // Continue with default value (0)
     }
 
-    // Fetch Bitcoin price for yesterday to calculate USD value (with fallback)
-    try {
-      bitcoinPrice = await fetchBitcoinPriceYesterday()
-    } catch (error) {
-      console.error('[Cockpit API] Error fetching Bitcoin price:', error)
-      // Continue with default value (0)
-    }
+    // Fetch BTC production (monthly) from database
+    const btcProductionMonthly = await fetchBTCProductionMonthly()
+
+    // Fetch Bitcoin price for yesterday to calculate USD value
+    const bitcoinPrice = await fetchBitcoinPriceYesterday()
     
     // Calculate USD value of BTC production
     const btcProduction24hUSD = btcProduction24h * bitcoinPrice
+    const btcProductionMonthlyUSD = btcProductionMonthly * bitcoinPrice
 
     // Fetch mining accounts summary (with fallback)
     try {
@@ -479,6 +520,8 @@ export async function GET(request: NextRequest) {
         theoreticalHashrate: theoreticalData.theoreticalHashratePH || 0, // PH/s (from database)
         btcProduction24h: btcProduction24h || 0, // BTC (from database, last 24 hours)
         btcProduction24hUSD: btcProduction24hUSD || 0, // USD (BTC production * Bitcoin price)
+        btcProductionMonthly: btcProductionMonthly || 0, // BTC (from database, current month)
+        btcProductionMonthlyUSD: btcProductionMonthlyUSD || 0, // USD (monthly BTC production * Bitcoin price)
         btcProduction7d: 0, // No data available yet
         totalMiners: totalMiners || 0, // Total miners from external API
         onlineMiners: 0, // No data available yet
