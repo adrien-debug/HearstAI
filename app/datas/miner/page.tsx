@@ -209,56 +209,142 @@ export default function MinerDataPage() {
     }
   }
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!formData.name || !formData.hashrate || !formData.power || !formData.price || !formData.coolingType) {
       alert('Veuillez remplir tous les champs obligatoires')
       return
     }
 
     const photoData = imagePreview || formData.photo
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || ''
+    const baseUrl = apiUrl && apiUrl.startsWith('http') 
+      ? `${apiUrl}/api/datas/miners`
+      : '/api/datas/miners'
 
-    if (isEditing) {
-      // Modifier
-      const newMiners = miners.map(m => 
-        m.id === isEditing ? { ...formData, id: isEditing, photo: photoData } as Miner : m
-      )
-      saveMiners(newMiners)
-      setIsEditing(null)
-    } else if (isAdding) {
-      // Ajouter
-      const newMiner: Miner = {
-        id: `miner-${Date.now()}`,
-        name: formData.name!,
-        hashrate: formData.hashrate!,
-        power: formData.power!,
-        efficiency: formData.efficiency || (formData.power! / formData.hashrate!),
-        price: formData.price!,
-        coolingType: formData.coolingType!,
-        manufacturer: formData.manufacturer || '',
-        model: formData.model || '',
-        releaseDate: formData.releaseDate || '',
-        photo: photoData,
-        notes: formData.notes || '',
+    try {
+      if (isEditing) {
+        // Modifier via API
+        const response = await fetch(`${baseUrl}/${isEditing}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: formData.name,
+            hashrate: formData.hashrate,
+            power: formData.power,
+            price: formData.price,
+            coolingType: formData.coolingType,
+            manufacturer: formData.manufacturer,
+            model: formData.model,
+            releaseDate: formData.releaseDate,
+            photo: photoData,
+            notes: formData.notes,
+          })
+        })
+        
+        if (response.ok) {
+          const result = await response.json()
+          if (result.success) {
+            // Recharger les données depuis l'API
+            const loadResponse = await fetch(baseUrl)
+            if (loadResponse.ok) {
+              const loadResult = await loadResponse.json()
+              if (loadResult.success && loadResult.data) {
+                const formattedMiners = loadResult.data.map((m: any) => ({
+                  id: m.id.toString(),
+                  name: m.name,
+                  hashrate: parseFloat(m.hashrate),
+                  power: parseFloat(m.power),
+                  efficiency: parseFloat(m.efficiency),
+                  price: parseFloat(m.price),
+                  coolingType: m.cooling_type || m.coolingType,
+                  manufacturer: m.manufacturer || '',
+                  model: m.model || '',
+                  releaseDate: m.release_date || m.releaseDate || '',
+                  photo: m.photo || null,
+                  notes: m.notes || '',
+                }))
+                setMiners(formattedMiners)
+                localStorage.setItem('miners-data', JSON.stringify(formattedMiners))
+              }
+            }
+            setIsEditing(null)
+          }
+        } else {
+          const errorData = await response.json().catch(() => ({}))
+          throw new Error(errorData.error || 'Failed to update miner')
+        }
+      } else if (isAdding) {
+        // Ajouter via API
+        const response = await fetch(baseUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: formData.name,
+            hashrate: formData.hashrate,
+            power: formData.power,
+            price: formData.price,
+            coolingType: formData.coolingType,
+            manufacturer: formData.manufacturer,
+            model: formData.model,
+            releaseDate: formData.releaseDate,
+            photo: photoData,
+            notes: formData.notes,
+          })
+        })
+        
+        if (response.ok) {
+          const result = await response.json()
+          if (result.success) {
+            // Recharger les données depuis l'API
+            const loadResponse = await fetch(baseUrl)
+            if (loadResponse.ok) {
+              const loadResult = await loadResponse.json()
+              if (loadResult.success && loadResult.data) {
+                const formattedMiners = loadResult.data.map((m: any) => ({
+                  id: m.id.toString(),
+                  name: m.name,
+                  hashrate: parseFloat(m.hashrate),
+                  power: parseFloat(m.power),
+                  efficiency: parseFloat(m.efficiency),
+                  price: parseFloat(m.price),
+                  coolingType: m.cooling_type || m.coolingType,
+                  manufacturer: m.manufacturer || '',
+                  model: m.model || '',
+                  releaseDate: m.release_date || m.releaseDate || '',
+                  photo: m.photo || null,
+                  notes: m.notes || '',
+                }))
+                setMiners(formattedMiners)
+                localStorage.setItem('miners-data', JSON.stringify(formattedMiners))
+              }
+            }
+            setIsAdding(false)
+          }
+        } else {
+          const errorData = await response.json().catch(() => ({}))
+          throw new Error(errorData.error || 'Failed to create miner')
+        }
       }
-      saveMiners([...miners, newMiner])
-      setIsAdding(false)
-    }
 
-    // Réinitialiser le formulaire
-    setImagePreview(null)
-    setImageFile(null)
-    setFormData({
-      name: '',
-      hashrate: 0,
-      power: 0,
-      efficiency: 0,
-      price: 0,
-      coolingType: 'air',
-      manufacturer: '',
-      model: '',
-      releaseDate: '',
-      notes: '',
-    })
+      // Réinitialiser le formulaire
+      setImagePreview(null)
+      setImageFile(null)
+      setFormData({
+        name: '',
+        hashrate: 0,
+        power: 0,
+        efficiency: 0,
+        price: 0,
+        coolingType: 'air',
+        manufacturer: '',
+        model: '',
+        releaseDate: '',
+        notes: '',
+      })
+    } catch (error) {
+      console.error('Error saving miner:', error)
+      alert(`Erreur lors de la sauvegarde: ${error instanceof Error ? error.message : 'Erreur inconnue'}`)
+    }
   }
 
   const handleCancel = () => {
