@@ -7,7 +7,7 @@ import { Pool } from 'pg'
 export const dynamic = 'force-dynamic'
 
 // External database connection for crypto prices
-function getExternalDbConnection() {
+function getExternalDbConnection(): Pool | null {
   const dbHost = process.env.EXTERNAL_DB_HOST
   const dbName = process.env.EXTERNAL_DB_NAME
   const dbUser = process.env.EXTERNAL_DB_USER
@@ -15,19 +15,25 @@ function getExternalDbConnection() {
   const dbPort = process.env.EXTERNAL_DB_PORT
 
   if (!dbHost || !dbName || !dbUser || !dbPassword || !dbPort) {
-    throw new Error('External database credentials are not configured. Please set EXTERNAL_DB_HOST, EXTERNAL_DB_NAME, EXTERNAL_DB_USER, EXTERNAL_DB_PASSWORD, and EXTERNAL_DB_PORT in .env.local')
+    console.warn('[Cockpit API] External database credentials are not configured. Skipping external DB queries.')
+    return null
   }
 
-  return new Pool({
-    host: dbHost,
-    database: dbName,
-    user: dbUser,
-    password: dbPassword,
-    port: parseInt(dbPort),
-    max: 1, // Limit connections for this external DB
-    idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 10000,
-  })
+  try {
+    return new Pool({
+      host: dbHost,
+      database: dbName,
+      user: dbUser,
+      password: dbPassword,
+      port: parseInt(dbPort),
+      max: 1, // Limit connections for this external DB
+      idleTimeoutMillis: 30000,
+      connectionTimeoutMillis: 10000,
+    })
+  } catch (error) {
+    console.error('[Cockpit API] Error creating external DB connection:', error)
+    return null
+  }
 }
 
 // Helper function to fetch customers from Hearst API (shared)
@@ -238,6 +244,11 @@ async function fetchBitcoinPriceYesterday(): Promise<number> {
   try {
     pool = getExternalDbConnection()
     
+    if (!pool) {
+      console.warn('[Cockpit API] External DB connection not available, returning 0 for Bitcoin price')
+      return 0
+    }
+    
     // Query to get Bitcoin price for yesterday's date
     const query = `
       SELECT "Bitcoin"
@@ -261,7 +272,11 @@ async function fetchBitcoinPriceYesterday(): Promise<number> {
     return 0
   } finally {
     if (pool) {
-      await pool.end()
+      try {
+        await pool.end()
+      } catch (error) {
+        console.error('[Cockpit API] Error closing pool:', error)
+      }
     }
   }
 }
@@ -345,28 +360,71 @@ export async function GET(request: NextRequest) {
       console.log('[Cockpit API] Development mode - skipping authentication')
     }
 
-    // Fetch real-time global hashrate and total miners from external API (optimized parallel calls)
-    const { globalHashrate, totalMiners } = await fetchGlobalHashrateAndMiners()
+    // Fetch all data with individual error handling to ensure we always return valid data
+    let globalHashrate = 0
+    let totalMiners = 0
+    let theoreticalData = { theoreticalHashratePH: 0, activeContracts: 0, totalMachines: 0 }
+    let btcProduction24h = 0
+    let bitcoinPrice = 0
+    let miningAccounts: Array<{
+      id: string
+      name: string
+      hashrate: number
+      btc24h: number
+      usd24h: number
+      status: string
+    }> = []
 
-    // Fetch theoretical hashrate from database
-    const theoreticalData = await fetchTheoreticalHashrate()
+    // Fetch real-time global hashrate and total miners from external API (with fallback)
+    try {
+      const hashrateData = await fetchGlobalHashrateAndMiners()
+      globalHashrate = hashrateData.globalHashrate || 0
+      totalMiners = hashrateData.totalMiners || 0
+    } catch (error) {
+      console.error('[Cockpit API] Error fetching global hashrate:', error)
+      // Continue with default values (0)
+    }
 
-    // Fetch BTC production (24h) from database
-    const btcProduction24h = await fetchBTCProduction24h()
+    // Fetch theoretical hashrate from database (with fallback)
+    try {
+      theoreticalData = await fetchTheoreticalHashrate()
+    } catch (error) {
+      console.error('[Cockpit API] Error fetching theoretical hashrate:', error)
+      // Continue with default values
+    }
 
-    // Fetch Bitcoin price for yesterday to calculate USD value
-    const bitcoinPrice = await fetchBitcoinPriceYesterday()
+    // Fetch BTC production (24h) from database (with fallback)
+    try {
+      btcProduction24h = await fetchBTCProduction24h()
+    } catch (error) {
+      console.error('[Cockpit API] Error fetching BTC production:', error)
+      // Continue with default value (0)
+    }
+
+    // Fetch Bitcoin price for yesterday to calculate USD value (with fallback)
+    try {
+      bitcoinPrice = await fetchBitcoinPriceYesterday()
+    } catch (error) {
+      console.error('[Cockpit API] Error fetching Bitcoin price:', error)
+      // Continue with default value (0)
+    }
     
     // Calculate USD value of BTC production
     const btcProduction24hUSD = btcProduction24h * bitcoinPrice
 
-    // Fetch mining accounts summary
-    const miningAccounts = await fetchMiningAccounts(bitcoinPrice)
+    // Fetch mining accounts summary (with fallback)
+    try {
+      miningAccounts = await fetchMiningAccounts(bitcoinPrice)
+    } catch (error) {
+      console.error('[Cockpit API] Error fetching mining accounts:', error)
+      // Continue with empty array
+    }
 
+    // Always return valid data structure, even if some sources failed
     return NextResponse.json({
       data: {
         globalHashrate: globalHashrate || 0, // PH/s (from real API, 0 if API fails)
-        theoreticalHashrate: theoreticalData.theoreticalHashratePH, // PH/s (from database)
+        theoreticalHashrate: theoreticalData.theoreticalHashratePH || 0, // PH/s (from database)
         btcProduction24h: btcProduction24h || 0, // BTC (from database, last 24 hours)
         btcProduction24hUSD: btcProduction24hUSD || 0, // USD (BTC production * Bitcoin price)
         btcProduction7d: 0, // No data available yet
@@ -379,18 +437,37 @@ export async function GET(request: NextRequest) {
         totalRevenue: 0, // No data available yet
         electricityCost: 0, // No data available yet
         profit: 0, // No data available yet
-        miningAccounts: miningAccounts, // Mining accounts from database
+        miningAccounts: miningAccounts || [], // Mining accounts from database
         workers: [], // No data available yet
         miners: [], // No data available yet
       },
       message: 'Cockpit data retrieved successfully',
     })
   } catch (error) {
-    console.error('Error getting cockpit data:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    // Final fallback: return empty data structure instead of error 500
+    console.error('[Cockpit API] Critical error getting cockpit data:', error)
+    return NextResponse.json({
+      data: {
+        globalHashrate: 0,
+        theoreticalHashrate: 0,
+        btcProduction24h: 0,
+        btcProduction24hUSD: 0,
+        btcProduction7d: 0,
+        totalMiners: 0,
+        onlineMiners: 0,
+        degradedMiners: 0,
+        offlineMiners: 0,
+        totalWorkers: 0,
+        activeWorkers: 0,
+        totalRevenue: 0,
+        electricityCost: 0,
+        profit: 0,
+        miningAccounts: [],
+        workers: [],
+        miners: [],
+      },
+      message: 'Cockpit data retrieved with fallback values',
+    })
   }
 }
 
