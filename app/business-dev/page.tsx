@@ -6,6 +6,7 @@ import BusinessDevPipeline from '@/components/business-dev/BusinessDevPipeline'
 import BusinessDevContacts from '@/components/business-dev/BusinessDevContacts'
 import BusinessDevActions from '@/components/business-dev/BusinessDevActions'
 import { BusinessIcon, OverviewIcon, PipelineIcon, ContactsIcon, ActionsIcon } from '@/components/business-dev/BusinessDevIcons'
+import { businessDevContactsAPI } from '@/lib/api/business-dev-contacts'
 import '@/components/business-dev/BusinessDev.css'
 
 export default function BusinessDevPage() {
@@ -169,20 +170,18 @@ function AddContactModal({ onClose, onSuccess }: { onClose: () => void; onSucces
     setLoading(true)
 
     try {
-      // Pour l'instant, on stocke dans localStorage
-      // Plus tard, on pourra connecter à une API
-      const existingContacts = JSON.parse(localStorage.getItem('businessDevContacts') || '[]')
-      const newContact = {
-        id: Date.now(),
-        ...formData,
-        value: formData.value || '€0',
-        lastContact: 'Maintenant',
-      }
-      existingContacts.push(newContact)
-      localStorage.setItem('businessDevContacts', JSON.stringify(existingContacts))
+      // Créer le contact via l'API
+      await businessDevContactsAPI.create({
+        name: formData.name,
+        company: formData.company,
+        email: formData.email,
+        phone: formData.phone || undefined,
+        status: formData.status,
+        estimatedValue: formData.value || undefined,
+      })
       
       // Déclencher un événement personnalisé pour notifier les composants
-      window.dispatchEvent(new CustomEvent('businessDevContactAdded', { detail: newContact }))
+      window.dispatchEvent(new CustomEvent('businessDevContactAdded'))
       
       onSuccess()
     } catch (err: any) {

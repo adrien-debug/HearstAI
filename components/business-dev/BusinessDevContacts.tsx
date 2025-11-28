@@ -2,171 +2,96 @@
 
 import { useState, useEffect } from 'react'
 import { SearchIcon } from './BusinessDevIcons'
+import { businessDevContactsAPI, BusinessDevContact } from '@/lib/api/business-dev-contacts'
 
 interface Contact {
-  id: number
+  id: string
   name: string
   company: string
   email: string
-  phone: string
+  phone: string | null
   status: 'active' | 'pending' | 'inactive'
-  value: string
+  value: string | null
   lastContact: string
 }
 
-const defaultContacts: Contact[] = [
-    {
-      id: 1,
-      name: 'Jean Dupont',
-      company: 'TechCorp Solutions',
-      email: 'jean.dupont@techcorp.com',
-      phone: '+33 6 12 34 56 78',
-      status: 'active',
-      value: '€120K',
-      lastContact: 'Il y a 2h'
-    },
-    {
-      id: 2,
-      name: 'Marie Martin',
-      company: 'Green Energy Co',
-      email: 'marie.martin@greenenergy.com',
-      phone: '+33 6 23 45 67 89',
-      status: 'active',
-      value: '€200K',
-      lastContact: 'Il y a 1j'
-    },
-    {
-      id: 3,
-      name: 'Pierre Bernard',
-      company: 'Crypto Ventures',
-      email: 'pierre@cryptoventures.com',
-      phone: '+33 6 34 56 78 90',
-      status: 'pending',
-      value: '€180K',
-      lastContact: 'Il y a 3j'
-    },
-    {
-      id: 4,
-      name: 'Sophie Laurent',
-      company: 'Mining Partners Inc',
-      email: 'sophie@miningpartners.com',
-      phone: '+33 6 45 67 89 01',
-      status: 'active',
-      value: '€350K',
-      lastContact: 'Il y a 5h'
-    },
-    {
-      id: 5,
-      name: 'Thomas Moreau',
-      company: 'Blockchain Hub',
-      email: 'thomas@blockchainhub.com',
-      phone: '+33 6 56 78 90 12',
-      status: 'active',
-      value: '€95K',
-      lastContact: 'Il y a 1j'
-    },
-    {
-      id: 6,
-      name: 'Laura Petit',
-      company: 'Digital Assets Group',
-      email: 'laura@digitalassets.com',
-      phone: '+33 6 67 89 01 23',
-      status: 'pending',
-      value: '€280K',
-      lastContact: 'Il y a 2j'
-    },
-    {
-      id: 7,
-      name: 'Marc Dubois',
-      company: 'Energy Solutions',
-      email: 'marc@energysolutions.com',
-      phone: '+33 6 78 90 12 34',
-      status: 'active',
-      value: '€150K',
-      lastContact: 'Il y a 4h'
-    },
-    {
-      id: 8,
-      name: 'Emma Rousseau',
-      company: 'Crypto Mining Co',
-      email: 'emma@cryptomining.com',
-      phone: '+33 6 89 01 23 45',
-      status: 'active',
-      value: '€420K',
-      lastContact: 'Il y a 6h'
-    },
-    {
-      id: 9,
-      name: 'Lucas Martin',
-      company: 'Sustainable Mining',
-      email: 'lucas@sustainablemining.com',
-      phone: '+33 6 90 12 34 56',
-      status: 'active',
-      value: '€195K',
-      lastContact: 'Il y a 1j'
-    }
-]
-
-export default function BusinessDevContacts({ onContactAdded }: { onContactAdded?: () => void }) {
+export default function BusinessDevContacts() {
   const [searchTerm, setSearchTerm] = useState('')
   const [activeFilter, setActiveFilter] = useState<string>('all')
-  const [contacts, setContacts] = useState<Contact[]>(defaultContacts)
+  const [contacts, setContacts] = useState<Contact[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  // Charger les contacts depuis localStorage au montage
-  useEffect(() => {
-    const storedContacts = localStorage.getItem('businessDevContacts')
-    if (storedContacts) {
-      try {
-        const parsedContacts = JSON.parse(storedContacts)
-        if (Array.isArray(parsedContacts) && parsedContacts.length > 0) {
-          // Fusionner avec les contacts par défaut (éviter les doublons)
-          const mergedContacts = [...defaultContacts]
-          parsedContacts.forEach((storedContact: Contact) => {
-            if (!mergedContacts.find(c => c.id === storedContact.id)) {
-              mergedContacts.push(storedContact)
-            }
-          })
-          setContacts(mergedContacts)
-        }
-      } catch (e) {
-        console.error('Erreur lors du chargement des contacts:', e)
-      }
+  // Fonction pour charger les contacts depuis l'API
+  const loadContacts = async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      const data = await businessDevContactsAPI.getAll({
+        status: activeFilter === 'all' ? undefined : activeFilter,
+        search: searchTerm || undefined,
+      })
+      
+      // Convertir les contacts de l'API au format attendu
+      const formattedContacts: Contact[] = data.contacts.map((contact: BusinessDevContact) => ({
+        id: contact.id,
+        name: contact.name,
+        company: contact.company,
+        email: contact.email,
+        phone: contact.phone || '',
+        status: contact.status,
+        value: contact.estimatedValue || '€0',
+        lastContact: formatLastContact(contact.lastContact),
+      }))
+      
+      setContacts(formattedContacts)
+    } catch (err: any) {
+      console.error('Erreur lors du chargement des contacts:', err)
+      setError(err.message || 'Erreur lors du chargement des contacts')
+      setContacts([])
+    } finally {
+      setLoading(false)
     }
-  }, [])
+  }
 
-  // Écouter les changements dans localStorage (pour détecter les nouveaux contacts)
-  useEffect(() => {
-    const loadContacts = () => {
-      const storedContacts = localStorage.getItem('businessDevContacts')
-      if (storedContacts) {
-        try {
-          const parsedContacts = JSON.parse(storedContacts)
-          if (Array.isArray(parsedContacts) && parsedContacts.length > 0) {
-            const mergedContacts = [...defaultContacts]
-            parsedContacts.forEach((storedContact: Contact) => {
-              if (!mergedContacts.find(c => c.id === storedContact.id)) {
-                mergedContacts.push(storedContact)
-              }
-            })
-            setContacts(mergedContacts)
-          }
-        } catch (e) {
-          console.error('Erreur lors du chargement des contacts:', e)
-        }
+  // Formater la date de dernier contact
+  const formatLastContact = (dateString: string): string => {
+    try {
+      const date = new Date(dateString)
+      const now = new Date()
+      const diffMs = now.getTime() - date.getTime()
+      const diffMins = Math.floor(diffMs / 60000)
+      const diffHours = Math.floor(diffMs / 3600000)
+      const diffDays = Math.floor(diffMs / 86400000)
+
+      if (diffMins < 60) {
+        return `Il y a ${diffMins}min`
+      } else if (diffHours < 24) {
+        return `Il y a ${diffHours}h`
+      } else {
+        return `Il y a ${diffDays}j`
       }
+    } catch {
+      return 'Récemment'
+    }
+  }
+
+  // Charger les contacts au montage et quand les filtres changent
+  useEffect(() => {
+    loadContacts()
+  }, [activeFilter, searchTerm])
+
+  // Écouter les événements de création de contact
+  useEffect(() => {
+    const handleContactAdded = () => {
+      loadContacts()
     }
 
-    // Écouter les changements de localStorage (entre onglets)
-    window.addEventListener('storage', loadContacts)
-    
-    // Écouter l'événement personnalisé (même onglet)
-    window.addEventListener('businessDevContactAdded', loadContacts)
-
+    window.addEventListener('businessDevContactAdded', handleContactAdded)
     return () => {
-      window.removeEventListener('storage', loadContacts)
-      window.removeEventListener('businessDevContactAdded', loadContacts)
+      window.removeEventListener('businessDevContactAdded', handleContactAdded)
     }
-  }, [])
+  }, [activeFilter, searchTerm])
 
   const filters = [
     { id: 'all', label: 'Tous' },
@@ -174,18 +99,6 @@ export default function BusinessDevContacts({ onContactAdded }: { onContactAdded
     { id: 'pending', label: 'En attente' },
     { id: 'inactive', label: 'Inactifs' }
   ]
-
-  const filteredContacts = contacts.filter(contact => {
-    const matchesSearch = 
-      contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      contact.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      contact.email.toLowerCase().includes(searchTerm.toLowerCase())
-    
-    const matchesFilter = 
-      activeFilter === 'all' || contact.status === activeFilter
-
-    return matchesSearch && matchesFilter
-  })
 
   const getInitials = (name: string) => {
     return name
@@ -226,9 +139,45 @@ export default function BusinessDevContacts({ onContactAdded }: { onContactAdded
         </div>
       </div>
 
+      {/* Message de chargement */}
+      {loading && (
+        <div style={{
+          padding: 'var(--space-12)',
+          textAlign: 'center',
+          background: 'rgba(14, 14, 14, 0.75)',
+          backdropFilter: 'blur(20px) saturate(180%)',
+          border: '0.5px solid rgba(255, 255, 255, 0.04)',
+          borderRadius: 'var(--radius-lg)',
+          marginTop: 'var(--space-6)'
+        }}>
+          <div style={{
+            fontSize: 'var(--text-base)',
+            color: 'var(--text-primary)',
+          }}>
+            Chargement des contacts...
+          </div>
+        </div>
+      )}
+
+      {/* Message d'erreur */}
+      {error && !loading && (
+        <div style={{
+          padding: 'var(--space-4)',
+          background: 'rgba(255, 77, 77, 0.1)',
+          border: '1px solid rgba(255, 77, 77, 0.3)',
+          borderRadius: 'var(--radius-md)',
+          color: '#ff4d4d',
+          fontSize: 'var(--text-sm)',
+          marginTop: 'var(--space-6)'
+        }}>
+          {error}
+        </div>
+      )}
+
       {/* Grille de contacts */}
-      <div className="business-dev-contacts-grid">
-        {filteredContacts.map((contact) => (
+      {!loading && !error && (
+        <div className="business-dev-contacts-grid">
+          {contacts.map((contact) => (
           <div key={contact.id} className="contact-card">
             <div className="contact-card-header">
               <div className="contact-avatar">
@@ -298,10 +247,11 @@ export default function BusinessDevContacts({ onContactAdded }: { onContactAdded
               </div>
             </div>
           </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
-      {filteredContacts.length === 0 && (
+      {!loading && !error && contacts.length === 0 && (
         <div style={{
           padding: 'var(--space-12)',
           textAlign: 'center',
