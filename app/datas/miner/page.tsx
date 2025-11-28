@@ -16,6 +16,7 @@ interface Miner {
   manufacturer?: string
   model?: string
   releaseDate?: string
+  photo?: string // URL de la photo (base64 ou URL)
   notes?: string
 }
 
@@ -24,6 +25,8 @@ export default function MinerDataPage() {
   const [isEditing, setIsEditing] = useState<string | null>(null)
   const [isAdding, setIsAdding] = useState(false)
   const [activeCoolingType, setActiveCoolingType] = useState<'hydro' | 'air' | 'immersion' | 'all'>('all')
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [imageFile, setImageFile] = useState<File | null>(null)
   const [formData, setFormData] = useState<Partial<Miner>>({
     name: '',
     hashrate: 0,
@@ -57,6 +60,8 @@ export default function MinerDataPage() {
 
   const handleAdd = () => {
     setIsAdding(true)
+    setImagePreview(null)
+    setImageFile(null)
     setFormData({
       name: '',
       hashrate: 0,
@@ -71,9 +76,40 @@ export default function MinerDataPage() {
     })
   }
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      if (!file.type.startsWith('image/')) {
+        alert('Veuillez sélectionner un fichier image')
+        return
+      }
+      
+      if (file.size > 5 * 1024 * 1024) {
+        alert('La taille de l\'image doit être inférieure à 5MB')
+        return
+      }
+      
+      setImageFile(file)
+      
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  const handleRemoveImage = () => {
+    setImageFile(null)
+    setImagePreview(null)
+    setFormData({ ...formData, photo: undefined })
+  }
+
   const handleEdit = (miner: Miner) => {
     setIsEditing(miner.id)
     setFormData(miner)
+    setImagePreview(miner.photo || null)
+    setImageFile(null)
     setIsAdding(false)
   }
 
@@ -90,10 +126,12 @@ export default function MinerDataPage() {
       return
     }
 
+    const photoData = imagePreview || formData.photo
+
     if (isEditing) {
       // Modifier
       const newMiners = miners.map(m => 
-        m.id === isEditing ? { ...formData, id: isEditing } as Miner : m
+        m.id === isEditing ? { ...formData, id: isEditing, photo: photoData } as Miner : m
       )
       saveMiners(newMiners)
       setIsEditing(null)
@@ -110,6 +148,7 @@ export default function MinerDataPage() {
         manufacturer: formData.manufacturer || '',
         model: formData.model || '',
         releaseDate: formData.releaseDate || '',
+        photo: photoData,
         notes: formData.notes || '',
       }
       saveMiners([...miners, newMiner])
@@ -117,6 +156,8 @@ export default function MinerDataPage() {
     }
 
     // Réinitialiser le formulaire
+    setImagePreview(null)
+    setImageFile(null)
     setFormData({
       name: '',
       hashrate: 0,
@@ -134,6 +175,8 @@ export default function MinerDataPage() {
   const handleCancel = () => {
     setIsEditing(null)
     setIsAdding(false)
+    setImagePreview(null)
+    setImageFile(null)
     setFormData({
       name: '',
       hashrate: 0,
@@ -228,127 +271,182 @@ export default function MinerDataPage() {
               </div>
             </div>
             
-            <div className="miner-data-form-grid">
-              <div className="miner-data-form-group">
-                <label>Nom de la Machine *</label>
-                <input
-                  type="text"
-                  value={formData.name || ''}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="Ex: Antminer S23 Hydro"
-                />
+            {/* Section Photo - Pleine largeur en haut */}
+            <div className="miner-data-photo-section">
+              <label className="miner-data-photo-label">Photo de la Machine</label>
+              <div className="miner-data-photo-upload">
+                {imagePreview ? (
+                  <div className="miner-data-photo-preview">
+                    <img src={imagePreview} alt="Preview" />
+                    <button 
+                      type="button"
+                      className="miner-data-photo-remove"
+                      onClick={handleRemoveImage}
+                      title="Supprimer la photo"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ) : (
+                  <label className="miner-data-photo-upload-label">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      style={{ display: 'none' }}
+                    />
+                    <div className="miner-data-photo-upload-placeholder">
+                      <div className="miner-data-photo-icon">📷</div>
+                      <div className="miner-data-photo-text">
+                        <span className="miner-data-photo-text-main">Cliquez pour ajouter une photo</span>
+                        <span className="miner-data-photo-text-sub">JPG, PNG, WEBP (max 5MB)</span>
+                      </div>
+                    </div>
+                  </label>
+                )}
               </div>
+            </div>
 
-              <div className="miner-data-form-group">
-                <label>Fabricant</label>
-                <input
-                  type="text"
-                  value={formData.manufacturer || ''}
-                  onChange={(e) => setFormData({ ...formData, manufacturer: e.target.value })}
-                  placeholder="Ex: Bitmain"
-                />
+            {/* Section Informations principales */}
+            <div className="miner-data-form-section">
+              <h4 className="miner-data-form-section-title">Informations principales</h4>
+              <div className="miner-data-form-grid">
+                <div className="miner-data-form-group">
+                  <label>Nom de la Machine *</label>
+                  <input
+                    type="text"
+                    value={formData.name || ''}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    placeholder="Ex: Antminer S23 Hydro"
+                  />
+                </div>
+
+                <div className="miner-data-form-group">
+                  <label>Fabricant</label>
+                  <input
+                    type="text"
+                    value={formData.manufacturer || ''}
+                    onChange={(e) => setFormData({ ...formData, manufacturer: e.target.value })}
+                    placeholder="Ex: Bitmain"
+                  />
+                </div>
+
+                <div className="miner-data-form-group">
+                  <label>Modèle</label>
+                  <input
+                    type="text"
+                    value={formData.model || ''}
+                    onChange={(e) => setFormData({ ...formData, model: e.target.value })}
+                    placeholder="Ex: S23 Hydro"
+                  />
+                </div>
+
+                <div className="miner-data-form-group">
+                  <label>Date de Sortie</label>
+                  <input
+                    type="date"
+                    value={formData.releaseDate || ''}
+                    onChange={(e) => setFormData({ ...formData, releaseDate: e.target.value })}
+                  />
+                </div>
               </div>
+            </div>
 
-              <div className="miner-data-form-group">
-                <label>Modèle</label>
-                <input
-                  type="text"
-                  value={formData.model || ''}
-                  onChange={(e) => setFormData({ ...formData, model: e.target.value })}
-                  placeholder="Ex: S23 Hydro"
-                />
+            {/* Section Spécifications techniques */}
+            <div className="miner-data-form-section">
+              <h4 className="miner-data-form-section-title">Spécifications techniques</h4>
+              <div className="miner-data-form-grid">
+                <div className="miner-data-form-group">
+                  <label>Hashrate (TH/s) *</label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    value={formData.hashrate || ''}
+                    onChange={(e) => {
+                      const hashrate = parseFloat(e.target.value) || 0
+                      const power = formData.power || 0
+                      setFormData({ 
+                        ...formData, 
+                        hashrate,
+                        efficiency: power > 0 && hashrate > 0 ? power / hashrate : formData.efficiency
+                      })
+                    }}
+                    placeholder="Ex: 605"
+                  />
+                </div>
+
+                <div className="miner-data-form-group">
+                  <label>Consommation (W) *</label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    value={formData.power || ''}
+                    onChange={(e) => {
+                      const power = parseFloat(e.target.value) || 0
+                      const hashrate = formData.hashrate || 0
+                      setFormData({ 
+                        ...formData, 
+                        power,
+                        efficiency: power > 0 && hashrate > 0 ? power / hashrate : formData.efficiency
+                      })
+                    }}
+                    placeholder="Ex: 5870"
+                  />
+                </div>
+
+                <div className="miner-data-form-group">
+                  <label>Efficacité (J/TH)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={formData.efficiency || ''}
+                    onChange={(e) => setFormData({ ...formData, efficiency: parseFloat(e.target.value) || 0 })}
+                    placeholder="Calculé automatiquement"
+                    readOnly
+                  />
+                  <small>Calculé automatiquement : Power / Hashrate</small>
+                </div>
+
+                <div className="miner-data-form-group">
+                  <label>Type de Refroidissement *</label>
+                  <select
+                    value={formData.coolingType || 'air'}
+                    onChange={(e) => setFormData({ ...formData, coolingType: e.target.value as 'hydro' | 'air' | 'immersion' })}
+                  >
+                    <option value="air">Air Cooling</option>
+                    <option value="hydro">Hydro Cooling</option>
+                    <option value="immersion">Immersion Cooling</option>
+                  </select>
+                </div>
               </div>
+            </div>
 
-              <div className="miner-data-form-group">
-                <label>Date de Sortie</label>
-                <input
-                  type="date"
-                  value={formData.releaseDate || ''}
-                  onChange={(e) => setFormData({ ...formData, releaseDate: e.target.value })}
-                />
+            {/* Section Prix */}
+            <div className="miner-data-form-section">
+              <h4 className="miner-data-form-section-title">Prix</h4>
+              <div className="miner-data-form-grid">
+                <div className="miner-data-form-group">
+                  <label>Prix (USD) *</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={formData.price || ''}
+                    onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) || 0 })}
+                    placeholder="Ex: 8500"
+                  />
+                </div>
               </div>
+            </div>
 
-              <div className="miner-data-form-group">
-                <label>Hashrate (TH/s) *</label>
-                <input
-                  type="number"
-                  step="0.1"
-                  value={formData.hashrate || ''}
-                  onChange={(e) => {
-                    const hashrate = parseFloat(e.target.value) || 0
-                    const power = formData.power || 0
-                    setFormData({ 
-                      ...formData, 
-                      hashrate,
-                      efficiency: power > 0 && hashrate > 0 ? power / hashrate : formData.efficiency
-                    })
-                  }}
-                  placeholder="Ex: 605"
-                />
-              </div>
-
-              <div className="miner-data-form-group">
-                <label>Consommation (W) *</label>
-                <input
-                  type="number"
-                  step="0.1"
-                  value={formData.power || ''}
-                  onChange={(e) => {
-                    const power = parseFloat(e.target.value) || 0
-                    const hashrate = formData.hashrate || 0
-                    setFormData({ 
-                      ...formData, 
-                      power,
-                      efficiency: power > 0 && hashrate > 0 ? power / hashrate : formData.efficiency
-                    })
-                  }}
-                  placeholder="Ex: 5870"
-                />
-              </div>
-
-              <div className="miner-data-form-group">
-                <label>Efficacité (J/TH)</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={formData.efficiency || ''}
-                  onChange={(e) => setFormData({ ...formData, efficiency: parseFloat(e.target.value) || 0 })}
-                  placeholder="Calculé automatiquement"
-                  readOnly
-                />
-                <small>Calculé automatiquement : Power / Hashrate</small>
-              </div>
-
-              <div className="miner-data-form-group">
-                <label>Prix (USD) *</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={formData.price || ''}
-                  onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) || 0 })}
-                  placeholder="Ex: 8500"
-                />
-              </div>
-
-              <div className="miner-data-form-group">
-                <label>Type de Refroidissement *</label>
-                <select
-                  value={formData.coolingType || 'air'}
-                  onChange={(e) => setFormData({ ...formData, coolingType: e.target.value as 'hydro' | 'air' | 'immersion' })}
-                >
-                  <option value="air">Air Cooling</option>
-                  <option value="hydro">Hydro Cooling</option>
-                  <option value="immersion">Immersion Cooling</option>
-                </select>
-              </div>
-
+            {/* Section Notes */}
+            <div className="miner-data-form-section">
+              <h4 className="miner-data-form-section-title">Notes supplémentaires</h4>
               <div className="miner-data-form-group miner-data-form-group-full">
-                <label>Notes</label>
                 <textarea
                   value={formData.notes || ''}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                  placeholder="Notes supplémentaires..."
-                  rows={3}
+                  placeholder="Ajoutez des notes ou informations complémentaires..."
+                  rows={4}
                 />
               </div>
             </div>
@@ -382,6 +480,7 @@ export default function MinerDataPage() {
               <table className="premium-transaction-table">
                 <thead>
                   <tr>
+                    <th style={{ width: '120px' }}>Photo</th>
                     <th>Nom</th>
                     <th>Hashrate</th>
                     <th>Consommation</th>
@@ -395,22 +494,35 @@ export default function MinerDataPage() {
                   {filteredMiners.map((miner) => (
                     <tr key={miner.id}>
                       <td>
-                        <div style={{ fontWeight: 'var(--font-semibold)' }}>{miner.name}</div>
+                        {miner.photo ? (
+                          <div className="miner-table-photo">
+                            <img src={miner.photo} alt={miner.name} />
+                          </div>
+                        ) : (
+                          <div className="miner-table-photo-placeholder">
+                            <Icon name="projects" />
+                          </div>
+                        )}
+                      </td>
+                      <td>
+                        <div style={{ fontWeight: 'var(--font-semibold)', textAlign: 'center' }}>{miner.name}</div>
                         {miner.manufacturer && (
-                          <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-secondary)', marginTop: '4px' }}>
+                          <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-secondary)', marginTop: '4px', textAlign: 'center' }}>
                             {miner.manufacturer} {miner.model && `- ${miner.model}`}
                           </div>
                         )}
                       </td>
-                      <td>{miner.hashrate} TH/s</td>
-                      <td>{miner.power} W</td>
-                      <td>{miner.efficiency.toFixed(2)} J/TH</td>
+                      <td style={{ textAlign: 'center' }}>{miner.hashrate} TH/s</td>
+                      <td style={{ textAlign: 'center' }}>{miner.power} W</td>
+                      <td style={{ textAlign: 'center' }}>{miner.efficiency.toFixed(2)} J/TH</td>
                       <td>
-                        <span className={`miner-cooling-badge miner-cooling-${miner.coolingType}`}>
-                          {miner.coolingType === 'hydro' ? 'Hydro' : miner.coolingType === 'air' ? 'Air' : 'Immersion'}
-                        </span>
+                        <div style={{ display: 'flex', justifyContent: 'center' }}>
+                          <span className={`miner-cooling-badge miner-cooling-${miner.coolingType}`}>
+                            {miner.coolingType === 'hydro' ? 'Hydro' : miner.coolingType === 'air' ? 'Air' : 'Immersion'}
+                          </span>
+                        </div>
                       </td>
-                      <td className="premium-transaction-amount">${formatNumber(miner.price, 0)}</td>
+                      <td className="premium-transaction-amount" style={{ textAlign: 'center' }}>${formatNumber(miner.price, 0)}</td>
                       <td>
                         <div className="miner-data-actions">
                           <button
