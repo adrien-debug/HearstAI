@@ -202,10 +202,18 @@ export async function GET(request: NextRequest) {
     })
   } catch (error) {
     console.error('[Hashrate Chart API] Error getting hashrate chart data:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    // Return empty data structure instead of error 500
+    return NextResponse.json({
+      dates: [],
+      realTime: [],
+      theoretical: [],
+      stats: {
+        current: 0,
+        avg7Day: 0,
+        peak: 0,
+        theoretical: 0,
+      },
+    })
   }
 }
 

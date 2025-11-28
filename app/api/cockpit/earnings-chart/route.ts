@@ -374,10 +374,18 @@ export async function GET(request: NextRequest) {
     })
   } catch (error) {
     console.error('[Earnings Chart API] Error getting earnings chart data:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    // Return empty data structure instead of error 500
+    return NextResponse.json({
+      dates: [],
+      btcEarnings: [],
+      target: [],
+      stats: {
+        latest: 0,
+        total7Day: 0,
+        usdValue: 0,
+        peakDay: 0,
+      },
+    })
   }
 }
 
