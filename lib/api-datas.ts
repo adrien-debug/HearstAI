@@ -1,6 +1,6 @@
 // API Client pour les endpoints Data (Miners & Hosters)
-// Local par défaut, Railway en production
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || process.env.BACKEND_URL || 'http://localhost:4000';
+// Railway par défaut
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || process.env.BACKEND_URL || 'https://hearstaibackend-production.up.railway.app';
 
 async function apiRequest<T>(
   endpoint: string,

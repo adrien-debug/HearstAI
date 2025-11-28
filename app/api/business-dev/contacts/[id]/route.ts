@@ -2,15 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 
-// URL du backend - Local par défaut, Railway en production
-// Si NEXT_PUBLIC_API_URL n'est pas défini, utiliser le backend local
-const getBackendUrl = () => {
-  if (process.env.NEXT_PUBLIC_API_URL && process.env.NEXT_PUBLIC_API_URL.startsWith('http')) {
-    return process.env.NEXT_PUBLIC_API_URL
-  }
-  return process.env.BACKEND_URL || 'http://localhost:4000'
-}
-const RAILWAY_API_URL = getBackendUrl()
+// URL du backend Railway
+const RAILWAY_API_URL = process.env.NEXT_PUBLIC_API_URL || process.env.BACKEND_URL || 'https://hearstaibackend-production.up.railway.app'
 
 /**
  * API Route pour gérer un contact Business Development spécifique
