@@ -12,7 +12,15 @@ const getBaseUrl = () => {
   if (envUrl && (envUrl.startsWith('http://') || envUrl.startsWith('https://'))) {
     // Si l'URL se termine déjà par /api, l'utiliser telle quelle
     // Sinon, ajouter /api
-    return envUrl.endsWith('/api') ? envUrl : `${envUrl}/api`
+    const baseUrl = envUrl.endsWith('/api') ? envUrl : `${envUrl}/api`
+    return baseUrl
+  }
+  
+  // Si BACKEND_URL est défini (pour Railway backend), l'utiliser
+  const backendUrl = process.env.BACKEND_URL
+  if (backendUrl && (backendUrl.startsWith('http://') || backendUrl.startsWith('https://'))) {
+    const baseUrl = backendUrl.endsWith('/api') ? backendUrl : `${backendUrl}/api`
+    return baseUrl
   }
   
   // Sinon, utiliser '/api' (route relative Next.js)
