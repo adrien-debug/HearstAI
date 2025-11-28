@@ -132,3 +132,4 @@ npm run dev
 ✅ **Aucune configuration requise pour la production**
 ✅ **Facile de basculer vers le local si nécessaire**
 
+

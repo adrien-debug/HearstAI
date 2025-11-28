@@ -188,3 +188,4 @@ S'assurer que les sections suivantes n'ont pas de z-index trop élevé qui pourr
 4. Vérifier qu'il n'y a pas de régressions sur d'autres éléments
 5. Documenter les changements effectués
 
+

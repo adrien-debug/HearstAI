@@ -121,3 +121,4 @@ Elles sont spécifiques à Supabase/PostgREST et ne s'appliquent pas à ton arch
 
 
 
+
