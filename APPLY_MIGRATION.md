@@ -66,3 +66,4 @@ Une fois la migration appliquée :
 
 **Note** : Si vous utilisez Supabase ou Vercel Postgres, utilisez leur interface pour exécuter le SQL ou configurez `DATABASE_URL` pour utiliser Prisma migrate.
 
+

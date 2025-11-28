@@ -25,6 +25,8 @@
     "test:auth": "node scripts/test-auth-complete.js",
     "test:login": "node scripts/test-login-live.js",
     "test:redirect": "node scripts/test-login-redirect.js",
+    "test:cockpit-backend": "node scripts/test-cockpit-backend.js",
+    "test:all": "node scripts/test-all.js",
     "create-user": "node scripts/create-user.js",
     "deploy:prod": "./scripts/deploy-production-safe.sh"
   },

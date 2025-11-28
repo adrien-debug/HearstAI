@@ -49,27 +49,8 @@ export default function Header() {
   // Load stats for dashboard page
   useEffect(() => {
     if (pathname === '/') {
-      // MODE DEBUG LOCAL : Utiliser des données mockées pour éviter les blocages
-      const isLocal = typeof window !== 'undefined' && (
-        window.location.hostname === 'localhost' || 
-        window.location.hostname === '127.0.0.1' ||
-        window.location.port === '6001'
-      )
-      
-      // Initialize with mock stats immediately
-      setStats({
-        total_projects: 12,
-        total_versions: 45,
-        total_jobs: 234,
-        jobs_running: 3,
-        jobs_success_rate: 98.5,
-      })
-
-      // EN MODE LOCAL : Pas d'appel API, utiliser les données mockées
-      if (isLocal) {
-        console.log('[Header] 🔧 MODE LOCAL - Utilisation de données mockées')
-        return // Pas d'interval en mode local
-      }
+      // TOUJOURS utiliser les vraies données depuis le serveur de production
+      const isLocal = false
 
       // EN PRODUCTION : Charger les vraies stats
       const loadStats = async () => {
@@ -79,7 +60,8 @@ export default function Header() {
             setStats(response.stats)
           }
         } catch (err) {
-          // Silently use mock data if API is not available
+          // Erreur API - ne pas utiliser de données mockées
+          console.error('[Header] Erreur chargement stats:', err)
         }
       }
       
@@ -103,24 +85,8 @@ export default function Header() {
 
   // Load crypto prices (BTC and ETH)
   useEffect(() => {
-    // MODE DEBUG LOCAL : Utiliser des données mockées pour éviter les blocages CORS et 429
-    const isLocal = typeof window !== 'undefined' && (
-      window.location.hostname === 'localhost' || 
-      window.location.hostname === '127.0.0.1' ||
-      window.location.port === '6001'
-    )
-
-    // Initialize with mock prices immediately
-    setCryptoPrices([
-      { symbol: 'BTC', name: 'Bitcoin', price: 85000, change24h: 2.5 },
-      { symbol: 'ETH', name: 'Ethereum', price: 3200, change24h: 1.8 },
-    ])
-
-    // EN MODE LOCAL : Pas d'appel API, utiliser les données mockées
-    if (isLocal) {
-      console.log('[Header] 🔧 MODE LOCAL - Utilisation de prix crypto mockés')
-      return // Pas d'interval en mode local
-    }
+    // TOUJOURS utiliser les vraies données depuis le serveur de production
+    const isLocal = false
 
     // EN PRODUCTION : Charger les vraies données depuis CoinGecko
     const loadCryptoPrices = async () => {
@@ -161,8 +127,8 @@ export default function Header() {
           ])
         }
       } catch (err) {
-        // Erreur silencieuse - les données mockées sont déjà définies
-        // Ne pas logger pour éviter le spam dans la console
+        // Erreur API - ne pas utiliser de données mockées
+        console.error('[Header] Erreur chargement prix crypto:', err)
       }
     }
 

@@ -184,12 +184,8 @@ export default function MyEarthAI() {
   useEffect(() => {
     let isMounted = true
     
-    // MODE DEBUG LOCAL : Utiliser des données mockées pour éviter les blocages
-    const isLocal = typeof window !== 'undefined' && (
-      window.location.hostname === 'localhost' || 
-      window.location.hostname === '127.0.0.1' ||
-      window.location.port === '6001'
-    )
+    // TOUJOURS utiliser les vraies données depuis le serveur de production
+    const isLocal = false
     
       if (isLocal) {
       console.log('[MyEarthAI] 🔧 MODE LOCAL - Utilisation de données mockées')
@@ -240,15 +236,8 @@ export default function MyEarthAI() {
         if (!isMounted || abortController.signal.aborted) return
         if (err.name !== 'AbortError') {
           console.error('Error loading stats:', err)
-          // Fallback vers données mockées en cas d'erreur
-          setStats({
-            total_projects: 12,
-            total_versions: 45,
-            total_jobs: 234,
-            jobs_running: 3,
-            jobs_success_rate: 94.5,
-            total_searches: searchHistory.length,
-          })
+          // Ne pas utiliser de données mockées - laisser les stats vides en cas d'erreur
+          console.error('[MyEarthAI] Erreur chargement stats:', err)
         }
       } finally {
         if (isMounted && !abortController.signal.aborted) {

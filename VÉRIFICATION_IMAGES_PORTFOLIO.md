@@ -121,3 +121,4 @@ import PortfolioSectionGallery from '@/components/portfolio/PortfolioSectionGall
 
 **Les images devraient maintenant s'afficher correctement !** 🎉
 
+

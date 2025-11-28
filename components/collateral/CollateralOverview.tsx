@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { collateralAPI } from '@/lib/api'
 import { computeClientMetrics, computeGlobalMetrics, collectAllTransactions, formatRelativeDate } from './collateralUtils'
 import type { Client } from './collateralUtils'
@@ -11,10 +11,18 @@ export default function CollateralOverview() {
   const [data, setData] = useState<any>(null)
   const [customers, setCustomers] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const isLoadingRef = useRef(false)
+  const intervalRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     const loadData = async () => {
+      // Protection contre les appels multiples simultanés
+      if (isLoadingRef.current) {
+        return
+      }
+      
       try {
+        isLoadingRef.current = true
         setLoading(true)
         console.log('[CollateralOverview] Chargement des données...')
         
@@ -60,14 +68,25 @@ export default function CollateralOverview() {
         setData({ clients: [] })
       } finally {
         setLoading(false)
+        isLoadingRef.current = false
       }
     }
+    
+    // Charger les données initiales
     loadData()
     
     // Auto-refresh every 30 seconds
-    const interval = setInterval(loadData, 30000)
+    intervalRef.current = setInterval(() => {
+      if (!isLoadingRef.current) {
+        loadData()
+      }
+    }, 30000)
+    
     return () => {
-      clearInterval(interval)
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+      }
+      isLoadingRef.current = false
     }
   }, [])
 

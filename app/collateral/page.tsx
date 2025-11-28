@@ -23,31 +23,28 @@ export default function CollateralPage() {
   ]
 
   useEffect(() => {
-    // Load icons when section changes
-    const loadIcons = () => {
-      if (typeof window !== 'undefined' && (window as any).Icons) {
-        document.querySelectorAll('[data-icon]').forEach(el => {
-          const iconName = el.getAttribute('data-icon')
-          if (iconName) {
-            const iconSvg = (window as any).Icons[iconName]
-            if (iconSvg) {
-              el.innerHTML = iconSvg
-            }
-          }
-        })
-      }
+    // Load icons when section changes - optimized to avoid multiple calls
+    if (typeof window === 'undefined' || !(window as any).Icons) {
+      return
     }
     
-    // Load icons immediately and after delays to ensure they load
-    loadIcons()
-    const timeout1 = setTimeout(loadIcons, 100)
-    const timeout2 = setTimeout(loadIcons, 500)
-    const timeout3 = setTimeout(loadIcons, 1000)
+    const loadIcons = () => {
+      document.querySelectorAll('[data-icon]').forEach(el => {
+        const iconName = el.getAttribute('data-icon')
+        if (iconName && !el.innerHTML.trim()) {
+          const iconSvg = (window as any).Icons[iconName]
+          if (iconSvg) {
+            el.innerHTML = iconSvg
+          }
+        }
+      })
+    }
+    
+    // Load icons with a single delay after section change
+    const timeout = setTimeout(loadIcons, 100)
     
     return () => {
-      clearTimeout(timeout1)
-      clearTimeout(timeout2)
-      clearTimeout(timeout3)
+      clearTimeout(timeout)
     }
   }, [activeSection])
 

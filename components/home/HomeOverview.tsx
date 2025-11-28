@@ -93,28 +93,8 @@ export default function HomeOverview() {
   useEffect(() => {
     let isMounted = true
     
-    // MODE DEBUG LOCAL : Utiliser des données mockées pour éviter les blocages
-    const isLocal = typeof window !== 'undefined' && (
-      window.location.hostname === 'localhost' || 
-      window.location.hostname === '127.0.0.1' ||
-      window.location.port === '6001'
-    )
-    
-    if (isLocal) {
-      console.log('[HomeOverview] 🔧 MODE LOCAL - Utilisation de données mockées')
-      // Utiliser des données mockées immédiatement
-      setStats({
-        total_projects: 12,
-        total_versions: 45,
-        total_jobs: 234,
-        jobs_running: 3,
-        jobs_success_rate: 98.5,
-      })
-      setLoading(false)
-      return () => {
-        isMounted = false
-      }
-    }
+    // TOUJOURS utiliser les vraies données depuis le serveur de production
+    const isLocal = false
     
     // EN PRODUCTION : Charger les vraies stats
     let abortController: AbortController | null = null
@@ -131,7 +111,7 @@ export default function HomeOverview() {
         setLoading(true)
         
         const timeoutPromise = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Stats API timeout')), 3000)
+          setTimeout(() => reject(new Error('Stats API timeout')), 10000) // 10 secondes pour la première connexion DB
         )
         
         const statsPromise = statsAPI.getStats()
@@ -148,14 +128,7 @@ export default function HomeOverview() {
         if (!isMounted || abortController.signal.aborted) return
         if (err.name !== 'AbortError') {
           console.error('Error loading stats:', err)
-          // Fallback vers données mockées en cas d'erreur
-          setStats({
-            total_projects: 12,
-            total_versions: 45,
-            total_jobs: 234,
-            jobs_running: 3,
-            jobs_success_rate: 98.5,
-          })
+          // Ne pas utiliser de données mockées - laisser les stats vides en cas d'erreur
         }
       } finally {
         if (isMounted && !abortController.signal.aborted) {

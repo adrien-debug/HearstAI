@@ -130,7 +130,17 @@ fi
 echo ""
 
 # 5. Configurer les variables d'environnement pour le frontend
-export NEXT_PUBLIC_API_URL="http://localhost:$BACKEND_PORT"
+# En production, utiliser les routes Next.js (/api) au lieu du backend Express
+# Pour utiliser le backend Express, définir NEXT_PUBLIC_API_URL dans .env.local
+if [ -f .env.local ] && grep -q "^NEXT_PUBLIC_API_URL=" .env.local; then
+  # Utiliser la valeur depuis .env.local
+  export NEXT_PUBLIC_API_URL=$(grep "^NEXT_PUBLIC_API_URL=" .env.local | cut -d '=' -f2- | tr -d '"' | tr -d "'")
+  echo -e "${CYAN}📝 Utilisation de NEXT_PUBLIC_API_URL depuis .env.local: $NEXT_PUBLIC_API_URL${NC}"
+else
+  # Par défaut, utiliser les routes Next.js
+  export NEXT_PUBLIC_API_URL="/api"
+  echo -e "${CYAN}📝 Utilisation des routes Next.js (/api) par défaut${NC}"
+fi
 
 # 6. Démarrer le frontend Next.js (port 6001) - accessible sur le réseau local
 echo -e "${CYAN}⚡ Démarrage du frontend Next.js (accessible sur le réseau local)...${NC}"

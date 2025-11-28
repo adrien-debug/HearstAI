@@ -58,3 +58,4 @@ function getMimeType(ext: string): string {
   return mimeTypes[ext.toLowerCase()] || 'application/octet-stream'
 }
 
+

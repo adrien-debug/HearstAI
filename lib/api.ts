@@ -8,6 +8,20 @@ const getBaseUrl = () => {
   // car Next.js l'injecte au moment du build
   const envUrl = process.env.NEXT_PUBLIC_API_URL
   
+  // En production, utiliser les routes Next.js (/api)
+  // Ne pas utiliser localhost:4000 en production
+  const isProduction = typeof window !== 'undefined' && 
+    !window.location.hostname.includes('localhost') && 
+    !window.location.hostname.includes('127.0.0.1')
+  
+  // Si on est en production ou si envUrl est vide, utiliser les routes Next.js
+  if (isProduction || !envUrl || envUrl === '') {
+    if (typeof window !== 'undefined') {
+      return `${window.location.origin}/api`
+    }
+    return '/api'
+  }
+  
   // Si une URL complète est fournie (http://... ou https://...), l'utiliser
   if (envUrl && (envUrl.startsWith('http://') || envUrl.startsWith('https://'))) {
     // Si l'URL se termine déjà par /api, l'utiliser telle quelle
