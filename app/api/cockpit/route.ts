@@ -495,11 +495,22 @@ export async function GET(request: NextRequest) {
       // Continue with default value (0)
     }
 
-    // Fetch BTC production (monthly) from database
-    const btcProductionMonthly = await fetchBTCProductionMonthly()
+    // Fetch BTC production (monthly) from database (with fallback)
+    let btcProductionMonthly = 0
+    try {
+      btcProductionMonthly = await fetchBTCProductionMonthly()
+    } catch (error) {
+      console.error('[Cockpit API] Error fetching BTC production monthly:', error)
+      // Continue with default value (0)
+    }
 
-    // Fetch Bitcoin price for yesterday to calculate USD value
-    const bitcoinPrice = await fetchBitcoinPriceYesterday()
+    // Fetch Bitcoin price for yesterday to calculate USD value (with fallback)
+    try {
+      bitcoinPrice = await fetchBitcoinPriceYesterday()
+    } catch (error) {
+      console.error('[Cockpit API] Error fetching Bitcoin price:', error)
+      // Continue with default value (0)
+    }
     
     // Calculate USD value of BTC production
     const btcProduction24hUSD = btcProduction24h * bitcoinPrice
