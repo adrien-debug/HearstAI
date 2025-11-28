@@ -45,16 +45,62 @@ export default function HosterDataPage() {
     'Paraguay',
   ]
 
-  // Charger les données depuis le localStorage ou API
+  // Charger les données depuis l'API Railway
   useEffect(() => {
-    const savedHosters = localStorage.getItem('hosters-data')
-    if (savedHosters) {
+    const loadHosters = async () => {
       try {
-        setHosters(JSON.parse(savedHosters))
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || ''
+        const baseUrl = apiUrl && apiUrl.startsWith('http') 
+          ? `${apiUrl}/api/datas/hosters`
+          : '/api/datas/hosters'
+        
+        const response = await fetch(baseUrl)
+        if (response.ok) {
+          const result = await response.json()
+          if (result.success && result.data) {
+            // Convertir les données Railway au format frontend
+            const formattedHosters = result.data.map((h: any) => ({
+              id: h.id.toString(),
+              name: h.name,
+              country: h.country,
+              location: h.location,
+              electricityPrice: parseFloat(h.electricity_price || h.electricityPrice || 0),
+              additionalFees: parseFloat(h.additional_fees || h.additionalFees || 0),
+              deposit: parseFloat(h.deposit || 0),
+              photo: h.photo || null,
+              notes: h.notes || '',
+            }))
+            setHosters(formattedHosters)
+            // Sauvegarder aussi dans localStorage comme backup
+            localStorage.setItem('hosters-data', JSON.stringify(formattedHosters))
+          }
+        } else {
+          console.error('Failed to load hosters from API')
+          // Fallback sur localStorage si l'API échoue
+          const savedHosters = localStorage.getItem('hosters-data')
+          if (savedHosters) {
+            try {
+              setHosters(JSON.parse(savedHosters))
+            } catch (error) {
+              console.error('Error loading hosters from localStorage:', error)
+            }
+          }
+        }
       } catch (error) {
-        console.error('Error loading hosters data:', error)
+        console.error('Error loading hosters:', error)
+        // Fallback sur localStorage
+        const savedHosters = localStorage.getItem('hosters-data')
+        if (savedHosters) {
+          try {
+            setHosters(JSON.parse(savedHosters))
+          } catch (e) {
+            console.error('Error loading hosters from localStorage:', e)
+          }
+        }
       }
     }
+    
+    loadHosters()
   }, [])
 
   // Sauvegarder dans localStorage
@@ -121,57 +167,172 @@ export default function HosterDataPage() {
     setIsAdding(false)
   }
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm('Êtes-vous sûr de vouloir supprimer ce hoster ?')) {
-      const newHosters = hosters.filter(h => h.id !== id)
-      saveHosters(newHosters)
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || ''
+        const baseUrl = apiUrl && apiUrl.startsWith('http') 
+          ? `${apiUrl}/api/datas/hosters`
+          : '/api/datas/hosters'
+        
+        const response = await fetch(`${baseUrl}/${id}`, {
+          method: 'DELETE'
+        })
+        
+        if (response.ok) {
+          // Recharger les données depuis l'API
+          const loadResponse = await fetch(baseUrl)
+          if (loadResponse.ok) {
+            const loadResult = await loadResponse.json()
+            if (loadResult.success && loadResult.data) {
+              const formattedHosters = loadResult.data.map((h: any) => ({
+                id: h.id.toString(),
+                name: h.name,
+                country: h.country,
+                location: h.location,
+                electricityPrice: parseFloat(h.electricity_price || h.electricityPrice || 0),
+                additionalFees: parseFloat(h.additional_fees || h.additionalFees || 0),
+                deposit: parseFloat(h.deposit || 0),
+                photo: h.photo || null,
+                notes: h.notes || '',
+              }))
+              setHosters(formattedHosters)
+              localStorage.setItem('hosters-data', JSON.stringify(formattedHosters))
+            }
+          }
+        } else {
+          throw new Error('Failed to delete hoster')
+        }
+      } catch (error) {
+        console.error('Error deleting hoster:', error)
+        // Fallback: supprimer localement
+        const newHosters = hosters.filter(h => h.id !== id)
+        saveHosters(newHosters)
+      }
     }
   }
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!formData.name || !formData.country || !formData.location || formData.electricityPrice === undefined || formData.additionalFees === undefined || formData.deposit === undefined) {
       alert('Veuillez remplir tous les champs obligatoires')
       return
     }
 
     const photoData = imagePreview || formData.photo
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || ''
+    const baseUrl = apiUrl && apiUrl.startsWith('http') 
+      ? `${apiUrl}/api/datas/hosters`
+      : '/api/datas/hosters'
 
-    if (isEditing) {
-      // Modifier
-      const newHosters = hosters.map(h => 
-        h.id === isEditing ? { ...formData, id: isEditing, photo: photoData } as Hoster : h
-      )
-      saveHosters(newHosters)
-      setIsEditing(null)
-    } else if (isAdding) {
-      // Ajouter
-      const newHoster: Hoster = {
-        id: `hoster-${Date.now()}`,
-        name: formData.name!,
-        country: formData.country!,
-        location: formData.location!,
-        electricityPrice: formData.electricityPrice!,
-        additionalFees: formData.additionalFees!,
-        deposit: formData.deposit!,
-        photo: photoData,
-        notes: formData.notes || '',
+    try {
+      if (isEditing) {
+        // Modifier via API
+        const response = await fetch(`${baseUrl}/${isEditing}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: formData.name,
+            country: formData.country,
+            location: formData.location,
+            electricityPrice: formData.electricityPrice,
+            additionalFees: formData.additionalFees,
+            deposit: formData.deposit,
+            photo: photoData,
+            notes: formData.notes,
+          })
+        })
+        
+        if (response.ok) {
+          const result = await response.json()
+          if (result.success) {
+            // Recharger les données depuis l'API
+            const loadResponse = await fetch(baseUrl)
+            if (loadResponse.ok) {
+              const loadResult = await loadResponse.json()
+              if (loadResult.success && loadResult.data) {
+                const formattedHosters = loadResult.data.map((h: any) => ({
+                  id: h.id.toString(),
+                  name: h.name,
+                  country: h.country,
+                  location: h.location,
+                  electricityPrice: parseFloat(h.electricity_price || h.electricityPrice || 0),
+                  additionalFees: parseFloat(h.additional_fees || h.additionalFees || 0),
+                  deposit: parseFloat(h.deposit || 0),
+                  photo: h.photo || null,
+                  notes: h.notes || '',
+                }))
+                setHosters(formattedHosters)
+                localStorage.setItem('hosters-data', JSON.stringify(formattedHosters))
+              }
+            }
+            setIsEditing(null)
+          }
+        } else {
+          throw new Error('Failed to update hoster')
+        }
+      } else if (isAdding) {
+        // Ajouter via API
+        const response = await fetch(baseUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: formData.name,
+            country: formData.country,
+            location: formData.location,
+            electricityPrice: formData.electricityPrice,
+            additionalFees: formData.additionalFees,
+            deposit: formData.deposit,
+            photo: photoData,
+            notes: formData.notes,
+          })
+        })
+        
+        if (response.ok) {
+          const result = await response.json()
+          if (result.success) {
+            // Recharger les données depuis l'API
+            const loadResponse = await fetch(baseUrl)
+            if (loadResponse.ok) {
+              const loadResult = await loadResponse.json()
+              if (loadResult.success && loadResult.data) {
+                const formattedHosters = loadResult.data.map((h: any) => ({
+                  id: h.id.toString(),
+                  name: h.name,
+                  country: h.country,
+                  location: h.location,
+                  electricityPrice: parseFloat(h.electricity_price || h.electricityPrice || 0),
+                  additionalFees: parseFloat(h.additional_fees || h.additionalFees || 0),
+                  deposit: parseFloat(h.deposit || 0),
+                  photo: h.photo || null,
+                  notes: h.notes || '',
+                }))
+                setHosters(formattedHosters)
+                localStorage.setItem('hosters-data', JSON.stringify(formattedHosters))
+              }
+            }
+            setIsAdding(false)
+          }
+        } else {
+          throw new Error('Failed to create hoster')
+        }
       }
-      saveHosters([...hosters, newHoster])
-      setIsAdding(false)
-    }
 
-    // Réinitialiser le formulaire
-    setImagePreview(null)
-    setImageFile(null)
-    setFormData({
-      name: '',
-      country: '',
-      location: '',
-      electricityPrice: 0,
-      additionalFees: 0,
-      deposit: 0,
-      notes: '',
-    })
+      // Réinitialiser le formulaire
+      setImagePreview(null)
+      setImageFile(null)
+      setFormData({
+        name: '',
+        country: '',
+        location: '',
+        electricityPrice: 0,
+        additionalFees: 0,
+        deposit: 0,
+        notes: '',
+      })
+    } catch (error) {
+      console.error('Error saving hoster:', error)
+      alert('Erreur lors de la sauvegarde. Vérifiez la console pour plus de détails.')
+    }
   }
 
   const handleCancel = () => {
