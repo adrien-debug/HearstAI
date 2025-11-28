@@ -133,6 +133,23 @@ export default function Calculator() {
     setData(prev => ({ ...prev, [key]: value }))
   }
 
+  // Helper pour gérer les inputs number (permet d'entrer 0)
+  const handleNumberChange = (key: keyof CalculatorData, value: string) => {
+    if (value === '' || value === '-') {
+      updateData(key, undefined)
+    } else {
+      const numValue = parseFloat(value)
+      if (!isNaN(numValue)) {
+        updateData(key, numValue)
+      }
+    }
+  }
+
+  // Helper pour obtenir la valeur d'un input number (permet d'afficher 0)
+  const getNumberValue = (value: number | undefined): string | number => {
+    return value !== undefined && value !== null ? value : ''
+  }
+
   const nextStep = () => {
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1)
@@ -247,8 +264,8 @@ export default function Calculator() {
                     <input
                       type="number"
                       className="calculator-form-input"
-                      value={data.total_budget}
-                      onChange={(e) => updateData('total_budget', parseFloat(e.target.value) || 0)}
+                      value={getNumberValue(data.total_budget)}
+                      onChange={(e) => handleNumberChange('total_budget', e.target.value)}
                       placeholder="2500000"
                     />
                     <small style={{ color: 'var(--text-muted)', fontSize: '11px', marginTop: '4px', display: 'block' }}>
@@ -308,8 +325,17 @@ export default function Calculator() {
                     <input
                       type="number"
                       className="calculator-form-input"
-                      value={data.horizon_value}
-                      onChange={(e) => updateData('horizon_value', parseInt(e.target.value) || 1)}
+                      value={getNumberValue(data.horizon_value)}
+                      onChange={(e) => {
+                        if (e.target.value === '' || e.target.value === '-') {
+                          updateData('horizon_value', undefined)
+                        } else {
+                          const intValue = parseInt(e.target.value)
+                          if (!isNaN(intValue)) {
+                            updateData('horizon_value', intValue)
+                          }
+                        }
+                      }}
                       min="1"
                     />
                   </div>
@@ -390,8 +416,8 @@ export default function Calculator() {
                     <input
                       type="number"
                       className="calculator-form-input"
-                      value={data.machine_hashrate}
-                      onChange={(e) => updateData('machine_hashrate', parseFloat(e.target.value) || 0)}
+                      value={getNumberValue(data.machine_hashrate)}
+                      onChange={(e) => handleNumberChange('machine_hashrate', e.target.value)}
                     />
                   </div>
                   <div>
@@ -399,8 +425,8 @@ export default function Calculator() {
                     <input
                       type="number"
                       className="calculator-form-input"
-                      value={data.machine_power}
-                      onChange={(e) => updateData('machine_power', parseFloat(e.target.value) || 0)}
+                      value={getNumberValue(data.machine_power)}
+                      onChange={(e) => handleNumberChange('machine_power', e.target.value)}
                     />
                   </div>
                   <div>
@@ -408,8 +434,8 @@ export default function Calculator() {
                     <input
                       type="number"
                       className="calculator-form-input"
-                      value={data.machine_efficiency}
-                      onChange={(e) => updateData('machine_efficiency', parseFloat(e.target.value) || 0)}
+                      value={getNumberValue(data.machine_efficiency)}
+                      onChange={(e) => handleNumberChange('machine_efficiency', e.target.value)}
                       step="0.1"
                     />
                   </div>
@@ -418,8 +444,8 @@ export default function Calculator() {
                     <input
                       type="number"
                       className="calculator-form-input"
-                      value={data.machine_price}
-                      onChange={(e) => updateData('machine_price', parseFloat(e.target.value) || 0)}
+                      value={getNumberValue(data.machine_price)}
+                      onChange={(e) => handleNumberChange('machine_price', e.target.value)}
                     />
                   </div>
                 </div>
@@ -467,8 +493,8 @@ export default function Calculator() {
                     <input
                       type="number"
                       className="calculator-form-input"
-                      value={data.base_tariff}
-                      onChange={(e) => updateData('base_tariff', parseFloat(e.target.value) || 0)}
+                      value={getNumberValue(data.base_tariff)}
+                      onChange={(e) => handleNumberChange('base_tariff', e.target.value)}
                       step="0.001"
                     />
                   </div>
@@ -477,8 +503,8 @@ export default function Calculator() {
                     <input
                       type="number"
                       className="calculator-form-input"
-                      value={data.demand_charge}
-                      onChange={(e) => updateData('demand_charge', parseFloat(e.target.value) || 0)}
+                      value={getNumberValue(data.demand_charge)}
+                      onChange={(e) => handleNumberChange('demand_charge', e.target.value)}
                       step="0.1"
                     />
                   </div>
@@ -487,8 +513,8 @@ export default function Calculator() {
                     <input
                       type="number"
                       className="calculator-form-input"
-                      value={data.curtailment}
-                      onChange={(e) => updateData('curtailment', parseFloat(e.target.value) || 0)}
+                      value={getNumberValue(data.curtailment)}
+                      onChange={(e) => handleNumberChange('curtailment', e.target.value)}
                       min="0"
                       max="100"
                     />
@@ -504,8 +530,8 @@ export default function Calculator() {
                     <input
                       type="number"
                       className="calculator-form-input"
-                      value={data.max_power}
-                      onChange={(e) => updateData('max_power', parseFloat(e.target.value) || 0)}
+                      value={getNumberValue(data.max_power)}
+                      onChange={(e) => handleNumberChange('max_power', e.target.value)}
                       step="0.1"
                     />
                   </div>
@@ -514,8 +540,8 @@ export default function Calculator() {
                     <input
                       type="number"
                       className="calculator-form-input"
-                      value={data.pue}
-                      onChange={(e) => updateData('pue', parseFloat(e.target.value) || 0)}
+                      value={getNumberValue(data.pue)}
+                      onChange={(e) => handleNumberChange('pue', e.target.value)}
                       step="0.01"
                     />
                   </div>
@@ -524,8 +550,8 @@ export default function Calculator() {
                     <input
                       type="number"
                       className="calculator-form-input"
-                      value={data.vat_rate}
-                      onChange={(e) => updateData('vat_rate', parseFloat(e.target.value) || 0)}
+                      value={getNumberValue(data.vat_rate)}
+                      onChange={(e) => handleNumberChange('vat_rate', e.target.value)}
                       step="0.1"
                     />
                   </div>
@@ -626,8 +652,17 @@ export default function Calculator() {
                       <input
                         type="number"
                         className="calculator-form-input"
-                        value={data.manual_units}
-                        onChange={(e) => updateData('manual_units', parseInt(e.target.value) || 0)}
+                        value={getNumberValue(data.manual_units)}
+                        onChange={(e) => {
+                          if (e.target.value === '' || e.target.value === '-') {
+                            updateData('manual_units', undefined)
+                          } else {
+                            const intValue = parseInt(e.target.value)
+                            if (!isNaN(intValue)) {
+                              updateData('manual_units', intValue)
+                            }
+                          }
+                        }}
                         min="1"
                       />
                     </div>
@@ -666,10 +701,11 @@ export default function Calculator() {
                           <td>
                             <input
                               type="number"
-                              value={phase.units}
+                              value={phase.units !== undefined ? phase.units : ''}
                               onChange={(e) => {
                                 const newPhases = [...data.phases]
-                                newPhases[idx].units = parseInt(e.target.value) || 0
+                                const unitsValue = e.target.value === '' ? 0 : parseInt(e.target.value)
+                                newPhases[idx].units = !isNaN(unitsValue) ? unitsValue : 0
                                 updateData('phases', newPhases)
                               }}
                             />
@@ -677,10 +713,11 @@ export default function Calculator() {
                           <td>
                             <input
                               type="number"
-                              value={phase.start_month}
+                              value={phase.start_month !== undefined ? phase.start_month : ''}
                               onChange={(e) => {
                                 const newPhases = [...data.phases]
-                                newPhases[idx].start_month = parseInt(e.target.value) || 0
+                                const monthValue = e.target.value === '' ? 0 : parseInt(e.target.value)
+                                newPhases[idx].start_month = !isNaN(monthValue) ? monthValue : 0
                                 updateData('phases', newPhases)
                               }}
                             />
@@ -688,10 +725,11 @@ export default function Calculator() {
                           <td>
                             <input
                               type="number"
-                              value={phase.ramp_months}
+                              value={phase.ramp_months !== undefined ? phase.ramp_months : ''}
                               onChange={(e) => {
                                 const newPhases = [...data.phases]
-                                newPhases[idx].ramp_months = parseInt(e.target.value) || 1
+                                const rampValue = e.target.value === '' ? 1 : parseInt(e.target.value)
+                                newPhases[idx].ramp_months = !isNaN(rampValue) ? rampValue : 1
                                 updateData('phases', newPhases)
                               }}
                             />
@@ -760,8 +798,8 @@ export default function Calculator() {
                     <input
                       type="number"
                       className="calculator-form-input"
-                      value={data.custom_btc_start}
-                      onChange={(e) => updateData('custom_btc_start', parseFloat(e.target.value) || 0)}
+                      value={getNumberValue(data.custom_btc_start)}
+                      onChange={(e) => handleNumberChange('custom_btc_start', e.target.value)}
                     />
                   </div>
                   <div>
@@ -769,8 +807,8 @@ export default function Calculator() {
                     <input
                       type="number"
                       className="calculator-form-input"
-                      value={data.custom_btc_end}
-                      onChange={(e) => updateData('custom_btc_end', parseFloat(e.target.value) || 0)}
+                      value={getNumberValue(data.custom_btc_end)}
+                      onChange={(e) => handleNumberChange('custom_btc_end', e.target.value)}
                     />
                   </div>
                 </div>
@@ -793,8 +831,8 @@ export default function Calculator() {
                     <input
                       type="number"
                       className="calculator-form-input"
-                      value={data.difficulty_growth}
-                      onChange={(e) => updateData('difficulty_growth', parseFloat(e.target.value) || 0)}
+                      value={getNumberValue(data.difficulty_growth)}
+                      onChange={(e) => handleNumberChange('difficulty_growth', e.target.value)}
                       min="0"
                       max="100"
                     />
@@ -818,8 +856,8 @@ export default function Calculator() {
                     <input
                       type="number"
                       className="calculator-form-input"
-                      value={data.opex_staffing}
-                      onChange={(e) => updateData('opex_staffing', parseFloat(e.target.value) || 0)}
+                      value={getNumberValue(data.opex_staffing)}
+                      onChange={(e) => handleNumberChange('opex_staffing', e.target.value)}
                     />
                   </div>
                   <div>
@@ -827,8 +865,8 @@ export default function Calculator() {
                     <input
                       type="number"
                       className="calculator-form-input"
-                      value={data.opex_rent}
-                      onChange={(e) => updateData('opex_rent', parseFloat(e.target.value) || 0)}
+                      value={getNumberValue(data.opex_rent)}
+                      onChange={(e) => handleNumberChange('opex_rent', e.target.value)}
                     />
                   </div>
                   <div>
@@ -836,8 +874,8 @@ export default function Calculator() {
                     <input
                       type="number"
                       className="calculator-form-input"
-                      value={data.opex_maintenance}
-                      onChange={(e) => updateData('opex_maintenance', parseFloat(e.target.value) || 0)}
+                      value={getNumberValue(data.opex_maintenance)}
+                      onChange={(e) => handleNumberChange('opex_maintenance', e.target.value)}
                     />
                   </div>
                   <div>
@@ -845,8 +883,8 @@ export default function Calculator() {
                     <input
                       type="number"
                       className="calculator-form-input"
-                      value={data.opex_software}
-                      onChange={(e) => updateData('opex_software', parseFloat(e.target.value) || 0)}
+                      value={getNumberValue(data.opex_software)}
+                      onChange={(e) => handleNumberChange('opex_software', e.target.value)}
                     />
                   </div>
                   <div>
@@ -854,8 +892,8 @@ export default function Calculator() {
                     <input
                       type="number"
                       className="calculator-form-input"
-                      value={data.opex_other}
-                      onChange={(e) => updateData('opex_other', parseFloat(e.target.value) || 0)}
+                      value={getNumberValue(data.opex_other)}
+                      onChange={(e) => handleNumberChange('opex_other', e.target.value)}
                     />
                   </div>
                 </div>
@@ -869,8 +907,8 @@ export default function Calculator() {
                     <input
                       type="number"
                       className="calculator-form-input"
-                      value={data.pool_fee}
-                      onChange={(e) => updateData('pool_fee', parseFloat(e.target.value) || 0)}
+                      value={getNumberValue(data.pool_fee)}
+                      onChange={(e) => handleNumberChange('pool_fee', e.target.value)}
                       step="0.1"
                       min="0"
                       max="100"
@@ -881,8 +919,8 @@ export default function Calculator() {
                     <input
                       type="number"
                       className="calculator-form-input"
-                      value={data.tx_fee}
-                      onChange={(e) => updateData('tx_fee', parseFloat(e.target.value) || 0)}
+                      value={getNumberValue(data.tx_fee)}
+                      onChange={(e) => handleNumberChange('tx_fee', e.target.value)}
                       step="0.000001"
                     />
                   </div>
@@ -930,8 +968,8 @@ export default function Calculator() {
                     <input
                       type="number"
                       className="calculator-form-input"
-                      value={data.loan_amount}
-                      onChange={(e) => updateData('loan_amount', parseFloat(e.target.value) || 0)}
+                      value={getNumberValue(data.loan_amount)}
+                      onChange={(e) => handleNumberChange('loan_amount', e.target.value)}
                     />
                   </div>
                   <div>
@@ -939,8 +977,8 @@ export default function Calculator() {
                     <input
                       type="number"
                       className="calculator-form-input"
-                      value={data.interest_rate}
-                      onChange={(e) => updateData('interest_rate', parseFloat(e.target.value) || 0)}
+                      value={getNumberValue(data.interest_rate)}
+                      onChange={(e) => handleNumberChange('interest_rate', e.target.value)}
                       step="0.1"
                       min="0"
                       max="100"
@@ -951,8 +989,17 @@ export default function Calculator() {
                     <input
                       type="number"
                       className="calculator-form-input"
-                      value={data.loan_term}
-                      onChange={(e) => updateData('loan_term', parseInt(e.target.value) || 0)}
+                      value={getNumberValue(data.loan_term)}
+                      onChange={(e) => {
+                        if (e.target.value === '' || e.target.value === '-') {
+                          updateData('loan_term', undefined)
+                        } else {
+                          const intValue = parseInt(e.target.value)
+                          if (!isNaN(intValue)) {
+                            updateData('loan_term', intValue)
+                          }
+                        }
+                      }}
                       min="0"
                     />
                   </div>

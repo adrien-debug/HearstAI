@@ -213,7 +213,24 @@ export default function HosterDataPage() {
   }
 
   const handleSave = async () => {
-    if (!formData.name || !formData.country || !formData.location || formData.electricityPrice === undefined || formData.additionalFees === undefined || formData.deposit === undefined) {
+    // Validation améliorée - permettre 0 comme valeur valide
+    const nameValid = formData.name && formData.name.trim() !== ''
+    const countryValid = formData.country && formData.country.trim() !== ''
+    const locationValid = formData.location && formData.location.trim() !== ''
+    const electricityPriceValid = formData.electricityPrice !== undefined && formData.electricityPrice !== null && !isNaN(formData.electricityPrice)
+    const additionalFeesValid = formData.additionalFees !== undefined && formData.additionalFees !== null && !isNaN(formData.additionalFees)
+    const depositValid = formData.deposit !== undefined && formData.deposit !== null && !isNaN(formData.deposit)
+    
+    if (!nameValid || !countryValid || !locationValid || !electricityPriceValid || !additionalFeesValid || !depositValid) {
+      console.log('Validation failed:', {
+        name: nameValid,
+        country: countryValid,
+        location: locationValid,
+        electricityPrice: electricityPriceValid,
+        additionalFees: additionalFeesValid,
+        deposit: depositValid,
+        formData
+      })
       alert('Veuillez remplir tous les champs obligatoires')
       return
     }
@@ -518,8 +535,11 @@ export default function HosterDataPage() {
                   <input
                     type="number"
                     step="0.001"
-                    value={formData.electricityPrice || ''}
-                    onChange={(e) => setFormData({ ...formData, electricityPrice: parseFloat(e.target.value) || 0 })}
+                    value={formData.electricityPrice !== undefined && formData.electricityPrice !== null ? formData.electricityPrice : ''}
+                    onChange={(e) => {
+                      const value = e.target.value === '' ? undefined : parseFloat(e.target.value)
+                      setFormData({ ...formData, electricityPrice: value !== undefined && !isNaN(value) ? value : undefined })
+                    }}
                     placeholder="Ex: 0.05"
                   />
                 </div>
@@ -529,8 +549,11 @@ export default function HosterDataPage() {
                   <input
                     type="number"
                     step="0.01"
-                    value={formData.additionalFees || ''}
-                    onChange={(e) => setFormData({ ...formData, additionalFees: parseFloat(e.target.value) || 0 })}
+                    value={formData.additionalFees !== undefined && formData.additionalFees !== null ? formData.additionalFees : ''}
+                    onChange={(e) => {
+                      const value = e.target.value === '' ? undefined : parseFloat(e.target.value)
+                      setFormData({ ...formData, additionalFees: value !== undefined && !isNaN(value) ? value : undefined })
+                    }}
                     placeholder="Ex: 50"
                   />
                 </div>
@@ -541,8 +564,11 @@ export default function HosterDataPage() {
                     type="number"
                     step="0.5"
                     min="0"
-                    value={formData.deposit || ''}
-                    onChange={(e) => setFormData({ ...formData, deposit: parseFloat(e.target.value) || 0 })}
+                    value={formData.deposit !== undefined && formData.deposit !== null ? formData.deposit : ''}
+                    onChange={(e) => {
+                      const value = e.target.value === '' ? undefined : parseFloat(e.target.value)
+                      setFormData({ ...formData, deposit: value !== undefined && !isNaN(value) ? value : undefined })
+                    }}
                     placeholder="Ex: 3"
                   />
                 </div>
