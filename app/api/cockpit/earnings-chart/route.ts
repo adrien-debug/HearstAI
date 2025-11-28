@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { prisma } from '@/lib/db'
+import { prismaProd } from '@/lib/db'
 
 export const dynamic = 'force-dynamic'
 
@@ -14,7 +14,7 @@ async function fetchEarningsData(timeframe: 'week' | 'month' | 'year'): Promise<
     
     if (timeframe === 'week') {
       // Week View - Daily Earnings (Last 7 Days, excluding today)
-      result = await prisma.$queryRaw<Array<{
+      result = await prismaProd.$queryRaw<Array<{
         date: Date
         total_earnings: number
       }>>`
@@ -37,7 +37,7 @@ async function fetchEarningsData(timeframe: 'week' | 'month' | 'year'): Promise<
       `
     } else if (timeframe === 'month') {
       // Month View - Weekly Earnings (Last 7 Weeks)
-      result = await prisma.$queryRaw<Array<{
+      result = await prismaProd.$queryRaw<Array<{
         date: Date
         total_earnings: number
       }>>`
@@ -62,7 +62,7 @@ async function fetchEarningsData(timeframe: 'week' | 'month' | 'year'): Promise<
     } else if (timeframe === 'year') {
       // Year View - Monthly Earnings (Last 12 Months)
       // Display data for all contracts, not only active ones
-      result = await prisma.$queryRaw<Array<{
+      result = await prismaProd.$queryRaw<Array<{
         date: Date
         total_earnings: number
       }>>`
