@@ -1,5 +1,34 @@
 # Cursor Rules - HearstAI Project
 
+## 🌿 BRANCHE GIT PAR DÉFAUT
+
+### BRANCHE DE TRAVAIL : `Fix/texting`
+
+**TOUJOURS travailler sur la branche `Fix/texting`.**
+
+#### Règles de branche :
+
+1. **Vérification automatique de la branche**
+   - AVANT toute modification, vérifier que nous sommes sur `Fix/texting`
+   - Si nous sommes sur une autre branche, basculer automatiquement sur `Fix/texting`
+   - Ne jamais committer sur une autre branche sauf demande explicite
+
+2. **Commandes Git automatiques**
+   - Toujours utiliser `git checkout Fix/texting` au début d'une session
+   - Vérifier l'état de la branche avec `git status` avant de commencer
+   - Pousser automatiquement sur `origin/Fix/texting` après les commits
+
+3. **Workflow de branche**
+   - Créer toutes les modifications sur `Fix/texting`
+   - Commit et push automatiques sur cette branche
+   - Informer si un changement de branche est nécessaire
+
+4. **Exceptions**
+   - Ne changer de branche que si explicitement demandé par l'utilisateur
+   - Toujours revenir sur `Fix/texting` après toute opération sur une autre branche
+
+---
+
 ## 🚀 AUTONOMIE COMPLÈTE - EXÉCUTION AUTOMATIQUE
 
 ### RÈGLE PRINCIPALE : EXÉCUTION AUTOMATIQUE À 100%
