@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { SearchIcon } from './BusinessDevIcons'
 
 interface Contact {
@@ -14,11 +14,7 @@ interface Contact {
   lastContact: string
 }
 
-export default function BusinessDevContacts() {
-  const [searchTerm, setSearchTerm] = useState('')
-  const [activeFilter, setActiveFilter] = useState<string>('all')
-
-  const [contacts, setContacts] = useState<Contact[]>([
+const defaultContacts: Contact[] = [
     {
       id: 1,
       name: 'Jean Dupont',
@@ -109,7 +105,68 @@ export default function BusinessDevContacts() {
       value: '€195K',
       lastContact: 'Il y a 1j'
     }
-  ])
+]
+
+export default function BusinessDevContacts({ onContactAdded }: { onContactAdded?: () => void }) {
+  const [searchTerm, setSearchTerm] = useState('')
+  const [activeFilter, setActiveFilter] = useState<string>('all')
+  const [contacts, setContacts] = useState<Contact[]>(defaultContacts)
+
+  // Charger les contacts depuis localStorage au montage
+  useEffect(() => {
+    const storedContacts = localStorage.getItem('businessDevContacts')
+    if (storedContacts) {
+      try {
+        const parsedContacts = JSON.parse(storedContacts)
+        if (Array.isArray(parsedContacts) && parsedContacts.length > 0) {
+          // Fusionner avec les contacts par défaut (éviter les doublons)
+          const mergedContacts = [...defaultContacts]
+          parsedContacts.forEach((storedContact: Contact) => {
+            if (!mergedContacts.find(c => c.id === storedContact.id)) {
+              mergedContacts.push(storedContact)
+            }
+          })
+          setContacts(mergedContacts)
+        }
+      } catch (e) {
+        console.error('Erreur lors du chargement des contacts:', e)
+      }
+    }
+  }, [])
+
+  // Écouter les changements dans localStorage (pour détecter les nouveaux contacts)
+  useEffect(() => {
+    const loadContacts = () => {
+      const storedContacts = localStorage.getItem('businessDevContacts')
+      if (storedContacts) {
+        try {
+          const parsedContacts = JSON.parse(storedContacts)
+          if (Array.isArray(parsedContacts) && parsedContacts.length > 0) {
+            const mergedContacts = [...defaultContacts]
+            parsedContacts.forEach((storedContact: Contact) => {
+              if (!mergedContacts.find(c => c.id === storedContact.id)) {
+                mergedContacts.push(storedContact)
+              }
+            })
+            setContacts(mergedContacts)
+          }
+        } catch (e) {
+          console.error('Erreur lors du chargement des contacts:', e)
+        }
+      }
+    }
+
+    // Écouter les changements de localStorage (entre onglets)
+    window.addEventListener('storage', loadContacts)
+    
+    // Écouter l'événement personnalisé (même onglet)
+    window.addEventListener('businessDevContactAdded', loadContacts)
+
+    return () => {
+      window.removeEventListener('storage', loadContacts)
+      window.removeEventListener('businessDevContactAdded', loadContacts)
+    }
+  }, [])
 
   const filters = [
     { id: 'all', label: 'Tous' },
