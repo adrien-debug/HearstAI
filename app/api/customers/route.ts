@@ -5,16 +5,35 @@ import { buildCollateralClientFromDeBank } from '@/lib/debank'
 import { prisma } from '@/lib/db'
 
 /**
- * API Route pour gérer les customers (clients avec adresses ERC20)
- * Utilise l'API DeBank pour récupérer les données réelles en temps réel
- * 
- * GET /api/customers - Liste tous les customers avec leurs données DeBank
- * POST /api/customers - Crée un nouveau customer
- * PUT /api/customers/:id - Met à jour un customer
- * DELETE /api/customers/:id - Supprime un customer
+ * @swagger
+ * /api/customers:
+ *   get:
+ *     tags: [customers]
+ *     summary: Get all customers with DeBank data
+ *     description: Retrieve all customers from the database with real-time DeBank data
+ *     parameters:
+ *       - in: query
+ *         name: refresh
+ *         schema:
+ *           type: boolean
+ *         description: Force refresh from DeBank API
+ *     responses:
+ *       200:
+ *         description: List of customers
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 customers:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Customer'
+ *                 count:
+ *                   type: number
+ *                 source:
+ *                   type: string
  */
-
-// GET - Liste tous les customers avec leurs données DeBank en temps réel
 export const dynamic = 'force-dynamic'
 
 export async function GET(request: NextRequest) {
@@ -135,7 +154,57 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST - Crée un nouveau customer
+/**
+ * @swagger
+ * /api/customers:
+ *   post:
+ *     tags: [customers]
+ *     summary: Create a new customer
+ *     description: Create a new customer with ERC20 address and fetch DeBank data
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - erc20Address
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: "John Doe"
+ *               erc20Address:
+ *                 type: string
+ *                 example: "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9"
+ *               tag:
+ *                 type: string
+ *                 example: "Client"
+ *               chains:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 example: ["eth", "arb"]
+ *               protocols:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 example: ["aave", "morpho"]
+ *     responses:
+ *       201:
+ *         description: Customer created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 customer:
+ *                   $ref: '#/components/schemas/Customer'
+ *       400:
+ *         description: Bad request
+ *       409:
+ *         description: Customer already exists
+ */
 export async function POST(request: NextRequest) {
   try {
     // Ne pas exiger l'authentification pour permettre le développement

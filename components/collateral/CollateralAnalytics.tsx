@@ -5,6 +5,7 @@ import { collateralAPI } from '@/lib/api'
 import { computeGlobalMetrics, computeProtocolBreakdown, computeAssetBreakdown } from './collateralUtils'
 import type { Client } from './collateralUtils'
 import Icon from '@/components/Icon'
+import DebankStatusIndicator from './DebankStatusIndicator'
 import './Collateral.css'
 
 export default function CollateralAnalytics() {
@@ -92,6 +93,9 @@ export default function CollateralAnalytics() {
 
   return (
     <div>
+      {/* DeBank API Status Indicator */}
+      <DebankStatusIndicator />
+
       {/* Premium Analytics Summary */}
       <div className="premium-stats-section">
         <div className="premium-stats-grid">

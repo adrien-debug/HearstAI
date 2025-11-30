@@ -9,11 +9,12 @@
 const DEBANK_BASE_URL = "https://pro-openapi.debank.com/v1";
 
 // ⚠️ Mets ta clé dans .env.local : DEBANK_ACCESS_KEY=xxxxxxxx
-const DEBANK_ACCESS_KEY = process.env.DEBANK_ACCESS_KEY;
+// Hardcoded token as fallback for testing/scripts
+const DEBANK_ACCESS_KEY = process.env.DEBANK_ACCESS_KEY || '77886e5c8a992d3e7b6d37c36325d2f701b2a904';
 
-if (!DEBANK_ACCESS_KEY) {
+if (!DEBANK_ACCESS_KEY || DEBANK_ACCESS_KEY === 'your_debank_access_key_here') {
   console.warn(
-    "[DeBank] ⚠️ DEBANK_ACCESS_KEY manquant. Ajoute-le dans .env.local"
+    "[DeBank] ⚠️ DEBANK_ACCESS_KEY manquant. Utilisation du token hardcodé pour les tests."
   );
 }
 
@@ -98,9 +99,10 @@ async function debankFetch(
   });
 
   // Log pour debug
-  if (!DEBANK_ACCESS_KEY) {
-    console.error('[DeBank] ⚠️ DEBANK_ACCESS_KEY manquant dans les variables d\'environnement');
-    throw new Error('DEBANK_ACCESS_KEY manquant');
+  if (!DEBANK_ACCESS_KEY || DEBANK_ACCESS_KEY === 'your_debank_access_key_here' || DEBANK_ACCESS_KEY.trim() === '') {
+    const errorMsg = '[DeBank] ⚠️ DEBANK_ACCESS_KEY manquant ou non configuré dans les variables d\'environnement. Ajoutez-le dans .env.local';
+    console.error(errorMsg);
+    throw new Error('DEBANK_ACCESS_KEY manquant. Veuillez configurer votre clé API DeBank dans .env.local');
   }
 
   const res = await fetch(url.toString(), {

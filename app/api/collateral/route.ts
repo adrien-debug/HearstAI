@@ -5,28 +5,56 @@ import { buildCollateralClientFromDeBank } from '@/lib/debank'
 import { prisma } from '@/lib/db'
 
 /**
- * Route API pour récupérer les données collatérales depuis DeBank
- * 
- * GET /api/collateral?wallets=0x1234...,0xABCD...&chains=eth,arb&protocols=morpho
- * 
- * Query params:
- * - wallets (requis): liste de wallets séparés par des virgules
- * - chains (optionnel): liste de chains séparées par des virgules (défaut: "eth")
- * - protocols (optionnel): liste de protocoles autorisés séparés par des virgules
- * 
- * Retourne:
- * {
- *   clients: [
- *     {
- *       id: "0x...",
- *       name: "...",
- *       tag: "...",
- *       wallets: ["0x..."],
- *       positions: [...],
- *       lastUpdate: "2025-01-20T10:00:00Z"
- *     }
- *   ]
- * }
+ * @swagger
+ * /api/collateral:
+ *   get:
+ *     tags: [collateral]
+ *     summary: Get collateral data from DeBank
+ *     description: Retrieve collateral data for specified wallets from DeBank API
+ *     parameters:
+ *       - in: query
+ *         name: wallets
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Comma-separated list of wallet addresses
+ *         example: "0x1234...,0xABCD..."
+ *       - in: query
+ *         name: chains
+ *         schema:
+ *           type: string
+ *         description: Comma-separated list of chains (default: "eth")
+ *         example: "eth,arb,base"
+ *       - in: query
+ *         name: protocols
+ *         schema:
+ *           type: string
+ *         description: Comma-separated list of allowed protocols
+ *         example: "morpho,aave"
+ *       - in: query
+ *         name: refresh
+ *         schema:
+ *           type: boolean
+ *         description: Force refresh from DeBank
+ *     responses:
+ *       200:
+ *         description: Collateral data retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 clients:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/CollateralClient'
+ *                 count:
+ *                   type: number
+ *                 source:
+ *                   type: string
+ *                 timestamp:
+ *                   type: string
+ *                   format: date-time
  */
 export const dynamic = 'force-dynamic'
 

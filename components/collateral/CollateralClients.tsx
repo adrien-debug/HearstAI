@@ -7,6 +7,7 @@ import ClientDetailModal from './ClientDetailModal'
 import { computeClientMetrics, computeGlobalMetrics } from './collateralUtils'
 import type { Client } from './collateralUtils'
 import Icon from '@/components/Icon'
+import DebankStatusIndicator from './DebankStatusIndicator'
 import './Collateral.css'
 
 export default function CollateralClients() {
@@ -29,47 +30,73 @@ export default function CollateralClients() {
       // Charger les clients depuis la base de données avec refresh DeBank
       let customersResponse
       try {
+        console.log('[CollateralClients] Loading customers...')
         customersResponse = await customersAPI.getAll()
-        const loadedCustomers = customersResponse.customers || []
+        console.log('[CollateralClients] Customers response:', customersResponse)
+        
+        // Handle different response structures
+        let loadedCustomers = []
+        if (Array.isArray(customersResponse)) {
+          loadedCustomers = customersResponse
+        } else if (customersResponse?.customers && Array.isArray(customersResponse.customers)) {
+          loadedCustomers = customersResponse.customers
+        } else if (customersResponse?.data && Array.isArray(customersResponse.data)) {
+          loadedCustomers = customersResponse.data
+        }
+        
+        console.log('[CollateralClients] Loaded customers count:', loadedCustomers.length)
+        console.log('[CollateralClients] Customers:', loadedCustomers)
+        
+        if (loadedCustomers.length === 0) {
+          console.warn('[CollateralClients] ⚠️ No customers found in response. Response structure:', customersResponse)
+        }
+        
         setCustomers(loadedCustomers)
         
         // Charger les données collatérales depuis DeBank
         // Utiliser les wallets des customers chargés
         try {
           const customerWallets = loadedCustomers.map((c: any) => c.erc20Address).filter(Boolean)
+          console.log('[CollateralClients] Customer wallets:', customerWallets)
           if (customerWallets.length > 0) {
+            const allChains = loadedCustomers.map((c: any) => {
+              try {
+                return JSON.parse(c.chains || '["eth"]')
+              } catch {
+                return ['eth']
+              }
+            }).flat()
+            const allProtocols = loadedCustomers.map((c: any) => {
+              try {
+                return JSON.parse(c.protocols || '[]')
+              } catch {
+                return []
+              }
+            }).flat()
+            
+            console.log('[CollateralClients] Fetching collateral data for wallets:', customerWallets)
             const collateralResponse = await collateralAPI.getAll(
               customerWallets,
-              loadedCustomers.map((c: any) => {
-                try {
-                  return JSON.parse(c.chains || '["eth"]')
-                } catch {
-                  return ['eth']
-                }
-              }).flat(),
-              loadedCustomers.map((c: any) => {
-                try {
-                  return JSON.parse(c.protocols || '[]')
-                } catch {
-                  return []
-                }
-              }).flat()
+              allChains,
+              allProtocols
             )
-            setCollateralData(collateralResponse)
+            console.log('[CollateralClients] Collateral response:', collateralResponse)
+            setCollateralData(collateralResponse || { clients: [] })
           } else {
+            console.warn('[CollateralClients] No customer wallets found')
             setCollateralData({ clients: [] })
           }
         } catch (collateralErr) {
-          console.error('Error loading collateral data:', collateralErr)
+          console.error('[CollateralClients] Error loading collateral data:', collateralErr)
           setCollateralData({ clients: [] })
         }
       } catch (customerErr) {
-        console.error('Error loading customers:', customerErr)
+        console.error('[CollateralClients] Error loading customers:', customerErr)
         setCustomers([])
         setCollateralData({ clients: [] })
       }
     } catch (err) {
-      console.error('Error loading data:', err)
+      console.error('[CollateralClients] Error loading data:', err)
     } finally {
       setLoading(false)
       setRefreshing(false)
@@ -95,9 +122,21 @@ export default function CollateralClients() {
   // Fonction pour trouver les données collatérales d'un client
   const getCollateralData = (customer: any): Client | undefined => {
     const erc20Address = customer.erc20Address || customer.id
-    return collateralData?.clients?.find((c: Client) => 
+    if (!erc20Address || !collateralData?.clients) return undefined
+    
+    // Try exact match first
+    let found = collateralData.clients.find((c: Client) => 
       c.id === erc20Address || c.id?.toLowerCase() === erc20Address?.toLowerCase()
     )
+    
+    // If not found, try matching by wallet address
+    if (!found) {
+      found = collateralData.clients.find((c: Client) => 
+        c.wallets?.some((w: string) => w.toLowerCase() === erc20Address.toLowerCase())
+      )
+    }
+    
+    return found
   }
 
   // Calculer les statistiques globales avec les utilitaires partagés
@@ -110,9 +149,22 @@ export default function CollateralClients() {
   }).length
   const totalCollateral = globalMetrics.totalCollateral
   const totalDebt = globalMetrics.totalDebt
+  
+  // Debug: Log current state
+  console.log('[CollateralClients] Render state:', {
+    customersCount: customers.length,
+    collateralClientsCount: collateralClients.length,
+    totalClients,
+    clientsWithPositions,
+    totalCollateral,
+    totalDebt
+  })
 
   return (
     <div>
+      {/* DeBank API Status Indicator */}
+      <DebankStatusIndicator />
+
       {/* Premium Stats Summary */}
       <div className="premium-stats-section">
         <div className="premium-stats-grid">
@@ -212,15 +264,28 @@ export default function CollateralClients() {
                     const metrics = collateral ? computeClientMetrics(collateral) : null
                     const positionsCount = collateral?.positions?.length || 0
                     
-                    // Parser les chains et protocols
+                    // Parser les chains et protocols (peuvent être déjà des arrays ou des strings JSON)
                     let chains: string[] = []
                     let protocols: string[] = []
                     try {
-                      chains = customer.chains ? JSON.parse(customer.chains) : []
-                      protocols = customer.protocols ? JSON.parse(customer.protocols) : []
+                      if (Array.isArray(customer.chains)) {
+                        chains = customer.chains
+                      } else if (typeof customer.chains === 'string') {
+                        chains = customer.chains ? JSON.parse(customer.chains) : []
+                      } else {
+                        chains = ['eth']
+                      }
+                      
+                      if (Array.isArray(customer.protocols)) {
+                        protocols = customer.protocols
+                      } else if (typeof customer.protocols === 'string') {
+                        protocols = customer.protocols ? JSON.parse(customer.protocols) : []
+                      }
                     } catch (e) {
                       // Si le parsing échoue, utiliser les valeurs par défaut
+                      console.warn('[CollateralClients] Error parsing chains/protocols for customer:', customer.id, e)
                       chains = ['eth']
+                      protocols = []
                     }
                     
                     const erc20Address = customer.erc20Address || customer.id || 'N/A'
@@ -291,18 +356,22 @@ export default function CollateralClients() {
                           )}
                         </td>
                         <td className={metrics && metrics.totalCollateralUsd > 0 ? 'collateral-value-green' : 'var(--text-secondary)'}>
-                          {metrics ? `$${metrics.totalCollateralUsd.toLocaleString('en-US', { maximumFractionDigits: 0 })}` : '$0'}
+                          {metrics ? `$${metrics.totalCollateralUsd.toLocaleString('en-US', { maximumFractionDigits: 0 })}` : 
+                           (customer.totalValue ? `$${customer.totalValue.toLocaleString('en-US', { maximumFractionDigits: 0 })}` : '$0')}
                         </td>
                         <td style={{ color: metrics && metrics.totalDebtUsd > 0 ? '#ff4d4d' : 'var(--text-secondary)' }}>
-                          {metrics ? `$${metrics.totalDebtUsd.toLocaleString('en-US', { maximumFractionDigits: 0 })}` : '$0'}
+                          {metrics ? `$${metrics.totalDebtUsd.toLocaleString('en-US', { maximumFractionDigits: 0 })}` : 
+                           (customer.totalDebt ? `$${customer.totalDebt.toLocaleString('en-US', { maximumFractionDigits: 0 })}` : '$0')}
                         </td>
                         <td style={{ 
-                          color: metrics && metrics.healthFactor >= 2 ? '#C5FFA7' : metrics && metrics.healthFactor >= 1.5 ? '#FFA500' : 'var(--text-secondary)',
-                          fontWeight: metrics ? 'var(--font-semibold)' : 'normal'
+                          color: (metrics?.healthFactor || customer.healthFactor) >= 2 ? '#C5FFA7' : 
+                                 (metrics?.healthFactor || customer.healthFactor) >= 1.5 ? '#FFA500' : 'var(--text-secondary)',
+                          fontWeight: (metrics || customer.healthFactor) ? 'var(--font-semibold)' : 'normal'
                         }}>
-                          {metrics ? metrics.healthFactor.toFixed(2) : 'N/A'}
+                          {metrics ? metrics.healthFactor.toFixed(2) : 
+                           (customer.healthFactor ? customer.healthFactor.toFixed(2) : 'N/A')}
                         </td>
-                        <td>{positionsCount}</td>
+                        <td>{positionsCount || (customer.positions?.length || 0)}</td>
                         <td>
                           <span style={{ 
                             padding: '4px 8px', 

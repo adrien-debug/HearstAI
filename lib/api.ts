@@ -3,43 +3,23 @@
 
 // Helper pour obtenir l'URL de base de l'API
 // Next.js injecte NEXT_PUBLIC_* dans le code au moment du build
+// Priority: Always use Next.js API routes (port 6001) for Next.js endpoints
+// The NestJS backend (port 4000) should only be used for specific backend-only endpoints
 const getBaseUrl = () => {
-  // process.env.NEXT_PUBLIC_API_URL est disponible côté client et serveur
-  // car Next.js l'injecte au moment du build
-  const envUrl = process.env.NEXT_PUBLIC_API_URL
-  
-  // Si une URL complète est fournie (http://... ou https://...), l'utiliser
-  if (envUrl && (envUrl.startsWith('http://') || envUrl.startsWith('https://'))) {
-    // Nettoyer l'URL (supprimer les slashes en fin)
-    const cleanUrl = envUrl.replace(/\/+$/, '')
-    // Si l'URL se termine déjà par /api, l'utiliser telle quelle
-    // Sinon, ajouter /api
-    const baseUrl = cleanUrl.endsWith('/api') ? cleanUrl : `${cleanUrl}/api`
-    return baseUrl
-  }
-  
-  // Si BACKEND_URL est défini (pour Railway backend), l'utiliser
-  const backendUrl = process.env.BACKEND_URL
-  if (backendUrl && (backendUrl.startsWith('http://') || backendUrl.startsWith('https://'))) {
-    // Nettoyer l'URL (supprimer les slashes en fin)
-    const cleanUrl = backendUrl.replace(/\/+$/, '')
-    const baseUrl = cleanUrl.endsWith('/api') ? cleanUrl : `${cleanUrl}/api`
-    return baseUrl
-  }
-  
-  // Sinon, utiliser '/api' (route relative Next.js)
-  // En client-side, construire l'URL absolue pour éviter les problèmes
+  // En client-side, TOUJOURS utiliser les routes Next.js API (port 6001)
+  // Ne pas utiliser NEXT_PUBLIC_API_URL si elle pointe vers le backend NestJS (port 4000)
+  // Cela garantit que les appels API utilisent les routes Next.js, pas le backend NestJS
   if (typeof window !== 'undefined') {
-    // Si envUrl est défini mais pas http, l'utiliser quand même
-    if (envUrl) {
-      return envUrl.endsWith('/api') ? envUrl : `${envUrl}/api`
-    }
-    // Sinon, utiliser l'URL absolue basée sur l'origine actuelle
+    // Toujours utiliser l'URL absolue basée sur l'origine actuelle (Next.js app)
     return `${window.location.origin}/api`
   }
   
-  // Côté serveur, utiliser la route relative ou envUrl
-  return envUrl || '/api'
+  // Côté serveur, utiliser la route relative Next.js
+  return '/api'
+  
+  // Note: Si vous avez besoin d'appeler le backend NestJS (port 4000) pour certaines routes spécifiques,
+  // créez une fonction séparée getBackendUrl() et utilisez-la uniquement pour ces routes.
+  // Pour les routes Next.js comme /api/customers, /api/collateral, etc., utilisez toujours getBaseUrl()
 }
 
 export async function fetchAPI<T>(
@@ -49,11 +29,12 @@ export async function fetchAPI<T>(
   const baseUrl = getBaseUrl()
   const url = `${baseUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`
   
-  // Log the API URL being used (only in development or when explicitly enabled)
+  // Always log in development for debugging
   if (process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_DEBUG_API === 'true') {
     console.log(`[API] Calling: ${url}`, {
       baseUrl,
       endpoint,
+      fullUrl: url,
       usingRailway: baseUrl.includes('railway.app') || baseUrl.includes('railway'),
       usingLocal: baseUrl.includes('localhost') || baseUrl.startsWith('/api'),
     })
@@ -189,6 +170,18 @@ export const customersAPI = {
   update: (id: string, data: { name?: string; erc20Address?: string; tag?: string; chains?: string[]; protocols?: string[] }) => 
     fetchAPI<{ customer: any }>(`/customers/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
   delete: (id: string) => fetchAPI(`/customers/${id}`, { method: 'DELETE' }),
+}
+
+// DeBank API Health Check
+export const debankAPI = {
+  health: () => fetchAPI<{ 
+    status: 'operational' | 'error' | 'not_configured'
+    configured: boolean
+    message: string
+    testResult?: any
+    error?: string
+    instructions?: string[]
+  }>('/debank/health'),
 }
 
 // Cockpit API
