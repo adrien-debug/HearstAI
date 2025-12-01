@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma, prismaProd } from '@/lib/db'
 import { Pool } from 'pg'
+import { getHearstApiConfig, isHearstApiConfigured } from '@/lib/hearst-api-config'
 
 export const dynamic = 'force-dynamic'
 
@@ -47,10 +48,27 @@ async function fetchCustomers(hearstApiUrl: string, headers: HeadersInit): Promi
 
   if (!customersResponse.ok) {
     const errorText = await customersResponse.text().catch(() => '')
-    console.error('[Cockpit API] Failed to fetch customers:', {
-      status: customersResponse.status,
-      error: errorText
-    })
+    
+    // Log detailed error information for debugging
+    if (customersResponse.status === 401 || customersResponse.status === 403) {
+      console.error('[Cockpit API] Authentication failed - Check API token:', {
+        status: customersResponse.status,
+        url: customersUrl,
+        hasToken: !!headers['x-api-token'],
+        error: errorText.substring(0, 200) // Limit error text length
+      })
+    } else {
+      console.error('[Cockpit API] Failed to fetch customers:', {
+        status: customersResponse.status,
+        error: errorText.substring(0, 200)
+      })
+    }
+    
+    // For 401/403, return empty array instead of throwing (allows fallback)
+    if (customersResponse.status === 401 || customersResponse.status === 403) {
+      return []
+    }
+    
     throw new Error(`Failed to fetch customers: ${customersResponse.status}`)
   }
 
@@ -65,30 +83,139 @@ async function fetchCustomers(hearstApiUrl: string, headers: HeadersInit): Promi
   return users
 }
 
-// Helper function to fetch global hashrate and total miners from external API (optimized with parallel calls)
-async function fetchGlobalHashrateAndMiners(): Promise<{ globalHashrate: number; totalMiners: number }> {
+// Helper function to fetch customer contracts from Mining Operations API
+async function fetchCustomerContracts(
+  hearstApiUrl: string,
+  headers: HeadersInit,
+  customerId: string | number,
+  currency?: string
+): Promise<any[]> {
   try {
-    // Get HEARST_API_URL from environment, default to https://api.hearstcorporation.io
-    const hearstApiUrl = process.env.HEARST_API_URL || 'https://api.hearstcorporation.io'
+    const currencyParam = currency ? `&currency=${currency}` : ''
+    const contractsUrl = `${hearstApiUrl}/api/mining-operations/customers/${customerId}/contracts?limit=1000&pageNumber=1${currencyParam}`
     
-    // Get API token from environment
-    const apiToken = process.env.HEARST_API_TOKEN
-    if (!apiToken) {
-      console.error('[Cockpit API] HEARST_API_TOKEN is not configured in environment variables')
-      return { globalHashrate: 0, totalMiners: 0 }
+    const contractsResponse = await fetch(contractsUrl, {
+      method: 'GET',
+      headers,
+    })
+
+    if (!contractsResponse.ok) {
+      // If contracts endpoint fails, return empty array (not critical)
+      if (contractsResponse.status === 404) {
+        return []
+      }
+      const errorText = await contractsResponse.text().catch(() => '')
+      console.warn(`[Cockpit API] Failed to fetch contracts for customer ${customerId}:`, {
+        status: contractsResponse.status,
+        error: errorText
+      })
+      return []
     }
+
+    const contractsData = await contractsResponse.json()
+    const contracts = contractsData.contracts || contractsData.data || []
     
-    // Prepare headers with authentication token
-    const headers: HeadersInit = {
-      'Content-Type': 'application/json',
-      'x-api-token': apiToken,
+    return Array.isArray(contracts) ? contracts : []
+  } catch (error) {
+    console.warn(`[Cockpit API] Error fetching contracts for customer ${customerId}:`, error)
+    return []
+  }
+}
+
+// Helper function to fetch all contracts from API and aggregate data
+async function fetchContractsFromAPI(
+  apiConfig: { baseUrl: string; headers: HeadersInit },
+  customers: any[]
+): Promise<{
+  contracts: any[]
+  theoreticalHashrate: number
+  activeContracts: number
+  totalMachines: number
+}> {
+  try {
+    const allContracts: any[] = []
+    let totalTheoreticalHashrate = 0
+    let totalMachines = 0
+    let activeContractsCount = 0
+
+    // Fetch contracts for all customers in parallel
+    const contractPromises = customers.map(async (customer) => {
+      if (!customer.id) return []
+      
+      // Fetch Bitcoin contracts (primary currency for cockpit)
+      const contracts = await fetchCustomerContracts(
+        apiConfig.baseUrl,
+        apiConfig.headers,
+        customer.id,
+        'Bitcoin'
+      )
+      
+      return contracts.map((contract: any) => ({
+        ...contract,
+        customerId: customer.id,
+        customerName: customer.name || customer.email || customer.companyName || 'Unknown',
+      }))
+    })
+
+    const contractArrays = await Promise.all(contractPromises)
+    
+    // Flatten and process all contracts
+    for (const contracts of contractArrays) {
+      for (const contract of contracts) {
+        allContracts.push(contract)
+        
+        // Calculate theoretical hashrate if contract has machine specs
+        if (contract.status === 'Active' || contract.status === 'active') {
+          activeContractsCount++
+          
+          // Try different field names for machine specs
+          const machineTH = contract.machineTH || contract.machine_th || contract.hashrate || 0
+          const numberOfMachines = contract.numberOfMachines || contract.number_of_machines || contract.machines || 1
+          
+          if (machineTH > 0 && numberOfMachines > 0) {
+            // Convert TH/s to PH/s and add to total
+            const hashratePH = (machineTH * numberOfMachines) / 1000.0
+            totalTheoreticalHashrate += hashratePH
+            totalMachines += numberOfMachines
+          }
+        }
+      }
+    }
+
+    return {
+      contracts: allContracts,
+      theoreticalHashrate: totalTheoreticalHashrate,
+      activeContracts: activeContractsCount,
+      totalMachines: totalMachines,
+    }
+  } catch (error) {
+    console.error('[Cockpit API] Error fetching contracts from API:', error)
+    return {
+      contracts: [],
+      theoreticalHashrate: 0,
+      activeContracts: 0,
+      totalMachines: 0,
+    }
+  }
+}
+
+// Helper function to fetch global hashrate and total miners from external API (optimized with parallel calls)
+async function fetchGlobalHashrateAndMiners(): Promise<{ globalHashrate: number; totalMiners: number; btc24h: number }> {
+  try {
+    // Get Hearst API configuration
+    const apiConfig = getHearstApiConfig()
+    
+    if (!isHearstApiConfigured()) {
+      console.error('[Cockpit API] HEARST_API_TOKEN is not configured')
+      return { globalHashrate: 0, totalMiners: 0, btc24h: 0 }
     }
     
     // Step 1: Fetch all customers once
-    const users = await fetchCustomers(hearstApiUrl, headers)
+    const users = await fetchCustomers(apiConfig.baseUrl, apiConfig.headers)
     
     if (users.length === 0) {
-      return { globalHashrate: 0, totalMiners: 0 }
+      // If we got 403 or no customers, return empty results
+      return { globalHashrate: 0, totalMiners: 0, btc24h: 0 }
     }
 
     // Step 2: Make parallel calls for both hashrate/chart and hashrate/statistics for each user
@@ -101,13 +228,13 @@ async function fetchGlobalHashrateAndMiners(): Promise<{ globalHashrate: number;
 
         // Make both API calls in parallel for each user
         const [hashrateResponse, statisticsResponse] = await Promise.all([
-          fetch(`${hearstApiUrl}/api/mining-operations/customers/${userId}/hashrate/chart`, {
+          fetch(`${apiConfig.baseUrl}/api/mining-operations/customers/${userId}/hashrate/chart`, {
             method: 'GET',
-            headers,
+            headers: apiConfig.headers,
           }),
-          fetch(`${hearstApiUrl}/api/mining-operations/customers/${userId}/hashrate/statistics`, {
+          fetch(`${apiConfig.baseUrl}/api/mining-operations/customers/${userId}/hashrate/statistics`, {
             method: 'GET',
-            headers,
+            headers: apiConfig.headers,
           })
         ])
 
@@ -121,15 +248,21 @@ async function fetchGlobalHashrateAndMiners(): Promise<{ globalHashrate: number;
 
         // Process statistics response
         let machines = 0
+        let btc24h = 0 // Try to get 24h earnings from statistics if available
+        
         if (statisticsResponse.ok) {
           const statisticsData = await statisticsResponse.json()
-          machines = statisticsData.machines || statisticsData.data?.machines || 0
+          const stats = statisticsData.data || statisticsData.statistics || statisticsData
+          machines = stats.machines || stats.totalMachines || stats.machineCount || 0
+          
+          // Try to get earnings/production data if available in statistics
+          btc24h = stats.btc24h || stats.earnings24h || stats.production24h || stats.totalInvestment || 0
         }
 
-        return { hashrate, machines }
+        return { hashrate, machines, btc24h }
       } catch (error) {
         console.error(`[Cockpit API] Error fetching data for user ${user.id}:`, error)
-        return { hashrate: 0, machines: 0 }
+        return { hashrate: 0, machines: 0, btc24h: 0 }
       }
     })
 
@@ -139,11 +272,12 @@ async function fetchGlobalHashrateAndMiners(): Promise<{ globalHashrate: number;
     // Aggregate results
     const totalHashrate = results.reduce((sum, r) => sum + (r.hashrate || 0), 0)
     const totalMiners = results.reduce((sum, r) => sum + (r.machines || 0), 0)
+    const totalBTC24h = results.reduce((sum, r) => sum + (r.btc24h || 0), 0)
 
-    return { globalHashrate: totalHashrate, totalMiners }
+    return { globalHashrate: totalHashrate, totalMiners, btc24h: totalBTC24h }
   } catch (error) {
     console.error('[Cockpit API] Error fetching global hashrate and miners:', error)
-    return { globalHashrate: 0, totalMiners: 0 }
+    return { globalHashrate: 0, totalMiners: 0, btc24h: 0 }
   }
 }
 
@@ -159,14 +293,32 @@ async function fetchTotalMiners(): Promise<number> {
   return result.totalMiners
 }
 
-// Helper function to fetch theoretical hashrate from database
-async function fetchTheoreticalHashrate(): Promise<{
+// Helper function to fetch theoretical hashrate from API (preferred) or database (fallback)
+async function fetchTheoreticalHashrate(
+  apiConfig?: { baseUrl: string; headers: HeadersInit },
+  customers?: any[]
+): Promise<{
   theoreticalHashratePH: number
   activeContracts: number
   totalMachines: number
 }> {
+  // Try to fetch from API first if API config and customers are provided
+  if (apiConfig && customers && customers.length > 0) {
+    try {
+      const contractsData = await fetchContractsFromAPI(apiConfig, customers)
+      return {
+        theoreticalHashratePH: contractsData.theoreticalHashrate || 0,
+        activeContracts: contractsData.activeContracts || 0,
+        totalMachines: contractsData.totalMachines || 0,
+      }
+    } catch (error) {
+      console.warn('[Cockpit API] Failed to fetch theoretical hashrate from API, falling back to database:', error)
+      // Fall through to database query
+    }
+  }
+
+  // Fallback to database query (may fail if tables don't exist)
   try {
-    // Query to calculate theoretical hashrate from active contracts
     const result = await prismaProd.$queryRaw<Array<{
       active_contracts: number
       total_machines: number
@@ -194,7 +346,16 @@ async function fetchTheoreticalHashrate(): Promise<{
         totalMachines: 0,
       }
     }
-  } catch (error) {
+  } catch (error: any) {
+    // Expected error if database tables don't exist - silently return defaults
+    if (error?.code === 'P2010' || error?.meta?.code === '42P01') {
+      // Table doesn't exist - this is expected if tables aren't set up
+      return {
+        theoreticalHashratePH: 0,
+        activeContracts: 0,
+        totalMachines: 0,
+      }
+    }
     console.error('[Cockpit API] Error calculating theoretical hashrate:', error)
     return {
       theoreticalHashratePH: 0,
@@ -204,13 +365,17 @@ async function fetchTheoreticalHashrate(): Promise<{
   }
 }
 
-// Helper function to fetch BTC production (24h) from database
-// Calculate yesterday's earnings (last 24 hours) as today's data will be updated tomorrow
-async function fetchBTCProduction24h(): Promise<number> {
+// Helper function to fetch BTC production (24h) from API or database
+async function fetchBTCProduction24h(
+  apiConfig?: { baseUrl: string; headers: HeadersInit },
+  customers?: any[]
+): Promise<number> {
+  // Try to get from API statistics endpoint if available
+  // Note: This is a placeholder - API may not provide 24h earnings directly
+  // Future: Could aggregate from hashrate/chart endpoint if it includes earnings data
+  
+  // For now, try database (will fail silently if tables don't exist)
   try {
-    // Get active Bitcoin contracts and calculate yesterday's earnings
-    // Step 1: Get active Bitcoin contract IDs
-    // Step 2: Calculate yesterday's earnings for those contracts
     const earningsResult = await prismaProd.$queryRaw<Array<{
       record_count: number
       total_earning: number
@@ -232,7 +397,11 @@ async function fetchBTCProduction24h(): Promise<number> {
     } else {
       return 0
     }
-  } catch (error) {
+  } catch (error: any) {
+    // Expected error if database tables don't exist - silently return 0
+    if (error?.code === 'P2010' || error?.meta?.code === '42P01') {
+      return 0
+    }
     console.error('[Cockpit API] Error calculating BTC production 24h:', error)
     return 0
   }
@@ -241,12 +410,7 @@ async function fetchBTCProduction24h(): Promise<number> {
 // Helper function to fetch BTC production for current month from database
 async function fetchBTCProductionMonthly(): Promise<number> {
   try {
-    console.log('[Cockpit API] Starting fetchBTCProductionMonthly...')
-    
     // Get active Bitcoin contracts and calculate current month earnings
-    // Exclude today's date as today's data will be updated tomorrow
-    // Step 1: Get active Bitcoin contract IDs
-    // Step 2: Calculate current month earnings for those contracts
     const earningsResult = await prismaProd.$queryRaw<Array<{
       record_count: number
       total_earning: number
@@ -264,17 +428,15 @@ async function fetchBTCProductionMonthly(): Promise<number> {
     
     if (earningsResult && earningsResult.length > 0) {
       const data = earningsResult[0]
-      const totalEarning = data.total_earning || 0
-      console.log('[Cockpit API] Monthly production calculated:', {
-        record_count: data.record_count,
-        total_earning: totalEarning
-      })
-      return totalEarning
+      return data.total_earning || 0
     } else {
-      console.log('[Cockpit API] No monthly production data found')
       return 0
     }
-  } catch (error) {
+  } catch (error: any) {
+    // Expected error if database tables don't exist - silently return 0
+    if (error?.code === 'P2010' || error?.meta?.code === '42P01') {
+      return 0
+    }
     console.error('[Cockpit API] Error calculating BTC production monthly:', error)
     return 0
   }
@@ -309,7 +471,11 @@ async function fetchBitcoinPriceYesterday(): Promise<number> {
       console.warn('[Cockpit API] No Bitcoin price found for yesterday')
       return 0
     }
-  } catch (error) {
+  } catch (error: any) {
+    // Expected error if database table doesn't exist - silently return 0
+    if (error?.code === '42P01' || error?.message?.includes('does not exist')) {
+      return 0
+    }
     console.error('[Cockpit API] Error fetching Bitcoin price:', error)
     return 0
   } finally {
@@ -323,8 +489,12 @@ async function fetchBitcoinPriceYesterday(): Promise<number> {
   }
 }
 
-// Helper function to fetch mining accounts summary from database
-async function fetchMiningAccounts(bitcoinPrice: number): Promise<Array<{
+// Helper function to fetch mining accounts summary from API (preferred) or database (fallback)
+async function fetchMiningAccounts(
+  bitcoinPrice: number,
+  apiConfig?: { baseUrl: string; headers: HeadersInit },
+  customers?: any[]
+): Promise<Array<{
   id: string
   name: string
   hashrate: number
@@ -332,8 +502,78 @@ async function fetchMiningAccounts(bitcoinPrice: number): Promise<Array<{
   usd24h: number
   status: string
 }>> {
+  // Try to fetch from API first if API config and customers are provided
+  if (apiConfig && customers && customers.length > 0) {
+    try {
+      const contractsData = await fetchContractsFromAPI(apiConfig, customers)
+      const miningAccounts: Array<{
+        id: string
+        name: string
+        hashrate: number
+        btc24h: number
+        usd24h: number
+        status: string
+      }> = []
+
+      // Group contracts by customer/account
+      const accountsMap = new Map<string, {
+        id: string
+        name: string
+        contracts: any[]
+        totalHashrate: number
+      }>()
+
+      for (const contract of contractsData.contracts) {
+        if (contract.currency !== 'Bitcoin' && contract.currency !== 'bitcoin') continue
+
+        const accountKey = contract.customerId || contract.customer_id || 'unknown'
+        const accountName = contract.customerName || contract.name || contract.customer_id || 'Unknown Account'
+
+        if (!accountsMap.has(accountKey)) {
+          accountsMap.set(accountKey, {
+            id: accountKey,
+            name: accountName,
+            contracts: [],
+            totalHashrate: 0,
+          })
+        }
+
+        const account = accountsMap.get(accountKey)!
+        account.contracts.push(contract)
+
+        // Calculate hashrate from contract
+        const machineTH = contract.machineTH || contract.machine_th || contract.hashrate || 0
+        const numberOfMachines = contract.numberOfMachines || contract.number_of_machines || contract.machines || 1
+        const hashrateTH = machineTH * numberOfMachines
+        account.totalHashrate += hashrateTH
+      }
+
+      // Convert to mining accounts array
+      for (const [accountId, account] of accountsMap) {
+        // Try to get BTC earnings from contract or statistics (if available)
+        // For now, set to 0 as API may not provide 24h earnings
+        const btc24h = 0
+        const usd24h = btc24h * bitcoinPrice
+
+        miningAccounts.push({
+          id: accountId,
+          name: account.name,
+          hashrate: account.totalHashrate,
+          btc24h: btc24h,
+          usd24h: usd24h,
+          status: account.contracts.some((c: any) => (c.status === 'Active' || c.status === 'active')) ? 'active' : 'inactive',
+        })
+      }
+
+      return miningAccounts
+    } catch (error) {
+      console.warn('[Cockpit API] Failed to fetch mining accounts from API, falling back to database:', error)
+      // Fall through to database query
+    }
+  }
+
+  // Fallback to database query (may fail if tables don't exist)
   try {
-    // Optimized query: Get all Bitcoin contracts with their earnings in last 24h in a single query
     const accountsResult = await prismaProd.$queryRaw<Array<{
       id: string
       name: string
@@ -363,13 +603,8 @@ async function fetchMiningAccounts(bitcoinPrice: number): Promise<Array<{
     
     // Process accounts and calculate hashrate and USD 24h
     const miningAccounts = accountsResult.map((account) => {
-      // Calculate hashrate: machineTH * numberOfMachines (in TH/s)
       const hashrateTH = (account.machine_th || 0) * (account.number_of_machines || 0)
-      
-      // BTC 24h is already calculated in the query
       const btc24h = account.btc24h || 0
-      
-      // Calculate USD 24h: BTC 24h * Bitcoin price
       const usd24h = btc24h * bitcoinPrice
       
       return {
@@ -383,7 +618,11 @@ async function fetchMiningAccounts(bitcoinPrice: number): Promise<Array<{
     })
     
     return miningAccounts
-  } catch (error) {
+  } catch (error: any) {
+    // Expected error if database tables don't exist
+    if (error?.code === 'P2010' || error?.meta?.code === '42P01') {
+      return []
+    }
     console.error('[Cockpit API] Error fetching mining accounts:', error)
     return []
   }
@@ -469,30 +708,54 @@ export async function GET(request: NextRequest) {
       status: string
     }> = []
 
+    // Get API configuration for use throughout
+    const apiConfig = getHearstApiConfig()
+    let customers: any[] = []
+
+    // Fetch customers from API first (needed for API-based data fetching)
+    if (isHearstApiConfigured()) {
+      try {
+        customers = await fetchCustomers(apiConfig.baseUrl, apiConfig.headers)
+      } catch (error) {
+        console.warn('[Cockpit API] Error fetching customers, will use fallback methods:', error)
+      }
+    }
+
     // Fetch real-time global hashrate and total miners from external API (with fallback)
     try {
       const hashrateData = await fetchGlobalHashrateAndMiners()
       globalHashrate = hashrateData.globalHashrate || 0
       totalMiners = hashrateData.totalMiners || 0
+      // Try to get BTC production from API statistics if available
+      if (hashrateData.btc24h && hashrateData.btc24h > 0) {
+        btcProduction24h = hashrateData.btc24h
+      }
     } catch (error) {
       console.error('[Cockpit API] Error fetching global hashrate:', error)
       // Continue with default values (0)
     }
 
-    // Fetch theoretical hashrate from database (with fallback)
+    // Fetch theoretical hashrate from API (preferred) or database (fallback)
     try {
-      theoreticalData = await fetchTheoreticalHashrate()
+      theoreticalData = await fetchTheoreticalHashrate(
+        customers.length > 0 ? apiConfig : undefined,
+        customers.length > 0 ? customers : undefined
+      )
     } catch (error) {
       console.error('[Cockpit API] Error fetching theoretical hashrate:', error)
       // Continue with default values
     }
 
     // Fetch BTC production (24h) from database (with fallback)
+    // Note: This data is not available in Mining Operations API, using database only
     try {
-      btcProduction24h = await fetchBTCProduction24h()
+      btcProduction24h = await fetchBTCProduction24h(
+        customers.length > 0 ? apiConfig : undefined,
+        customers.length > 0 ? customers : undefined
+      )
     } catch (error) {
-      console.error('[Cockpit API] Error fetching BTC production:', error)
-      // Continue with default value (0)
+      // Expected if database tables don't exist - silently use 0
+      btcProduction24h = 0
     }
 
     // Fetch BTC production (monthly) from database (with fallback)
@@ -516,9 +779,13 @@ export async function GET(request: NextRequest) {
     const btcProduction24hUSD = btcProduction24h * bitcoinPrice
     const btcProductionMonthlyUSD = btcProductionMonthly * bitcoinPrice
 
-    // Fetch mining accounts summary (with fallback)
+    // Fetch mining accounts summary from API (preferred) or database (fallback)
     try {
-      miningAccounts = await fetchMiningAccounts(bitcoinPrice)
+      miningAccounts = await fetchMiningAccounts(
+        bitcoinPrice,
+        customers.length > 0 ? apiConfig : undefined,
+        customers.length > 0 ? customers : undefined
+      )
     } catch (error) {
       console.error('[Cockpit API] Error fetching mining accounts:', error)
       // Continue with empty array

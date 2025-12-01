@@ -239,3 +239,5 @@ async function addSampleWallets() {
 
 // Run
 addSampleWallets().catch(console.error);
+
+

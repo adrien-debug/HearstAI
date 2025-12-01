@@ -88,7 +88,11 @@ async function fetchEarningsData(timeframe: 'week' | 'month' | 'year'): Promise<
     
     console.log(`[Earnings Chart API] Earnings records found: ${result.length}`)
     return result || []
-  } catch (error) {
+  } catch (error: any) {
+    // Expected error if database tables don't exist - silently return empty array
+    if (error?.code === 'P2010' || error?.meta?.code === '42P01') {
+      return []
+    }
     console.error('[Earnings Chart API] Error fetching earnings data:', error)
     return []
   }
@@ -140,6 +144,11 @@ async function fetchBitcoinPricesForDates(dates: Date[], timeframe: 'week' | 'mo
         return date.toISOString().split('T')[0]
       })
       
+      if (dateStrings.length === 0) {
+        await pool.end()
+        return new Map()
+      }
+      
       const query = `
         SELECT date, "Bitcoin"
         FROM crypto_daily_prices
@@ -159,6 +168,11 @@ async function fetchBitcoinPricesForDates(dates: Date[], timeframe: 'week' | 'mo
         const date = d instanceof Date ? d : new Date(d)
         return date.toISOString().split('T')[0]
       })
+      
+      if (weekDates.length === 0) {
+        await pool.end()
+        return new Map()
+      }
       
       const query = `
         SELECT 
@@ -185,6 +199,11 @@ async function fetchBitcoinPricesForDates(dates: Date[], timeframe: 'week' | 'mo
         return firstDay.toISOString().split('T')[0]
       })
       
+      if (monthDates.length === 0) {
+        await pool.end()
+        return new Map()
+      }
+      
       const query = `
         SELECT 
           DATE_TRUNC('month', date)::date AS month_start,
@@ -206,7 +225,11 @@ async function fetchBitcoinPricesForDates(dates: Date[], timeframe: 'week' | 'mo
     await pool.end()
     console.log(`[Earnings Chart API] Fetched ${priceMap.size} Bitcoin prices`)
     return priceMap
-  } catch (error) {
+  } catch (error: any) {
+    // Expected error if database table doesn't exist or SQL syntax error - silently return empty map
+    if (error?.code === '42P01' || error?.code === '42601' || error?.message?.includes('does not exist') || error?.message?.includes('syntax error')) {
+      return new Map()
+    }
     console.error('[Earnings Chart API] Error fetching Bitcoin prices:', error)
     return new Map()
   }

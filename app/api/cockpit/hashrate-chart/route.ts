@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prismaProd } from '@/lib/db'
+import { getHearstApiConfig, isHearstApiConfigured } from '@/lib/hearst-api-config'
 
 export const dynamic = 'force-dynamic'
 
@@ -38,7 +39,11 @@ async function fetchRealTimeHashrate(): Promise<Array<{ date: Date; total_speed_
     
     console.log('[Hashrate Chart API] Real-time hashrate records found:', result.length)
     return result || []
-  } catch (error) {
+  } catch (error: any) {
+    // Expected error if database tables don't exist - silently return empty array
+    if (error?.code === 'P2010' || error?.meta?.code === '42P01') {
+      return []
+    }
     console.error('[Hashrate Chart API] Error fetching real-time hashrate:', error)
     return []
   }
@@ -80,40 +85,123 @@ async function fetchCurrentHashrate(): Promise<number> {
     }
     
     return 0
-  } catch (error) {
+  } catch (error: any) {
+    // Expected error if database tables don't exist - silently return 0
+    if (error?.code === 'P2010' || error?.meta?.code === '42P01') {
+      return 0
+    }
     console.error('[Hashrate Chart API] Error fetching current hashrate:', error)
     return 0
   }
 }
 
-// Helper function to fetch theoretical hashrate
+// Helper function to fetch customers from API
+async function fetchCustomers(apiConfig: { baseUrl: string; headers: HeadersInit }): Promise<any[]> {
+  try {
+    const customersUrl = `${apiConfig.baseUrl}/api/mining-operations/customers?limit=1000&pageNumber=1`
+    const customersResponse = await fetch(customersUrl, {
+      method: 'GET',
+      headers: apiConfig.headers,
+    })
+
+    if (!customersResponse.ok) {
+      if (customersResponse.status === 401 || customersResponse.status === 403) {
+        return []
+      }
+      return []
+    }
+
+    const customersData = await customersResponse.json()
+    return customersData.users || []
+  } catch (error) {
+    return []
+  }
+}
+
+// Helper function to fetch customer contracts from API
+async function fetchCustomerContracts(
+  apiConfig: { baseUrl: string; headers: HeadersInit },
+  customerId: string | number,
+  currency?: string
+): Promise<any[]> {
+  try {
+    const currencyParam = currency ? `&currency=${currency}` : ''
+    const contractsUrl = `${apiConfig.baseUrl}/api/mining-operations/customers/${customerId}/contracts?limit=1000&pageNumber=1${currencyParam}`
+    const contractsResponse = await fetch(contractsUrl, { method: 'GET', headers: apiConfig.headers })
+    if (!contractsResponse.ok) {
+      if (contractsResponse.status === 404) { return [] }
+      return []
+    }
+    const contractsData = await contractsResponse.json()
+    const contracts = contractsData.contracts || contractsData.data || []
+    return Array.isArray(contracts) ? contracts : []
+  } catch (error) {
+    return []
+  }
+}
+
+// Helper function to fetch theoretical hashrate from API (preferred) or database (fallback)
 async function fetchTheoreticalHashrate(): Promise<number> {
   try {
-    console.log('[Hashrate Chart API] Starting fetchTheoreticalHashrate...')
-    
-    // Query to calculate maximum possible hashrate from active contracts
+    // Try API first
+    const apiConfig = getHearstApiConfig()
+    if (isHearstApiConfigured()) {
+      try {
+        const customers = await fetchCustomers(apiConfig)
+        if (customers.length > 0) {
+          let totalTheoreticalHashrate = 0
+          
+          // Fetch contracts for all customers in parallel
+          const contractPromises = customers.map(async (customer: any) => {
+            if (!customer.id) return []
+            const contracts = await fetchCustomerContracts(apiConfig, customer.id, 'Bitcoin')
+            return contracts
+          })
+
+          const contractArrays = await Promise.all(contractPromises)
+          for (const contracts of contractArrays) {
+            for (const contract of contracts) {
+              if (contract.status === 'Active' || contract.status === 'active') {
+                const machineTH = contract.machineTH || contract.machine_th || contract.hashrate || 0
+                const numberOfMachines = contract.numberOfMachines || contract.number_of_machines || contract.machines || 1
+                if (machineTH > 0 && numberOfMachines > 0) {
+                  const hashratePH = (machineTH * numberOfMachines) / 1000.0
+                  totalTheoreticalHashrate += hashratePH
+                }
+              }
+            }
+          }
+          
+          if (totalTheoreticalHashrate > 0) {
+            return totalTheoreticalHashrate
+          }
+        }
+      } catch (error) {
+        // Fall through to database query
+      }
+    }
+
+    // Fallback to database
     const result = await prismaProd.$queryRaw<Array<{
-      active_contracts: number
-      total_machines: number
       theoretical_hashrate_ph: number
     }>>`
       SELECT 
-        COUNT(*)::int as active_contracts,
-        SUM("numberOfMachines")::int as total_machines,
-        SUM(("machineTH" * "numberOfMachines") / 1000.0)::float as theoretical_hashrate_ph
+        COALESCE(SUM(("machineTH" * "numberOfMachines") / 1000.0), 0)::float as theoretical_hashrate_ph
       FROM contract
       WHERE status = 'Active'
     `
     
     if (result && result.length > 0) {
-      const data = result[0]
-      console.log('[Hashrate Chart API] Theoretical hashrate:', data.theoretical_hashrate_ph)
-      return data.theoretical_hashrate_ph || 0
+      return result[0].theoretical_hashrate_ph || 0
     }
     
     return 0
-  } catch (error) {
-    console.error('[Hashrate Chart API] Error fetching theoretical hashrate:', error)
+  } catch (error: any) {
+    // Expected error if database tables don't exist - silently return 0
+    if (error?.code === 'P2010' || error?.meta?.code === '42P01') {
+      return 0
+    }
+    // Don't log expected errors
     return 0
   }
 }
