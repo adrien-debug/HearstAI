@@ -2,10 +2,18 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  // Next.js 14+ doesn't need experimental.appDir anymore
-  // experimental: {
-  //   appDir: true,
-  // },
+  
+  // TypeScript configuration
+  typescript: {
+    // Don't ignore build errors - we want to catch type errors in production
+    ignoreBuildErrors: false,
+  },
+  
+  // ESLint configuration
+  eslint: {
+    // Run ESLint during build (set to false only if you have a separate lint step)
+    ignoreDuringBuilds: false,
+  },
   
   // Environment variables that should be available on the client
   env: {

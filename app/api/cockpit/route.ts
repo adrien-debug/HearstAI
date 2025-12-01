@@ -51,10 +51,18 @@ async function fetchCustomers(hearstApiUrl: string, headers: HeadersInit): Promi
     
     // Log detailed error information for debugging
     if (customersResponse.status === 401 || customersResponse.status === 403) {
+      // Safely check if headers has x-api-token
+      let hasToken = false
+      if (headers instanceof Headers) {
+        hasToken = !!headers.get('x-api-token')
+      } else if (typeof headers === 'object' && headers !== null && !Array.isArray(headers)) {
+        hasToken = !!(headers as Record<string, string>)['x-api-token']
+      }
+      
       console.error('[Cockpit API] Authentication failed - Check API token:', {
         status: customersResponse.status,
         url: customersUrl,
-        hasToken: !!headers['x-api-token'],
+        hasToken,
         error: errorText.substring(0, 200) // Limit error text length
       })
     } else {

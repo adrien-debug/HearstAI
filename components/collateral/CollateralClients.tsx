@@ -36,19 +36,20 @@ export default function CollateralClients() {
         
         // Handle different response structures
         let loadedCustomers = []
-        if (Array.isArray(customersResponse)) {
-          loadedCustomers = customersResponse
-        } else if (customersResponse?.customers && Array.isArray(customersResponse.customers)) {
-          loadedCustomers = customersResponse.customers
-        } else if (customersResponse?.data && Array.isArray(customersResponse.data)) {
-          loadedCustomers = customersResponse.data
+        const response = customersResponse as any // Allow flexible response structure
+        if (Array.isArray(response)) {
+          loadedCustomers = response
+        } else if (response?.customers && Array.isArray(response.customers)) {
+          loadedCustomers = response.customers
+        } else if (response?.data && Array.isArray(response.data)) {
+          loadedCustomers = response.data
         }
         
         console.log('[CollateralClients] Loaded customers count:', loadedCustomers.length)
         console.log('[CollateralClients] Customers:', loadedCustomers)
         
         if (loadedCustomers.length === 0) {
-          console.warn('[CollateralClients] ⚠️ No customers found in response. Response structure:', customersResponse)
+          console.warn('[CollateralClients] ⚠️ No customers found in response. Response structure:', response)
         }
         
         setCustomers(loadedCustomers)

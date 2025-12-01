@@ -18,19 +18,16 @@ import { prisma } from '@/lib/db'
  *         schema:
  *           type: string
  *         description: Comma-separated list of wallet addresses
- *         example: "0x1234...,0xABCD..."
  *       - in: query
  *         name: chains
  *         schema:
  *           type: string
- *         description: Comma-separated list of chains (default: "eth")
- *         example: "eth,arb,base"
+ *         description: Comma-separated list of chains (default eth)
  *       - in: query
  *         name: protocols
  *         schema:
  *           type: string
  *         description: Comma-separated list of allowed protocols
- *         example: "morpho,aave"
  *       - in: query
  *         name: refresh
  *         schema:
