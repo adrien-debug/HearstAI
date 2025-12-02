@@ -6,12 +6,11 @@
   "scripts": {
     "dev": "next dev -p 6001",
     "dev:local": "./start-local-all.sh",
-    "build": "prisma generate && next build",
+    "build": "next build",
     "start": "next start",
     "start:backend": "cd backend && PORT=4000 node server.js",
     "start:frontend": "next dev -p 6001",
     "lint": "next lint",
-    "postinstall": "prisma generate",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
@@ -30,7 +29,6 @@
     "deploy:prod": "./scripts/deploy-production-safe.sh"
   },
   "dependencies": {
-    "@auth/prisma-adapter": "^2.4.0",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
@@ -47,8 +45,8 @@
     "dotenv": "^17.2.3",
     "google-auth-library": "^10.5.0",
     "googleapis": "^166.0.0",
+    "jsonwebtoken": "^9.0.2",
     "next": "^14.2.0",
-    "next-auth": "^4.24.0",
     "pg": "^8.16.3",
     "postcss": "^8.4.0",
     "react": "^18.3.0",
@@ -60,6 +58,7 @@
     "typescript": "^5.5.0"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-react": "^5.18.0",
     "eslint": "^8.57.0",

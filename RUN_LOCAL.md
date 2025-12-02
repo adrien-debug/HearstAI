@@ -260,3 +260,6 @@ Once running, access:
 - Verify environment variables in `.env.local`
 - Ensure PostgreSQL is running and accessible
 - Check that ports 6001 (and 4000 if using backend) are available
+
+
+

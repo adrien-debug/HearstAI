@@ -23,13 +23,8 @@ export default function DataAnalysisResultPage() {
       setLoading(true)
       setError(null)
       
-      const response = await fetch(`/api/data-analysis/${encodeURIComponent(identifier)}`)
-      const result = await response.json()
-      
-      if (!response.ok) {
-        throw new Error(result.error || 'Erreur lors de l\'analyse')
-      }
-      
+      const { dataAnalysisAPI } = await import('@/lib/api')
+      const result = await dataAnalysisAPI.analyze(identifier)
       setData(result)
     } catch (err: any) {
       setError(err.message || 'Erreur lors du chargement des données')

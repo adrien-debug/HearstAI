@@ -1,25 +1,38 @@
-// API Client for Next.js API Routes
-// Replaces the old frontend/js/api.js
+// API Client for NestJS Backend
+// All API calls go directly to the NestJS backend (port 4000)
 
-// Helper pour obtenir l'URL de base de l'API
-// Next.js injecte NEXT_PUBLIC_* dans le code au moment du build
-// Priority: Always use Next.js API routes (port 6001) for Next.js endpoints
-// The NestJS backend (port 4000) should only be used for specific backend-only endpoints
+// Helper pour obtenir l'URL de base de l'API NestJS
 const getBaseUrl = () => {
-  // En client-side, TOUJOURS utiliser les routes Next.js API (port 6001)
-  // Ne pas utiliser NEXT_PUBLIC_API_URL si elle pointe vers le backend NestJS (port 4000)
-  // Cela garantit que les appels API utilisent les routes Next.js, pas le backend NestJS
+  // Use NEXT_PUBLIC_API_URL if set, otherwise default to localhost:4000 for development
+  // In production, this should be set to the production backend URL
   if (typeof window !== 'undefined') {
-    // Toujours utiliser l'URL absolue basée sur l'origine actuelle (Next.js app)
-    return `${window.location.origin}/api`
+    // Client-side: use environment variable or default to localhost:4000
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'
+    return `${apiUrl}/api`
   }
   
-  // Côté serveur, utiliser la route relative Next.js
-  return '/api'
-  
-  // Note: Si vous avez besoin d'appeler le backend NestJS (port 4000) pour certaines routes spécifiques,
-  // créez une fonction séparée getBackendUrl() et utilisez-la uniquement pour ces routes.
-  // Pour les routes Next.js comme /api/customers, /api/collateral, etc., utilisez toujours getBaseUrl()
+  // Server-side: use environment variable or default to localhost:4000
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || process.env.BACKEND_URL || 'http://localhost:4000'
+  return `${apiUrl}/api`
+}
+
+// Helper to get auth token (client-side only)
+function getAuthToken(): string | null {
+  if (typeof window === 'undefined') return null;
+  return localStorage.getItem('auth_token');
+}
+
+// Helper to get user ID (client-side only)
+function getUserId(): string | null {
+  if (typeof window === 'undefined') return null;
+  const userStr = localStorage.getItem('auth_user');
+  if (!userStr) return null;
+  try {
+    const user = JSON.parse(userStr);
+    return user.id;
+  } catch {
+    return null;
+  }
 }
 
 export async function fetchAPI<T>(
@@ -40,13 +53,21 @@ export async function fetchAPI<T>(
     })
   }
   
+  // Get auth token if available (client-side)
+  const token = getAuthToken();
+  const headers: HeadersInit = {
+    'Content-Type': 'application/json',
+    ...options?.headers,
+  };
+  
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  
   try {
     const response = await fetch(url, {
       ...options,
-      headers: {
-        'Content-Type': 'application/json',
-        ...options?.headers,
-      },
+      headers,
     })
 
     if (!response.ok) {
@@ -85,6 +106,55 @@ export async function fetchAPI<T>(
     // Re-lancer les autres erreurs telles quelles
     throw error
   }
+}
+
+// File upload helper for portfolio images
+export async function uploadPortfolioImage(
+  file: File,
+  sectionId: string,
+  metadata?: {
+    title?: string;
+    description?: string;
+    alt?: string;
+    category?: string;
+  }
+): Promise<any> {
+  const userId = getUserId();
+  if (!userId) {
+    throw new Error('User not authenticated');
+  }
+
+  const token = getAuthToken();
+  if (!token) {
+    throw new Error('Authentication token not found');
+  }
+
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('sectionId', sectionId);
+  if (metadata?.title) formData.append('title', metadata.title);
+  if (metadata?.description) formData.append('description', metadata.description);
+  if (metadata?.alt) formData.append('alt', metadata.alt);
+  if (metadata?.category) formData.append('category', metadata.category);
+
+  const baseUrl = getBaseUrl();
+  const url = `${baseUrl}/portfolio/upload?userId=${userId}`;
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      // Don't set Content-Type for FormData, browser will set it with boundary
+    },
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ error: 'Upload failed' }));
+    throw new Error(error.error || `HTTP error! status: ${response.status}`);
+  }
+
+  return response.json();
 }
 
 // Projects API
@@ -172,6 +242,28 @@ export const customersAPI = {
   delete: (id: string) => fetchAPI(`/customers/${id}`, { method: 'DELETE' }),
 }
 
+// Portfolio API
+export const portfolioAPI = {
+  getSections: (userId: string) => fetchAPI<{ sections: any[] }>(`/portfolio/sections?userId=${userId}`),
+  getSectionById: (id: string, userId: string) => fetchAPI<{ section: any }>(`/portfolio/sections/${id}?userId=${userId}`),
+  createSection: (userId: string, data: any) => fetchAPI<{ section: any }>(`/portfolio/sections?userId=${userId}`, { method: 'POST', body: JSON.stringify(data) }),
+  updateSection: (id: string, userId: string, data: any) => fetchAPI<{ section: any }>(`/portfolio/sections/${id}?userId=${userId}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteSection: (id: string, userId: string) => fetchAPI(`/portfolio/sections/${id}?userId=${userId}`, { method: 'DELETE' }),
+  getImages: (sectionId: string, userId: string) => fetchAPI<{ images: any[] }>(`/portfolio/images?sectionId=${sectionId}&userId=${userId}`),
+  getImageById: (id: string, userId: string) => fetchAPI<{ image: any }>(`/portfolio/images/${id}?userId=${userId}`),
+  createImage: (userId: string, data: any) => fetchAPI<{ image: any }>(`/portfolio/images?userId=${userId}`, { method: 'POST', body: JSON.stringify(data) }),
+  updateImage: (id: string, userId: string, data: any) => fetchAPI<{ image: any }>(`/portfolio/images/${id}?userId=${userId}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteImage: (id: string, userId: string) => fetchAPI(`/portfolio/images/${id}?userId=${userId}`, { method: 'DELETE' }),
+  uploadImage: uploadPortfolioImage,
+}
+
+// Cockpit API
+export const cockpitAPI = {
+  getData: () => fetchAPI<any>('/cockpit'),
+  getEarningsChart: (timeframe?: string) => fetchAPI<any>(`/cockpit/earnings-chart${timeframe ? `?timeframe=${timeframe}` : ''}`),
+  getHashrateChart: (timeframe?: string) => fetchAPI<any>(`/cockpit/hashrate-chart${timeframe ? `?timeframe=${timeframe}` : ''}`),
+}
+
 // DeBank API Health Check
 export const debankAPI = {
   health: () => fetchAPI<{ 
@@ -182,11 +274,6 @@ export const debankAPI = {
     error?: string
     instructions?: string[]
   }>('/debank/health'),
-}
-
-// Cockpit API
-export const cockpitAPI = {
-  getData: () => fetchAPI<any>('/cockpit'),
 }
 
 // Fireblocks API
@@ -204,4 +291,14 @@ export const fireblocksAPI = {
       body: JSON.stringify(transactionRequest),
     })
   },
+}
+
+// Data Analysis API
+export const dataAnalysisAPI = {
+  analyze: (identifier: string) => fetchAPI<any>(`/data-analysis/${identifier}`),
+}
+
+// Users API
+export const usersAPI = {
+  initUser: () => fetchAPI<any>('/init-user'),
 }

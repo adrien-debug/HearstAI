@@ -1,20 +1,25 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { useSession, signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import Icon from './Icon'
+import { getSession, logout } from '@/lib/auth-client'
 
 export default function ProfileDropdown() {
-  const { data: session } = useSession()
   const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
+  const [session, setSession] = useState<{ user: { name?: string } } | null>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  const handleLogout = async () => {
-    await signOut({ redirect: false })
-    router.push('/auth/signin')
+  useEffect(() => {
+    // Get session from localStorage
+    const currentSession = getSession()
+    setSession(currentSession)
+  }, [])
+
+  const handleLogout = () => {
+    logout()
   }
 
   // Fermer le menu quand on clique en dehors

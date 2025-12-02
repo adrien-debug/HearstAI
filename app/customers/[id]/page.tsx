@@ -37,8 +37,8 @@ export default function CustomerDetailPage() {
   const loadFireblocksInfo = async () => {
     try {
       setFireblocksLoading(true)
-      const response = await fetch(`/api/customers/${customerId}/fireblocks`)
-      const data = await response.json()
+      const { fetchAPI } = await import('@/lib/api')
+      const data = await fetchAPI(`/customers/${customerId}/fireblocks`)
       setFireblocksInfo(data)
       
       if (data.fireblocks?.vault?.id) {
@@ -57,18 +57,17 @@ export default function CustomerDetailPage() {
   const handleAssociateFireblocks = async () => {
     try {
       setFireblocksLoading(true)
-      const response = await fetch(`/api/customers/${customerId}/fireblocks`, {
+      const { fetchAPI } = await import('@/lib/api')
+      const data = await fetchAPI(`/customers/${customerId}/fireblocks`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           vaultId: selectedVaultId || undefined,
           walletId: selectedWalletId || undefined,
         }),
       })
-
-      if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.error || 'Erreur lors de l\'association')
+      
+      if (data.error) {
+        throw new Error(data.error || 'Erreur lors de l\'association')
       }
 
       await loadFireblocksInfo()

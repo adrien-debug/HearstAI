@@ -92,9 +92,8 @@ export default function CockpitProduction() {
   useEffect(() => {
     const loadEarningsChartData = async () => {
       try {
-        const response = await fetch(`/api/cockpit/earnings-chart?timeframe=year`)
-        if (response.ok) {
-          const chartData = await response.json()
+        const chartData = await cockpitAPI.getEarningsChart('year')
+        if (chartData) {
           // Process and set chart data
           setEarningsChartData({
             labels: chartData.dates || [],
@@ -114,9 +113,6 @@ export default function CockpitProduction() {
               },
             ],
           })
-        } else {
-          console.error('Failed to load earnings chart data')
-          setEarningsChartData(null)
         }
       } catch (err) {
         console.error('Failed to load earnings chart data:', err)

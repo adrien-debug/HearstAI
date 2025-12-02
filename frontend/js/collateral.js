@@ -438,7 +438,9 @@ async function loadCollateralPositions() {
         const { WATCHED_WALLETS } = await import('../src/config/wallets.js');
         const wallets = WATCHED_WALLETS;
 
-        const response = await fetch(`/api/collateral?wallets=${wallets.join(',')}&chains=eth`);
+        // Use backend API directly
+        const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+        const response = await fetch(`${backendUrl}/api/collateral?wallets=${wallets.join(',')}&chains=eth`);
         
         if (!response.ok) {
             throw new Error(`Erreur API: ${response.status} ${response.statusText}`);

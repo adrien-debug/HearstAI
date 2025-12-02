@@ -226,7 +226,8 @@ export default function MyEarthAI() {
           setTimeout(() => reject(new Error('Stats API timeout')), 3000)
         )
         
-        const statsPromise = fetch('/api/stats').then(res => res.json())
+        const { statsAPI } = await import('@/lib/api')
+        const statsPromise = statsAPI.getStats()
         const response = await Promise.race([statsPromise, timeoutPromise]) as any
         
         if (!isMounted || abortController.signal.aborted) return

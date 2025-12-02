@@ -1,9 +1,9 @@
 'use client'
 
-import { SessionProvider } from 'next-auth/react'
-
+// No longer using NextAuth SessionProvider
+// Authentication is now handled via JWT tokens stored in localStorage
 export default function Providers({ children }: { children: React.ReactNode }) {
-  return <SessionProvider>{children}</SessionProvider>
+  return <>{children}</>
 }
 
 

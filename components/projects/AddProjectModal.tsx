@@ -82,8 +82,18 @@ export default function AddProjectModal({ onClose, onSuccess }: AddProjectModalP
         formDataToSend.append('image', imageFile)
       }
 
-      const response = await fetch('/api/projects', {
+      // For file uploads, we need to use fetch directly with the backend URL
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'
+      const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null
+      
+      const headers: HeadersInit = {}
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`
+      }
+      
+      const response = await fetch(`${backendUrl}/api/projects`, {
         method: 'POST',
+        headers,
         body: formDataToSend,
       })
 

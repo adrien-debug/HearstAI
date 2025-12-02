@@ -24,31 +24,8 @@ export default function DebankStatusIndicator() {
   useEffect(() => {
     const checkStatus = async () => {
       try {
-        // Use direct fetch to avoid routing issues
-        const apiUrl = typeof window !== 'undefined' 
-          ? `${window.location.origin}/api/debank/health` 
-          : '/api/debank/health'
-        
-        console.log('[DebankStatusIndicator] Checking health at:', apiUrl)
-        
-        // Try direct fetch first
-        const response = await fetch(apiUrl, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          cache: 'no-store',
-        })
-        
-        console.log('[DebankStatusIndicator] Response status:', response.status, response.statusText)
-        
-        if (!response.ok) {
-          const errorText = await response.text().catch(() => '')
-          console.error('[DebankStatusIndicator] Response error:', errorText)
-          throw new Error(`HTTP ${response.status}: ${response.statusText} - ${errorText}`)
-        }
-        
-        const health = await response.json()
+        console.log('[DebankStatusIndicator] Checking health...')
+        const health = await debankAPI.health()
         console.log('[DebankStatusIndicator] Health check response:', health)
         setStatus(health)
       } catch (error: any) {
@@ -160,5 +137,8 @@ export default function DebankStatusIndicator() {
     </div>
   )
 }
+
+
+
 
 

@@ -1,8 +1,8 @@
 'use client';
 
-import { signIn } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { login } from '@/lib/auth-client';
 
 export default function SignInPage() {
   const router = useRouter();
@@ -36,73 +36,54 @@ export default function SignInPage() {
     try {
       console.log('[SignIn] Tentative de connexion avec:', { email });
 
-      const result = await signIn('credentials', {
-        email,
-        password,
-        redirect: false,
-        callbackUrl: '/',
-      });
+      const session = await login(email, password);
 
-      console.log('[SignIn] Résultat:', result);
+      console.log('[SignIn] Connexion réussie');
 
-      if (result?.error) {
-        console.error('[SignIn] Erreur:', result.error);
-        setError(`Erreur: ${result.error}`);
-      } else if (result?.ok) {
-        console.log('[SignIn] Connexion réussie');
-        console.log('Testing');
+      // Get callbackUrl from URL or use '/' as default
+      const urlParams = new URLSearchParams(window.location.search);
+      let callbackUrl = urlParams.get('callbackUrl');
 
-        // Redirection normale après connexion
-        console.log('[SignIn] Login successful, redirecting...');
-
-        // Get callbackUrl from URL or use '/' as default
-        const urlParams = new URLSearchParams(window.location.search);
-        let callbackUrl = urlParams.get('callbackUrl');
-
-        // If callbackUrl is null or empty, use '/'
-        if (!callbackUrl || callbackUrl.trim() === '') {
-          callbackUrl = '/';
-        } else {
-          try {
-            if (callbackUrl.startsWith('%')) {
-              callbackUrl = decodeURIComponent(callbackUrl);
-            } else {
-              callbackUrl = decodeURIComponent(callbackUrl);
-            }
-          } catch (e) {
-            console.warn('[SignIn] Error decoding callbackUrl, using /:', e);
-            callbackUrl = '/';
-          }
-        }
-
-        // FORCE '/' if callbackUrl points to /auth/signin (avoid loops)
-        if (
-          callbackUrl === '/auth/signin' ||
-          callbackUrl.startsWith('/auth/signin?') ||
-          callbackUrl.includes('/auth/signin')
-        ) {
-          console.warn(
-            '[SignIn] ⚠️ CallbackUrl points to /auth/signin, forcing to /'
-          );
-          callbackUrl = '/';
-        }
-
-        // Ensure callbackUrl is a valid relative URL
-        if (!callbackUrl.startsWith('/')) {
-          console.warn(
-            '[SignIn] ⚠️ Invalid callbackUrl (does not start with /), forcing to /'
-          );
-          callbackUrl = '/';
-        }
-
-        console.log('[SignIn] Redirecting to:', callbackUrl);
-
-        // Simple redirect
-        router.push(callbackUrl);
+      // If callbackUrl is null or empty, use '/'
+      if (!callbackUrl || callbackUrl.trim() === '') {
+        callbackUrl = '/';
       } else {
-        console.warn('[SignIn] Résultat inattendu:', result);
-        setError('Une erreur est survenue lors de la connexion');
+        try {
+          if (callbackUrl.startsWith('%')) {
+            callbackUrl = decodeURIComponent(callbackUrl);
+          } else {
+            callbackUrl = decodeURIComponent(callbackUrl);
+          }
+        } catch (e) {
+          console.warn('[SignIn] Error decoding callbackUrl, using /:', e);
+          callbackUrl = '/';
+        }
       }
+
+      // FORCE '/' if callbackUrl points to /auth/signin (avoid loops)
+      if (
+        callbackUrl === '/auth/signin' ||
+        callbackUrl.startsWith('/auth/signin?') ||
+        callbackUrl.includes('/auth/signin')
+      ) {
+        console.warn(
+          '[SignIn] ⚠️ CallbackUrl points to /auth/signin, forcing to /'
+        );
+        callbackUrl = '/';
+      }
+
+      // Ensure callbackUrl is a valid relative URL
+      if (!callbackUrl.startsWith('/')) {
+        console.warn(
+          '[SignIn] ⚠️ Invalid callbackUrl (does not start with /), forcing to /'
+        );
+        callbackUrl = '/';
+      }
+
+      console.log('[SignIn] Redirecting to:', callbackUrl);
+
+      // Simple redirect
+      router.push(callbackUrl);
     } catch (err) {
       console.error('[SignIn] Exception:', err);
       setError(

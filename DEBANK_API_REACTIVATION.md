@@ -174,3 +174,6 @@ For issues or questions:
 2. Review browser console for error messages
 3. Verify API key configuration
 4. Test health endpoint: `/api/debank/health`
+
+
+

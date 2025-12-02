@@ -98,8 +98,18 @@ export default function EditProjectModal({ project, onClose, onSuccess }: EditPr
         formDataToSend.append('status', formData.status)
         formDataToSend.append('image', imageFile)
 
-        const response = await fetch(`/api/projects/${project.id}`, {
+        // For file uploads, we need to use fetch directly with the backend URL
+        const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'
+        const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null
+        
+        const headers: HeadersInit = {}
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`
+        }
+        
+        const response = await fetch(`${backendUrl}/api/projects/${project.id}`, {
           method: 'PUT',
+          headers,
           body: formDataToSend,
         })
 
@@ -116,19 +126,8 @@ export default function EditProjectModal({ project, onClose, onSuccess }: EditPr
           updateData.metadata = JSON.stringify(metadata)
         }
 
-        // Appel direct à l'API pour avoir un meilleur contrôle
-        const response = await fetch(`/api/projects/${project.id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(updateData),
-        })
-
-        if (!response.ok) {
-          const errorData = await response.json()
-          throw new Error(errorData.error || 'Échec de la mise à jour du projet')
-        }
+        // Use projectsAPI helper
+        await projectsAPI.update(project.id, updateData)
       }
 
       onSuccess()

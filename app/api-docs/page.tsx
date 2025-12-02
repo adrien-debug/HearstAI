@@ -12,8 +12,9 @@ export default function ApiDocsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch the Swagger spec
-    fetch('/api/swagger.json')
+    // Fetch the Swagger spec from backend
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'
+    fetch(`${backendUrl}/api/docs-json`)
       .then((res) => res.json())
       .then((data) => {
         setSpec(data);
@@ -57,5 +58,8 @@ export default function ApiDocsPage() {
     </div>
   );
 }
+
+
+
 
 

@@ -115,9 +115,8 @@ export default function CockpitDashboard() {
   useEffect(() => {
     const loadHashrateChartData = async () => {
       try {
-        const response = await fetch('/api/cockpit/hashrate-chart')
-        if (response.ok) {
-          const chartData = await response.json()
+        const chartData = await cockpitAPI.getHashrateChart()
+        if (chartData) {
           
           // Set chart data
           setHashrateChartData({
@@ -162,10 +161,6 @@ export default function CockpitDashboard() {
               theoretical: chartData.stats.theoretical || 0,
             })
           }
-        } else {
-          console.error('Failed to fetch hashrate chart data:', response.status)
-          // Fallback to empty data
-          setHashrateChartData(null)
         }
       } catch (err) {
         console.error('Failed to load hashrate chart data:', err)
@@ -182,13 +177,9 @@ export default function CockpitDashboard() {
   // Load earnings chart data
   useEffect(() => {
     const loadEarningsChartData = async () => {
-      // TODO: Replace with actual API endpoint for earnings chart data
-      // Expected format: { dates: string[], btcEarnings: number[], target: number[] }
       try {
-        // Placeholder - will be replaced with actual API call
-        const response = await fetch(`/api/cockpit/earnings-chart?timeframe=${earningsTimeframe}`)
-        if (response.ok) {
-          const chartData = await response.json()
+        const chartData = await cockpitAPI.getEarningsChart(earningsTimeframe)
+        if (chartData) {
           // Process and set chart data
           setEarningsChartData({
             labels: chartData.dates || [],
