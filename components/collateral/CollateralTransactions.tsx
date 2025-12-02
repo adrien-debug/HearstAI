@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { collateralAPI } from '@/lib/api'
-import { collectAllTransactions, formatRelativeDate, truncateHash } from './collateralUtils'
+import { collectAllTransactions, formatRelativeDate, truncateHash, formatCurrency } from './collateralUtils'
 import type { Client } from './collateralUtils'
 import Icon from '@/components/Icon'
 import './Collateral.css'
@@ -120,7 +120,7 @@ export default function CollateralTransactions() {
               </div>
               <div className="premium-stat-label">Total Supply</div>
             </div>
-            <div className="premium-stat-value premium-stat-value-green">${(totalSupply / 1000000).toFixed(2)}M</div>
+            <div className="premium-stat-value premium-stat-value-green">{formatCurrency(totalSupply)}</div>
             <div className="premium-stat-footer">
               <span className="premium-stat-description">Deposited</span>
             </div>
@@ -132,7 +132,7 @@ export default function CollateralTransactions() {
               </div>
               <div className="premium-stat-label">Total Borrow</div>
             </div>
-            <div className="premium-stat-value">${(totalBorrow / 1000).toFixed(0)}K</div>
+            <div className="premium-stat-value">{formatCurrency(totalBorrow)}</div>
             <div className="premium-stat-footer">
               <span className="premium-stat-description">Borrowed</span>
             </div>

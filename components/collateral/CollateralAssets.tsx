@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { collateralAPI } from '@/lib/api'
-import { collectAllAssets, computeGlobalMetrics } from './collateralUtils'
+import { collectAllAssets, computeGlobalMetrics, formatCurrency } from './collateralUtils'
 import type { Client } from './collateralUtils'
 import Icon from '@/components/Icon'
 import './Collateral.css'
@@ -115,7 +115,7 @@ export default function CollateralAssets() {
               </div>
               <div className="premium-stat-label">Total Assets Value</div>
             </div>
-            <div className="premium-stat-value premium-stat-value-green">${(totalValue / 1000000).toFixed(2)}M</div>
+            <div className="premium-stat-value premium-stat-value-green">{formatCurrency(totalValue)}</div>
             <div className="premium-stat-footer">
               <span className="premium-stat-description">All collateral assets</span>
             </div>

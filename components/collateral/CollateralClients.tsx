@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { collateralAPI, customersAPI } from '@/lib/api'
 import AddClientModal from './AddClientModal'
 import ClientDetailModal from './ClientDetailModal'
-import { computeClientMetrics, computeGlobalMetrics } from './collateralUtils'
+import { computeClientMetrics, computeGlobalMetrics, formatCurrency } from './collateralUtils'
 import type { Client } from './collateralUtils'
 import Icon from '@/components/Icon'
 import DebankStatusIndicator from './DebankStatusIndicator'
@@ -200,7 +200,7 @@ export default function CollateralClients() {
               </div>
               <div className="premium-stat-label">Total Collateral</div>
             </div>
-            <div className="premium-stat-value premium-stat-value-green">${(totalCollateral / 1000000).toFixed(2)}M</div>
+            <div className="premium-stat-value premium-stat-value-green">{formatCurrency(totalCollateral)}</div>
             <div className="premium-stat-footer">
               <span className="premium-stat-description">All clients collateral</span>
             </div>
@@ -212,7 +212,7 @@ export default function CollateralClients() {
               </div>
               <div className="premium-stat-label">Total Debt</div>
             </div>
-            <div className="premium-stat-value">${(totalDebt / 1000).toFixed(0)}K</div>
+            <div className="premium-stat-value">{formatCurrency(totalDebt)}</div>
             <div className="premium-stat-footer">
               <span className="premium-stat-description">All clients debt</span>
             </div>

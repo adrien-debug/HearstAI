@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { collateralAPI } from '@/lib/api'
-import { computeGlobalMetrics, computeProtocolBreakdown, computeAssetBreakdown } from './collateralUtils'
+import { computeGlobalMetrics, computeProtocolBreakdown, computeAssetBreakdown, formatCurrency } from './collateralUtils'
 import type { Client } from './collateralUtils'
 import Icon from '@/components/Icon'
 import DebankStatusIndicator from './DebankStatusIndicator'
@@ -106,7 +106,7 @@ export default function CollateralAnalytics() {
               </div>
               <div className="premium-stat-label">Total Deposits</div>
             </div>
-            <div className="premium-stat-value premium-stat-value-green">${(totalDeposits / 1000000).toFixed(2)}M</div>
+            <div className="premium-stat-value premium-stat-value-green">{formatCurrency(totalDeposits)}</div>
             <div className="premium-stat-footer">
               <span className="premium-stat-description">All time deposits</span>
             </div>
@@ -118,7 +118,7 @@ export default function CollateralAnalytics() {
               </div>
               <div className="premium-stat-label">Total Withdrawals</div>
             </div>
-            <div className="premium-stat-value">${(totalWithdrawals / 1000).toFixed(0)}K</div>
+            <div className="premium-stat-value">{formatCurrency(totalWithdrawals)}</div>
             <div className="premium-stat-footer">
               <span className="premium-stat-description">All time withdrawals</span>
             </div>
@@ -130,7 +130,7 @@ export default function CollateralAnalytics() {
               </div>
               <div className="premium-stat-label">Interest Earned</div>
             </div>
-            <div className="premium-stat-value">${(totalInterestEarned / 1000).toFixed(0)}K</div>
+            <div className="premium-stat-value">{formatCurrency(totalInterestEarned)}</div>
             <div className="premium-stat-footer">
               <span className="premium-stat-description">Total interest</span>
             </div>

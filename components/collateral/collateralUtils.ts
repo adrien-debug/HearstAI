@@ -357,3 +357,19 @@ export function truncateHash(hash: string | null): string {
   return `${hash.slice(0, 6)}...${hash.slice(-4)}`
 }
 
+/**
+ * Formate un montant en devise USD de manière lisible
+ * - >= 1M: "$X.XXM" (ex: "$1.03M")
+ * - >= 1K: "$X.XXK" (ex: "$1.23K")
+ * - < 1K: "$X.XX" (ex: "$123.45")
+ */
+export function formatCurrency(amount: number): string {
+  if (amount >= 1000000) {
+    return `$${(amount / 1000000).toFixed(2)}M`
+  } else if (amount >= 1000) {
+    return `$${(amount / 1000).toFixed(2)}K`
+  } else {
+    return `$${amount.toFixed(2)}`
+  }
+}
+
