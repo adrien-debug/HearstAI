@@ -85,8 +85,24 @@ export async function login(email: string, password: string): Promise<AuthSessio
   setUser(session.user);
 
   // Set cookie for server-side access
+  // Use secure cookie in production, SameSite=Lax for cross-site compatibility
   if (typeof document !== 'undefined') {
-    document.cookie = `auth_token=${session.accessToken}; path=/; max-age=${30 * 24 * 60 * 60}; SameSite=Lax`;
+    const isSecure = typeof window !== 'undefined' && window.location.protocol === 'https:';
+    const cookieOptions = [
+      `auth_token=${session.accessToken}`,
+      'path=/',
+      `max-age=${30 * 24 * 60 * 60}`, // 30 days
+      'SameSite=Lax',
+      ...(isSecure ? ['Secure'] : [])
+    ].join('; ');
+    
+    document.cookie = cookieOptions;
+    
+    // Verify cookie was set (for debugging)
+    const cookieSet = document.cookie.includes('auth_token=');
+    if (!cookieSet) {
+      console.warn('[Auth] Cookie may not have been set properly');
+    }
   }
 
   return session;
@@ -115,6 +131,26 @@ export function getSession(): AuthSession | null {
 // Check if user is authenticated
 export function isAuthenticated(): boolean {
   return !!getToken() && !!getUser();
+}
+
+// Sync cookie from localStorage - ensures cookie is always available for middleware
+export function syncCookieFromStorage(): void {
+  if (typeof window === 'undefined' || typeof document === 'undefined') return;
+  
+  const token = getToken();
+  if (token) {
+    // Ensure cookie is set from localStorage
+    const isSecure = window.location.protocol === 'https:';
+    const cookieOptions = [
+      `auth_token=${token}`,
+      'path=/',
+      `max-age=${30 * 24 * 60 * 60}`, // 30 days
+      'SameSite=Lax',
+      ...(isSecure ? ['Secure'] : [])
+    ].join('; ');
+    
+    document.cookie = cookieOptions;
+  }
 }
 
 // Fetch with authentication

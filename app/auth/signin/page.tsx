@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { login } from '@/lib/auth-client';
+import { login, isAuthenticated } from '@/lib/auth-client';
 
 export default function SignInPage() {
   const router = useRouter();
@@ -10,6 +10,37 @@ export default function SignInPage() {
   const [password, setPassword] = useState('admin');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Check if user is already authenticated and redirect
+  useEffect(() => {
+    if (isAuthenticated()) {
+      const urlParams = new URLSearchParams(window.location.search);
+      let callbackUrl = urlParams.get('callbackUrl') || '/';
+      
+      // Decode callbackUrl if needed
+      try {
+        if (callbackUrl.startsWith('%')) {
+          callbackUrl = decodeURIComponent(callbackUrl);
+        } else {
+          callbackUrl = decodeURIComponent(callbackUrl);
+        }
+      } catch (e) {
+        callbackUrl = '/';
+      }
+
+      // Prevent redirect loops
+      if (callbackUrl === '/auth/signin' || callbackUrl.startsWith('/auth/signin')) {
+        callbackUrl = '/';
+      }
+
+      if (!callbackUrl.startsWith('/')) {
+        callbackUrl = '/';
+      }
+
+      console.log('[SignIn] User already authenticated, redirecting to:', callbackUrl);
+      window.location.href = callbackUrl;
+    }
+  }, []);
 
   // Désactiver le scroll automatique de Next.js pour éviter les warnings
   useEffect(() => {
@@ -81,8 +112,9 @@ export default function SignInPage() {
 
       console.log('[SignIn] Redirecting to:', callbackUrl);
 
-      // Simple redirect
-      router.push(callbackUrl);
+      // Use window.location.href instead of router.push to force full page reload
+      // This ensures the cookie is available to the middleware
+      window.location.href = callbackUrl;
     } catch (err) {
       console.error('[SignIn] Exception:', err);
       setError(

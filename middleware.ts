@@ -34,6 +34,22 @@ export async function middleware(request: NextRequest) {
         return NextResponse.next()
       }
       
+      // Check if this is a client-side navigation
+      // For client-side navigations, allow them to proceed - the client-side check in LayoutWrapper will handle authentication
+      // This prevents the flash of login page during navigation
+      const isClientNavigation = 
+        request.headers.get('sec-fetch-mode') === 'navigate' ||
+        request.headers.get('sec-fetch-mode') === 'same-origin' ||
+        (referer && !referer.includes('/auth/signin') && referer.includes(request.nextUrl.origin))
+      
+      // For client-side navigations from within the app, let the client handle auth
+      // This prevents redirect loops and flashing
+      if (isClientNavigation) {
+        // Allow the request to proceed - LayoutWrapper will handle auth check on client side
+        return NextResponse.next()
+      }
+      
+      // For direct navigation (typing URL, refresh, etc.), redirect to login
       const signInUrl = new URL('/auth/signin', request.url)
       signInUrl.searchParams.set('callbackUrl', pathname)
       console.log('[Middleware] Redirection vers /auth/signin depuis:', pathname)
