@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { collateralAPI, customersAPI } from '@/lib/api'
 import AddClientModal from './AddClientModal'
 import ClientDetailModal from './ClientDetailModal'
@@ -18,6 +18,7 @@ export default function CollateralClients() {
   const [refreshing, setRefreshing] = useState(false)
   const [selectedCustomer, setSelectedCustomer] = useState<any>(null)
   const [showDetailModal, setShowDetailModal] = useState(false)
+  const hasLoadedRef = useRef(false)
 
   const loadData = async (refresh = false) => {
     try {
@@ -105,10 +106,18 @@ export default function CollateralClients() {
   }
 
   useEffect(() => {
+    // Prevent duplicate calls from React StrictMode
+    if (hasLoadedRef.current) {
+      // Set up interval only, don't call loadData again
+      const interval = setInterval(() => loadData(true), 300000)
+      return () => clearInterval(interval)
+    }
+    hasLoadedRef.current = true
+
     loadData()
     
-    // Auto-refresh every 60 seconds
-    const interval = setInterval(() => loadData(true), 60000)
+    // Auto-refresh every 5 minutes
+    const interval = setInterval(() => loadData(true), 300000)
     return () => clearInterval(interval)
   }, [])
 

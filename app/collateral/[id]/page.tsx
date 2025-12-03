@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { collateralAPI, customersAPI } from '@/lib/api'
 import { computeClientMetrics } from '@/components/collateral/collateralUtils'
@@ -20,9 +20,17 @@ export default function ClientViewPage() {
   const [showEditModal, setShowEditModal] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const hasLoadedForClientIdRef = useRef<string | null>(null)
 
   useEffect(() => {
+    // Prevent duplicate calls from React StrictMode
+    // Only load if we haven't loaded for this clientId yet
+    if (hasLoadedForClientIdRef.current === clientId) {
+      return
+    }
+    
     if (clientId) {
+      hasLoadedForClientIdRef.current = clientId
       loadData()
     }
   }, [clientId])

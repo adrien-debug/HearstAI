@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { debankAPI } from '@/lib/api'
 import Icon from '@/components/Icon'
 import './Collateral.css'
@@ -20,8 +20,29 @@ export default function DebankStatusIndicator() {
     configured: false,
     message: 'Checking DeBank API status...',
   })
+  const hasLoadedRef = useRef(false)
 
   useEffect(() => {
+    // Prevent duplicate calls from React StrictMode
+    if (hasLoadedRef.current) {
+      // Set up interval only, don't call checkStatus again
+      const interval = setInterval(async () => {
+        try {
+          const health = await debankAPI.health()
+          setStatus(health)
+        } catch (error: any) {
+          setStatus({
+            status: 'error',
+            configured: false,
+            message: `Failed to check DeBank API status: ${error.message || 'Unknown error'}`,
+            error: error.message || String(error),
+          })
+        }
+      }, 300000)
+      return () => clearInterval(interval)
+    }
+    hasLoadedRef.current = true
+
     const checkStatus = async () => {
       try {
         console.log('[DebankStatusIndicator] Checking health...')
@@ -45,8 +66,8 @@ export default function DebankStatusIndicator() {
     }
 
     checkStatus()
-    // Check status every 60 seconds
-    const interval = setInterval(checkStatus, 60000)
+    // Check status every 5 minutes
+    const interval = setInterval(checkStatus, 300000)
     return () => clearInterval(interval)
   }, [])
 

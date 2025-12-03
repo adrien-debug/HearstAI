@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { collateralAPI } from '@/lib/api'
 import { collectAllAssets, computeGlobalMetrics, formatCurrency } from './collateralUtils'
 import type { Client } from './collateralUtils'
@@ -11,8 +11,13 @@ export default function CollateralAssets() {
   const [data, setData] = useState<any>(null)
   const [customers, setCustomers] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const hasLoadedRef = useRef(false)
 
   useEffect(() => {
+    // Prevent duplicate calls from React StrictMode
+    if (hasLoadedRef.current) return
+    hasLoadedRef.current = true
+
     const loadData = async () => {
       try {
         setLoading(true)
@@ -63,8 +68,8 @@ export default function CollateralAssets() {
     }
     loadData()
     
-    // Auto-refresh every 30 seconds pour données en temps réel
-    const interval = setInterval(loadData, 30000)
+    // Auto-refresh every 5 minutes
+    const interval = setInterval(loadData, 300000)
     return () => {
       clearInterval(interval)
     }
