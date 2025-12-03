@@ -22,18 +22,6 @@ export async function middleware(request: NextRequest) {
   }
 
   try {
-    // MODE DEBUG LOCAL : Désactiver le middleware en développement local
-    const isLocalDebug = process.env.NODE_ENV === 'development' || 
-                         request.url.includes('localhost:6001') || 
-                         request.url.includes('127.0.0.1:6001') ||
-                         request.url.includes('localhost:3000') ||
-                         request.url.includes('127.0.0.1:3000')
-    
-    if (isLocalDebug) {
-      console.log('[Middleware] 🔧 MODE DEBUG LOCAL - Middleware désactivé pour:', pathname)
-      return NextResponse.next()
-    }
-
     // Check for JWT authentication token
     const session = getTokenFromRequest(request)
 

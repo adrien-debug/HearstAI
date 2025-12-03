@@ -10,7 +10,6 @@ export default function SignInPage() {
   const [password, setPassword] = useState('admin');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [isLocal, setIsLocal] = useState(false);
 
   // Désactiver le scroll automatique de Next.js pour éviter les warnings
   useEffect(() => {
