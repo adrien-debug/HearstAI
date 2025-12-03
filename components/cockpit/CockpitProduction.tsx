@@ -50,7 +50,13 @@ export default function CockpitProduction() {
   const [earningsChartData, setEarningsChartData] = useState<any>(null)
 
   useEffect(() => {
+    // Prevent duplicate calls from React StrictMode
+    let hasLoaded = false
+    
     const loadData = async () => {
+      if (hasLoaded) return
+      hasLoaded = true
+      
       try {
         const response = await cockpitAPI.getData()
         if (response && response.data) {
@@ -60,8 +66,9 @@ export default function CockpitProduction() {
             btcProductionMonthlyUSD: response.data.btcProductionMonthlyUSD
           })
           setData(response.data)
+        } else if (response) {
+          setData(response)
         } else {
-          // If no data, set to 0 values
           console.log('[CockpitProduction] No data in response')
           setData({
             btcProduction24h: 0,
@@ -71,7 +78,6 @@ export default function CockpitProduction() {
           })
         }
       } catch (err) {
-        // If API fails, set to 0 values - no mock data
         console.error('Failed to load production data:', err)
         setData({
           btcProduction24h: 0,
@@ -82,21 +88,35 @@ export default function CockpitProduction() {
       }
     }
     
-    // Try to load real data silently in the background (same as dashboard)
     loadData()
-    const interval = setInterval(loadData, 30000) // Refresh every 30s
+    const interval = setInterval(() => {
+      hasLoaded = false
+      loadData()
+    }, 300000) // Refresh every 5 minutes
     return () => clearInterval(interval)
   }, [])
 
   // Load earnings chart data (one year)
   useEffect(() => {
+    // Prevent duplicate calls from React StrictMode
+    let hasLoaded = false
+    
     const loadEarningsChartData = async () => {
+      if (hasLoaded) return
+      hasLoaded = true
+      
       try {
         const chartData = await cockpitAPI.getEarningsChart('year')
-        if (chartData) {
+        if (chartData && chartData.dates && chartData.dates.length > 0) {
+          // Format dates for display
+          const formattedDates = chartData.dates.map((dateStr: string) => {
+            const date = new Date(dateStr)
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+          })
+          
           // Process and set chart data
           setEarningsChartData({
-            labels: chartData.dates || [],
+            labels: formattedDates,
             datasets: [
               {
                 label: 'BTC Earnings',
@@ -113,6 +133,8 @@ export default function CockpitProduction() {
               },
             ],
           })
+        } else {
+          setEarningsChartData(null)
         }
       } catch (err) {
         console.error('Failed to load earnings chart data:', err)
@@ -121,8 +143,10 @@ export default function CockpitProduction() {
     }
 
     loadEarningsChartData()
-    // Refresh every 30 seconds
-    const interval = setInterval(loadEarningsChartData, 30000)
+    const interval = setInterval(() => {
+      hasLoaded = false
+      loadEarningsChartData()
+    }, 300000) // Refresh every 5 minutes
     return () => clearInterval(interval)
   }, [])
 
@@ -204,17 +228,25 @@ export default function CockpitProduction() {
       <div className="kpi-grid">
         <div className="kpi-card">
           <div className="kpi-label">Daily Production</div>
-          <div className="kpi-value">{(data?.btcProduction24h ?? 0).toFixed(6)} BTC</div>
+          <div className="kpi-value" style={{ color: (data?.btcProduction24h || 0) > 0 ? '#9EFF00' : 'var(--text-secondary)' }}>
+            {typeof data?.btcProduction24h === 'number' ? data.btcProduction24h.toFixed(6) : '0.000000'} BTC
+          </div>
           <div className="kpi-description">Last 24 hours</div>
         </div>
         <div className="kpi-card">
           <div className="kpi-label">Monthly Production</div>
-          <div className="kpi-value">{(data?.btcProductionMonthly ?? 0).toFixed(6)} BTC</div>
+          <div className="kpi-value" style={{ color: (data?.btcProductionMonthly || 0) > 0 ? '#9EFF00' : 'var(--text-secondary)' }}>
+            {typeof data?.btcProductionMonthly === 'number' ? data.btcProductionMonthly.toFixed(6) : '0.000000'} BTC
+          </div>
           <div className="kpi-description">Current month</div>
         </div>
         <div className="kpi-card">
           <div className="kpi-label">Efficiency</div>
-          <div className="kpi-value">0%</div>
+          <div className="kpi-value" style={{ color: (data?.globalHashrate || 0) > 0 && (data?.theoreticalHashrate || 0) > 0 ? '#9EFF00' : 'var(--text-secondary)' }}>
+            {data?.globalHashrate && data?.theoreticalHashrate && data.theoreticalHashrate > 0
+              ? ((data.globalHashrate / data.theoreticalHashrate) * 100).toFixed(1)
+              : '0'}%
+          </div>
           <div className="kpi-description">Average efficiency</div>
         </div>
       </div>
