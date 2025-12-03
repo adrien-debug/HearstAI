@@ -75,13 +75,28 @@ export default function CockpitDashboard() {
   })
 
   useEffect(() => {
+    // Prevent duplicate calls from React StrictMode
+    let hasLoaded = false
+    
     const loadData = async () => {
+      if (hasLoaded) return
+      hasLoaded = true
+      
       try {
+        console.log('[CockpitDashboard] Fetching cockpit data...')
         const response = await cockpitAPI.getData()
+        console.log('[CockpitDashboard] Received response:', response)
+        
         if (response && response.data) {
+          console.log('[CockpitDashboard] Setting data:', response.data)
           setData(response.data)
+        } else if (response) {
+          // Handle case where response might be the data directly
+          console.log('[CockpitDashboard] Response is data directly:', response)
+          setData(response)
         } else {
           // If no data, set to 0 values
+          console.warn('[CockpitDashboard] No data in response')
           setData({
             globalHashrate: 0,
             theoreticalHashrate: 0,
@@ -93,7 +108,7 @@ export default function CockpitDashboard() {
         }
       } catch (err) {
         // If API fails, set to 0 values - no mock data
-        console.error('Failed to load cockpit data:', err)
+        console.error('[CockpitDashboard] Failed to load cockpit data:', err)
         setData({
           globalHashrate: 0,
           theoreticalHashrate: 0,
@@ -107,13 +122,22 @@ export default function CockpitDashboard() {
     
     // Try to load real data silently in the background
     loadData()
-    const interval = setInterval(loadData, 30000) // Refresh every 30s
+    const interval = setInterval(() => {
+      hasLoaded = false // Allow refresh on interval
+      loadData()
+    }, 300000) // Refresh every 5 minutes
     return () => clearInterval(interval)
   }, [])
 
   // Load hashrate chart data
   useEffect(() => {
+    // Prevent duplicate calls from React StrictMode
+    let hasLoaded = false
+    
     const loadHashrateChartData = async () => {
+      if (hasLoaded) return
+      hasLoaded = true
+      
       try {
         const chartData = await cockpitAPI.getHashrateChart()
         if (chartData) {
@@ -169,20 +193,35 @@ export default function CockpitDashboard() {
     }
 
     loadHashrateChartData()
-    // Refresh every 30 seconds
-    const interval = setInterval(loadHashrateChartData, 30000)
+    // Refresh every 5 minutes
+    const interval = setInterval(() => {
+      hasLoaded = false // Allow refresh on interval
+      loadHashrateChartData()
+    }, 300000)
     return () => clearInterval(interval)
   }, [])
 
   // Load earnings chart data
   useEffect(() => {
+    // Prevent duplicate calls from React StrictMode
+    let hasLoaded = false
+    
     const loadEarningsChartData = async () => {
+      if (hasLoaded && earningsTimeframe === 'week') return // Only prevent on initial load
+      hasLoaded = true
+      
       try {
         const chartData = await cockpitAPI.getEarningsChart(earningsTimeframe)
-        if (chartData) {
+        if (chartData && chartData.dates && chartData.dates.length > 0) {
+          // Format dates for display
+          const formattedDates = chartData.dates.map((dateStr: string) => {
+            const date = new Date(dateStr)
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+          })
+          
           // Process and set chart data
           setEarningsChartData({
-            labels: chartData.dates || [],
+            labels: formattedDates,
             datasets: [
               {
                 label: 'BTC Earnings',
@@ -224,23 +263,21 @@ export default function CockpitDashboard() {
             })
           }
         } else {
-          // Generate placeholder data for 7 complete days (excluding today)
-          const dates = Array.from({ length: 7 }, (_, i) => {
+          // If no data, show empty chart with zero values
+          const days = earningsTimeframe === 'week' ? 7 : earningsTimeframe === 'month' ? 30 : 365
+          const dates = Array.from({ length: days }, (_, i) => {
             const date = new Date()
-            date.setDate(date.getDate() - (7 - i)) // Start from yesterday (i=1 to i=7)
+            date.setDate(date.getDate() - (days - i - 1))
             return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
           })
-          
-          const btcEarningsData = Array.from({ length: 7 }, () => data?.btcProduction24h || 0)
-          const targetData = Array.from({ length: 7 }, () => (data?.btcProduction24h || 0) * 1.1)
           
           setEarningsChartData({
             labels: dates,
             datasets: [
               {
                 label: 'BTC Earnings',
-                data: btcEarningsData,
-                borderColor: '#FF9500', // Orange
+                data: Array(days).fill(0),
+                borderColor: '#FF9500',
                 backgroundColor: 'rgba(255, 149, 0, 0.2)',
                 fill: true,
                 tension: 0.4,
@@ -252,8 +289,8 @@ export default function CockpitDashboard() {
               },
               {
                 label: 'Target',
-                data: targetData,
-                borderColor: '#4A9EFF', // Blue
+                data: Array(days).fill(0),
+                borderColor: '#4A9EFF',
                 backgroundColor: 'transparent',
                 fill: false,
                 tension: 0.4,
@@ -267,24 +304,22 @@ export default function CockpitDashboard() {
             ],
           })
 
-          // Calculate stats
-          const latest = btcEarningsData[btcEarningsData.length - 1] || 0
-          const total7Day = btcEarningsData.reduce((a, b) => a + b, 0)
-          const usdValue = 0 // TODO: Calculate from BTC price
-          const peakDay = Math.max(...btcEarningsData)
-
-          setEarningsStats({ latest, total7Day, usdValue, peakDay })
+          setEarningsStats({ latest: 0, total7Day: 0, usdValue: 0, peakDay: 0 })
         }
       } catch (err) {
         console.error('Failed to load earnings chart data:', err)
+        setEarningsChartData(null)
       }
     }
 
     loadEarningsChartData()
-    // Refresh every 30 seconds
-    const interval = setInterval(loadEarningsChartData, 30000)
+    // Refresh every 5 minutes
+    const interval = setInterval(() => {
+      hasLoaded = false // Allow refresh on interval
+      loadEarningsChartData()
+    }, 300000)
     return () => clearInterval(interval)
-  }, [earningsTimeframe, data?.btcProduction24h])
+  }, [earningsTimeframe])
 
   const onlinePercentage = data && data.totalMiners > 0 ? Math.round((data.onlineMiners / data.totalMiners) * 100) : 0
 
@@ -528,22 +563,30 @@ export default function CockpitDashboard() {
       <div className="kpi-grid">
         <div className="kpi-card">
           <div className="kpi-label">Global Hashrate</div>
-          <div className="kpi-value">{data?.globalHashrate || 0} PH/s</div>
-          <div className="kpi-description">Theoretical: {data?.theoreticalHashrate || 0} PH/s</div>
+          <div className="kpi-value" style={{ color: (data?.globalHashrate || 0) > 0 ? '#9EFF00' : 'var(--text-secondary)' }}>
+            {typeof data?.globalHashrate === 'number' ? data.globalHashrate.toFixed(2) : '0.00'} PH/s
+          </div>
+          <div className="kpi-description">Theoretical: {typeof data?.theoreticalHashrate === 'number' ? data.theoreticalHashrate.toFixed(2) : '0.00'} PH/s</div>
         </div>
         <div className="kpi-card">
           <div className="kpi-label">BTC Production (24h)</div>
-          <div className="kpi-value">{data?.btcProduction24h ? data.btcProduction24h.toFixed(6) : '0.000000'} BTC</div>
-          <div className="kpi-description">≈ ${data?.btcProduction24hUSD ? data.btcProduction24hUSD.toFixed(2) : '0.00'} USD</div>
+          <div className="kpi-value" style={{ color: (data?.btcProduction24h || 0) > 0 ? '#9EFF00' : 'var(--text-secondary)' }}>
+            {typeof data?.btcProduction24h === 'number' ? data.btcProduction24h.toFixed(6) : '0.000000'} BTC
+          </div>
+          <div className="kpi-description">≈ ${typeof data?.btcProduction24hUSD === 'number' ? data.btcProduction24hUSD.toFixed(2) : '0.00'} USD</div>
         </div>
         <div className="kpi-card">
           <div className="kpi-label">Total Miners</div>
-          <div className="kpi-value">{data?.totalMiners || 0}</div>
+          <div className="kpi-value" style={{ color: (data?.totalMiners || 0) > 0 ? '#9EFF00' : 'var(--text-secondary)' }}>
+            {data?.totalMiners || 0}
+          </div>
           <div className="kpi-description">Fleet capacity</div>
         </div>
         <div className="kpi-card">
           <div className="kpi-label">Online Miners</div>
-          <div className="kpi-value">{data?.onlineMiners || 0}</div>
+          <div className="kpi-value" style={{ color: (data?.onlineMiners || 0) > 0 ? '#9EFF00' : 'var(--text-secondary)' }}>
+            {data?.onlineMiners || 0}
+          </div>
           <div className="kpi-description">{onlinePercentage}% of fleet</div>
         </div>
       </div>

@@ -257,11 +257,53 @@ export const portfolioAPI = {
   uploadImage: uploadPortfolioImage,
 }
 
+// Contracts API
+export const contractsAPI = {
+  getAll: (userId?: string, status?: string) => {
+    const params = new URLSearchParams()
+    if (userId) params.append('userId', userId)
+    if (status) params.append('status', status)
+    const queryString = params.toString()
+    return fetchAPI<{ contracts: any[] }>(`/contracts${queryString ? `?${queryString}` : ''}`)
+  },
+  getActive: (userId?: string) => {
+    const queryString = userId ? `?userId=${userId}` : ''
+    return fetchAPI<{ contracts: any[] }>(`/contracts/active${queryString}`)
+  },
+  getById: (id: string) => fetchAPI<{ contract: any }>(`/contracts/${id}`),
+  create: (data: any) => fetchAPI<{ contract: any }>('/contracts', { method: 'POST', body: JSON.stringify(data) }),
+  update: (id: string, data: any) => fetchAPI<{ contract: any }>(`/contracts/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  delete: (id: string) => fetchAPI(`/contracts/${id}`, { method: 'DELETE' }),
+}
+
+// Events API
+export const eventsAPI = {
+  getAll: (userId?: string, type?: string, startDate?: string, endDate?: string, limit?: number) => {
+    const params = new URLSearchParams()
+    if (userId) params.append('userId', userId)
+    if (type) params.append('type', type)
+    if (startDate) params.append('startDate', startDate)
+    if (endDate) params.append('endDate', endDate)
+    if (limit) params.append('limit', limit.toString())
+    const queryString = params.toString()
+    return fetchAPI<{ events: any[]; count: number }>(`/events${queryString ? `?${queryString}` : ''}`)
+  },
+  getById: (id: string) => fetchAPI<{ event: any }>(`/events/${id}`),
+  getRecentAlerts: (limit?: number) => {
+    const queryString = limit ? `?limit=${limit}` : ''
+    return fetchAPI<{ events: any[]; count: number }>(`/events/alerts${queryString}`)
+  },
+  create: (data: any) => fetchAPI<{ event: any }>('/events', { method: 'POST', body: JSON.stringify(data) }),
+  update: (id: string, data: any) => fetchAPI<{ event: any }>(`/events/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  delete: (id: string) => fetchAPI(`/events/${id}`, { method: 'DELETE' }),
+}
+
 // Cockpit API
 export const cockpitAPI = {
   getData: () => fetchAPI<any>('/cockpit'),
   getEarningsChart: (timeframe?: string) => fetchAPI<any>(`/cockpit/earnings-chart${timeframe ? `?timeframe=${timeframe}` : ''}`),
   getHashrateChart: (timeframe?: string) => fetchAPI<any>(`/cockpit/hashrate-chart${timeframe ? `?timeframe=${timeframe}` : ''}`),
+  getIncidents: () => fetchAPI<any>('/cockpit/incidents'),
 }
 
 // DeBank API Health Check
