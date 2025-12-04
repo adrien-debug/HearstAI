@@ -455,11 +455,22 @@ function CreateDealModal({
         ? formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0)
         : []
 
+      // Parse estimated value - handle both comma and dot as decimal separator
+      let parsedEstimatedValue: number | undefined = undefined;
+      if (formData.estimatedValue) {
+        // Remove any spaces and replace comma with dot for parsing
+        const cleanedValue = formData.estimatedValue.toString().replace(/\s/g, '').replace(',', '.');
+        parsedEstimatedValue = parseFloat(cleanedValue);
+        if (isNaN(parsedEstimatedValue)) {
+          throw new Error('La valeur estimée doit être un nombre valide');
+        }
+      }
+
       await dealsAPI.create({
         title: formData.title,
         contactId: formData.contactId,
         stage: formData.stage,
-        estimatedValue: formData.estimatedValue ? parseFloat(formData.estimatedValue) : undefined,
+        estimatedValue: parsedEstimatedValue,
         currency: formData.currency,
         probability: formData.probability ? parseInt(formData.probability, 10) : 0,
         expectedCloseDate: formData.expectedCloseDate || undefined,
