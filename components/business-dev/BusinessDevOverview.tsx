@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { LeadsIcon, MoneyIcon, ChartIcon, HandshakeIcon, RevenueIcon, ClockIcon, UserIcon, TargetIcon, CalendarIcon, DocumentIcon } from './BusinessDevIcons'
+import { metricsAPI } from '@/lib/api/business-dev'
 
 interface KpiData {
   label: string
@@ -11,79 +12,178 @@ interface KpiData {
 }
 
 export default function BusinessDevOverview() {
-  const [kpis, setKpis] = useState<KpiData[]>([
-    {
-      label: 'Leads totaux',
-      value: '247',
-      change: 12.5,
-      icon: <LeadsIcon size={20} color="#C5FFA7" />
-    },
-    {
-      label: 'Pipeline valeur',
-      value: '€2.4M',
-      change: 8.3,
-      icon: <MoneyIcon size={20} color="var(--primary-green)" />
-    },
-    {
-      label: 'Taux de conversion',
-      value: '23.4%',
-      change: 2.1,
-      icon: <ChartIcon size={20} color="var(--primary-green)" />
-    },
-    {
-      label: 'Deals actifs',
-      value: '18',
-      change: -3.2,
-      icon: <HandshakeIcon size={20} color="var(--primary-green)" />
-    },
-    {
-      label: 'Revenus ce mois',
-      value: '€485K',
-      change: 15.7,
-      icon: <RevenueIcon size={20} color="var(--primary-green)" />
-    },
-    {
-      label: 'Temps moyen cycle',
-      value: '42j',
-      change: -8.5,
-      icon: <ClockIcon size={20} color="var(--primary-green)" />
-    }
-  ])
+  const [kpis, setKpis] = useState<KpiData[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  const [recentActivity, setRecentActivity] = useState([
-    {
-      id: 1,
-      type: 'contact',
-      action: 'Nouveau contact ajouté',
-      name: 'TechCorp Solutions',
-      time: 'Il y a 2 heures',
-      value: '€120K'
-    },
-    {
-      id: 2,
-      type: 'deal',
-      action: 'Deal gagné',
-      name: 'Mining Partners Inc',
-      time: 'Il y a 5 heures',
-      value: '€350K'
-    },
-    {
-      id: 3,
-      type: 'meeting',
-      action: 'Meeting planifié',
-      name: 'Green Energy Co',
-      time: 'Il y a 1 jour',
-      value: '€200K'
-    },
-    {
-      id: 4,
-      type: 'proposal',
-      action: 'Proposition envoyée',
-      name: 'Crypto Ventures',
-      time: 'Il y a 2 jours',
-      value: '€180K'
+  const [recentActivity, setRecentActivity] = useState<any[]>([])
+
+  // Format number with currency
+  const formatCurrency = (value: number): string => {
+    if (value >= 1000000) {
+      return `€${(value / 1000000).toFixed(1)}M`
+    } else if (value >= 1000) {
+      return `€${(value / 1000).toFixed(0)}K`
     }
-  ])
+    return `€${value.toFixed(0)}`
+  }
+
+  // Format time ago
+  const formatTimeAgo = (dateString: string): string => {
+    try {
+      const date = new Date(dateString)
+      const now = new Date()
+      const diffMs = now.getTime() - date.getTime()
+      const diffMins = Math.floor(diffMs / 60000)
+      const diffHours = Math.floor(diffMs / 3600000)
+      const diffDays = Math.floor(diffMs / 86400000)
+
+      if (diffMins < 60) {
+        return `Il y a ${diffMins}min`
+      } else if (diffHours < 24) {
+        return `Il y a ${diffHours}h`
+      } else {
+        return `Il y a ${diffDays}j`
+      }
+    } catch {
+      return 'Récemment'
+    }
+  }
+
+  // Load metrics and activities
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+
+        // Load metrics
+        const metrics = await metricsAPI.getMetrics()
+        
+        // Load recent activities
+        const activitiesData = await metricsAPI.getRecentActivities(10)
+        
+        // Format KPIs
+        setKpis([
+          {
+            label: 'Leads totaux',
+            value: metrics.totalContacts.value,
+            change: metrics.totalContacts.change,
+            icon: <LeadsIcon size={20} color="#C5FFA7" />
+          },
+          {
+            label: 'Pipeline valeur',
+            value: formatCurrency(metrics.pipelineValue.value),
+            change: metrics.pipelineValue.change,
+            icon: <MoneyIcon size={20} color="var(--primary-green)" />
+          },
+          {
+            label: 'Taux de conversion',
+            value: `${metrics.conversionRate.value.toFixed(1)}%`,
+            change: metrics.conversionRate.change,
+            icon: <ChartIcon size={20} color="var(--primary-green)" />
+          },
+          {
+            label: 'Deals actifs',
+            value: metrics.activeDeals.value,
+            change: metrics.activeDeals.change,
+            icon: <HandshakeIcon size={20} color="var(--primary-green)" />
+          },
+          {
+            label: 'Revenus ce mois',
+            value: formatCurrency(metrics.revenueThisMonth.value),
+            change: metrics.revenueThisMonth.change,
+            icon: <RevenueIcon size={20} color="var(--primary-green)" />
+          },
+          {
+            label: 'Temps moyen cycle',
+            value: `${metrics.avgCycleTime.value}j`,
+            change: 0,
+            icon: <ClockIcon size={20} color="var(--primary-green)" />
+          }
+        ])
+
+        // Format activities
+        const formattedActivities = activitiesData.activities.map((activity: any) => {
+          let action = activity.title
+          let type = activity.type
+          let name = activity.contactName || activity.dealTitle || 'Unknown'
+          let value = ''
+
+          // Map activity types to display
+          if (activity.type === 'call') {
+            action = 'Appel effectué'
+            type = 'call'
+          } else if (activity.type === 'email') {
+            action = 'Email envoyé'
+            type = 'email'
+          } else if (activity.type === 'meeting') {
+            action = 'Meeting planifié'
+            type = 'meeting'
+          } else if (activity.type === 'proposal') {
+            action = 'Proposition envoyée'
+            type = 'proposal'
+          } else if (activity.type === 'note') {
+            action = 'Note ajoutée'
+            type = 'note'
+          }
+
+          return {
+            id: activity.id,
+            type,
+            action,
+            name,
+            time: formatTimeAgo(activity.activityDate || activity.createdAt),
+            value
+          }
+        })
+
+        setRecentActivity(formattedActivities)
+      } catch (err: any) {
+        console.error('Error loading overview data:', err)
+        setError(err.message || 'Erreur lors du chargement des données')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadData()
+  }, [])
+
+  if (loading) {
+    return (
+      <div style={{
+        padding: 'var(--space-12)',
+        textAlign: 'center',
+        background: 'rgba(14, 14, 14, 0.75)',
+        backdropFilter: 'blur(20px) saturate(180%)',
+        border: '0.5px solid rgba(255, 255, 255, 0.04)',
+        borderRadius: 'var(--radius-lg)',
+      }}>
+        <div style={{
+          fontSize: 'var(--text-base)',
+          color: 'var(--text-primary)',
+        }}>
+          Chargement des métriques...
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div style={{
+        padding: 'var(--space-4)',
+        background: 'rgba(255, 77, 77, 0.1)',
+        border: '1px solid rgba(255, 77, 77, 0.3)',
+        borderRadius: 'var(--radius-md)',
+        color: '#ff4d4d',
+        fontSize: 'var(--text-sm)',
+      }}>
+        {error}
+      </div>
+    )
+  }
 
   return (
     <div>
@@ -136,7 +236,17 @@ export default function BusinessDevOverview() {
           Activité récente
         </h2>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-          {recentActivity.map((activity) => (
+          {recentActivity.length === 0 ? (
+            <div style={{
+              padding: 'var(--space-8)',
+              textAlign: 'center',
+              color: 'var(--text-muted)',
+              fontSize: 'var(--text-sm)'
+            }}>
+              Aucune activité récente
+            </div>
+          ) : (
+            recentActivity.map((activity) => (
             <div
               key={activity.id}
               style={{
@@ -207,7 +317,8 @@ export default function BusinessDevOverview() {
                 {activity.value}
               </div>
             </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
     </div>

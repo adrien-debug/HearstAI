@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import BusinessDevOverview from '@/components/business-dev/BusinessDevOverview'
 import BusinessDevPipeline from '@/components/business-dev/BusinessDevPipeline'
 import BusinessDevContacts from '@/components/business-dev/BusinessDevContacts'
@@ -12,6 +12,28 @@ import '@/components/business-dev/BusinessDev.css'
 export default function BusinessDevPage() {
   const [activeSection, setActiveSection] = useState('overview')
   const [showAddContactModal, setShowAddContactModal] = useState(false)
+
+  // Listen for switch to overview event
+  useEffect(() => {
+    const handleSwitchToOverview = () => {
+      setActiveSection('overview')
+    }
+    const handleOpenContactModal = () => {
+      setShowAddContactModal(true)
+    }
+    const handleCreateDeal = () => {
+      setActiveSection('pipeline')
+      // The modal will be opened by the Pipeline component
+    }
+    window.addEventListener('switchToOverview', handleSwitchToOverview)
+    window.addEventListener('openContactModal', handleOpenContactModal)
+    window.addEventListener('createDeal', handleCreateDeal)
+    return () => {
+      window.removeEventListener('switchToOverview', handleSwitchToOverview)
+      window.removeEventListener('openContactModal', handleOpenContactModal)
+      window.removeEventListener('createDeal', handleCreateDeal)
+    }
+  }, [])
 
   const sections = [
     { id: 'overview', label: 'Vue d\'ensemble', icon: OverviewIcon },

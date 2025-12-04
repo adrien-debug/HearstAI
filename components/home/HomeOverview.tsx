@@ -20,7 +20,111 @@ import {
   Legend,
   Filler,
 } from 'chart.js'
-import { statsAPI } from '@/lib/api'
+import { statsAPI, cockpitAPI } from '@/lib/api'
+
+// Earnings History Component
+function EarningsHistoryTableComponent({ stats }: { stats: DashboardStats }) {
+  const [earningsData, setEarningsData] = useState<any[]>([])
+  const [totalEarnings, setTotalEarnings] = useState(0)
+  const [loadingEarnings, setLoadingEarnings] = useState(true)
+
+  useEffect(() => {
+    let isMounted = true
+    let hasLoaded = false
+
+    const loadEarnings = async () => {
+      if (hasLoaded) return
+      hasLoaded = true
+
+      try {
+        setLoadingEarnings(true)
+        const chartData = await cockpitAPI.getEarningsChart('month')
+        
+        if (!isMounted) return
+
+        if (chartData?.dates && chartData?.btcEarnings) {
+          // Get last 5 days of earnings
+          const last5Days = chartData.dates.slice(-5).map((date: string, idx: number) => ({
+            date,
+            earnings: chartData.btcEarnings[chartData.dates.length - 5 + idx] || 0,
+            hashrate: stats.total_jobs || 0, // Use current hashrate
+          }))
+
+          setEarningsData(last5Days.reverse())
+          setTotalEarnings(chartData.btcEarnings.reduce((sum: number, val: number) => sum + val, 0))
+        }
+      } catch (err) {
+        console.error('Error loading earnings history:', err)
+        setEarningsData([])
+        setTotalEarnings(0)
+      } finally {
+        if (isMounted) {
+          setLoadingEarnings(false)
+        }
+      }
+    }
+
+    loadEarnings()
+
+    return () => {
+      isMounted = false
+    }
+  }, [stats.total_jobs])
+
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr)
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' })
+  }
+
+  return (
+    <div className="premium-transaction-section">
+      <div className="premium-section-header">
+        <h3 className="premium-section-title">Recent Earnings History</h3>
+      </div>
+      <div className="premium-transaction-table-container">
+        <table className="premium-transaction-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Account</th>
+              <th>Total Reward</th>
+              <th>Hashrate</th>
+            </tr>
+          </thead>
+          <tbody>
+            {loadingEarnings ? (
+              <tr>
+                <td colSpan={4} style={{ textAlign: 'center', color: 'var(--text-secondary)', padding: 'var(--space-8)' }}>
+                  Loading earnings data...
+                </td>
+              </tr>
+            ) : earningsData.length > 0 ? (
+              earningsData.map((item, idx) => (
+                <tr key={idx}>
+                  <td>{formatDate(item.date)}</td>
+                  <td>Mining Pool</td>
+                  <td className="premium-transaction-amount">{item.earnings.toFixed(6)} BTC</td>
+                  <td>{item.hashrate.toLocaleString()} TH/s</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={4} style={{ textAlign: 'center', color: 'var(--text-secondary)', padding: 'var(--space-8)' }}>
+                  No earnings data available
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+        {!loadingEarnings && totalEarnings > 0 && (
+          <div className="premium-transaction-total">
+            <strong>Total: <span className="premium-transaction-total-amount">{totalEarnings.toFixed(6)} BTC</span></strong>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
 
 // Dynamically import Chart.js components to avoid SSR issues
 const LineChart = dynamic(
@@ -92,73 +196,53 @@ export default function HomeOverview() {
 
   useEffect(() => {
     let isMounted = true
-    
-    // MODE DEBUG LOCAL : Utiliser des données mockées pour éviter les blocages
-    const isLocal = typeof window !== 'undefined' && (
-      window.location.hostname === 'localhost' || 
-      window.location.hostname === '127.0.0.1' ||
-      window.location.port === '6001'
-    )
-    
-    if (isLocal) {
-      console.log('[HomeOverview] 🔧 MODE LOCAL - Utilisation de données mockées')
-      // Utiliser des données mockées immédiatement
-      setStats({
-        total_projects: 12,
-        total_versions: 45,
-        total_jobs: 234,
-        jobs_running: 3,
-        jobs_success_rate: 98.5,
-      })
-      setLoading(false)
-      return () => {
-        isMounted = false
-      }
-    }
-    
-    // EN PRODUCTION : Charger les vraies stats
-    let abortController: AbortController | null = null
+    let hasLoaded = false
     
     const loadStats = async () => {
-      if (!isMounted) return
-      
-      if (abortController) {
-        abortController.abort()
-      }
-      abortController = new AbortController()
+      if (!isMounted || hasLoaded) return
+      hasLoaded = true
       
       try {
         setLoading(true)
         
-        const timeoutPromise = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Stats API timeout')), 3000)
-        )
+        // Fetch cockpit data for real mining stats
+        const [cockpitResponse, statsResponse] = await Promise.all([
+          import('@/lib/api').then(m => m.cockpitAPI.getData().catch(() => null)),
+          statsAPI.getStats().catch(() => null),
+        ])
         
-        const statsPromise = statsAPI.getStats()
-        const response = await Promise.race([statsPromise, timeoutPromise]) as any
+        if (!isMounted) return
         
-        if (!isMounted || abortController.signal.aborted) return
-        
-        if (response && response.stats) {
-          setStats(response.stats)
-        } else if (response) {
-          setStats(response as DashboardStats)
+        // Use cockpit data for mining stats, fallback to stats API
+        if (cockpitResponse?.data) {
+          const cockpit = cockpitResponse.data
+          setStats({
+            total_projects: cockpit.totalMiners || 0,
+            total_versions: cockpit.onlineMiners || 0,
+            total_jobs: Math.round(cockpit.globalHashrate || 0),
+            jobs_running: Math.round(cockpit.btcProduction24h * 1000000 || 0), // Convert to satoshis for display
+            jobs_success_rate: cockpit.globalHashrate && cockpit.theoreticalHashrate 
+              ? ((cockpit.globalHashrate / cockpit.theoreticalHashrate) * 100) 
+              : 0,
+          })
+        } else if (statsResponse?.stats) {
+          setStats(statsResponse.stats)
+        } else if (statsResponse) {
+          setStats(statsResponse as DashboardStats)
         }
       } catch (err: any) {
-        if (!isMounted || abortController.signal.aborted) return
-        if (err.name !== 'AbortError') {
-          console.error('Error loading stats:', err)
-          // Fallback vers données mockées en cas d'erreur
-          setStats({
-            total_projects: 12,
-            total_versions: 45,
-            total_jobs: 234,
-            jobs_running: 3,
-            jobs_success_rate: 98.5,
-          })
-        }
+        if (!isMounted) return
+        console.error('Error loading stats:', err)
+        // Fallback to zero values
+        setStats({
+          total_projects: 0,
+          total_versions: 0,
+          total_jobs: 0,
+          jobs_running: 0,
+          jobs_success_rate: 0,
+        })
       } finally {
-        if (isMounted && !abortController.signal.aborted) {
+        if (isMounted) {
           setLoading(false)
         }
       }
@@ -166,16 +250,22 @@ export default function HomeOverview() {
 
     loadStats()
     
+    // Refresh every 5 minutes
+    const interval = setInterval(() => {
+      hasLoaded = false
+      loadStats()
+    }, 300000)
+    
     return () => {
       isMounted = false
-      if (abortController) abortController.abort()
+      clearInterval(interval)
     }
   }, [])
 
   // Générer des données de hashrate selon la période
   const getHashrateData = () => {
     // Utiliser total_jobs comme base pour le hashrate (en TH/s)
-    const baseHashrate = (stats.total_jobs || 0) * 100 // Multiplier pour avoir des valeurs réalistes en TH/s
+    const baseHashrate = stats.total_jobs || 0
     
     if (hashratePeriod === 'daily') {
       // 24 heures
@@ -248,7 +338,8 @@ export default function HomeOverview() {
 
   // Données BTC Mined selon la période
   const getBtcMinedData = () => {
-    const btcMinedValue = stats.jobs_running || 0 // Utiliser jobs_running comme valeur de base pour BTC Mined
+    // Convert from satoshis back to BTC
+    const btcMinedValue = stats.jobs_running ? stats.jobs_running / 1000000 : 0
     
     if (btcMinedPeriod === 'weekly') {
       return {
@@ -314,6 +405,110 @@ export default function HomeOverview() {
   }
 
   const chartData2 = getBtcMinedData()
+
+  // Earnings History Component
+  const EarningsHistoryTable = () => {
+    const [earningsData, setEarningsData] = useState<any[]>([])
+    const [totalEarnings, setTotalEarnings] = useState(0)
+    const [loadingEarnings, setLoadingEarnings] = useState(true)
+
+    useEffect(() => {
+      let isMounted = true
+      let hasLoaded = false
+
+      const loadEarnings = async () => {
+        if (hasLoaded) return
+        hasLoaded = true
+
+        try {
+          setLoadingEarnings(true)
+          const chartData = await cockpitAPI.getEarningsChart('month')
+          
+          if (!isMounted) return
+
+          if (chartData?.dates && chartData?.btcEarnings) {
+            // Get last 5 days of earnings
+            const last5Days = chartData.dates.slice(-5).map((date: string, idx: number) => ({
+              date,
+              earnings: chartData.btcEarnings[chartData.dates.length - 5 + idx] || 0,
+              hashrate: stats.total_jobs || 0, // Use current hashrate
+            }))
+
+            setEarningsData(last5Days.reverse())
+            setTotalEarnings(chartData.btcEarnings.reduce((sum: number, val: number) => sum + val, 0))
+          }
+        } catch (err) {
+          console.error('Error loading earnings history:', err)
+          setEarningsData([])
+          setTotalEarnings(0)
+        } finally {
+          if (isMounted) {
+            setLoadingEarnings(false)
+          }
+        }
+      }
+
+      loadEarnings()
+
+      return () => {
+        isMounted = false
+      }
+    }, [stats.total_jobs])
+
+    const formatDate = (dateStr: string) => {
+      const date = new Date(dateStr)
+      return date.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' })
+    }
+
+    return (
+      <div className="premium-transaction-section">
+        <div className="premium-section-header">
+          <h3 className="premium-section-title">Recent Earnings History</h3>
+        </div>
+        <div className="premium-transaction-table-container">
+          <table className="premium-transaction-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Account</th>
+                <th>Total Reward</th>
+                <th>Hashrate</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loadingEarnings ? (
+                <tr>
+                  <td colSpan={4} style={{ textAlign: 'center', color: 'var(--text-secondary)', padding: 'var(--space-8)' }}>
+                    Loading earnings data...
+                  </td>
+                </tr>
+              ) : earningsData.length > 0 ? (
+                earningsData.map((item, idx) => (
+                  <tr key={idx}>
+                    <td>{formatDate(item.date)}</td>
+                    <td>Mining Pool</td>
+                    <td className="premium-transaction-amount">{item.earnings.toFixed(6)} BTC</td>
+                    <td>{item.hashrate.toLocaleString()} TH/s</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={4} style={{ textAlign: 'center', color: 'var(--text-secondary)', padding: 'var(--space-8)' }}>
+                    No earnings data available
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+          {!loadingEarnings && totalEarnings > 0 && (
+            <div className="premium-transaction-total">
+              <strong>Total: <span className="premium-transaction-total-amount">{totalEarnings.toFixed(6)} BTC</span></strong>
+            </div>
+          )}
+        </div>
+      </div>
+    )
+  }
 
   const chartOptions = {
     responsive: true,
@@ -404,10 +599,10 @@ export default function HomeOverview() {
               <div className="premium-stat-label">Total Turnover</div>
             </div>
             <div className="premium-stat-value">
-              {loading ? '...' : (stats.total_projects ?? 0)}
+              {loading ? '...' : (stats.total_projects ?? 0).toLocaleString()}
             </div>
             <div className="premium-stat-footer">
-              <span className="premium-stat-description">Active projects</span>
+              <span className="premium-stat-description">Total Miners</span>
             </div>
           </div>
 
@@ -419,10 +614,10 @@ export default function HomeOverview() {
               <div className="premium-stat-label">Numbers of clients</div>
             </div>
             <div className="premium-stat-value">
-              {loading ? '...' : (stats.total_versions ?? 0)}
+              {loading ? '...' : (stats.total_versions ?? 0).toLocaleString()}
             </div>
             <div className="premium-stat-footer">
-              <span className="premium-stat-description">All versions</span>
+              <span className="premium-stat-description">Online Miners</span>
             </div>
           </div>
 
@@ -434,10 +629,10 @@ export default function HomeOverview() {
               <div className="premium-stat-label">Total Miners</div>
             </div>
             <div className="premium-stat-value">
-              {loading ? '...' : (stats.total_jobs ?? 0)}
+              {loading ? '...' : `${(stats.total_jobs ?? 0).toLocaleString()} TH/s`}
             </div>
             <div className="premium-stat-footer">
-              <span className="premium-stat-description">All jobs</span>
+              <span className="premium-stat-description">Global Hashrate</span>
             </div>
           </div>
 
@@ -449,10 +644,10 @@ export default function HomeOverview() {
               <div className="premium-stat-label">BTC Mined</div>
             </div>
             <div className="premium-stat-value premium-stat-value-green">
-              {loading ? '...' : (stats.jobs_running ?? 0)}
+              {loading ? '...' : (stats.jobs_running ? (stats.jobs_running / 1000000).toFixed(6) : '0.000000')}
             </div>
             <div className="premium-stat-footer">
-              <span className="premium-stat-description">Currently running</span>
+              <span className="premium-stat-description">BTC Production (24h)</span>
             </div>
           </div>
         </div>
@@ -467,7 +662,7 @@ export default function HomeOverview() {
               <div className="chart-live-hashrate">
                 <span className="chart-live-label">Live hashrate:</span>
                 <span className="chart-live-value">
-                  {loading ? '...' : `${((stats.total_jobs || 0) * 100).toLocaleString()} TH/s`}
+                  {loading ? '...' : `${(stats.total_jobs || 0).toLocaleString()} TH/s`}
                 </span>
               </div>
             </div>
@@ -544,58 +739,7 @@ export default function HomeOverview() {
       </div>
 
       {/* Transaction History Section */}
-      <div className="premium-transaction-section">
-        <div className="premium-section-header">
-          <h3 className="premium-section-title">Transaction history</h3>
-        </div>
-        <div className="premium-transaction-table-container">
-          <table className="premium-transaction-table">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Account</th>
-                <th>Total Reward</th>
-                <th>Hashrate</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>2025-01-18</td>
-                <td>AKT04</td>
-                <td className="premium-transaction-amount">0.084521 BTC</td>
-                <td>2041.42 TH/s</td>
-              </tr>
-              <tr>
-                <td>2025-01-17</td>
-                <td>AKT04</td>
-                <td className="premium-transaction-amount">0.083247 BTC</td>
-                <td>2041.42 TH/s</td>
-              </tr>
-              <tr>
-                <td>2025-01-16</td>
-                <td>AKT05</td>
-                <td className="premium-transaction-amount">0.082156 BTC</td>
-                <td>1987.23 TH/s</td>
-              </tr>
-              <tr>
-                <td>2025-01-15</td>
-                <td>AKT06</td>
-                <td className="premium-transaction-amount">0.081234 BTC</td>
-                <td>2156.78 TH/s</td>
-              </tr>
-              <tr>
-                <td>2025-01-14</td>
-                <td>AKT04</td>
-                <td className="premium-transaction-amount">0.080521 BTC</td>
-                <td>2041.42 TH/s</td>
-              </tr>
-            </tbody>
-          </table>
-          <div className="premium-transaction-total">
-            <strong>Total: <span className="premium-transaction-total-amount">0.491902 BTC</span></strong>
-          </div>
-        </div>
-      </div>
+      <EarningsHistoryTableComponent stats={stats} />
         </>
       )}
 
